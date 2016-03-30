@@ -1,4 +1,4 @@
-#+TITLE: SelfDotSend Blog
+#+TITLE: SelfDotSend
 #+SUBTITLE: Thoughts on Stuff in Org mode hepp
 
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="articles/css/org.css"/>
