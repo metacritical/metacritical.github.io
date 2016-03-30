@@ -1,4 +1,4 @@
-#+TITLE: Some Ruby/Rails Interview Questions Asked.
+#+TITLE: Some Ruby/Rails Interview Questions I Asked.
 #+SUBTITLE: Ruby/Rails Interview Questions.
 #+BIND: org-export-publishing-directory "../html/"
 
