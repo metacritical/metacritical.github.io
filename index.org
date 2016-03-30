@@ -1,0 +1,8 @@
+#+TITLE: SelfDotSend Blog
+#+SUBTITLE: Thoughts on Stuff in Org mode.
+
+#+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="articles/css/org.css"/>
+#+OPTIONS: toc:nil num:3 H:4 ^:nil pri:t
+
+* Articles
+  - Developing a scheme interpreter in C.
