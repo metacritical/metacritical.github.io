@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Some Ruby/Rails Interview Questions Asked.</title>
+<!-- 2016-03-30 Wed 23:59 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="pd" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link id="pagestyle" rel="stylesheet" type="text/css" href="../css/org.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Some Ruby/Rails Interview Questions Asked.</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Interview Questions:</a>
+<ul>
+<li><a href="#sec-1-1">1.1. Which is your favourite programing language Compare and contrast it with Ruby or in case Ruby is the most favourite then contrast it with second favourite.</a></li>
+<li><a href="#sec-1-2">1.2. How would you choose which language to use, do you give recommendations to clients ? How do you structure your recommendations?</a></li>
+<li><a href="#sec-1-3">1.3. What is Ruby or other language really good for?</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. val = true and false vs val = true &amp;&amp; false</a></li>
+<li><a href="#sec-3">3. true ? "true" : "false"</a></li>
+<li><a href="#sec-4">4. A hash has three keys "quick", "brown", "fox" and corresponding values are 'a','b','c'  sort the keys by length of the key this?</a></li>
+<li><a href="#sec-5">5. What kind of code should controller have ?</a></li>
+<li><a href="#sec-6">6. What are presenters ?</a></li>
+<li><a href="#sec-7">7. Explain alias method chain ?</a></li>
+<li><a href="#sec-8">8. What are concerns ?</a></li>
+<li><a href="#sec-9">9. ActiveModel ?</a></li>
+<li><a href="#sec-10">10. custom validator is rails ?</a></li>
+<li><a href="#sec-11">11. single table Inheritance ?</a></li>
+<li><a href="#sec-12">12. Default Scope?</a></li>
+<li><a href="#sec-13">13. Ruby Questions0</a></li>
+<li><a href="#sec-14">14. Rails Questions</a></li>
+<li><a href="#sec-15">15. Problem Solving Phone Screen Questions.</a></li>
+<li><a href="#sec-16">16. Extras Based on Resume.</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Interview Questions:</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Which is your favourite programing language Compare and contrast it with Ruby or in case Ruby is the most favourite then contrast it with second favourite.</h3>
+</div>
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> How would you choose which language to use, do you give recommendations to clients ? How do you structure your recommendations?</h3>
+</div>
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> What is Ruby or other language really good for?</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+&#x2013; Enough Fluff Questions.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> val = true and false vs val = true &amp;&amp; false</h2>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> true ? "true" : "false"</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+false ? "true" : "false"
+nil ? "true" : "false"
+[] ? "true" : "false"
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> A hash has three keys "quick", "brown", "fox" and corresponding values are 'a','b','c'  sort the keys by length of the key this?</h2>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> What kind of code should controller have ?</h2>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> What are presenters ?</h2>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Explain alias method chain ?</h2>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> What are concerns ?</h2>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> ActiveModel ?</h2>
+</div>
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> custom validator is rails ?</h2>
+</div>
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> single table Inheritance ?</h2>
+</div>
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Default Scope?</h2>
+</div>
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Ruby Questions0</h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li>Ruby Compiled Or Interpreted.
+</li>
+<li>Strongly typed vs Weakly Typed and Where does ruby fit in.
+</li>
+<li>What is a Class, and in Ruby's Context.
+</li>
+<li>Method Naming Conventions in ruby.(Not)
+</li>
+<li>Self.
+</li>
+<li>What is a singleton method / Eigen methods.
+</li>
+<li>x = true and false vs x = true &amp;&amp; false
+</li>
+<li>Destructive Methods in ruby.
+</li>
+<li>Short circuit and. &amp;&amp;
+</li>
+<li>Unless something != revert if.
+</li>
+<li>Global , Local and Instance Variables. (Other types class and class instance).
+</li>
+<li>Can we access Class variable from a Instance of a ruby object.
+</li>
+<li>What is an Object in OOP, and in Ruby Ruby.
+</li>
+<li>Difference between Symbols and String.
+</li>
+<li>How does nil and false differ.
+</li>
+<li>Alias
+</li>
+<li>Use of Super.
+</li>
+<li>[1,1,2,2,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,7,7]
+</li>
+<li>What is reflection ? Does ruby support it ?
+</li>
+<li>Hierarchy of Ruby Objects. [Object, Kernel, Basic Object] What are they.
+</li>
+<li>Why nil.object<sub>id</sub> = 8 , true.object<sub>id</sub> = 20, false.object<sub>id</sub> = 0
+</li>
+<li>Are you aware of Object Space ?
+</li>
+<li>Difference Between extend, require , include and select.
+</li>
+<li>Can we dynamically add a method to ruby  ?
+</li>
+<li>Method Missing ? and Other Object Hooks.
+</li>
+<li>What are Modules and why are they used ? i.e (Mixins).
+</li>
+<li>Mixins Why  ?
+</li>
+<li>Finally block in ruby , When is it executed ?
+</li>
+<li>Do you know about code eval ? if yes difference in
+Eval , class eval, instance eval ?
+</li>
+<li>Exceptions handling in ruby how is it implemented. (begin/rescue etc).
+</li>
+<li>Namespace in Ruby.
+</li>
+<li>What is Duck Typing.
+</li>
+<li>Difference Between Blocks , Procs and lambdas.
+</li>
+<li>Closure Property in Ruby using procs and lambdas.
+</li>
+<li>Class Instance Variable.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Rails Questions</h2>
+<div class="outline-text-2" id="text-14">
+<ul class="org-ul">
+<li>Why Rails.
+</li>
+<li>What is the DRY Principle
+</li>
+<li>What is an ORM.
+</li>
+<li>Rails Model.
+</li>
+<li>Validations , Observers , Callbacks.
+</li>
+<li>Use Multiple Databases in ruby.
+</li>
+<li>Single Table Inheritance (concert scenario).
+</li>
+<li>Observers in rails 2 and now with rails 4 ?
+</li>
+<li>Callbacks &amp; validations difference and observers/concerns ?
+</li>
+<li>Polymorphic Association
+</li>
+<li>Eager Loading.
+</li>
+<li>Sessions and Cookies
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> Problem Solving Phone Screen Questions.</h2>
+</div>
+<div id="outline-container-sec-16" class="outline-2">
+<h2 id="sec-16"><span class="section-number-2">16</span> Extras Based on Resume.</h2>
+<div class="outline-text-2" id="text-16">
+<ul class="org-ul">
+<li>Based of profile : like
+<ol class="org-ol">
+<li>What is Agile Development.
+</li>
+<li>What were you doing as a scrum master, i.e roles and responsibilitie
+</li>
+</ol>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: pd</p>
+<p class="date">Created: 2016-03-30 Wed 23:59</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
