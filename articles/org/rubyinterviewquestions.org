@@ -1,8 +1,15 @@
 #+TITLE: Some Ruby/Rails Interview Questions I Asked.
+
+#+CAPTION: [[http://www.erlang.org/course/concurrent-programming][Share No memory]]
+#+ATTR_HTML: image :title SelfDotSend!! :align center :class title
+[[http://selfdotsend.com][file:../img/logo.png]]
+
+
 #+SUBTITLE: Ruby/Rails Interview Questions.
 #+BIND: org-export-publishing-directory "../html/"
 
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="../css/org.css"/>
+
 
 * Interview Questions:
 ** Which is your favourite programing language Compare and contrast it with Ruby or in case Ruby is the most favourite then contrast it with second favourite.

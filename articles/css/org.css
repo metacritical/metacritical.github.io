@@ -104,8 +104,13 @@ h1,h2,h3,h4,h5,h6 {
 
 h2{
     color: #8865FF;
+    font-weight: 500;
 }
 
+h3 {
+    color: #464B9E;
+    font-weight: 300;
+}
 h4,h5,h6 {
     font-size: 1em;
 }
