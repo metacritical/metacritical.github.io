@@ -1,5 +1,10 @@
-#+TITLE: SelfDotSend
-#+SUBTITLE: Thoughts on Stuff in Org mode hepp
+#+TITLE: Selfdotsend
+
+#+CAPTION: Message passing is just a Procedure Call.
+#+ATTR_HTML: :alt cat/spider image :title Action! :align center :class title
+[[./articles/img/logo.png]]
+
+#+SUBTITLE: Thoughts on Stuff in Org text.
 
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="articles/css/org.css"/>
 #+OPTIONS: toc:nil num:3 H:4 ^:nil pri:t
@@ -7,3 +12,4 @@
 * Articles
 - Developing a Scheme Interpreter in C.
 - [[file:./articles/org/rubyinterviewquestions.org][Some Ruby/Rails Interview Questions I asked.]]
+  
