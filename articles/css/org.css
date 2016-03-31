@@ -102,6 +102,10 @@ h1,h2,h3,h4,h5,h6 {
     font-family: 'Droid Serif', serif;
 }
 
+h2{
+    color: #8865FF;
+}
+
 h4,h5,h6 {
     font-size: 1em;
 }
