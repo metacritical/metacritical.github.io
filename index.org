@@ -1,8 +1,8 @@
 #+TITLE: Selfdotsend
 
-#+CAPTION: Message passing is just a Procedure Call.
+#+CAPTION: [[http://c2.com/cgi/wiki?SelfDotSyndrome][Message passing is just a Procedure Call.]]
 #+ATTR_HTML: :alt cat/spider image :title Action! :align center :class title
-[[./articles/img/logo.png]]
+[[./articles/img/logo.png]] 
 
 #+SUBTITLE: Thoughts on Stuff in Org text.
 
