@@ -1,3 +1,15 @@
+@import url(https://fonts.googleapis.com/css?family=Marcellus|Poiret+One|Philosopher|Italianno);
+
+/* Font Styles in Google Fonts
+font-family: 'Marcellus', serif;
+font-family: 'Poiret One', cursive;
+font-family: 'PT Sans', sans-serif;
+font-family: 'Dosis', sans-serif;
+font-family: 'Philosopher', sans-serif;
+font-family: 'Italianno', cursive;
+font-family: 'Herr Von Muellerhoff', cursive;
+*/
+
 body {
     max-width: 100%;
     margin: 1% 1%;
@@ -25,12 +37,6 @@ body {
     p img {
         width: 95%;
     }
-}
-
-.title {
-    padding: .5em 0;
-    text-align: center;
-    color: black;
 }
 
 .subtitle {
@@ -93,26 +99,36 @@ p img {
 
 
 .title{
-    color:#39C6C1
+    font-size: 40px;
+    text-align: center;
+    color:#39C6C1;
+    font-family: 'Poiret One', cursive;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,h4,h5,h6 {
     color: #A5573E;
     line-height: 1.6em;
-    font-family: 'Droid Serif', serif;
+	  font-family: Arial, 'Helvetica Neuw', Helvetica, sans-serif;
 }
 
 h2{
-    color: #8865FF;
+    color:#8865FF;
     font-weight: 500;
+	  font-family: Marcellus, 'serif';
 }
 
 h3 {
-    color: #464B9E;
-    font-weight: 300;
+    color: #003355;
+    font-size: 1em;
+    font-weight: 100;
+    font-family: 'Philosopher', sans-serif;
 }
 h4,h5,h6 {
     font-size: 1em;
+}
+
+li{
+    font-family: 'Philosopher', sans-serif;
 }
 
 table {
@@ -350,6 +366,7 @@ dt {
 #bibliography table {
     width: 100%;
 }
+
 
 /* .org-info-js_info-navigation { */
 /*     border-style: none; */
