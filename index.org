@@ -1,4 +1,4 @@
-#+TITLE: Selfdotsend
+#+TITLE: Self.Send
 
 #+CAPTION: [[http://c2.com/cgi/wiki?SelfDotSyndrome][Message passing is just a Procedure Call.]]
 #+ATTR_HTML: :alt img/logo image :title SelfDotSend!! :align center :class title
@@ -6,6 +6,7 @@
 
 #+SUBTITLE: Thoughts on Stuff in Org text.
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="articles/css/org.css"/>
+#+HTML_BODY: <script id="dsq-count-scr" src="selfdotsend.disqus.com/count.js" async></script>
 #+OPTIONS: toc:nil num:3 H:4 ^:nil pri:t
 
 * Articles
@@ -13,5 +14,7 @@
 - Developing a Scheme Interpreter in C.
   
 * Projects
-
 * Thought Experiments.
+
+
+#+INCLUDE: articles/org/disqus.org
