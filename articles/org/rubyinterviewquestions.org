@@ -85,3 +85,6 @@
  * Based of profile : like
    1. What is Agile Development.
    2. What were you doing as a scrum master, i.e roles and responsibilitie
+
+
+#+INCLUDE: disqus.org

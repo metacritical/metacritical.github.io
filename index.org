@@ -17,4 +17,3 @@
 * Thought Experiments.
 
 
-#+INCLUDE: articles/org/disqus.org
