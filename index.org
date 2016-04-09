@@ -6,7 +6,7 @@
 
 
 
-#+SUBTITLE: Thoughts on Stuff in Org text.
+#+SUBTITLE: Thoughts on Stuff in Org Mode.
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="articles/css/org.css"/>
 #+HTML_BODY: <script id="dsq-count-scr" src="selfdotsend.disqus.com/count.js" async></script>
 #+OPTIONS: toc:nil num:3 H:4 ^:nil pri:t
