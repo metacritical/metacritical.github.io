@@ -1,8 +1,7 @@
 #+TITLE: Some Ruby/Rails Interview Questions I Asked.
 
 #+CAPTION: [[http://www.erlang.org/course/concurrent-programming][Share No memory]]
-#+ATTR_HTML: image :title SelfDotSend!! :align center :class title
-[[http://selfdotsend.com][file:../img/logo.png]]
+#+INCLUDE: logo.org
 
 
 #+SUBTITLE: Ruby/Rails Interview Questions.
@@ -30,7 +29,7 @@
 ** custom validator is rails ?
 ** single table Inheritance ?
 ** Default Scope?
-** Ruby Questions0
+** Ruby Questions 0
 ***  Ruby Compiled Or Interpreted.
 ***  Strongly typed vs Weakly Typed and Where does ruby fit in.
 ***  What is a Class, and in Ruby's Context.

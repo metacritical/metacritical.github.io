@@ -119,19 +119,21 @@ h2{
 
 h3 {
     color: #003355;
-    font-size: 1em;
+    font-size: 1.2em;
     font-weight: 100;
     font-family: 'Philosopher', sans-serif;
 }
 h4,h5,h6 {
-    font-size: 1em;
+    color: #003357;
+    font-size: 1.0em;
+    font-weight: 100;
+    font-family: 'Philosopher', sans-serif;
 }
 
 li{
     font-family: 'Philosopher', sans-serif;
 }
-
-table {
+12table {
     border-top: 2px solid;
     border-bottom: 2px solid;
     margin: auto;
@@ -179,7 +181,7 @@ kbd {
 }
 
 .figure {
-    padding: 1em;
+    padding: 0px;
 }
 
 .figure p {
