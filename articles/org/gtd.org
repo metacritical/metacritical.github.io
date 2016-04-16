@@ -1,6 +1,6 @@
 #+TITLE: Getting organized with GTD in org-mode.
 
-#+CAPTION: [[http://www.erlang.org/course/concurrent-programming][Share No memory]]
+#+CAPTION: [[https://en.wikipedia.org/wiki/Messaging_pattern][Messaging Pattern]]
 #+INCLUDE: logo.org
 
 #+SUBTITLE: How to Do GTD in org-mode.
