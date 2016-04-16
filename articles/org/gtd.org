@@ -2,7 +2,6 @@
 
 #+CAPTION: [[http://www.erlang.org/course/concurrent-programming][Share No memory]]
 #+INCLUDE: logo.org
-[[./articles/img/logo.png]]
 
 #+SUBTITLE: How to Do GTD in org-mode.
 #+BIND: org-export-publishing-directory "../html/"
