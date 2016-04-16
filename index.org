@@ -14,7 +14,8 @@
 * Articles
 - [[file:./articles/org/rubyinterviewquestions.org][Some Ruby/Rails Interview Questions I asked.]]
 - Developing a Scheme Interpreter in C.
-  
+- [[file:./articles/org/gtd.org][Doing GTD in org mode.]]
+ 
 * Projects
 * Thought Experiments.
 

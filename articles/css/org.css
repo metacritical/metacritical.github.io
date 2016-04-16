@@ -40,7 +40,7 @@ body {
 }
 
 .subtitle {
-    font-size: medium;
+    font-size: 23px;
     font-weight: bold;
     margin-top: 0;
     text-align: center;
@@ -84,7 +84,8 @@ body {
 }
 
 a {
-    color: #527d9a;
+    //color: #527d9a;
+    color: #616161;
     text-decoration: none;
 }
 
@@ -112,7 +113,8 @@ h1,h4,h5,h6 {
 }
 
 h2{
-    color:#8865FF;
+    //color:#8865FF;
+    color:#39C6C1;
     font-weight: 500;
 	  font-family: Marcellus, 'serif';
 }
