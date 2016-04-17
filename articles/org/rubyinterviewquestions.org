@@ -2,7 +2,7 @@
 
 #+CAPTION: [[http://www.erlang.org/course/concurrent-programming][Share No memory]]
 #+INCLUDE: logo.org
-
+#+OPTIONS: toc:nil
 
 #+SUBTITLE: Ruby/Rails Interview Questions.
 #+BIND: org-export-publishing-directory "../html/"
