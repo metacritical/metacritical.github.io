@@ -19,3 +19,5 @@
   way to do GTD comes only with an understanding of how it works. Tools follow later i.e org-mode.
 
   Will Publish more on my setup in days to come when i perfect the technique.
+
+#+INCLUDE: disqus.org
