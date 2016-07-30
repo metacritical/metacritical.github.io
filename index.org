@@ -17,6 +17,7 @@
 - [[file:./articles/org/gtd.org][Doing GTD in org mode.]]
  
 * Projects
+- Writing a Text Editor in Golang.
 * Thought Experiments.
 
 
