@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Some Ruby/Rails Interview Questions I Asked.</title>
+<!-- 2017-04-09 Sun 01:38 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Pankaj Doharey" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link id="pagestyle" rel="stylesheet" type="text/css" href="../css/org.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Some Ruby/Rails Interview Questions I Asked.</h1>
+
+<div class="figure">
+<p><img src="../img/logo.png" alt="img/logo image" title="SelfDotSend!!" align="center" class="title" width="80px" />
+</p>
+<p><span class="figure-number">Figure 1:</span> <a href="http://www.erlang.org/course/concurrent-programming">Share No memory</a></p>
+</div>
+<p>
+:PUBDATE: <span class="timestamp-wrapper"><span class="timestamp">&lt;2013-05-30&gt;</span></span>
+</p>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Interview Questions:</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">Which is your favourite programing language Compare and contrast it with Ruby or in case Ruby is the most favourite then contrast it with second favourite.</h3>
+</div>
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">How would you choose which language to use, do you give recommendations to clients ? How do you structure your recommendations?</h3>
+</div>
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">What is Ruby or other language really good for?</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+&#x2013; Enough Fluff Questions.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">val = true and false vs val = true &amp;&amp; false</h3>
+</div>
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">true ? "true" : "false"</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+false ? "true" : "false"
+nil ? "true" : "false"
+[] ? "true" : "false"
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-6" class="outline-3">
+<h3 id="sec-1-6">A hash has three keys "quick", "brown", "fox" and corresponding values are 'a','b','c'  sort the keys by length of the key this?</h3>
+</div>
+<div id="outline-container-sec-1-7" class="outline-3">
+<h3 id="sec-1-7">What kind of code should controller have ?</h3>
+</div>
+<div id="outline-container-sec-1-8" class="outline-3">
+<h3 id="sec-1-8">What are presenters ?</h3>
+</div>
+<div id="outline-container-sec-1-9" class="outline-3">
+<h3 id="sec-1-9">Explain alias method chain ?</h3>
+</div>
+<div id="outline-container-sec-1-10" class="outline-3">
+<h3 id="sec-1-10">What are concerns ?</h3>
+</div>
+<div id="outline-container-sec-1-11" class="outline-3">
+<h3 id="sec-1-11">ActiveModel ?</h3>
+</div>
+<div id="outline-container-sec-1-12" class="outline-3">
+<h3 id="sec-1-12">custom validator is rails ?</h3>
+</div>
+<div id="outline-container-sec-1-13" class="outline-3">
+<h3 id="sec-1-13">single table Inheritance ?</h3>
+</div>
+<div id="outline-container-sec-1-14" class="outline-3">
+<h3 id="sec-1-14">Default Scope?</h3>
+</div>
+<div id="outline-container-sec-1-15" class="outline-3">
+<h3 id="sec-1-15">Ruby Questions 0</h3>
+<div class="outline-text-3" id="text-1-15">
+</div><div id="outline-container-sec-1-15-1" class="outline-4">
+<h4 id="sec-1-15-1">Ruby Compiled Or Interpreted.</h4>
+</div>
+<div id="outline-container-sec-1-15-2" class="outline-4">
+<h4 id="sec-1-15-2">Strongly typed vs Weakly Typed and Where does ruby fit in.</h4>
+</div>
+<div id="outline-container-sec-1-15-3" class="outline-4">
+<h4 id="sec-1-15-3">What is a Class, and in Ruby's Context.</h4>
+</div>
+<div id="outline-container-sec-1-15-4" class="outline-4">
+<h4 id="sec-1-15-4">Method Naming Conventions in ruby.(Not)</h4>
+</div>
+<div id="outline-container-sec-1-15-5" class="outline-4">
+<h4 id="sec-1-15-5">Self.</h4>
+</div>
+<div id="outline-container-sec-1-15-6" class="outline-4">
+<h4 id="sec-1-15-6">What is a singleton method / Eigen methods.</h4>
+</div>
+<div id="outline-container-sec-1-15-7" class="outline-4">
+<h4 id="sec-1-15-7">x = true and false vs x = true &amp;&amp; false</h4>
+</div>
+<div id="outline-container-sec-1-15-8" class="outline-4">
+<h4 id="sec-1-15-8">Destructive Methods in ruby.</h4>
+</div>
+<div id="outline-container-sec-1-15-9" class="outline-4">
+<h4 id="sec-1-15-9">Short circuit and. &amp;&amp;</h4>
+</div>
+<div id="outline-container-sec-1-15-10" class="outline-4">
+<h4 id="sec-1-15-10">Unless something != revert if.</h4>
+</div>
+<div id="outline-container-sec-1-15-11" class="outline-4">
+<h4 id="sec-1-15-11">Global , Local and Instance Variables. (Other types class and class instance).</h4>
+</div>
+<div id="outline-container-sec-1-15-12" class="outline-4">
+<h4 id="sec-1-15-12">Can we access Class variable from a Instance of a ruby object.</h4>
+</div>
+<div id="outline-container-sec-1-15-13" class="outline-4">
+<h4 id="sec-1-15-13">What is an Object in OOP, and in Ruby Ruby.</h4>
+</div>
+<div id="outline-container-sec-1-15-14" class="outline-4">
+<h4 id="sec-1-15-14">Difference between Symbols and String.</h4>
+</div>
+<div id="outline-container-sec-1-15-15" class="outline-4">
+<h4 id="sec-1-15-15">How does nil and false differ.</h4>
+</div>
+<div id="outline-container-sec-1-15-16" class="outline-4">
+<h4 id="sec-1-15-16">Alias</h4>
+</div>
+<div id="outline-container-sec-1-15-17" class="outline-4">
+<h4 id="sec-1-15-17">Use of Super.</h4>
+</div>
+<div id="outline-container-sec-1-15-18" class="outline-4">
+<h4 id="sec-1-15-18">[1,1,2,2,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,7,7]</h4>
+</div>
+<div id="outline-container-sec-1-15-19" class="outline-4">
+<h4 id="sec-1-15-19">What is reflection ? Does ruby support it ?</h4>
+</div>
+<div id="outline-container-sec-1-15-20" class="outline-4">
+<h4 id="sec-1-15-20">Hierarchy of Ruby Objects. [Object, Kernel, Basic Object] What are they.</h4>
+</div>
+<div id="outline-container-sec-1-15-21" class="outline-4">
+<h4 id="sec-1-15-21">Why nil.object<sub>id</sub> = 8 , true.object<sub>id</sub> = 20, false.object<sub>id</sub> = 0</h4>
+</div>
+<div id="outline-container-sec-1-15-22" class="outline-4">
+<h4 id="sec-1-15-22">Are you aware of Object Space ?</h4>
+</div>
+<div id="outline-container-sec-1-15-23" class="outline-4">
+<h4 id="sec-1-15-23">Difference Between extend, require , include and select.</h4>
+</div>
+<div id="outline-container-sec-1-15-24" class="outline-4">
+<h4 id="sec-1-15-24">Can we dynamically add a method to ruby  ?</h4>
+</div>
+<div id="outline-container-sec-1-15-25" class="outline-4">
+<h4 id="sec-1-15-25">Method Missing ? and Other Object Hooks.</h4>
+</div>
+<div id="outline-container-sec-1-15-26" class="outline-4">
+<h4 id="sec-1-15-26">What are Modules and why are they used ? i.e (Mixins).</h4>
+</div>
+<div id="outline-container-sec-1-15-27" class="outline-4">
+<h4 id="sec-1-15-27">Mixins Why  ?</h4>
+</div>
+<div id="outline-container-sec-1-15-28" class="outline-4">
+<h4 id="sec-1-15-28">Finally block in ruby , When is it executed ?</h4>
+</div>
+<div id="outline-container-sec-1-15-29" class="outline-4">
+<h4 id="sec-1-15-29">Do you know about code eval ? if yes difference in</h4>
+</div>
+<div id="outline-container-sec-1-15-30" class="outline-4">
+<h4 id="sec-1-15-30">Eval , class eval, instance eval ?</h4>
+</div>
+<div id="outline-container-sec-1-15-31" class="outline-4">
+<h4 id="sec-1-15-31">Exceptions handling in ruby how is it implemented. (begin/rescue etc).</h4>
+</div>
+<div id="outline-container-sec-1-15-32" class="outline-4">
+<h4 id="sec-1-15-32">Namespace in Ruby.</h4>
+</div>
+<div id="outline-container-sec-1-15-33" class="outline-4">
+<h4 id="sec-1-15-33">What is Duck Typing.</h4>
+</div>
+<div id="outline-container-sec-1-15-34" class="outline-4">
+<h4 id="sec-1-15-34">Difference Between Blocks , Procs and lambdas.</h4>
+</div>
+<div id="outline-container-sec-1-15-35" class="outline-4">
+<h4 id="sec-1-15-35">Closure Property in Ruby using procs and lambdas.</h4>
+</div>
+<div id="outline-container-sec-1-15-36" class="outline-4">
+<h4 id="sec-1-15-36">Class Instance Variable.</h4>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Rails Questions</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Why Rails.
+</li>
+<li>What is the DRY Principle
+</li>
+<li>What is an ORM.
+</li>
+<li>Rails Model.
+</li>
+<li>Validations , Observers , Callbacks.
+</li>
+<li>Use Multiple Databases in ruby.
+</li>
+<li>Single Table Inheritance (concert scenario).
+</li>
+<li>Observers in rails 2 and now with rails 4 ?
+</li>
+<li>Callbacks &amp; validations difference and observers/concerns ?
+</li>
+<li>Polymorphic Association
+</li>
+<li>Eager Loading.
+</li>
+<li>Sessions and Cookies
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Problem Solving Phone Screen Questions.</h2>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Extras Based on Resume.</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">Based of profile : like</h3>
+<div class="outline-text-3" id="text-4-1">
+<ol class="org-ol">
+<li>What is Agile Development.
+</li>
+<li>What were you doing as a scrum master, i.e roles and responsibilitie
+</li>
+</ol>
+
+
+<div id="disqus_thread"></div>
+<script>
+/*
+ RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+ LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+*/
+
+/*
+var disqus_config = function () {
+this.page.url = 'http://selfdotsemnd.com'; // Replace PAGE_URL with your page's canonical URL variable
+// Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.identifier = '/Eshaiwastotallycrazyaboutyoubutnowihaveregainedsomesense/'; 
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//selfdotsend.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

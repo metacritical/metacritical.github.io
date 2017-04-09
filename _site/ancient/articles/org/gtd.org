@@ -1,0 +1,23 @@
+#+TITLE: Getting organized with GTD in org-mode.
+
+#+CAPTION: [[https://en.wikipedia.org/wiki/Messaging_pattern][Messaging Pattern]]
+#+INCLUDE: logo.org
+
+#+SUBTITLE: How to Do GTD in org-mode.
+#+BIND: org-export-publishing-directory "../html/"
+
+#+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="../css/org.css"/>
+
+
+
+* Thinking of doing GTD in org mode.
+  I have been thinking of doing GTD for a long time, My current setup is miserable i tend to do only 
+  things when someone is paining me or pointing a gun at my head. I realize that running to many threads
+  in your head is just the worst thing you can do to yourself.
+
+  Thus the best possible thing is to get organized. I knew about GTD for a long time but the best possible
+  way to do GTD comes only with an understanding of how it works. Tools follow later i.e org-mode.
+
+  Will Publish more on my setup in days to come when i perfect the technique.
+
+#+INCLUDE: ../../assets/disqus.org
