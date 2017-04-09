@@ -1,19 +1,19 @@
 # Site Settings
-title:               Lagrange
-tagline:             a minimalist Jekyll theme
+title:               SelfDotSend
+tagline:             Message passing is just a Procedure Call.
 description:
-baseurl:            #"/Lagrange"
-url:                #"https://lenpaul.github.io"
+baseurl:            "/"
+url:                "http://selfdotsend.com"
 github:
-  url:               #"https://lenpaul.github.io/Lagrange"
+  url:              "https://metacritical.github.io"
 author:
   name:              "Paul Le"
   email:             "l.nguyen.paul@gmail.com"
-  twitter:           "paululele"
-  instagram:         "paululele"
-  github:            "lenpaul"
-  facebook:          "Le.Paul.94"
-  linkedin:          "lenpaul"
+  twitter:           "pankajdoharey"
+  instagram:         ""
+  github:            "metacritical"
+  facebook:          ""
+  linkedin:          ""
 navigation:
 - title: About
   url: /about
