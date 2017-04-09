@@ -2,13 +2,13 @@
 title:               SelfDotSend
 tagline:             Message passing is just a Procedure Call.
 description:
-baseurl:            "/"
-url:                "http://selfdotsend.com"
+baseurl:            #"/"
+url:                #"http://selfdotsend.com"
 github:
-  url:              "https://metacritical.github.io"
+  url:              #"https://metacritical.github.io"
 author:
-  name:              "Paul Le"
-  email:             "l.nguyen.paul@gmail.com"
+  name:              "Pankaj Doharey"
+  email:             "[pankajdoharey][at][gmail][dot][com]"
   twitter:           "pankajdoharey"
   instagram:         ""
   github:            "metacritical"

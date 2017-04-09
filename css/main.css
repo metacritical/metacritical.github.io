@@ -1,3 +1,16 @@
+/* Import Fonts from Google */
+@import url(https://fonts.googleapis.com/css?family=Marcellus|Poiret+One|Philosopher|Italianno);
+
+/* Font Styles in Google Fonts
+font-family: 'Marcellus', serif;
+font-family: 'Poiret One', cursive;
+font-family: 'PT Sans', sans-serif;
+font-family: 'Dosis', sans-serif;
+font-family: 'Philosopher', sans-serif;
+font-family: 'Italianno', cursive;
+font-family: 'Herr Von Muellerhoff', cursive;
+*/
+
 /*
   Base
 */
@@ -132,14 +145,27 @@ blockquote p {
   color:black;
 }
 
+
+.logo{
+    display: inline;
+    width: 55px;
+    align: left;
+    margin-right: 3px;
+}
+
 .masthead-title a {
   font-size: 2rem;
   text-decoration: none;
-  color: #505050;
+  color: #39C6C1;
+  font-family: 'Poiret One', cursive;
 }
 
 .masthead-subtitle {
+  display: block;
   color: #999;
+  font-family: 'Philosopher', sans-serif;
+  font-size: 0.8em;
+  font-weight: initial;
 }
 
 /*
