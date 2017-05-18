@@ -6,7 +6,7 @@ baseurl:             "/"
 url:                 "https://selfdotsend.com"
 enforce_ssl:         "www.selfdotsend.com"
 github:
-  url:               "https://metacritical.github.io"
+  url:               "https://selfdotsend.com"
 author:
   name:              "Pankaj Doharey"
   email:             "[pankajdoharey][at][gmail][dot][com]"
