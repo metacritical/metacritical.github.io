@@ -24,10 +24,11 @@ navigation:
   url: /contact
 
 paginate:            5
-disqus:              #"your-disqus"
+disqus:              "Eshaiwastotallycrazyaboutyoubutnowihaveregainedsomesense"
 
 # Build settings
 markdown:            kramdown
 highlighter:         rouge
 permalink:           none
-gems:                [jekyll-paginate]
+plugins:
+  - jekyll-paginate
