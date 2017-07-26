@@ -4,7 +4,7 @@ tagline:             Message passing is just a Procedure Call.
 description:
 baseurl:             "/"
 url:                 "https://selfdotsend.com"
-enforce_ssl:         "selfdotsend.com"
+enforce_ssl:         "https://selfdotsend.com"
 github:
   url:               "https://selfdotsend.com"
 author:
