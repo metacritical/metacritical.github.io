@@ -1,0 +1,10 @@
+#+TITLE:       Lolcat in Arm Assembly
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@Pankajs-MacBook-Air.local
+#+DATE:        2018-07-14 Sat
+#+URI:         /blog/%y/%m/%d/lolcat-in-arm-assembly
+#+KEYWORDS:    arm assembly, 64 arm , lolcat arm assembly
+#+TAGS:        lolcat, arm assembly, assembler
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Rewriting x86 Lolcat in Arm assembly.
