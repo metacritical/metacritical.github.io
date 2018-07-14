@@ -5,11 +5,11 @@
 #+URI: /
 #+KEYWORDS: Clojure, Ruby, C++ , 3D , C , Scheme , Assembly, Metacritical Tech Blog.
 #+LANGUAGE: en
-#+OPTIONS:
+#+OPTIONS: H:3 num:nil toc:nil \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
 #+DESCRIPTION: Pankaj Doharey (Metacritical's Tech Blog)
 
 
-- Selfdotsend's Weblog
+* Selfdotsend's Weblog
   The site is really geared towards my rumblings and rants related to technology
   and other things i find delightful and frustrating. Here i aim to document all 
   those interesting and not so interesting things from the perspective a a tech 
