@@ -15,5 +15,3 @@
   those interesting and not so interesting things from the perspective a a tech 
   enthusiast. I eventually hope you find would some of the stuff documented here
   usefu
-
-[file://blog/new-post.org]
