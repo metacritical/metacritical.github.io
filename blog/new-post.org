@@ -1,0 +1,10 @@
+#+TITLE:       Lolcat in 64 arm assembly.
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@Pankajs-MacBook-Air.local
+#+DATE:        2018-07-14 Sat
+#+URI:         /blog/%y/%m/%d/lolcat-in-64-arm-assembly
+#+KEYWORDS:    lolcat, arm assembly, assembler, android assembler
+#+TAGS:        Arm assembly
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Porting locat written in x64 assembly to arm assembly.
