@@ -1,4 +1,4 @@
-#+TITLE: Index
+#+TITLE: Selfdotsend.
 #+AUTHOR: Pankaj Doharey
 #+EMAIL: pankajdoharey@gmail.com
 #+DATE: [2018-07-14 Sat]
@@ -9,7 +9,7 @@
 #+DESCRIPTION: Pankaj Doharey (Metacritical's Tech Blog)
 
 
-* Metacritical's Weblog
+* Selfdotsend's Weblog
   The site is really geared towards my rumblings and rants related to technology
   and other things i find delightful and frustrating. Here i aim to document all 
   those interesting and not so interesting things from the perspective a a tech 
