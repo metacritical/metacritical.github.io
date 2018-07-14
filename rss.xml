@@ -4,9 +4,16 @@
     <title>Self dot send (Computing Blog)</title>
     <link>http://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Sat, 14 Jul 2018 17:30:06 IST</pubDate>
-    <lastBuildDate>Sat, 14 Jul 2018 17:30:06 IST</lastBuildDate>
+    <pubDate>Sat, 14 Jul 2018 17:35:18 IST</pubDate>
+    <lastBuildDate>Sat, 14 Jul 2018 17:35:18 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
+    <item>
+      <title>Lolcat in 64 arm assembly.</title>
+      <link>http://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</link>
+      <description><![CDATA[Porting locat written in x64 assembly to arm assembly.]]></description>
+      <pubDate>2018-07-14</pubDate>
+      <guid>http://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</guid>
+    </item>
   </channel>
 </rss>
