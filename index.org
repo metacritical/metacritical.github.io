@@ -9,9 +9,9 @@
 #+DESCRIPTION: Pankaj Doharey (Metacritical's Tech Blog)
 
 
-* Selfdotsend's Weblog
+* Raison D'être
   The site is really geared towards my rumblings and rants related to technology
   and other things i find delightful and frustrating. Here i aim to document all 
   those interesting and not so interesting things from the perspective a a tech 
   enthusiast. I eventually hope you find would some of the stuff documented here
-  useful.
+  usefu
