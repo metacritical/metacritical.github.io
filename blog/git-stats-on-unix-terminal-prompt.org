@@ -15,7 +15,10 @@ aound bash can be slow sometimes or if you are like me who programmed something
 in ruby also turned out to be slow. We can make things faster by porting such 
 scripts to golang. one such solution can be this :
 
-#+BEGIN_SRC c
+#+NAME: GITS Source.
+
+#+BEGIN_SRC go
+
 package main
 
 import (
@@ -105,4 +108,4 @@ func main(){
 		fmt.Println("Command Not found")
 	}
 }
-#END_SRC
+#+END_SRC
