@@ -183,7 +183,8 @@ a,
 }
 
 ul { margin:0; padding:0; }
-li { list-style-type:circle; list-style-position:inside; display:list-item; }
+/* li { list-style-type:disc; list-style-position:inside; display:list-item; } */
+li { list-style-type:disc; display:list-item; }
 
 ol li {
   list-style-type: decimal;
