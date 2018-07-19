@@ -34,12 +34,10 @@ in ruby also turned out to be slow. We can make things faster by porting such
 scripts to golang. one such solution can be this :
 </p>
 
-<p>
-#+BEGIN_SRC :golang
+<div class="org-src-container">
+<pre class="src src-:golang">
 package main
-</p>
 
-<p>
 import (
 	"os"
 	"fmt"
@@ -47,9 +45,7 @@ import (
 	"os/exec"
 	//"strings"
 )
-</p>
 
-<p>
 var getSymbol = map[string]string{
 	"untracked":"\xe2\x9a\xa0\xef\xb8\x8f",
 	"alliswell":"\xe2\x98\xaf\xef\xb8\x8f",
@@ -61,9 +57,7 @@ var getSymbol = map[string]string{
 	"novc":"\xf0\x9f\x9a\xab\x0a",
 	"changes":"\xe2\x99\xbb\xef\xb8\x8f",
 }
-</p>
 
-<p>
 func execCommand(command string) string{
 	gitExec := exec.Command("git", command)
 	outPut, err  := gitExec.Output()
@@ -72,70 +66,50 @@ func execCommand(command string) string{
 	}
 	return string(outPut)
 }
-</p>
 
-<p>
 func processStatus(status string) string{
 	var noVC = regexp.MustCompile("Not a git repository")
 	var unTracked = regexp.MustCompile("Untracked files")
 	var notStaged = regexp.MustCompile("Changes not staged for commit")
 	var exitCode = regexp.MustCompile("exit status 128")
-</p>
 
-<p>
-switch {
-	case noVC.MatchString(status) :
-	return getSymbol["novc"]
-	case unTracked.MatchString(status):
-	return getSymbol["untracked"]
-	case notStaged.MatchString(status) :
-	return getSymbol["changes"]
-	case exitCode.MatchString(status):
-	return getSymbol["noentry"]
-	default:
-	return getSymbol["alliswell"]
+	switch {
+		case noVC.MatchString(status) :
+		return getSymbol["novc"]
+		case unTracked.MatchString(status):
+		return getSymbol["untracked"]
+		case notStaged.MatchString(status) :
+		return getSymbol["changes"]
+		case exitCode.MatchString(status):
+		return getSymbol["noentry"]
+		default:
+		return getSymbol["alliswell"]
+	}
+
 }
-</p>
 
-<p>
-}
-</p>
-
-<p>
 func processBranch(branchdata string) string{
 	var branchMatch = regexp.MustCompile(`[(^\*)].+`)
 	match := branchMatch.FindAllString(branchdata, 1)
-</p>
 
-<p>
-if match != nil{
-	return "\033[38;5;112m"+ match[0][1:] + "\033[0m\n"
-}
-</p>
+	if match != nil{
+		return "\033[38;5;112m"+ match[0][1:] + "\033[0m\n"
+	}
 
-<p>
 	return getSymbol["novc"]
 }
-</p>
 
-<p>
 func gitBranch() string{
 	return processBranch(execCommand("branch"))
 }
-</p>
 
-<p>
 func gitStatus() string{
 	return processStatus(execCommand("status"))
 }
-</p>
 
-<p>
 func main(){
 	var args []string = os.Args[0:]
-</p>
 
-<p>
 	if len(args) &gt; 1 {
 		switch args[1]{
 		case "b", "branch":
@@ -151,8 +125,8 @@ func main(){
 		fmt.Println("Command Not found")
 	}
 }
-#END_SRC
-</p>
+</pre>
+</div>
 
             </section>
     </section>
