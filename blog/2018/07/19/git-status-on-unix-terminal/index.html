@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Git status on Unix terminal - Self dot send (Computing Blog)</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pankaj Doharey" />
+        <meta name="description" content="Get git status on unix terminal (PS1)." />
+        <meta name="keywords" content="git status, terminal" />
+    <link rel="stylesheet" href="/media/css/style.css">
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <style type="text/css"></style>
+</head>
+
+  <body class="container">
+    <nav class="main-nav">
+        <a href="/blog">Blog</a>
+        <a href="/tags">Tag</a>
+        <a href="/about/">About</a>
+        <a class="cta" href="https://github.com/metacritical">GitHub</a>
+    </nav>
+
+<div>
+    <section id="wrapper">
+        <article class="post">
+            <header>
+                    <h1>Git status on Unix terminal</h1>
+            </header>
+            <br />
+            <section id="post-body">
+                <p>
+It is often required to get git stats on terminal PS1, most solutions are based 
+aound bash can be slow sometimes or if you are like me who programmed something 
+in ruby also turned out to be slow. We can make things faster by porting such 
+scripts to golang. one such solution can be this :
+</p>
+
+<p>
+#+BEGIN_SRC :golang
+package main
+</p>
+
+<p>
+import (
+	"os"
+	"fmt"
+	"regexp"
+	"os/exec"
+	//"strings"
+)
+</p>
+
+<p>
+var getSymbol = map[string]string{
+	"untracked":"\xe2\x9a\xa0\xef\xb8\x8f",
+	"alliswell":"\xe2\x98\xaf\xef\xb8\x8f",
+	"hazard":"\xe2\x98\xa2\xef\xb8\x8f",
+	"deleted":"\xE2\x9D\x8C",
+	"smiley":"\xf0\x9f\x99\x82",
+	"noentry":"\xe2\x9b\x94\xef\xb8\x8f",
+	"repoahead":"\xE2\x98\x9D",
+	"novc":"\xf0\x9f\x9a\xab\x0a",
+	"changes":"\xe2\x99\xbb\xef\xb8\x8f",
+}
+</p>
+
+<p>
+func execCommand(command string) string{
+	gitExec := exec.Command("git", command)
+	outPut, err  := gitExec.Output()
+	if err != nil {
+		return err.Error()
+	}
+	return string(outPut)
+}
+</p>
+
+<p>
+func processStatus(status string) string{
+	var noVC = regexp.MustCompile("Not a git repository")
+	var unTracked = regexp.MustCompile("Untracked files")
+	var notStaged = regexp.MustCompile("Changes not staged for commit")
+	var exitCode = regexp.MustCompile("exit status 128")
+</p>
+
+<p>
+switch {
+	case noVC.MatchString(status) :
+	return getSymbol["novc"]
+	case unTracked.MatchString(status):
+	return getSymbol["untracked"]
+	case notStaged.MatchString(status) :
+	return getSymbol["changes"]
+	case exitCode.MatchString(status):
+	return getSymbol["noentry"]
+	default:
+	return getSymbol["alliswell"]
+}
+</p>
+
+<p>
+}
+</p>
+
+<p>
+func processBranch(branchdata string) string{
+	var branchMatch = regexp.MustCompile(`[(^\*)].+`)
+	match := branchMatch.FindAllString(branchdata, 1)
+</p>
+
+<p>
+if match != nil{
+	return "\033[38;5;112m"+ match[0][1:] + "\033[0m\n"
+}
+</p>
+
+<p>
+	return getSymbol["novc"]
+}
+</p>
+
+<p>
+func gitBranch() string{
+	return processBranch(execCommand("branch"))
+}
+</p>
+
+<p>
+func gitStatus() string{
+	return processStatus(execCommand("status"))
+}
+</p>
+
+<p>
+func main(){
+	var args []string = os.Args[0:]
+</p>
+
+<p>
+	if len(args) &gt; 1 {
+		switch args[1]{
+		case "b", "branch":
+			fmt.Print(gitBranch())
+		case "s", "status":
+			fmt.Print(gitStatus())
+		case "p", "prompt":
+			fmt.Print(gitStatus(), " ", gitBranch(), "&gt;&gt;")
+		default:
+			fmt.Print(execCommand(args[1]))
+		}
+	}else{
+		fmt.Println("Command Not found")
+	}
+}
+#END_SRC
+</p>
+
+            </section>
+    </section>
+</div>
+
+    <div>
+    <section id="wrapper">
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-07-19</span>
+        <span title="tags" class="post-info"><a href="/tags/unix/">unix</a>, <a href="/tags/terminal/">terminal</a>, <a href="/tags/git/">git</a>, <a href="/tags/ps1/">ps1</a></span>
+      </div>
+      <br />
+      <br />
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/07/19/git-status-on-unix-terminal";
+          var disqus_url = "http://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal";
+          var disqus_shortname = 'selfdotsend';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </section>
+      <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; Pankajs-MacBook-Air &lt;dot&gt; local">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+      </div>
+      </section>
+    </div>
+
+  </body>
+</html>

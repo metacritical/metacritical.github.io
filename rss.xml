@@ -4,10 +4,17 @@
     <title>Self dot send (Computing Blog)</title>
     <link>http://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Thu, 19 Jul 2018 17:50:15 IST</pubDate>
-    <lastBuildDate>Thu, 19 Jul 2018 17:50:15 IST</lastBuildDate>
+    <pubDate>Thu, 19 Jul 2018 17:52:00 IST</pubDate>
+    <lastBuildDate>Thu, 19 Jul 2018 17:52:00 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
+    <item>
+      <title>Git status on Unix terminal</title>
+      <link>http://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</link>
+      <description><![CDATA[Get git status on unix terminal (PS1).]]></description>
+      <pubDate>2018-07-19</pubDate>
+      <guid>http://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</guid>
+    </item>
     <item>
       <title>Lolcat in 64 arm assembly.</title>
       <link>http://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</link>
