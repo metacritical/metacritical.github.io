@@ -182,8 +182,8 @@ a,
 	transition: all 0.15s ease;
 }
 
-ul 	{ margin:0; padding:0; }
-li	{ list-style-type:circle; list-style-position:inside; }
+ul { margin:0; padding:0; }
+li { list-style-type:circle; list-style-position:inside; display: list-item; }
 
 ol li {
   list-style-type: decimal;
