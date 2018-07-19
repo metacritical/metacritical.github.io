@@ -34,125 +34,99 @@ in ruby also turned out to be slow. We can make things faster by porting such
 scripts to golang. one such solution can be this :
 </p>
 
-<p>
-#+BEGIN_SRC c
-package main
-</p>
+<div class="org-src-container">
+<pre class="src src-go">
+<span style="color: #ff0066;">package</span> main
 
-<p>
-import (
-	"os"
-	"fmt"
-	"regexp"
-	"os/exec"
-	//"strings"
-)
-</p>
+<span style="color: #ff0066;">import</span> <span style="color: #ab7eff;">(</span>
+        <span style="color: #E6DB74;">"os"</span>
+        <span style="color: #E6DB74;">"fmt"</span>
+        <span style="color: #E6DB74;">"regexp"</span>
+        <span style="color: #E6DB74;">"os/exec"</span>
+        <span style="color: #6A6D70;">//</span><span style="color: #6A6D70;">"strings"</span>
+<span style="color: #ab7eff;">)</span>
 
-<p>
-var getSymbol = map[string]string{
-	"untracked":"\xe2\x9a\xa0\xef\xb8\x8f",
-	"alliswell":"\xe2\x98\xaf\xef\xb8\x8f",
-	"hazard":"\xe2\x98\xa2\xef\xb8\x8f",
-	"deleted":"\xE2\x9D\x8C",
-	"smiley":"\xf0\x9f\x99\x82",
-	"noentry":"\xe2\x9b\x94\xef\xb8\x8f",
-	"repoahead":"\xE2\x98\x9D",
-	"novc":"\xf0\x9f\x9a\xab\x0a",
-	"changes":"\xe2\x99\xbb\xef\xb8\x8f",
-}
-</p>
+<span style="color: #ff0066;">var</span> getSymbol = <span style="color: #ff0066;">map</span><span style="color: #ab7eff;">[</span><span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">]</span><span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        <span style="color: #E6DB74;">"untracked"</span>:<span style="color: #E6DB74;">"\xe2\x9a\xa0\xef\xb8\x8f"</span>,
+        <span style="color: #E6DB74;">"alliswell"</span>:<span style="color: #E6DB74;">"\xe2\x98\xaf\xef\xb8\x8f"</span>,
+        <span style="color: #E6DB74;">"hazard"</span>:<span style="color: #E6DB74;">"\xe2\x98\xa2\xef\xb8\x8f"</span>,
+        <span style="color: #E6DB74;">"deleted"</span>:<span style="color: #E6DB74;">"\xE2\x9D\x8C"</span>,
+        <span style="color: #E6DB74;">"smiley"</span>:<span style="color: #E6DB74;">"\xf0\x9f\x99\x82"</span>,
+        <span style="color: #E6DB74;">"noentry"</span>:<span style="color: #E6DB74;">"\xe2\x9b\x94\xef\xb8\x8f"</span>,
+        <span style="color: #E6DB74;">"repoahead"</span>:<span style="color: #E6DB74;">"\xE2\x98\x9D"</span>,
+        <span style="color: #E6DB74;">"novc"</span>:<span style="color: #E6DB74;">"\xf0\x9f\x9a\xab\x0a"</span>,
+        <span style="color: #E6DB74;">"changes"</span>:<span style="color: #E6DB74;">"\xe2\x99\xbb\xef\xb8\x8f"</span>,
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func execCommand(command string) string{
-	gitExec := exec.Command("git", command)
-	outPut, err  := gitExec.Output()
-	if err != nil {
-		return err.Error()
-	}
-	return string(outPut)
-}
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">execCommand</span><span style="color: #ab7eff;">(</span>command <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">)</span> <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        gitExec := exec.<span style="color: #63de5d;">Command</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">"git"</span>, command<span style="color: #06d8ff;">)</span>
+        outPut, err  := gitExec.<span style="color: #63de5d;">Output</span><span style="color: #06d8ff;">()</span>
+        <span style="color: #ff0066;">if</span> err != <span style="color: #ab7eff;">nil</span> <span style="color: #06d8ff;">{</span>
+                <span style="color: #ff0066;">return</span> err.<span style="color: #63de5d;">Error</span><span style="color: #63de5d;">()</span>
+        <span style="color: #06d8ff;">}</span>
+        <span style="color: #ff0066;">return</span> <span style="color: #63de5d;">string</span><span style="color: #06d8ff;">(</span>outPut<span style="color: #06d8ff;">)</span>
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func processStatus(status string) string{
-	var noVC = regexp.MustCompile("Not a git repository")
-	var unTracked = regexp.MustCompile("Untracked files")
-	var notStaged = regexp.MustCompile("Changes not staged for commit")
-	var exitCode = regexp.MustCompile("exit status 128")
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">processStatus</span><span style="color: #ab7eff;">(</span>status <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">)</span> <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        <span style="color: #ff0066;">var</span> noVC = regexp.<span style="color: #63de5d;">MustCompile</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">"Not a git repository"</span><span style="color: #06d8ff;">)</span>
+        <span style="color: #ff0066;">var</span> unTracked = regexp.<span style="color: #63de5d;">MustCompile</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">"Untracked files"</span><span style="color: #06d8ff;">)</span>
+        <span style="color: #ff0066;">var</span> notStaged = regexp.<span style="color: #63de5d;">MustCompile</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">"Changes not staged for commit"</span><span style="color: #06d8ff;">)</span>
+        <span style="color: #ff0066;">var</span> exitCode = regexp.<span style="color: #63de5d;">MustCompile</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">"exit status 128"</span><span style="color: #06d8ff;">)</span>
 
-<p>
-switch {
-	case noVC.MatchString(status) :
-	return getSymbol["novc"]
-	case unTracked.MatchString(status):
-	return getSymbol["untracked"]
-	case notStaged.MatchString(status) :
-	return getSymbol["changes"]
-	case exitCode.MatchString(status):
-	return getSymbol["noentry"]
-	default:
-	return getSymbol["alliswell"]
-}
-</p>
+        <span style="color: #ff0066;">switch</span> <span style="color: #06d8ff;">{</span>
+                <span style="color: #ff0066;">case</span> noVC.<span style="color: #63de5d;">MatchString</span><span style="color: #63de5d;">(</span>status<span style="color: #63de5d;">)</span> :
+                <span style="color: #ff0066;">return</span> getSymbol<span style="color: #63de5d;">[</span><span style="color: #E6DB74;">"novc"</span><span style="color: #63de5d;">]</span>
+                <span style="color: #ff0066;">case</span> unTracked.<span style="color: #63de5d;">MatchString</span><span style="color: #63de5d;">(</span>status<span style="color: #63de5d;">)</span>:
+                <span style="color: #ff0066;">return</span> getSymbol<span style="color: #63de5d;">[</span><span style="color: #E6DB74;">"untracked"</span><span style="color: #63de5d;">]</span>
+                <span style="color: #ff0066;">case</span> notStaged.<span style="color: #63de5d;">MatchString</span><span style="color: #63de5d;">(</span>status<span style="color: #63de5d;">)</span> :
+                <span style="color: #ff0066;">return</span> getSymbol<span style="color: #63de5d;">[</span><span style="color: #E6DB74;">"changes"</span><span style="color: #63de5d;">]</span>
+                <span style="color: #ff0066;">case</span> exitCode.<span style="color: #63de5d;">MatchString</span><span style="color: #63de5d;">(</span>status<span style="color: #63de5d;">)</span>:
+                <span style="color: #ff0066;">return</span> getSymbol<span style="color: #63de5d;">[</span><span style="color: #E6DB74;">"noentry"</span><span style="color: #63de5d;">]</span>
+                <span style="color: #ff0066;">default</span>:
+                <span style="color: #ff0066;">return</span> getSymbol<span style="color: #63de5d;">[</span><span style="color: #E6DB74;">"alliswell"</span><span style="color: #63de5d;">]</span>
+        <span style="color: #06d8ff;">}</span>
 
-<p>
-}
-</p>
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func processBranch(branchdata string) string{
-	var branchMatch = regexp.MustCompile(`[(^\*)].+`)
-	match := branchMatch.FindAllString(branchdata, 1)
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">processBranch</span><span style="color: #ab7eff;">(</span>branchdata <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">)</span> <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        <span style="color: #ff0066;">var</span> branchMatch = regexp.<span style="color: #63de5d;">MustCompile</span><span style="color: #06d8ff;">(</span><span style="color: #E6DB74;">`[(^\*)].+`</span><span style="color: #06d8ff;">)</span>
+        match := branchMatch.<span style="color: #63de5d;">FindAllString</span><span style="color: #06d8ff;">(</span>branchdata, 1<span style="color: #06d8ff;">)</span>
 
-<p>
-if match != nil{
-	return "\033[38;5;112m"+ match[0][1:] + "\033[0m\n"
-}
-</p>
+        <span style="color: #ff0066;">if</span> match != <span style="color: #ab7eff;">nil</span><span style="color: #06d8ff;">{</span>
+                <span style="color: #ff0066;">return</span> <span style="color: #E6DB74;">"\033[38;5;112m"</span>+ match<span style="color: #63de5d;">[</span>0<span style="color: #63de5d;">][</span>1:<span style="color: #63de5d;">]</span> + <span style="color: #E6DB74;">"\033[0m\n"</span>
+        <span style="color: #06d8ff;">}</span>
 
-<p>
-	return getSymbol["novc"]
-}
-</p>
+        <span style="color: #ff0066;">return</span> getSymbol<span style="color: #06d8ff;">[</span><span style="color: #E6DB74;">"novc"</span><span style="color: #06d8ff;">]</span>
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func gitBranch() string{
-	return processBranch(execCommand("branch"))
-}
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">gitBranch</span><span style="color: #ab7eff;">()</span> <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        <span style="color: #ff0066;">return</span> <span style="color: #63de5d;">processBranch</span><span style="color: #06d8ff;">(</span><span style="color: #63de5d;">execCommand</span><span style="color: #63de5d;">(</span><span style="color: #E6DB74;">"branch"</span><span style="color: #63de5d;">)</span><span style="color: #06d8ff;">)</span>
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func gitStatus() string{
-	return processStatus(execCommand("status"))
-}
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">gitStatus</span><span style="color: #ab7eff;">()</span> <span style="color: #06d8ff;">string</span><span style="color: #ab7eff;">{</span>
+        <span style="color: #ff0066;">return</span> <span style="color: #63de5d;">processStatus</span><span style="color: #06d8ff;">(</span><span style="color: #63de5d;">execCommand</span><span style="color: #63de5d;">(</span><span style="color: #E6DB74;">"status"</span><span style="color: #63de5d;">)</span><span style="color: #06d8ff;">)</span>
+<span style="color: #ab7eff;">}</span>
 
-<p>
-func main(){
-	var args []string = os.Args[0:]
-</p>
+<span style="color: #ff0066;">func</span> <span style="color: #63de5d;">main</span><span style="color: #ab7eff;">(){</span>
+        <span style="color: #ff0066;">var</span> args <span style="color: #06d8ff;">[]</span><span style="color: #06d8ff;">string</span> = os.Args<span style="color: #06d8ff;">[</span>0:<span style="color: #06d8ff;">]</span>
 
-<p>
-	if len(args) &gt; 1 {
-		switch args[1]{
-		case "b", "branch":
-			fmt.Print(gitBranch())
-		case "s", "status":
-			fmt.Print(gitStatus())
-		case "p", "prompt":
-			fmt.Print(gitStatus(), " ", gitBranch(), "&gt;&gt;")
-		default:
-			fmt.Print(execCommand(args[1]))
-		}
-	}else{
-		fmt.Println("Command Not found")
-	}
-}
-#END_SRC
-</p>
+        <span style="color: #ff0066;">if</span> <span style="color: #ff0066;">len</span><span style="color: #06d8ff;">(</span>args<span style="color: #06d8ff;">)</span> &gt; 1 <span style="color: #06d8ff;">{</span>
+                <span style="color: #ff0066;">switch</span> args<span style="color: #63de5d;">[</span>1<span style="color: #63de5d;">]{</span>
+                <span style="color: #ff0066;">case</span> <span style="color: #E6DB74;">"b"</span>, <span style="color: #E6DB74;">"branch"</span>:
+                        fmt.<span style="color: #63de5d;">Print</span><span style="color: #ffac4a;">(</span><span style="color: #63de5d;">gitBranch</span><span style="color: #ff0066;">()</span><span style="color: #ffac4a;">)</span>
+                <span style="color: #ff0066;">case</span> <span style="color: #E6DB74;">"s"</span>, <span style="color: #E6DB74;">"status"</span>:
+                        fmt.<span style="color: #63de5d;">Print</span><span style="color: #ffac4a;">(</span><span style="color: #63de5d;">gitStatus</span><span style="color: #ff0066;">()</span><span style="color: #ffac4a;">)</span>
+                <span style="color: #ff0066;">case</span> <span style="color: #E6DB74;">"p"</span>, <span style="color: #E6DB74;">"prompt"</span>:
+                        fmt.<span style="color: #63de5d;">Print</span><span style="color: #ffac4a;">(</span><span style="color: #63de5d;">gitStatus</span><span style="color: #ff0066;">()</span>, <span style="color: #E6DB74;">" "</span>, <span style="color: #63de5d;">gitBranch</span><span style="color: #ff0066;">()</span>, <span style="color: #E6DB74;">"&gt;&gt;"</span><span style="color: #ffac4a;">)</span>
+                <span style="color: #ff0066;">default</span>:
+                        fmt.<span style="color: #63de5d;">Print</span><span style="color: #ffac4a;">(</span><span style="color: #63de5d;">execCommand</span><span style="color: #ff0066;">(</span>args<span style="color: #FF61FF;">[</span>1<span style="color: #FF61FF;">]</span><span style="color: #ff0066;">)</span><span style="color: #ffac4a;">)</span>
+                <span style="color: #63de5d;">}</span>
+        <span style="color: #06d8ff;">}</span><span style="color: #ff0066;">else</span><span style="color: #06d8ff;">{</span>
+                fmt.<span style="color: #63de5d;">Println</span><span style="color: #63de5d;">(</span><span style="color: #E6DB74;">"Command Not found"</span><span style="color: #63de5d;">)</span>
+        <span style="color: #06d8ff;">}</span>
+<span style="color: #ab7eff;">}</span>
+</pre>
+</div>
 
             </section>
     </section>
