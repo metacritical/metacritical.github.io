@@ -1,24 +1,3 @@
-#+TITLE:       Git status on Unix terminal
-#+AUTHOR:      Pankaj Doharey
-#+EMAIL:       pankajdoharey@Pankajs-MacBook-Air.local
-#+DATE:        [2018-07-19 Thu 18:18]
-#+URI:         /blog/%y/%m/%d/git-status-on-unix-terminal
-#+KEYWORDS:    git status, terminal
-#+TAGS:        unix, terminal, git , ps1
-#+LANGUAGE:    en
-#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: Get git status on unix terminal (PS1).
-
-
-It is often required to get git stats on terminal PS1, most solutions are based 
-around bash which can be slow sometimes or if you are like me who programmed 
-something in ruby also turned out to be slow. We can make things faster by 
-porting such scripts to golang. Here is one such solution :
-
-#+NAME: GITS Source.
-
-#+BEGIN_SRC go
-
 package main
 
 import (
@@ -108,37 +87,3 @@ func main(){
 		fmt.Println("Command Not found")
 	}
 }
-#+END_SRC
-
-You can download this by executing the following command on your terminal :
-
-#+BEGIN_SRC bash
-$ wget 'https://gist.githubusercontent.com/metacritical/af275b7a6a92f7ade6dc5014ccfea247/raw/b0a4d3f8cc1e0e0d360acc50eb71fe0fd225e52a/gits.go'
-#+END_SRC
-
-And then compiling it with go.
-
-#+BEGIN_SRC bash
-go gits.go -o gits
-#+END_SRC
-
-Once that is done you should put it somewhere and included in the PATH.
-Also the PS1 should be modified like so.
-
-#+BEGIN_SRC bash
-PS1="\[\033[38;5;202m\]$(pwd)\n\[\033[38;5;135m\]\@ $(gits prompt)"
-#+END_SRC
-
-This would yield a prompt like this :
-
-#+NAME: git no changes.
-#+ATTR_HTML: :style width:auto
-[[./media/images/gits_normal.png]]
-
-If git files are unstaged on the current path then may be like this :
-
-#+NAME: git no changes.
-#+ATTR_HTML: :style width:auto
-[[./media/images/gits_unstaged.png]]
-
-Thats it folks! Happy hacking.
