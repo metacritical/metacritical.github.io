@@ -13,9 +13,8 @@
   This blog is a collection of my rumblings and rants on technology
   and other things that i find delightful and frustrating. I aim to document 
   all those interesting and not so interesting things from the perspective of a 
-  tech enthusiast. I eventually hope you find would some of the stuff documented
+  tech enthusiast. I eventually hope you would fins some of the stuff documented
   here useful.
-
 
 * About Pankaj Doharey (Metacritical)
   Crazy risk taker, Specialist Ruby, clojure/clojure(script) developer, 
