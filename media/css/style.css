@@ -124,21 +124,21 @@ nav.main-nav {
 /* color: #5badf0; */
 /*font-weight: bold;*/
 nav.main-nav a {
-	top: 8px;
-	right: 6px;
-	padding: 8px 12px;
+	padding: 8px 8px;
 	color: #39C6C1
 	font-size: 13px;
-	line-height: 1.35;
-	border-radius: 3px;
 
 }
 nav.main-nav a.cta {
-	/* background: #5badf0; */
-	background: #39C6C1;
-	color: #fff;
-	margin-left: 12px;
+    background: #fff;
+    color: #39C6C1;
 }
+
+nav.main-nav a.cta svg {
+    width: 20px;
+    height: 16px;
+}
+
 
 #wrapper {
   max-width: 600px;
