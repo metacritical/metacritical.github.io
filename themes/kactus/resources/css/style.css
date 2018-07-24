@@ -140,7 +140,7 @@ nav.main-nav a.cta svg {
 #wrapper {
   max-width: 800px;
   margin: 0 auto;
-  /* padding: 60px 40px 100px 40px; */
+  padding: 60px 40px 100px 40px;
 }
 
 #wrapper.home {
@@ -165,7 +165,7 @@ a,
 #title:hover {
 	text-decoration: none;
 	/* color: #5badf0; */
-	color: #ffffff;
+	color: #5badf0;
 }
 
 p a { color: #39C6C1; }
