@@ -125,7 +125,7 @@ nav.main-nav {
 nav.main-nav a {
 	padding: 8px 8px;
 	color: #fff;
-	font-size: 13px;
+	font-size: 16px;
 
 }
 nav.main-nav a.cta {
@@ -165,7 +165,7 @@ a,
 #title:hover {
 	text-decoration: none;
 	/* color: #5badf0; */
-	color: #5badf0;
+	color: rgb(205, 59, 90);
 }
 
 p a { color: #39C6C1; }
