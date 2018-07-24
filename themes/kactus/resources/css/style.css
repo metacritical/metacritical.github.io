@@ -70,8 +70,8 @@ h2 {
 }
 
 .profile #wrapper {
-	padding: 100px 40px 0px;
-	max-width: 600px;
+	/* padding: 100px 40px 0px; */
+	max-width: 800px;
 	margin: 0 auto;
 }
 
@@ -109,12 +109,11 @@ h2 {
 }
 
 nav.main-nav {
-	padding: 20px 20px 0;
+	padding: 20px;
 
 	/*max-width: 600px;*/
 	/*width:100%;*/
-	background: #fff;
-	background: rgba(255,255,255,.90);
+	background: rgb(205, 59, 90);
 	margin: 0 auto;
 	text-align: right;
 	/*position: fixed;*/
@@ -125,25 +124,23 @@ nav.main-nav {
 /*font-weight: bold;*/
 nav.main-nav a {
 	padding: 8px 8px;
-	color: #39C6C1
+	color: #fff;
 	font-size: 13px;
 
 }
 nav.main-nav a.cta {
-    background: #fff;
-    color: #39C6C1;
+    color:#fff;
 }
 
 nav.main-nav a.cta svg {
     width: 20px;
-    height: 16px;
 }
 
 
 #wrapper {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 60px 40px 100px 40px;
+  /* padding: 60px 40px 100px 40px; */
 }
 
 #wrapper.home {
@@ -168,7 +165,7 @@ a,
 #title:hover {
 	text-decoration: none;
 	/* color: #5badf0; */
-	color: #39C6C1;
+	color: #ffffff;
 }
 
 p a { color: #39C6C1; }
