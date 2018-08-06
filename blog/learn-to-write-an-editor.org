@@ -1,0 +1,26 @@
+#+TITLE:       Learn to Write an Editor
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-08-06 Mon]
+#+URI:         /blog/%y/%m/%d/learn-to-write-an-editor
+#+KEYWORDS:    editor, emacs, vim, scheme
+#+TAGS:        editor, scheme, emacs
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: A series of Assays on writing a programmers editor.
+
+Since the time i learnt emacs i have always toyed with the idea of writing my own
+programming text editor. My fellow programmers ofcourse speculated that it is the
+most difficult endeavour one can undertake as a programmer, the arguments that were
+made included look at emacs and vim they have been here for over 3 decades and the
+devlopment is still active. Despite these editors being touted as highly configurable
+or programmable. This led me to think how much power should a programmer have in 
+a programmable editor? Is the existing programmable power not enough in the existing 
+editors?. Emacs for instance is still undergoing development instead of fixing the
+issues in elisp (The scripting language of emacs) or adding enhancements in elisp
+alone, without going down to the C codebase in emacs. Perhaps elisp isnt powerful
+enough or emacs is too tied to the C runtime on which elisp is written that elisp
+can have only so much power as the C runtime lends it. I wondered what percentage of
+emacs is written in elisp and how much in C. I wondered what about vim? I quick look
+at vimscript and you conclusively know that vimscript is an half baked and obnoxious
+extensions language that has no respect for anything

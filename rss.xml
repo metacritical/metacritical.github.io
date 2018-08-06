@@ -4,23 +4,23 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Tue, 24 Jul 2018 13:53:02 IST</pubDate>
-    <lastBuildDate>Tue, 24 Jul 2018 13:53:02 IST</lastBuildDate>
+    <pubDate>Mon, 06 Aug 2018 16:42:38 IST</pubDate>
+    <lastBuildDate>Mon, 06 Aug 2018 16:42:38 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
+    <item>
+      <title>Lolcat in 64 arm assembly.</title>
+      <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</link>
+      <description><![CDATA[Porting locat written in x64 assembly to arm assembly.]]></description>
+      <pubDate>2018-08-06</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</guid>
+    </item>
     <item>
       <title>Git status on Unix terminal</title>
       <link>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</link>
       <description><![CDATA[Get git status on unix terminal (PS1).]]></description>
       <pubDate>2018-07-19</pubDate>
       <guid>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</guid>
-    </item>
-    <item>
-      <title>Lolcat in 64 arm assembly.</title>
-      <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</link>
-      <description><![CDATA[Porting locat written in x64 assembly to arm assembly.]]></description>
-      <pubDate>2018-07-14</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</guid>
     </item>
   </channel>
 </rss>
