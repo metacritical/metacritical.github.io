@@ -1,4 +1,4 @@
-#+TITLE:       Learn to Write an Editor
+#+TITLE:       Learn to Write an Editor (Part 1)
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-08-06 Mon]
@@ -6,7 +6,7 @@
 #+KEYWORDS:    editor, emacs, vim, scheme
 #+TAGS:        editor, scheme, emacs
 #+LANGUAGE:    en
-#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+OPTIONS:     H:3 num:t toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: A series of Assays on writing a programmers editor.
 
 Since the time i learnt emacs i have always toyed with the idea of writing my own
