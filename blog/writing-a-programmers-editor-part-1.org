@@ -1,3 +1,4 @@
+
 #+TITLE:       Writing a Programmers Editor - Part 1
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
@@ -35,7 +36,7 @@ enough power to ~elisp~. Either way the user ends up with power a deficiency.
 #+NAME: fig:emacs-percentage
 [[./media/images/emacs-percentage-repo.png]]
 
-
+Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power level.
 
 *What about vim how much of vim is written in C and vimscript?*
 
@@ -60,9 +61,6 @@ What i cannot create i do not understand.
 - Richard Feynman
 #+END_VERSE
 
-
-Thought one thing is for sure, the documentation of emacs at ~16.2%~ is quite impressive
-irrespective of the power level.
 
 ~Vimscript~ may verywell be suited for extending the editor in small ways it but
 sure is no match for a full fledged programming language, which means it too is 
