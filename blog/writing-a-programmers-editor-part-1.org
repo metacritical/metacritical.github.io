@@ -45,7 +45,7 @@ enough power to ~elisp~. Either way the user ends up with power a deficiency.
 
 
 #+BEGIN_QUOTE
-- *Are these languages equally powerful in the "power continuum" ?*
+- *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]] ?*
 - *How do these existing Editors work?*
 - *Is there an efficiency equation that we are unaware of?*
 - *What if the Delicate balance exists for a reason and has a penalty when disturbed?*
