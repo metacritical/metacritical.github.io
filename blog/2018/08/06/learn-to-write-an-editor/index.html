@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Learn to Write an Editor - Self dot send (Computing Blog)</title>
+    <title>Writing a Programmers Editor - Part 1 - Self dot send (Computing Blog)</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pankaj Doharey" />
         <meta name="description" content="A series of Assays on writing a programmers editor." />
@@ -26,50 +26,123 @@
     <section id="wrapper">
         <article class="post">
             <header>
-                    <h1>Learn to Write an Editor</h1>
+                    <h1>Writing a Programmers Editor - Part 1</h1>
             </header>
             <br />
             <section id="post-body">
                 <p>
-Since the time i learnt emacs i have always toyed with the idea of writing my own
-programming text editor. My fellow programmers often speculated that it is the
-most difficult endeavour one can undertake as a programmer, the arguments that were
-made included look at emacs and vim they have been here for over 3 decades and the
-devlopment is still active. 
+Since the time i learnt emacs i have toyed with the idea of writing my own programming
+text editor. My fellow programmers often speculated that it is the most difficult 
+endeavour one can undertake as a programmer, the arguments that were made included 
+look at emacs and vim they have been here for over 3 decades and the devlopment is 
+still active. 
 </p>
 
 <p>
-Despite these editors being touted as highly configurable or programmable. This led
-me to think how much power should a programmer have in a programmable editor? 
-Is the existing programmable power not enough in the existing editors?. Emacs for
-instance is still undergoing development instead of fixing the issues in elisp 
-(The scripting language of emacs) or adding enhancements in elisp alone, without
-going down to the C codebase in emacs. 
+And perhaps they are right. Despite these editors being touted as highly configurable
+or programmable, Programmers regularly dive into the <code>C</code> code to upgrade them. 
+It is infact a delicate exercise in the balance of power, between the <i>C-Runtime</i>
+and the scripting language.
 </p>
 
 <p>
-Perhaps elisp isnt powerful enough or emacs is too tied to the C runtime on which
-elisp is written that elisp can have only so much power as the C runtime lends it. 
-I wondered what percentage of emacs is written in elisp and how much in C.
-I wondered what about vim? A quick look at vimscript and i was convinced that
-vimscript is an half baked and obnoxious extensions language that has no respect
-for any language semantics or conventions.
+The obvious question is how much power should an user have in a programmable
+editor? Clearly the existing power isnt enough some editors lend more power to 
+the user than others. Emacs for instance is still undergoing active development 
+in <i>C-Runtime</i>, instead of fixing the issues or adding enhancements at the <b>elisp</b> 
+level (The scripting language of emacs).
 </p>
 
 <p>
-Though vimscript maybe verywell suited for extending the editor in small ways it 
-sure is no match for a full fledged programming language it too is heavily tied to
-the C runtime in vim, and even if teh C runtime lend all the power that one seeks
-it still is an ungly language to write code in.
+Perhaps <code>elisp</code> isnt powerful enough or the <i>C-Runtime</i> is dominant and doesnt lend 
+enough power to <code>elisp</code>. Either way the user ends up with power a deficiency.
+</p>
+
+<p>
+<b>I wondered what percentage of emacs is written in elisp and how much in C?</b>
+</p>
+
+
+<div id="orgf663b44" class="figure">
+<p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
+</div>
+
+
+
+<p>
+<b>What about vim how much of vim is written in C and vimscript?</b>
+</p>
+
+
+<div id="org97cc569" class="figure">
+<p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
+</div>
+
+
+<blockquote>
+<ul class="org-ul">
+<li><b>Are these languages equally powerful in the "power continuum" ?</b></li>
+<li><b>How do these existing Editors work?</b></li>
+<li><b>Is there an efficiency equation that we are unaware of?</b></li>
+<li><b>What if the Delicate balance exists for a reason and has a penalty when disturbed?</b></li>
+</ul>
+</blockquote>
+
+
+<p>
+Whenever i encounter complicated questions such as these, i remind myself of the 
+famous Feynman quote.
+</p>
+
+<p class="verse">
+What i cannot create i do not understand.<br />
+- Richard Feynman<br />
+</p>
+
+
+<p>
+Thought one thing is for sure, the documentation of emacs at <code>16.2%</code> is quite impressive
+irrespective of the power level.
+</p>
+
+<p>
+<code>Vimscript</code> may verywell be suited for extending the editor in small ways it but
+sure is no match for a full fledged programming language, which means it too is 
+heavily tied to the <i>C-Runtime</i> in vim, and even if the <i>C-Runtime</i> lends all the 
+power that one seeks to this language, it is an ungly language to write code in.
 </p>
 
 <p>
 I think what one needs is a language that is powerful enough to be both a general
 purpose programming language and simple enough to be an extension language. Emacs
 lisp fits that bill being a lisp, though elisp has borrowed power and can move only
-so much as the runtime itself. What if emacs was written in elisp? What if we write
-and Editor in of these lisps or scheme which gives us the power to extend the editor
-in the same language as the editor itself is build on.
+so much as the runtime itself.
+</p>
+
+<p>
+What if emacs was written in <b>100%</b> <code>elisp</code>? What if we write an Editor in a lisp
+or scheme which gives us the power to extend the editor in the same language as the
+editor itself written in.
+</p>
+
+<p>
+A thought worthy of exploration! In the next few assays we would explore this idea
+further to lend <b>100%</b> power to the user. We would explore concepts as broad wide 
+as terminal buffers to datasctructures required to build an editor. We would piece
+together an editor for ourselves in the next few assays, to know the answer to the
+questions mentioned above.
+</p>
+
+<p>
+Watchout for the next part of the assay till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
 </p>
 
             </section>

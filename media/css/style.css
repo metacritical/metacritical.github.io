@@ -192,9 +192,8 @@ ol li {
 /* Line Height */
 #post-body, p { line-height:1.7; }
 
-b, strong { font-weight: 500;
-  color: #1E2025; }
-em, i { font-style: italic; }
+b, strong { font-weight: 500;}
+em, i { font-style: italic; font-family: serif; font-size: large;}
 
 #title {
 	display: inline-block;
@@ -283,8 +282,8 @@ p.small {
 }
 
 blockquote {
-	padding-left: 15px;
-	border-left: 3px solid #eee;
+	padding-left: 30px;
+	padding-bottom: 20px;
 }
 
 hr {
@@ -296,6 +295,13 @@ hr {
 }
 
 span.code { font-family:Menlo, Monaco, Courier; background-color:#EEE; font-size:14px; }
+
+code{
+    border: 1px solid #eee;
+    background-color: #eee;
+    font-family: monospace;
+    font-weight: 600;
+}
 
 pre	{
 	font-family:Menlo, Monaco, Courier;
@@ -624,6 +630,14 @@ h2.month {
   padding: 6px 10px;
   border-radius: 4px;
   margin-left: 2px;
+}
+
+.verse {
+    font-style: oblique;
+    border-left: gray;
+    border-left-width: 2px;
+    border-style: double;
+    padding: 15px 0px 15px 30px;
 }
 
 /* Media Queries */

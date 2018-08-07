@@ -4,15 +4,15 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Mon, 06 Aug 2018 17:09:59 IST</pubDate>
-    <lastBuildDate>Mon, 06 Aug 2018 17:09:59 IST</lastBuildDate>
+    <pubDate>Tue, 07 Aug 2018 23:12:27 IST</pubDate>
+    <lastBuildDate>Tue, 07 Aug 2018 23:12:27 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
     <item>
-      <title>Learn to Write an Editor</title>
+      <title>Writing a Programmers Editor - Part 1</title>
       <link>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</link>
       <description><![CDATA[A series of Assays on writing a programmers editor.]]></description>
-      <pubDate>2018-08-06</pubDate>
+      <pubDate>2018-08-07</pubDate>
       <guid>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</guid>
     </item>
     <item>
