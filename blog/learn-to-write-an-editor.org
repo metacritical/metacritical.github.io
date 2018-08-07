@@ -1,4 +1,4 @@
-#+TITLE:       Learn to Write an Editor (Part 1)
+#+TITLE:       Writing a Programmers Editor - Part 1
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-08-06 Mon]
@@ -6,39 +6,84 @@
 #+KEYWORDS:    editor, emacs, vim, scheme
 #+TAGS:        editor, scheme, emacs
 #+LANGUAGE:    en
-#+OPTIONS:     H:3 num:t toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+OPTIONS:     H:4 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: A series of Assays on writing a programmers editor.
 
-Since the time i learnt emacs i have always toyed with the idea of writing my own
-programming text editor. My fellow programmers often speculated that it is the
-most difficult endeavour one can undertake as a programmer, the arguments that were
-made included look at emacs and vim they have been here for over 3 decades and the
-devlopment is still active. 
+Since the time i learnt emacs i have toyed with the idea of writing my own programming
+text editor. My fellow programmers often speculated that it is the most difficult 
+endeavour one can undertake as a programmer, the arguments that were made included 
+look at emacs and vim they have been here for over 3 decades and the devlopment is 
+still active. 
 
-Despite these editors being touted as highly configurable or programmable. This led
-me to think how much power should a programmer have in a programmable editor? 
-Is the existing programmable power not enough in the existing editors?. Emacs for
-instance is still undergoing development instead of fixing the issues in elisp 
-(The scripting language of emacs) or adding enhancements in elisp alone, without
-going down to the C codebase in emacs. 
+And perhaps they are right. Despite these editors being touted as highly configurable
+or programmable, Programmers regularly dive into the ~C~ code to upgrade them. 
+It is infact a delicate exercise in the balance of power, between the /C-Runtime/
+and the scripting language.
+ 
+The obvious question is how much power should an user have in a programmable
+editor? Clearly the existing power isnt enough some editors lend more power to 
+the user than others. Emacs for instance is still undergoing active development 
+in /C-Runtime/, instead of fixing the issues or adding enhancements at the *elisp* 
+level (The scripting language of emacs).
 
-Perhaps elisp isnt powerful enough or emacs is too tied to the C runtime on which
-elisp is written that elisp can have only so much power as the C runtime lends it. 
-I wondered what percentage of emacs is written in elisp and how much in C.
-I wondered what about vim? A quick look at vimscript and i was convinced that
-vimscript is an half baked and obnoxious extensions language that has no respect
-for any language semantics or conventions.
+Perhaps ~elisp~ isnt powerful enough or the /C-Runtime/ is dominant and doesnt lend 
+enough power to ~elisp~. Either way the user ends up with power a deficiency.
 
-Though vimscript maybe verywell suited for extending the editor in small ways it 
-sure is no match for a full fledged programming language it too is heavily tied to
-the C runtime in vim, and even if teh C runtime lend all the power that one seeks
-it still is an ungly language to write code in.
+*I wondered what percentage of emacs is written in elisp and how much in C?*
+
+#+CAPTION: Emacs C/elisp percentage split.
+#+NAME: fig:emacs-percentage
+[[./media/images/emacs-percentage-repo.png]]
+
+
+
+*What about vim how much of vim is written in C and vimscript?*
+
+#+CAPTION: Vim C/vimscript percentage split.
+#+NAME: fig:vim-percentage
+[[./media/images/vim-percentage-repo.png]]
+
+
+#+BEGIN_QUOTE
+- *Are these languages equally powerful in the "power continuum" ?*
+- *How do these existing Editors work?*
+- *Is there an efficiency equation that we are unaware of?*
+- *What if the Delicate balance exists for a reason and has a penalty when disturbed?*
+#+END_QUOTE
+
+
+Whenever i encounter complicated questions such as these, i remind myself of the 
+famous Feynman quote.
+
+#+BEGIN_VERSE
+What i cannot create i do not understand. 
+- Richard Feynman
+#+END_VERSE
+
+
+Thought one thing is for sure, the documentation of emacs at ~16.2%~ is quite impressive
+irrespective of the power level.
+
+~Vimscript~ may verywell be suited for extending the editor in small ways it but
+sure is no match for a full fledged programming language, which means it too is 
+heavily tied to the /C-Runtime/ in vim, and even if the /C-Runtime/ lends all the 
+power that one seeks to this language, it is an ungly language to write code in.
 
 I think what one needs is a language that is powerful enough to be both a general
 purpose programming language and simple enough to be an extension language. Emacs
 lisp fits that bill being a lisp, though elisp has borrowed power and can move only
-so much as the runtime itself. What if emacs was written in elisp? What if we write
-and Editor in of these lisps or scheme which gives us the power to extend the editor
-in the same language as the editor itself is build on.
+so much as the runtime itself.
 
+What if emacs was written in *100%* ~elisp~? What if we write an Editor in a lisp
+or scheme which gives us the power to extend the editor in the same language as the
+editor itself written in.
 
+A thought worthy of exploration! In the next few assays we would explore this idea
+further to lend *100%* power to the user. We would explore concepts as broad wide 
+as terminal buffers to datasctructures required to build an editor. We would piece
+together an editor for ourselves in the next few assays, to know the answer to the
+questions mentioned above.
+
+Watchout for the next part of the assay till then.
+
+/Shorel'aran/
