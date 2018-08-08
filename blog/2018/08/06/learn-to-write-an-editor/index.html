@@ -32,29 +32,31 @@
             <section id="post-body">
                 <p>
 Since the time i learnt emacs i have toyed with the idea of writing my own programming
-text editor. My fellow programmers often speculated that it is the most difficult 
-endeavour one can undertake as a programmer, the arguments that were made included 
-look at emacs and vim they have been here for over 3 decades and the devlopment is 
-still active. 
+text editor. Though emacs is a powerful tool it can be obtuse to people with no lisp/scheme
+knowledge, one cannot be very effective in emacs without learning elisp. When i floated the idea
+of writing my own text editor my fellow programmers often speculated that it is the
+most difficult endeavour one can undertake as a programmer, the arguments that were
+made included look at emacs and vim they have been here for over 3 decades and the
+devlopment is still active.
 </p>
 
 <p>
-And perhaps they are right. Despite these editors being touted as highly configurable
-or programmable, Programmers regularly dive into the <code>C</code> code to upgrade them. 
+And perhaps they are right, despite these editors being touted as highly configurable
+or programmable, programmers regularly dive into the <code>C</code> code to upgrade them.
 It is infact a delicate exercise in the balance of power, between the <i>C-Runtime</i>
 and the scripting language.
 </p>
 
 <p>
 The obvious question is how much power should an user have in a programmable
-editor? Clearly the existing power isnt enough some editors lend more power to 
-the user than others. Emacs for instance is still undergoing active development 
-in <i>C-Runtime</i>, instead of fixing the issues or adding enhancements at the <b>elisp</b> 
+editor? Clearly the existing power isnt enough some editors lend more power to
+the user than others. Emacs for instance is still undergoing active development
+in <i>C-Runtime</i>, instead of fixing the issues or adding enhancements at the <b>elisp</b>
 level (The scripting language of emacs).
 </p>
 
 <p>
-Perhaps <code>elisp</code> isnt powerful enough or the <i>C-Runtime</i> is dominant and doesnt lend 
+Perhaps <code>elisp</code> isnt powerful enough or the <i>C-Runtime</i> is dominant and doesnt lend
 enough power to <code>elisp</code>. Either way the user ends up with power a deficiency.
 </p>
 
@@ -63,7 +65,7 @@ enough power to <code>elisp</code>. Either way the user ends up with power a def
 </p>
 
 
-<div id="org323f002" class="figure">
+<div id="org22db413" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -78,7 +80,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="org2d8c9ad" class="figure">
+<div id="org746f32a" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
@@ -96,7 +98,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 
 
 <p>
-Whenever i encounter complicated questions such as these, i remind myself of the 
+Whenever i encounter complicated questions such as these, i remind myself of the
 famous Feynman quote.
 </p>
 
@@ -108,8 +110,8 @@ What i cannot create i do not understand.<br />
 
 <p>
 <code>Vimscript</code> may verywell be suited for extending the editor in small ways it but
-sure is no match for a full fledged programming language, which means it too is 
-heavily tied to the <i>C-Runtime</i> in vim, and even if the <i>C-Runtime</i> lends all the 
+sure is no match for a full fledged programming language, which means it too is
+heavily tied to the <i>C-Runtime</i> in vim, and even if the <i>C-Runtime</i> lends all the
 power that one seeks to this language, it is an ungly language to write code in.
 </p>
 
@@ -123,12 +125,12 @@ so much as the runtime itself.
 <p>
 What if emacs was written in <b>100%</b> <code>elisp</code>? What if we write an Editor in a lisp
 or scheme which gives us the power to extend the editor in the same language as the
-editor itself written in.
+editor itself is written in.
 </p>
 
 <p>
 A thought worthy of exploration! In the next few assays we would explore this idea
-further to lend <b>100%</b> power to the user. We would explore concepts as broad wide 
+further to lend <b>100%</b> power to the user. We would explore concepts as broad wide
 as terminal buffers to datasctructures required to build an editor. We would piece
 together an editor for ourselves in the next few assays, to know the answer to the
 questions mentioned above.
