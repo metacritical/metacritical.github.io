@@ -1,4 +1,3 @@
-
 #+TITLE:       Writing a Programmers Editor - Part 1
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
@@ -11,23 +10,25 @@
 #+DESCRIPTION: A series of Assays on writing a programmers editor.
 
 Since the time i learnt emacs i have toyed with the idea of writing my own programming
-text editor. My fellow programmers often speculated that it is the most difficult 
-endeavour one can undertake as a programmer, the arguments that were made included 
-look at emacs and vim they have been here for over 3 decades and the devlopment is 
-still active. 
+text editor. Though emacs is a powerful tool it can be obtuse to people with no lisp/scheme
+knowledge, one cannot be very effective in emacs without learning elisp. When i floated the idea
+of writing my own text editor my fellow programmers often speculated that it is the
+most difficult endeavour one can undertake as a programmer, the arguments that were
+made included look at emacs and vim they have been here for over 3 decades and the
+devlopment is still active.
 
-And perhaps they are right. Despite these editors being touted as highly configurable
-or programmable, Programmers regularly dive into the ~C~ code to upgrade them. 
+And perhaps they are right, despite these editors being touted as highly configurable
+or programmable, programmers regularly dive into the ~C~ code to upgrade them.
 It is infact a delicate exercise in the balance of power, between the /C-Runtime/
 and the scripting language.
- 
+
 The obvious question is how much power should an user have in a programmable
-editor? Clearly the existing power isnt enough some editors lend more power to 
-the user than others. Emacs for instance is still undergoing active development 
-in /C-Runtime/, instead of fixing the issues or adding enhancements at the *elisp* 
+editor? Clearly the existing power isnt enough some editors lend more power to
+the user than others. Emacs for instance is still undergoing active development
+in /C-Runtime/, instead of fixing the issues or adding enhancements at the *elisp*
 level (The scripting language of emacs).
 
-Perhaps ~elisp~ isnt powerful enough or the /C-Runtime/ is dominant and doesnt lend 
+Perhaps ~elisp~ isnt powerful enough or the /C-Runtime/ is dominant and doesnt lend
 enough power to ~elisp~. Either way the user ends up with power a deficiency.
 
 *I wondered what percentage of emacs is written in elisp and how much in C?*
@@ -53,18 +54,18 @@ Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power 
 #+END_QUOTE
 
 
-Whenever i encounter complicated questions such as these, i remind myself of the 
+Whenever i encounter complicated questions such as these, i remind myself of the
 famous Feynman quote.
 
 #+BEGIN_VERSE
-What i cannot create i do not understand. 
+What i cannot create i do not understand.
 - Richard Feynman
 #+END_VERSE
 
 
 ~Vimscript~ may verywell be suited for extending the editor in small ways it but
-sure is no match for a full fledged programming language, which means it too is 
-heavily tied to the /C-Runtime/ in vim, and even if the /C-Runtime/ lends all the 
+sure is no match for a full fledged programming language, which means it too is
+heavily tied to the /C-Runtime/ in vim, and even if the /C-Runtime/ lends all the
 power that one seeks to this language, it is an ungly language to write code in.
 
 I think what one needs is a language that is powerful enough to be both a general
@@ -74,10 +75,10 @@ so much as the runtime itself.
 
 What if emacs was written in *100%* ~elisp~? What if we write an Editor in a lisp
 or scheme which gives us the power to extend the editor in the same language as the
-editor itself written in.
+editor itself is written in.
 
 A thought worthy of exploration! In the next few assays we would explore this idea
-further to lend *100%* power to the user. We would explore concepts as broad wide 
+further to lend *100%* power to the user. We would explore concepts as broad wide
 as terminal buffers to datasctructures required to build an editor. We would piece
 together an editor for ourselves in the next few assays, to know the answer to the
 questions mentioned above.
