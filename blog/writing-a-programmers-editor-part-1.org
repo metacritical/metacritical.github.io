@@ -16,8 +16,8 @@ without learning elisp. When i floated the idea of writing my own text editor my
 fellow programmers often speculated that it is the most difficult endeavour one 
 can undertake as a programmer, the arguments that were made varied from /Emacs 
 and vim they have been in development for over 3 decades/ to /it is a massive 
-untertaking for an individual since companies like IntelliJ's entire business is
-around the devlopment of text editors/IDE's.
+untertaking for an individual/ since companies like IntelliJ's entire business is
+around the development of text editors/IDE's.
 
 And perhaps they are right, despite these editors being touted as highly 
 configurable or programmable, programmers regularly dive into the ~C~ code to 
@@ -74,9 +74,11 @@ purpose programming language and simple enough to be an extensions language. Ema
 lisp fits that bill being a lisp, though elisp has "borrowed power" and can move only
 so much as the runtime itself allows it.
 
-What if emacs was written in *100%* ~elisp~? What if we write an Editor in a lisp
-or scheme which gives us the power to extend the editor in the same language as the
-editor itself is written in.
+#+BEGIN_QUOTE
+- What if emacs was written in *100%* ~elisp~? 
+- What if we write an Editor in a lisp or scheme which gives us the power to
+extend the editor in the same language as the editor itself is written in ?
+#+END_QUOTE
 
 A thought worthy of exploration! In the next few assays we would explore this idea
 further to lend *100%* power to the user. We would explore concepts as broad wide
