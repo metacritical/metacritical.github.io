@@ -14,10 +14,10 @@ programming text editor. Though emacs is a powerful tool it can be obtuse to
 people with no lisp/scheme knowledge, one cannot be very effective in emacs 
 without learning elisp. When i floated the idea of writing my own text editor my
 fellow programmers often speculated that it is the most difficult endeavour one 
-can undertake as a programmer, the arguments varied from: /Emacs and vim have
-been in development for over 3 decades/ to /it is a massive untertaking for an 
-individual/ since companies like IntelliJ's entire business is around building 
-text editors/IDE's.
+can undertake as a programmer, the arguments that were made varied from /look at 
+emacs and vim they have been here for over 3 decades/ to /its is a massive untertaking
+for an individual since companies like IntelliJ's, IBM, Oracle and Microsofts 
+entire business is around the devlopment of text editors/IDE's.
 
 And perhaps they are right, despite these editors being touted as highly 
 configurable or programmable, programmers regularly dive into the ~C~ code to 
@@ -56,20 +56,22 @@ Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power 
 for a reason and has a penalty when disturbed?*
 #+END_QUOTE
 
+
 Whenever i encounter subjective questions such as these, my approach is to find 
-an objective reasoning for the subjective thought. The technique draws its inspiration
+objective reasoning for the subjective thought. The technique draws its inspiration
 from a famous Feynman quote.
 
 #+BEGIN_VERSE
-What i cannot create i do not understand. - Richard Feynman
+What i cannot create i do not understand.
+- Richard Feynman
 #+END_VERSE
 
-~Vimscript~ on the other hand may very well be suited for extending the editor 
-in but it surely is no match for a full fledged programming language like lisp, 
-but the question is /How much power does one need in a programming editor ?/.
 
-*In other words where does the sweetspot lie in the [[http://www.paulgraham.com/avg.html][Power Continuum]] between the 
-/C-Rutime/ and /scripting language/?*
+~Vimscript~ on the other hand may verywell be suited for extending the editor 
+in but it surely is no match for a full fledged programming language like lisp, 
+but again the question is /How much power does one need in a programming editor ?/.
+
+*In other words where does the sweetspot lie in the [[www.paulgraham.com/avg.html][Power Continuum]] ?*
 
 I think what one needs is a language that is powerful enough to be both a general
 purpose programming language and simple enough to be an extension language. Emacs
@@ -78,11 +80,11 @@ so much as the runtime itself.
 
 What if emacs was written in *100%* ~elisp~? What if we write an Editor in a lisp
 or scheme which gives us the power to extend the editor in the same language as the
-editor itself is written in?.
+editor itself is written in.
 
 A thought worthy of exploration! In the next few assays we would explore this idea
-further to lend *100%* power to the user. We would explore concepts as wide
-as terminal buffers to data structures required to build an editor. We would piece
+further to lend *100%* power to the user. We would explore concepts as broad wide
+as terminal buffers to datasctructures required to build an editor. We would piece
 together an editor for ourselves in the next few assays, to know the answer to the
 questions mentioned above.
 
