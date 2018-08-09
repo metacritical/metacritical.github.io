@@ -49,7 +49,7 @@ Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power 
 
 
 #+BEGIN_QUOTE
-- *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]] ?*
+- *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
 - *How do these existing Editors work?*
 - *Is there an efficiency equation that we are unaware of?*
 - *What if the Delicate balance in powers of the runtime and scripting exists 
@@ -71,7 +71,7 @@ What i cannot create i do not understand.
 in but it surely is no match for a full fledged programming language like lisp, 
 but again the question is /How much power does one need in a programming editor ?/.
 
-*In other words where does the sweetspot lie in the [[www.paulgraham.com/avg.html][Power Continuum]] ?*
+*In other words where does the sweetspot lie in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
 
 I think what one needs is a language that is powerful enough to be both a general
 purpose programming language and simple enough to be an extension language. Emacs
