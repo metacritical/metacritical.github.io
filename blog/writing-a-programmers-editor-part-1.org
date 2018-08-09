@@ -14,10 +14,10 @@ programming text editor. Though emacs is a powerful tool it can be obtuse to
 people with no lisp/scheme knowledge, one cannot be very effective in emacs 
 without learning elisp. When i floated the idea of writing my own text editor my
 fellow programmers often speculated that it is the most difficult endeavour one 
-can undertake as a programmer, the arguments that were made varied from /look at 
-emacs and vim they have been here for over 3 decades/ to /its is a massive untertaking
-for an individual since companies like IntelliJ's, IBM, Oracle and Microsofts 
-entire business is around the devlopment of text editors/IDE's.
+can undertake as a programmer, the arguments that were made varied from /Emacs 
+and vim they have been in development for over 3 decades/ to /it is a massive 
+untertaking for an individual since companies like IntelliJ's entire business is
+around the devlopment of text editors/IDE's.
 
 And perhaps they are right, despite these editors being touted as highly 
 configurable or programmable, programmers regularly dive into the ~C~ code to 
@@ -25,13 +25,12 @@ upgrade them. It is infact a delicate exercise in the balance of power, between
 the /C-Runtime/ and the scripting language of the editor.
 
 The obvious question is how much power should an user have in a programmable
-editor? Clearly the existing power isnt enough, some editors lend more power to
-the user than others. Emacs for instance is still undergoing active development
-in /C-Runtime/, instead of fixing the issues or adding enhancements at the *elisp*
-level (The scripting language of emacs).
+editor? Some editors lend more power to the user than others. Emacs for instance
+is still undergoing active development in its /C-Runtime/, instead of fixing the
+issues or adding enhancements at the *elisp* level (The scripting language of emacs).
 
 Perhaps ~elisp~ isnt powerful enough or the /C-Runtime/ is dominant and doesnt lend
-enough power to ~elisp~. Either way the user ends up with power a deficiency.
+enough power to ~elisp~ interpreter. Either way the user ends up with a power deficiency.
 
 *I wondered what percentage of emacs is written in elisp and how much in C?*
 
@@ -48,6 +47,12 @@ Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power 
 [[./media/images/vim-percentage-repo.png]]
 
 
+~Vimscript~ on the other hand may very well be suited for extending the editor 
+in but it surely is no match for a full fledged programming language like lisp, 
+but again the question is /How much power does one need in a programming editor ?/.
+
+*In other words where does the sweetspot lie in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
+
 #+BEGIN_QUOTE
 - *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
 - *How do these existing Editors work?*
@@ -56,27 +61,18 @@ Documentation of emacs at ~16.2%~ is quite impressive irrespective of the power 
 for a reason and has a penalty when disturbed?*
 #+END_QUOTE
 
-
 Whenever i encounter subjective questions such as these, my approach is to find 
-objective reasoning for the subjective thought. The technique draws its inspiration
+an objective reasoning for the thought. The approach draws its inspiration
 from a famous Feynman quote.
 
 #+BEGIN_VERSE
-What i cannot create i do not understand.
-- Richard Feynman
+What i cannot create i do not understand. - Richard Feynman
 #+END_VERSE
 
-
-~Vimscript~ on the other hand may verywell be suited for extending the editor 
-in but it surely is no match for a full fledged programming language like lisp, 
-but again the question is /How much power does one need in a programming editor ?/.
-
-*In other words where does the sweetspot lie in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
-
 I think what one needs is a language that is powerful enough to be both a general
-purpose programming language and simple enough to be an extension language. Emacs
-lisp fits that bill being a lisp, though elisp has borrowed power and can move only
-so much as the runtime itself.
+purpose programming language and simple enough to be an extensions language. Emacs
+lisp fits that bill being a lisp, though elisp has "borrowed power" and can move only
+so much as the runtime itself allows it.
 
 What if emacs was written in *100%* ~elisp~? What if we write an Editor in a lisp
 or scheme which gives us the power to extend the editor in the same language as the
