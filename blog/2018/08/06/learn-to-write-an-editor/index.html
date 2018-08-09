@@ -36,10 +36,10 @@ programming text editor. Though emacs is a powerful tool it can be obtuse to
 people with no lisp/scheme knowledge, one cannot be very effective in emacs 
 without learning elisp. When i floated the idea of writing my own text editor my
 fellow programmers often speculated that it is the most difficult endeavour one 
-can undertake as a programmer, the arguments varied from: <i>Emacs and vim have
-been in development for over 3 decades</i> to <i>it is a massive untertaking for an 
-individual</i> since companies like IntelliJ's entire business is around building 
-text editors/IDE's.
+can undertake as a programmer, the arguments that were made varied from <i>look at 
+emacs and vim they have been here for over 3 decades</i> to /its is a massive untertaking
+for an individual since companies like IntelliJ's, IBM, Oracle and Microsofts 
+entire business is around the devlopment of text editors/IDE's.
 </p>
 
 <p>
@@ -67,7 +67,7 @@ enough power to <code>elisp</code>. Either way the user ends up with power a def
 </p>
 
 
-<div id="org8741d48" class="figure">
+<div id="org57c48dc" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -82,7 +82,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="orgdbc7839" class="figure">
+<div id="org453c5b0" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
@@ -91,7 +91,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 
 <blockquote>
 <ul class="org-ul">
-<li><b>Are these languages equally powerful in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a> ?</b></li>
+<li><b>Are these languages equally powerful in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b></li>
 <li><b>How do these existing Editors work?</b></li>
 <li><b>Is there an efficiency equation that we are unaware of?</b></li>
 <li>*What if the Delicate balance in powers of the runtime and scripting exists</li>
@@ -101,25 +101,27 @@ for a reason and has a penalty when disturbed?*
 </p>
 </blockquote>
 
+
 <p>
 Whenever i encounter subjective questions such as these, my approach is to find 
-an objective reasoning for the subjective thought. The technique draws its inspiration
+objective reasoning for the subjective thought. The technique draws its inspiration
 from a famous Feynman quote.
 </p>
 
 <p class="verse">
-What i cannot create i do not understand. - Richard Feynman<br />
+What i cannot create i do not understand.<br />
+- Richard Feynman<br />
 </p>
 
+
 <p>
-<code>Vimscript</code> on the other hand may very well be suited for extending the editor 
+<code>Vimscript</code> on the other hand may verywell be suited for extending the editor 
 in but it surely is no match for a full fledged programming language like lisp, 
-but the question is <i>How much power does one need in a programming editor ?</i>.
+but again the question is <i>How much power does one need in a programming editor ?</i>.
 </p>
 
 <p>
-<b>In other words where does the sweetspot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a> between the 
-<i>C-Rutime</i> and <i>scripting language</i>?</b>
+<b>In other words where does the sweetspot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b>
 </p>
 
 <p>
@@ -132,13 +134,13 @@ so much as the runtime itself.
 <p>
 What if emacs was written in <b>100%</b> <code>elisp</code>? What if we write an Editor in a lisp
 or scheme which gives us the power to extend the editor in the same language as the
-editor itself is written in?.
+editor itself is written in.
 </p>
 
 <p>
 A thought worthy of exploration! In the next few assays we would explore this idea
-further to lend <b>100%</b> power to the user. We would explore concepts as wide
-as terminal buffers to data structures required to build an editor. We would piece
+further to lend <b>100%</b> power to the user. We would explore concepts as broad wide
+as terminal buffers to datasctructures required to build an editor. We would piece
 together an editor for ourselves in the next few assays, to know the answer to the
 questions mentioned above.
 </p>
