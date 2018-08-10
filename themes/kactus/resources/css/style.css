@@ -168,7 +168,9 @@ a,
 	color: rgb(205, 59, 90);
 }
 
-p a { color: #39C6C1; }
+/* p a { color: #39C6C1; } */
+
+p a { color: rgb(205, 59, 90); }
 
 /*Transitions*/
 a,
@@ -193,7 +195,13 @@ ol li {
 #post-body, p { line-height:1.7; }
 
 b, strong { font-weight: 500;}
-em, i { font-style: italic; font-family: serif; font-size: large;}
+
+em, i { 
+    font-style: italic;
+    font-family: fantasy;
+    font-size: medium;
+    background-color: #efefef;
+}
 
 #title {
 	display: inline-block;
