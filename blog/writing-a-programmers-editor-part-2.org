@@ -1,0 +1,10 @@
+#+TITLE:       Writing a Programmers Editor (Datastructure) - Part 2
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        2018-08-11 Sat
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-(datastructure)---part-2
+#+KEYWORDS:    scheme, editor-data-structures, gap-buffer
+#+TAGS:        Data Structures, Editor, Gap Buffer
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Exploration to find the right data structure for teh editor.
