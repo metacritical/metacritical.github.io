@@ -1,4 +1,4 @@
-#+TITLE:       Writing a Programmers Editor (Datastructure) - Part 2
+#+TITLE:       Writing a Programmers Editor (DS/Gapbuffer) - Part 2
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        2018-08-11 Sat
@@ -8,3 +8,12 @@
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Exploration to find the right data structure for teh editor.
+
+In my quest to write a programmable editor the first problem that i came across was
+which datastructure to hold the text in? What do other text editors use? For instance 
+emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
+with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
+like.
+
+
+

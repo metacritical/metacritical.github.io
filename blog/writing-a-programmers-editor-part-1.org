@@ -57,8 +57,8 @@ but again the question is /How much power does one need in a programming editor 
 - *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
 - *How do these existing Editors work?*
 - *Is there an efficiency equation that we are unaware of?*
-- *What if the Delicate balance in powers of the runtime and scripting exists 
-for a reason and has a penalty when disturbed?*
+- *What if the Delicate balance in powers of the runtime and scripting exists*
+*for a reason and has a penalty when disturbed?*
 #+END_QUOTE
 
 Whenever i encounter subjective questions such as these, my approach is to find 
