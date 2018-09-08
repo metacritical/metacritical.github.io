@@ -16,7 +16,14 @@ with two extra empty spaces in the array. Let me demonstrate how a gap buffer lo
 like.
 
 
-#+BEGIN_SRC ditaa :file media/images/gapbuffer.png :cmdline -r -E
+#+BEGIN_SRC ditaa :file media/images/gapbuffer.png :cmdline -E -S
+
+Initial Gap Buffer
++----------------+
+       ^
+       |
+    +-----+
+    |     |
   +----+----+---+---+---+---+---+---+---+---+---+---+---+
   |cBF0|cBF0| H | E | L | L | O |   | W | O | R | L | D |
   +----+----+---+---+---+---+---+---+---+---+---+---+---+
@@ -27,5 +34,12 @@ like.
   +---+----+----+---+---+---+---+---+---+---+---+---+---+
   | H |cBF0|cBF0| E | L | L | O |   | W | O | R | L | D |
   +---+----+----+---+---+---+---+---+---+---+---+---+---+
+        |     |
+        +-----+
+           |
+           v
++------------------------------+
+ Gap Buffer representing cursor.
+
 #+END_SRC
 
