@@ -16,4 +16,16 @@ with two extra empty spaces in the array. Let me demonstrate how a gap buffer lo
 like.
 
 
+#+BEGIN_SRC ditaa :file media/images/gapbuffer.png :cmdline -r -E
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+  |cBF0|cBF0| H | E | L | L | O |   | W | O | R | L | D |
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+       |
+       +---+
+	   |
+	   v
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+  | H |cBF0|cBF0| E | L | L | O |   | W | O | R | L | D |
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+#+END_SRC
 

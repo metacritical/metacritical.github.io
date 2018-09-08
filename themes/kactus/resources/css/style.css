@@ -351,12 +351,12 @@ table td,td {
 }
 
 tr>td {
-	border-top: 1px solid #eaeaea;
+	border: 1px solid #c1baba;
 }
 
-tr:nth-child(odd)>td {
-	background: #fcfcfc;
-}
+/* tr:nth-child(odd)>td { */
+	/* background: #fcfcfc; */
+/* } */
 
 thead th,th {
 	text-align: left;
