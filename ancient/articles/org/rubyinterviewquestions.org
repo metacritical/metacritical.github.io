@@ -7,7 +7,7 @@
 #+SUBTITLE: Ruby/Rails Interview Questions.
 #+BIND: org-export-publishing-directory "../html/"
 
-:PUBDATE: <2013-05-30>
+#+PUBDATE: <2013-05-30>
 
 #+HTML_HEAD: <link id="pagestyle" rel="stylesheet" type="text/css" href="../css/org.css"/>
 
