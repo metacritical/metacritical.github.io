@@ -1,0 +1,17 @@
+#+TITLE: Posts tagged "org-mode"
+#+AUTHOR: Your Name
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+* Posts tagged "org-mode"
+:PROPERTIES:
+:CUSTOM_ID: posts-tagged-org-mode
+:END:
+
+- 2025-04-12 :: [[file:posts/sample-post.org][Sample Post with Syntax Highlighting]]
+
+
+* [[file:../../tags/index.org][All Tags]]
+:PROPERTIES:
+:CUSTOM_ID: file-tags-index-org-all-tags
+:END:

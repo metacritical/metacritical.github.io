@@ -1,0 +1,89 @@
+/* Medium-like theme overrides for Self dot send shell */
+html[data-theme="medium"] body {
+  background: #ffffff;
+  color: #242424;
+  font-family: Charter, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Times New Roman', serif;
+}
+
+html[data-theme="medium"] nav.main-nav {
+  background: #ffffff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+html[data-theme="medium"] nav.main-nav a,
+html[data-theme="medium"] nav.main-nav a.cta {
+  color: #242424;
+}
+
+html[data-theme="medium"] #wrapper,
+html[data-theme="medium"] #wrapper.home,
+html[data-theme="medium"] .profile #wrapper {
+  max-width: 740px;
+}
+
+html[data-theme="medium"] .profile #header {
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+}
+
+html[data-theme="medium"] .profile h1 {
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+html[data-theme="medium"] .profile h2 {
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  color: #6b6b6b;
+}
+
+html[data-theme="medium"] a,
+html[data-theme="medium"] p a,
+html[data-theme="medium"] #title,
+html[data-theme="medium"] #post-list a:hover,
+html[data-theme="medium"] #post-list li:hover .dates,
+html[data-theme="medium"] #title:hover {
+  color: #1a8917;
+}
+
+html[data-theme="medium"] .post-list a {
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  line-height: 1.2;
+  color: #242424;
+}
+
+html[data-theme="medium"] .post-list .dates {
+  color: #6b6b6b;
+}
+
+html[data-theme="medium"] pre,
+html[data-theme="medium"] pre.src {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+html[data-theme="medium"] #footer .small {
+  color: #6b6b6b;
+}
+
+.theme-switch {
+  margin-left: 12px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  border-radius: 14px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+html[data-theme="medium"] .theme-switch {
+  border-color: #d9d9d9;
+  color: #242424;
+}

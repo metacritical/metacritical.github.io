@@ -1,0 +1,16 @@
+#+TITLE: Self dot send
+#+AUTHOR: Pankaj Doharey
+#+DATE: 2025-04-12
+
+* Self dot send (Computing Blog)
+
+Message passing is just a procedure call.
+
+* Recent Posts
+
+- 2018-08-11 :: [[file:posts/writing-a-programmers-editor-part-2.org][Writing a Programmers Editor (DS/Gapbuffer) - Part 2]]
+- 2018-08-06 :: [[file:posts/learn-to-write-an-editor.org][Learn to Write an Editor]]
+- 2018-07-19 :: [[file:posts/git-stats-on-unix-terminal-prompt.org][Git status on Unix terminal]]
+- 2018-07-14 :: [[file:posts/new-post.org][Lolcat in Arm Assembly]]
+- 2025-04-12 :: [[file:posts/sample-post.org][Sample Post with Syntax Highlighting]]
+- 2025-04-10 :: [[file:posts/first-post.org][First Post]]

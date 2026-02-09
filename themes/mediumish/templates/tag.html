@@ -1,0 +1,35 @@
+<div class="tag-template">
+  <header class="tag-header">
+    <div class="tag-header-content">
+      <h1 class="tag-title">Posts tagged with "{{tag-name}}"</h1>
+    </div>
+  </header>
+  
+  <div class="post-feed">
+    {{#posts}}
+    <article class="post-card">
+      <div class="post-card-content">
+        <a class="post-card-link" href="{{post-url}}">
+          <header class="post-card-header">
+            <h2 class="post-card-title">{{post-title}}</h2>
+          </header>
+        </a>
+        <footer class="post-card-meta">
+          <time class="post-card-date" datetime="{{post-date}}">{{post-date}}</time>
+        </footer>
+      </div>
+    </article>
+    {{/posts}}
+  </div>
+  
+  <div class="all-tags">
+    <h2>All Tags</h2>
+    <div class="tag-cloud">
+      {{#all-tags}}
+      <a href="/tags/{{tag-slug}}.html" class="tag {{#current}}current{{/current}}">
+        {{tag-name}} <span class="tag-count">({{tag-count}})</span>
+      </a>
+      {{/all-tags}}
+    </div>
+  </div>
+</div>

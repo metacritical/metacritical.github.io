@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/screen.css">
+  <link rel="stylesheet" href="/assets/css/syntax-highlight.css">
+  <link rel="stylesheet" href="/assets/css/prettify.css">
+  <script src="/assets/js/prettify.js"></script>
+</head>
+<body>
+  <div class="site-wrapper">
+    <header class="site-header">
+      <div class="outer site-nav-main">
+        <div class="inner">
+          <nav class="site-nav">
+            <div class="site-nav-left">
+              <a class="site-nav-logo" href="/">{{title}}</a>
+              <ul class="nav">
+                <li class="nav-home"><a href="/">Home</a></li>
+                <li class="nav-about"><a href="/about.html">About</a></li>
+                <li class="nav-archive"><a href="/archive.html">Archive</a></li>
+                <li class="nav-tags"><a href="/tags.html">Tags</a></li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+    
+    {{#is_home}}
+    <div class="site-header-content">
+      <h1 class="site-title">Self dot send (Computing Blog)</h1>
+      <p class="site-description">Message passing is just a procedure call.</p>
+      
+      <h2>Recent Posts</h2>
+      <p>This is the main index page for the Self dot send blog. Recent posts will be listed here.</p>
+    </div>
+    {{/is_home}}
+    
+    <main class="site-main">
+      <div class="inner">
+        {{{content}}}
+      </div>
+    </main>
+    
+    <footer class="site-footer outer">
+      <div class="inner">
+        <section class="copyright">
+          <p>© {{year}} <a href="https://github.com/metacritical">{{author}}</a>. Powered by <a href="https://github.com/metacritical/alchemist">Alchemist</a>.</p>
+        </section>
+      </div>
+    </footer>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize syntax highlighting
+      var blocks = document.querySelectorAll('pre.src');
+      blocks.forEach(function(block) {
+        block.classList.add('prettyprint');
+        // Convert language class
+        Array.from(block.classList).forEach(function(cls) {
+          if (cls.startsWith('src-')) {
+            var lang = cls.substring(4);
+            block.classList.add('lang-' + lang);
+          }
+        });
+      });
+      prettyPrint();
+    });
+  </script>
+</body>
+</html>

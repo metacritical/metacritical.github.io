@@ -1,0 +1,26 @@
+#+TITLE: Archive
+#+AUTHOR: Your Name
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+* Archive
+
+** August [2018
+
+- [2018-08-06 Mon] :: [[file:posts/learn-to-write-an-editor.org][Learn to Write an Editor]]
+
+** April 2025
+
+- 2025-04-10 :: [[file:posts/index.org][All Posts]]
+- 2025-04-10 :: [[file:posts/first-post.org][First Post]]
+- 2025-04-12 :: [[file:posts/sample-post.org][Sample Post with Syntax Highlighting]]
+
+** August 2018
+
+- 2018-08-11 Sat :: [[file:posts/writing-a-programmers-editor-part-2.org][Writing a Programmers Editor (DS/Gapbuffer) - Part 2]]
+
+** July 2018
+
+- 2018-07-14 Sat :: [[file:posts/new-post.org][Lolcat in Arm Assembly]]
+- 2018-07-19 Thu :: [[file:posts/git-stats-on-unix-terminal-prompt.org][Git status on Unix terminal]]
+

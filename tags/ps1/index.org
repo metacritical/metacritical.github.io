@@ -1,0 +1,17 @@
+#+TITLE: Posts tagged "ps1"
+#+AUTHOR: Your Name
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+* Posts tagged "ps1"
+:PROPERTIES:
+:CUSTOM_ID: posts-tagged-ps1
+:END:
+
+- 2018-07-19 Thu :: [[file:posts/git-stats-on-unix-terminal-prompt.org][Git status on Unix terminal]]
+
+
+* [[file:../../tags/index.org][All Tags]]
+:PROPERTIES:
+:CUSTOM_ID: file-tags-index-org-all-tags
+:END:

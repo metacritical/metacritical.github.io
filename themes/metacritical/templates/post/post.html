@@ -1,0 +1,38 @@
+<article class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{page-title}}</h1>
+    <div class="post-meta">
+      <span class="date">{{date}}</span>
+      {{#tags}}
+      <span class="tags">
+        Tags: 
+        {{#tag-list}}
+          <a href="/tags/{{tag-slug}}">{{tag-name}}</a>
+        {{/tag-list}}
+      </span>
+      {{/tags}}
+    </div>
+  </header>
+  
+  <div class="post-content">
+    {{content}}
+  </div>
+  
+  <footer class="post-footer">
+    <div class="share-buttons">
+      <h4>Share this post</h4>
+      <a href="https://twitter.com/intent/tweet?text={{page-title}}&url={{url}}" target="_blank" title="Share on Twitter">Twitter</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{url}}" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    </div>
+    
+    <div class="post-navigation">
+      {{#prev-post}}
+      <a class="prev-post" href="{{prev-post-url}}">&larr; {{prev-post-title}}</a>
+      {{/prev-post}}
+      
+      {{#next-post}}
+      <a class="next-post" href="{{next-post-url}}">{{next-post-title}} &rarr;</a>
+      {{/next-post}}
+    </div>
+  </footer>
+</article>

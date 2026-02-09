@@ -1,0 +1,19 @@
+#+TITLE: Nano Chat
+#+AUTHOR: Pankaj Doharey
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+#+BEGIN_EXPORT html
+<section class="nano-chat">
+  <p>Local in-browser mini LLM chat for this site. Model runs in your browser (no server endpoint).</p>
+  <div class="nano-chat-toolbar">
+    <button id="nano-init" class="nano-btn" type="button">Load Nano Model</button>
+    <span id="nano-status" class="nano-status">Model not loaded.</span>
+  </div>
+  <div id="nano-messages" class="nano-messages"></div>
+  <div class="nano-input-row">
+    <textarea id="nano-input" class="nano-input" placeholder="Ask Nano Chat..." disabled></textarea>
+    <button id="nano-send" class="nano-btn" type="button" disabled>Send</button>
+  </div>
+</section>
+#+END_EXPORT

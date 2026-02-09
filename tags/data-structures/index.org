@@ -1,0 +1,17 @@
+#+TITLE: Posts tagged "Data Structures"
+#+AUTHOR: Your Name
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+* Posts tagged "Data Structures"
+:PROPERTIES:
+:CUSTOM_ID: posts-tagged-data-structures
+:END:
+
+- 2018-08-11 Sat :: [[file:posts/writing-a-programmers-editor-part-2.org][Writing a Programmers Editor (DS/Gapbuffer) - Part 2]]
+
+
+* [[file:../../tags/index.org][All Tags]]
+:PROPERTIES:
+:CUSTOM_ID: file-tags-index-org-all-tags
+:END:

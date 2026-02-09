@@ -1,0 +1,17 @@
+#+TITLE: Posts tagged "introduction"
+#+AUTHOR: Your Name
+#+DATE: 2025-04-12
+#+OPTIONS: toc:nil num:nil
+
+* Posts tagged "introduction"
+:PROPERTIES:
+:CUSTOM_ID: posts-tagged-introduction
+:END:
+
+- 2025-04-12 :: [[file:posts/first-post.org][Welcome to Self dot send]]
+
+
+* [[file:../../tags/index.org][All Tags]]
+:PROPERTIES:
+:CUSTOM_ID: file-tags-index-org-all-tags
+:END:

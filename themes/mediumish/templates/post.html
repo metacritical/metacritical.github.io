@@ -1,0 +1,27 @@
+<article class="post-full">
+  <header class="post-full-header">
+    <h1 class="post-full-title">{{title}}</h1>
+    <div class="post-full-meta">
+      <time class="post-full-meta-date" datetime="{{date}}">{{date}}</time>
+      {{#author}}<span class="post-full-meta-author">By {{author}}</span>{{/author}}
+    </div>
+  </header>
+  
+  <section class="post-full-content">
+    <div class="post-content">
+      {{{content}}}
+    </div>
+  </section>
+  
+  {{#tags}}
+  <footer class="post-full-footer">
+    <div class="post-full-tags">
+      <div class="tags">
+        {{#.}}
+        <a href="/tags/{{.}}.html" class="tag-link">{{.}}</a>
+        {{/.}}
+      </div>
+    </div>
+  </footer>
+  {{/tags}}
+</article>

@@ -1,0 +1,200 @@
+/*
+ * Doom Monokai Pro syntax override for Org/htmlize and prettify output.
+ * This file is copied to /media/css/code-theme-monokai-pro.css and loaded
+ * after all theme styles during publish.
+ */
+
+html[data-theme="medium"] pre.src,
+html[data-theme="medium"] .org-src-container,
+html[data-theme="medium"] .org-src-container pre,
+html[data-theme="medium"] .org-src-container pre.src,
+html[data-theme="medium"] pre.prettyprint,
+html[data-theme="medium"] .highlight pre,
+pre.src,
+.org-src-container,
+.org-src-container pre,
+.org-src-container pre.src,
+pre.prettyprint,
+.highlight pre {
+  background: #2d2a2e !important;
+  border: 1px solid #221f22 !important;
+  color: #fcfcfa !important;
+}
+
+html[data-theme="medium"] pre.src,
+html[data-theme="medium"] .org-src-container pre.src,
+html[data-theme="medium"] pre.prettyprint,
+html[data-theme="medium"] .highlight pre,
+pre.src,
+.org-src-container pre.src,
+pre.prettyprint,
+.highlight pre {
+  line-height: 1.5;
+}
+
+html[data-theme="medium"] pre.src,
+html[data-theme="medium"] .org-src-container pre,
+html[data-theme="medium"] pre.prettyprint,
+html[data-theme="medium"] .highlight pre,
+pre.src,
+.org-src-container pre,
+pre.prettyprint,
+.highlight pre {
+  color: #fcfcfa !important;
+}
+
+pre.src .org-keyword,
+.org-src-container pre .org-keyword,
+html[data-theme="medium"] pre.src .org-keyword,
+html[data-theme="classic"] pre.src .org-keyword,
+pre.src .org-special-keyword,
+.org-src-container pre .org-special-keyword,
+html[data-theme="medium"] pre.src .org-special-keyword,
+html[data-theme="classic"] pre.src .org-special-keyword {
+  color: #ff6188 !important;
+  font-weight: 700;
+}
+
+pre.src .org-string,
+.org-src-container pre .org-string,
+html[data-theme="medium"] pre.src .org-string,
+html[data-theme="classic"] pre.src .org-string {
+  color: #ffd866 !important;
+}
+
+pre.src .org-comment,
+pre.src .org-comment-delimiter,
+.org-src-container pre .org-comment,
+.org-src-container pre .org-comment-delimiter,
+html[data-theme="medium"] pre.src .org-comment,
+html[data-theme="medium"] pre.src .org-comment-delimiter,
+html[data-theme="classic"] pre.src .org-comment,
+html[data-theme="classic"] pre.src .org-comment-delimiter {
+  color: #727072 !important;
+  font-style: italic;
+}
+
+pre.src .org-function-name,
+.org-src-container pre .org-function-name,
+html[data-theme="medium"] pre.src .org-function-name,
+html[data-theme="classic"] pre.src .org-function-name {
+  color: #a9dc76 !important;
+}
+
+pre.src .org-variable-name,
+.org-src-container pre .org-variable-name,
+html[data-theme="medium"] pre.src .org-variable-name,
+html[data-theme="classic"] pre.src .org-variable-name {
+  color: #fcfcfa !important;
+}
+
+pre.src .org-type,
+.org-src-container pre .org-type,
+html[data-theme="medium"] pre.src .org-type,
+html[data-theme="classic"] pre.src .org-type {
+  color: #78dce8 !important;
+  font-style: normal;
+}
+
+pre.src .org-constant,
+.org-src-container pre .org-constant,
+html[data-theme="medium"] pre.src .org-constant,
+html[data-theme="classic"] pre.src .org-constant {
+  color: #ab9df2 !important;
+}
+
+pre.src .org-builtin,
+.org-src-container pre .org-builtin,
+html[data-theme="medium"] pre.src .org-builtin,
+html[data-theme="classic"] pre.src .org-builtin {
+  color: #78dce8 !important;
+}
+
+pre.src .org-preprocessor,
+.org-src-container pre .org-preprocessor,
+html[data-theme="medium"] pre.src .org-preprocessor,
+html[data-theme="classic"] pre.src .org-preprocessor {
+  color: #ff6188 !important;
+}
+
+pre.src .org-doc,
+.org-src-container pre .org-doc,
+html[data-theme="medium"] pre.src .org-doc,
+html[data-theme="classic"] pre.src .org-doc {
+  color: #727072 !important;
+  font-style: italic;
+}
+
+pre.src .org-warning,
+.org-src-container pre .org-warning,
+html[data-theme="medium"] pre.src .org-warning,
+html[data-theme="classic"] pre.src .org-warning {
+  color: #fc9867 !important;
+}
+
+pre.src .org-error,
+.org-src-container pre .org-error,
+html[data-theme="medium"] pre.src .org-error,
+html[data-theme="classic"] pre.src .org-error {
+  color: #ff6188 !important;
+}
+
+pre.src .org-sh-quoted-exec,
+.org-src-container pre .org-sh-quoted-exec {
+  color: #78dce8 !important;
+}
+
+pre.src .org-number,
+.org-src-container pre .org-number,
+html[data-theme="medium"] pre.src .org-number,
+html[data-theme="classic"] pre.src .org-number {
+  color: #ab9df2 !important;
+}
+
+pre.src .org-negation-char,
+.org-src-container pre .org-negation-char,
+html[data-theme="medium"] pre.src .org-negation-char,
+html[data-theme="classic"] pre.src .org-negation-char {
+  color: #ff6188 !important;
+}
+
+pre.src .org-regexp-grouping-backslash,
+pre.src .org-regexp-grouping-construct,
+.org-src-container pre .org-regexp-grouping-backslash,
+.org-src-container pre .org-regexp-grouping-construct,
+html[data-theme="medium"] pre.src .org-regexp-grouping-backslash,
+html[data-theme="medium"] pre.src .org-regexp-grouping-construct,
+html[data-theme="classic"] pre.src .org-regexp-grouping-backslash,
+html[data-theme="classic"] pre.src .org-regexp-grouping-construct {
+  color: #fc9867 !important;
+}
+
+pre.prettyprint .pln,
+html[data-theme="medium"] pre.prettyprint .pln {
+  color: #fcfcfa !important;
+}
+
+pre.prettyprint .kwd,
+html[data-theme="medium"] pre.prettyprint .kwd {
+  color: #ff6188 !important;
+}
+
+pre.prettyprint .str,
+html[data-theme="medium"] pre.prettyprint .str {
+  color: #ffd866 !important;
+}
+
+pre.prettyprint .com,
+html[data-theme="medium"] pre.prettyprint .com {
+  color: #727072 !important;
+}
+
+pre.prettyprint .typ,
+html[data-theme="medium"] pre.prettyprint .typ {
+  color: #78dce8 !important;
+}
+
+pre.prettyprint .lit,
+html[data-theme="medium"] pre.prettyprint .lit {
+  color: #ab9df2 !important;
+}

@@ -1,0 +1,20 @@
+#+TITLE: First Post
+#+AUTHOR: Your Name
+#+DATE: 2025-04-10
+#+OPTIONS: toc:nil num:nil
+
+* Hello World
+:PROPERTIES:
+:CUSTOM_ID: hello-world
+:END:
+
+This is your first blog post with Alchemist. Edit this file to get started.
+
+* Features
+:PROPERTIES:
+:CUSTOM_ID: features
+:END:
+
+- Org-mode syntax
+- Flexible theming
+- Simple publishing

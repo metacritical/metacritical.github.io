@@ -1,0 +1,52 @@
+#+TITLE: Home
+#+AUTHOR: Pankaj Doharey
+#+DATE: 2025-04-12
+#+OPTIONS: toc:nil num:nil title:nil
+
+#+BEGIN_EXPORT html
+<section class="medium-home">
+  <article class="medium-post-card">
+    <a class="medium-post-main" href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/index.html">
+      <h2>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h2>
+      <p>Gap buffer internals, cursor movement mechanics, and practical editor data structure trade-offs.</p>
+      <div class="medium-post-meta">Aug 11, 2018</div>
+    </a>
+    <a class="medium-post-thumb" href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/index.html">
+      <img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="Gap buffer diagram">
+    </a>
+  </article>
+
+  <article class="medium-post-card">
+    <a class="medium-post-main" href="/blog/2018/08/06/learn-to-write-an-editor/index.html">
+      <h2>Writing a Programmers Editor - Part 1</h2>
+      <p>Starting points for building an editor, from core primitives to incremental architecture decisions.</p>
+      <div class="medium-post-meta">Aug 06, 2018</div>
+    </a>
+    <a class="medium-post-thumb" href="/blog/2018/08/06/learn-to-write-an-editor/index.html">
+      <img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="Editor post image">
+    </a>
+  </article>
+
+  <article class="medium-post-card">
+    <a class="medium-post-main" href="/blog/2018/07/19/git-status-on-unix-terminal/index.html">
+      <h2>Git status on Unix terminal</h2>
+      <p>A faster PS1 git-status indicator with a lightweight approach suitable for everyday shell usage.</p>
+      <div class="medium-post-meta">Jul 19, 2018</div>
+    </a>
+    <a class="medium-post-thumb" href="/blog/2018/07/19/git-status-on-unix-terminal/index.html">
+      <img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="Git prompt screenshot">
+    </a>
+  </article>
+
+  <article class="medium-post-card">
+    <a class="medium-post-main" href="/blog/2018/07/14/lolcat-in-arm-assembly/index.html">
+      <h2>Lolcat in 64 arm assembly</h2>
+      <p>Exploring ARM assembly through a practical and fun terminal colorization implementation.</p>
+      <div class="medium-post-meta">Jul 14, 2018</div>
+    </a>
+    <a class="medium-post-thumb" href="/blog/2018/07/14/lolcat-in-arm-assembly/index.html">
+      <img src="/media/images/placeholder.png" alt="Self dot send placeholder">
+    </a>
+  </article>
+</section>
+#+END_EXPORT

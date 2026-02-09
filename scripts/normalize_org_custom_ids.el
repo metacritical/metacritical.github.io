@@ -1,0 +1,35 @@
+(require 'org)
+(require 'subr-x)
+
+(defun sds/slugify (s)
+  (let* ((down (downcase (string-trim (or s ""))))
+         (norm (replace-regexp-in-string "[^a-z0-9]+" "-" down))
+         (trim (replace-regexp-in-string "^-\\|-$" "" norm)))
+    (if (string-empty-p trim) "section" trim)))
+
+(defun sds/normalize-custom-ids-in-file (file)
+  (with-current-buffer (find-file-noselect file)
+    (org-mode)
+    (let ((seen (make-hash-table :test #'equal))
+          (changed nil))
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (org-map-entries
+        (lambda ()
+          (let* ((title (org-get-heading t t t t))
+                 (base (sds/slugify title))
+                 (n (1+ (gethash base seen 0)))
+                 (slug (if (= n 1) base (format "%s-%d" base n)))
+                 (existing (org-entry-get nil "CUSTOM_ID" t)))
+            (puthash base n seen)
+            (unless (and existing (string= existing slug))
+              (org-entry-put nil "CUSTOM_ID" slug)
+              (setq changed t))))))
+      (when changed
+        (save-buffer)))
+    (kill-buffer (current-buffer))))
+
+(let ((target (or (car command-line-args-left) default-directory)))
+  (dolist (file (directory-files-recursively target "\\.org\\'"))
+    (unless (string-match-p "/\\(public\\|themes\\)/" file)
+      (sds/normalize-custom-ids-in-file file))))

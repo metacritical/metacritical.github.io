@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Nano Chat",
+    "url": "/blog/2026/02/09/nano-chat/",
+    "date": "2026-02-09",
+    "excerpt": "Local in-browser mini LLM chat for this site. Model runs in your browser (no server endpoint)."
+  },
+  {
+    "title": "Sample Post with Syntax Highlighting",
+    "url": "/blog/2025/04/12/sample-post-with-syntax-highlighting/",
+    "date": "2025-04-12",
+    "excerpt": "This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist."
+  },
+  {
+    "title": "First Post",
+    "url": "/blog/2025/04/10/first-post/",
+    "date": "2025-04-10",
+    "excerpt": "This is your first blog post with Alchemist. Edit this file to get started."
+  },
+  {
+    "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
+    "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
+    "date": "2018-08-11",
+    "excerpt": "In my quest to write a programmable editor the first problem that i came across was which datastructure to hold the text in? What do other text editors use? For instance emacs in which this blog is written uses gap bu..."
+  },
+  {
+    "title": "Writing a Programmers Editor - Part 1",
+    "url": "/blog/2018/08/06/learn-to-write-an-editor/",
+    "date": "2018-08-06",
+    "excerpt": "Since the time i learnt emacs i have toyed with the idea of writing my own programming text editor. Though emacs is a powerful tool it can be obtuse to people with no lisp/scheme knowledge, one cannot be very effectiv..."
+  },
+  {
+    "title": "Git status on Unix terminal",
+    "url": "/blog/2018/07/19/git-status-on-unix-terminal/",
+    "date": "2018-07-19",
+    "excerpt": "It is often required to get git stats on terminal PS1, most solutions are based aound bash can be slow sometimes or if you are like me who programmed something in ruby also turned out to be slow. We can make things fa..."
+  },
+  {
+    "title": "Lolcat in Arm Assembly",
+    "url": "/blog/2018/07/14/lolcat-in-arm-assembly/",
+    "date": "2018-07-14",
+    "excerpt": ""
+  },
+  {
+    "title": "Self dot send (Computing Blog)",
+    "url": "/blog/",
+    "date": "1970-01-01",
+    "excerpt": ""
+  }
+]

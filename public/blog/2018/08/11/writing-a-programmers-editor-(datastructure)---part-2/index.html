@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Exploration to find the right data structure for teh editor." />
+  <meta name="keywords" content="scheme, editor-data-structures, gap-buffer" />
+  <link rel="icon" href="/media/img/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770649667" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770651722" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">Search</button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div class="profile">
+  <section id="wrapper">
+    <header id="header">
+      <a href="/"><img id="avatar" class="2x" src="/media/images/logo.png"></a>
+      <h1>Self dot send (Computing Blog)</h1>
+      <h2>Message passing is just a procedure call.</h2>
+    </header>
+  </section>
+</div>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
+  <p>
+In my quest to write a programmable editor the first problem that i came across was
+which datastructure to hold the text in? What do other text editors use? For instance 
+emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
+with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
+like.
+</p>
+
+
+
+<div id="org913eb56" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
+</p>
+</div>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-08-11</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+      var disqus_url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+      var disqus_shortname = "SelfDotSend";
+      (function() {
+        var dsq = document.createElement("script");
+        dsq.type = "text/javascript";
+        dsq.async = true;
+        dsq.src = "https://" + disqus_shortname + ".disqus.com/embed.js";
+        (document.head || document.body).appendChild(dsq);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,17 @@
+#+TITLE: Posts tagged "emacs"
+#+AUTHOR: Your Name
+#+DATE: 2026-02-09
+#+OPTIONS: toc:nil num:nil
+
+* Posts tagged "emacs"
+:PROPERTIES:
+:CUSTOM_ID: posts-tagged-emacs
+:END:
+
+- [2018-08-06 Mon] :: [[file:posts/learn-to-write-an-editor.org][Learn to Write an Editor]]
+
+
+* [[file:../../tags/index.org][All Tags]]
+:PROPERTIES:
+:CUSTOM_ID: file-tags-index-org-all-tags
+:END:

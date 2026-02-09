@@ -1,0 +1,23 @@
+<!-- Individual post template -->
+<article class="post">
+  <h1 class="post-title">{{title}}</h1>
+  <div class="post-date">{{date}}</div>
+  
+  <div class="post-content">
+    {{{content}}}
+  </div>
+  
+  {{#tags}}
+  <div class="post-tags">
+    <span>Tags:</span>
+    {{#.}}
+    <a href="/tags/{{.}}.html">{{.}}</a>
+    {{/.}}
+  </div>
+  {{/tags}}
+</article>
+
+<div class="comments">
+  <h2>Comments</h2>
+  <!-- Comments section can be implemented here -->
+</div>
