@@ -45,6 +45,13 @@ What this does:
 6. Applies build-time syntax highlighting fallback to exported HTML
 7. Creates stable aliases (`/archive/`, `/blog/`, `/nano-chat/`)
 8. Generates `public/search-index.json`
+9. Cleans post-build clutter (archives legacy dirs like `public-aog/`, removes `*~` / `.DS_Store`)
+
+Disable cleanup for a run:
+
+```bash
+CLEANUP_AFTER_BUILD=0 ./publish.sh
+```
 
 ## 4) Local Preview
 

@@ -9,6 +9,31 @@ DITAA_JAR="${DITAA_JAR:-$BLOG_DIR/tools/diagrams/ditaa-0.11.0-standalone.jar}"
 PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar}"
 EMACS_BIN="${EMACS_BIN:-emacs}"
 
+cleanup_post_build_artifacts() {
+  # Keep the repo root tidy for commits by archiving known legacy folders.
+  local stamp archive_dir moved_any
+  stamp="$(date +%Y-%m-%d)"
+  archive_dir="$BLOG_DIR/ancient/${stamp}-post-build-cleanup"
+  moved_any=0
+
+  for legacy_dir in public-aog public-test templates_legacy output; do
+    if [ -e "$BLOG_DIR/$legacy_dir" ]; then
+      mkdir -p "$archive_dir"
+      mv "$BLOG_DIR/$legacy_dir" "$archive_dir/"
+      moved_any=1
+    fi
+  done
+
+  if [ "$moved_any" -eq 1 ]; then
+    echo "Archived legacy directories to: $archive_dir"
+  fi
+
+  # Remove editor backups/OS metadata from active tree (except .git/public/ancient).
+  find "$BLOG_DIR" \
+    \( -path "$BLOG_DIR/.git" -o -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/ancient" \) -prune -o \
+    -type f \( -name "*~" -o -name ".DS_Store" \) -delete
+}
+
 # Ensure exported section anchors are readable and stable (CUSTOM_ID slugs).
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/normalize_org_custom_ids.el" "$BLOG_DIR"
 
@@ -127,6 +152,11 @@ fi
 
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"
+
+# Optional cleanup step to keep commit diffs clean after each build.
+if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then
+  cleanup_post_build_artifacts
+fi
 
 echo "Blog published successfully at: $BLOG_DIR/public"
 echo "To view the blog, run: cd $BLOG_DIR/public && python -m http.server 8080"
