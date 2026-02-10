@@ -13,6 +13,7 @@ PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
+DRAFTS="${DRAFTS:-0}"
 
 cleanup_post_build_artifacts() {
   # Keep the repo root tidy for commits by archiving known legacy folders.
@@ -65,6 +66,12 @@ fi
 
 # Publish with AOG using native selfdotsend theme.
 echo "Publishing blog with AOG..."
+if [ "$DRAFTS" = "1" ]; then
+  echo "Including drafts in this build (DRAFTS=1)."
+  export AOG_INCLUDE_DRAFTS=1
+else
+  export AOG_INCLUDE_DRAFTS=0
+fi
 rm -rf "$BLOG_DIR/public"
 # AOG emits a large volume of benign link-validation warnings during
 # generation; filter them so real failures are visible in dev output.

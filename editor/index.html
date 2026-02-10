@@ -111,7 +111,8 @@
       <h1>Local Draft Editor</h1>
       <div class="actions">
         <button class="secondary" id="copyBtn" type="button">Copy Org</button>
-        <button id="saveBtn" type="button">Save to drafts/</button>
+        <button class="secondary" id="saveDraftBtn" type="button">Save Draft</button>
+        <button id="publishBtn" type="button">Publish to posts/</button>
       </div>
     </div>
 
@@ -128,7 +129,8 @@
     const titleEl = document.getElementById("title");
     const bodyEl = document.getElementById("body");
     const statusEl = document.getElementById("status");
-    const saveBtn = document.getElementById("saveBtn");
+    const saveDraftBtn = document.getElementById("saveDraftBtn");
+    const publishBtn = document.getElementById("publishBtn");
     const copyBtn = document.getElementById("copyBtn");
 
     const KEY = "selfdotsend-local-editor-v1";
@@ -168,7 +170,7 @@
       } catch (_) {}
     }
 
-    async function saveDraft() {
+    async function saveDoc(mode) {
       const title = titleEl.innerText.trim();
       const body = bodyEl.innerText;
       if (!title) {
@@ -180,13 +182,14 @@
         const res = await fetch("/__editor/api/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, body }),
+          body: JSON.stringify({ title, body, mode }),
         });
         const data = await res.json();
         if (!res.ok || !data.ok) {
           throw new Error(data.error || "Failed to save draft");
         }
-        setStatus(`Saved: ${data.path}`);
+        const label = data.mode === "publish" ? "Published" : "Draft saved";
+        setStatus(`${label}: ${data.path}`);
       } catch (err) {
         setStatus(String(err.message || err), true);
       }
@@ -205,7 +208,8 @@
 
     titleEl.addEventListener("input", saveLocal);
     bodyEl.addEventListener("input", saveLocal);
-    saveBtn.addEventListener("click", saveDraft);
+    saveDraftBtn.addEventListener("click", () => saveDoc("draft"));
+    publishBtn.addEventListener("click", () => saveDoc("publish"));
     copyBtn.addEventListener("click", copyOrg);
 
     loadLocal();

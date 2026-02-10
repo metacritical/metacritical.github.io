@@ -92,24 +92,30 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
 
         title = str(data.get("title", "")).strip()
         body = str(data.get("body", "")).strip()
+        mode = str(data.get("mode", "draft")).strip().lower()
         if not title:
             self._json(400, {"ok": False, "error": "Title is required"})
             return
 
-        drafts_dir = self.blog_dir / "drafts"
-        drafts_dir.mkdir(parents=True, exist_ok=True)
+        if mode not in {"draft", "publish"}:
+            self._json(400, {"ok": False, "error": "Mode must be draft or publish"})
+            return
+
+        target_dir = self.blog_dir / ("posts" if mode == "publish" else "drafts")
+        target_dir.mkdir(parents=True, exist_ok=True)
         slug = slugify(title)
-        filename = drafts_dir / f"{slug}.org"
+        filename = target_dir / f"{slug}.org"
         # Avoid accidental overwrite of an existing draft.
         if filename.exists():
             stamp = dt.datetime.now().strftime("%H%M%S")
-            filename = drafts_dir / f"{slug}-{stamp}.org"
+            filename = target_dir / f"{slug}-{stamp}.org"
 
         filename.write_text(org_draft_text(title, body), encoding="utf-8")
         self._json(
             200,
             {
                 "ok": True,
+                "mode": mode,
                 "path": str(filename.relative_to(self.blog_dir)),
                 "message": "Draft saved.",
             },

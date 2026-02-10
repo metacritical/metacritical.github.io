@@ -32,7 +32,7 @@ Optional (for diagrams):
 From repo root:
 
 ```bash
-cd /Users/pankajdoharey/Development/selfdotsend-new
+cd /Users/pankajdoharey/Development/metacritical.github.io
 ./publish.sh
 ```
 
@@ -46,10 +46,14 @@ What this does:
 7. Creates stable aliases (`/archive/`, `/blog/`, `/nano-chat/`)
 8. Generates `public/search-index.json`
 
+Draft behavior:
+- Default publish excludes `drafts/`
+- Preview with drafts included: `DRAFTS=1 ./publish.sh`
+
 ## 4) Local Preview
 
 ```bash
-cd /Users/pankajdoharey/Development/selfdotsend-new/public
+cd /Users/pankajdoharey/Development/metacritical.github.io/public
 python -m http.server 8080
 ```
 
@@ -60,7 +64,7 @@ Open: `http://localhost:8080`
 This repo now includes `Procfile` for `doorman`:
 
 ```bash
-cd /Users/pankajdoharey/Development/selfdotsend-new
+cd /Users/pankajdoharey/Development/metacritical.github.io
 doorman
 ```
 
@@ -70,6 +74,7 @@ Processes started:
 - Local editor (dev only): `http://localhost:8080/__editor`
   - Only available while `doorman` is running
   - Saves drafts to `drafts/*.org` via local API
+  - Can publish directly to `posts/*.org` via local API
 
 Tuning:
 - `WATCH_POLL_SECONDS=1 doorman` to poll faster
@@ -79,6 +84,14 @@ Tuning:
 Notes:
 - `dev-watch` is single-instance guarded, so accidental duplicate `doorman`
   runs won't create multiple rebuild loops.
+- `dev-watch` runs `DRAFTS=1`, so local preview includes drafts.
+
+Create articles from CLI:
+
+```bash
+./scripts/new-article.sh "My new draft"
+./scripts/new-article.sh --publish "My published post"
+```
 
 ## 6) Diagram Behavior
 
@@ -103,8 +116,8 @@ aog preview [repo_dir] [output_dir] [port]
 Examples:
 
 ```bash
-aog publish /Users/pankajdoharey/Development/selfdotsend-new /Users/pankajdoharey/Development/selfdotsend-new/public
-aog preview /Users/pankajdoharey/Development/selfdotsend-new /Users/pankajdoharey/Development/selfdotsend-new/public 8080
+aog publish /Users/pankajdoharey/Development/metacritical.github.io /Users/pankajdoharey/Development/metacritical.github.io/public
+aog preview /Users/pankajdoharey/Development/metacritical.github.io /Users/pankajdoharey/Development/metacritical.github.io/public 8080
 ```
 
 ## 8) Emacs Configuration Notes
