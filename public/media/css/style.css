@@ -724,6 +724,17 @@ em, i {
 	color: #2b2822;
 }
 
+.post-author-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.post-author-date {
+	font: 500 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #7b7569;
+}
+
 .post h2 {
 	margin-bottom: 40px;
 	  font: 300 24px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;

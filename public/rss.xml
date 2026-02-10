@@ -4,8 +4,8 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Wed, 11 Feb 2026 00:04:30 IST</pubDate>
-    <lastBuildDate>Wed, 11 Feb 2026 00:04:30 IST</lastBuildDate>
+    <pubDate>Wed, 11 Feb 2026 00:08:38 IST</pubDate>
+    <lastBuildDate>Wed, 11 Feb 2026 00:08:38 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
     <item>
@@ -18,6 +18,7 @@
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
     </div>
   </div>
   <div id="outline-container-archive" class="outline-2">
@@ -77,6 +78,7 @@
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
     </div>
   </div>
   <section class="nano-chat">
@@ -108,6 +110,7 @@
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
     </div>
   </div>
   <div id="outline-container-hello-world" class="outline-2">
@@ -152,6 +155,7 @@ This is your first blog post with Alchemist. Edit this file to get started.
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
     </div>
   </div>
   <div id="outline-container-all-posts" class="outline-2">
@@ -190,6 +194,7 @@ This is your first blog post with Alchemist. Edit this file to get started.
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
     </div>
   </div>
   <div id="table-of-contents" role="doc-toc">

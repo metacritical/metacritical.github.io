@@ -262,6 +262,11 @@ html[data-theme="medium"] .post-author-name {
   color: #20201d;
 }
 
+html[data-theme="medium"] .post-author-date {
+  font: 500 16px/1.25 "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #6a655a;
+}
+
 html[data-theme="medium"] .post h2,
 html[data-theme="medium"] .post h3 {
   color: #1f1f1b;

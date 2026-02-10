@@ -88,6 +88,16 @@
       var dateEl = meta.querySelector(".post-info--date");
       var modEl = meta.querySelector(".post-info--mod-date");
       var tagsEl = meta.querySelector(".post-info--tags");
+      var authorDateEl = document.querySelector(".post-author-date");
+
+      if (dateEl && authorDateEl) {
+        var authoredDate = (dateEl.textContent || "").trim();
+        if (authoredDate) {
+          authorDateEl.textContent = authoredDate;
+        } else {
+          authorDateEl.remove();
+        }
+      }
 
       if (dateEl && modEl) {
         var d1 = (dateEl.textContent || "").trim();
