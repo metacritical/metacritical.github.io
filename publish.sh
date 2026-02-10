@@ -114,7 +114,7 @@ if [ -d "$BLOG_DIR/assets" ]; then
 fi
 
 # Keep custom domain mapping in generated output.
-printf 'selfdotsend.com\n' > "$BLOG_DIR/public/CNAME"
+printf 'www.selfdotsend.com\n' > "$BLOG_DIR/public/CNAME"
 
 # Normalize Org-exported file:// URLs to site-root absolute URLs.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \

@@ -27,7 +27,7 @@ jobs:
       - name: Ensure CNAME in published artifact
         run: |
           mkdir -p public
-          printf 'selfdotsend.com\n' > public/CNAME
+          printf 'www.selfdotsend.com\n' > public/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
