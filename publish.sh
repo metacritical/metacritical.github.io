@@ -232,7 +232,7 @@ fi
 
 # Local preview helper for drafts: generates /drafts/ pages only when DRAFTS=1.
 if [ "$DRAFTS" = "1" ]; then
-  python "$BLOG_DIR/scripts/generate_draft_preview.py" "$BLOG_DIR"
+  "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
 else
   rm -rf "$BLOG_DIR/public/drafts"
 fi
