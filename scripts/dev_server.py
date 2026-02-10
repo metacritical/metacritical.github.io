@@ -9,16 +9,20 @@ Serves:
 
 from __future__ import annotations
 
+import base64
 import datetime as dt
+import html
 import http.server
 import json
+import mimetypes
 import os
 import subprocess
 import re
 import socketserver
 import sys
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urljoin, urlparse
+from urllib.request import Request, urlopen
 
 
 def slugify(value: str) -> str:
@@ -40,6 +44,43 @@ def org_draft_text(title: str, body: str) -> str:
     )
 
 
+def safe_ext_from_mime(mime: str) -> str:
+    ext = mimetypes.guess_extension(mime) or ".bin"
+    if ext == ".jpe":
+        return ".jpg"
+    if len(ext) > 8:
+        return ".bin"
+    return ext
+
+
+def abs_http_url(raw: str) -> str | None:
+    parsed = urlparse(raw)
+    if parsed.scheme not in {"http", "https"}:
+        return None
+    if not parsed.netloc:
+        return None
+    return raw
+
+
+def extract_meta_value(doc: str, keys: list[str]) -> str:
+    for key in keys:
+        pattern = re.compile(
+            rf'<meta[^>]+(?:property|name)=["\']{re.escape(key)}["\'][^>]*content=["\']([^"\']+)["\']',
+            re.IGNORECASE,
+        )
+        match = pattern.search(doc)
+        if match:
+            return html.unescape(match.group(1).strip())
+    return ""
+
+
+def extract_title(doc: str) -> str:
+    match = re.search(r"<title[^>]*>(.*?)</title>", doc, re.IGNORECASE | re.DOTALL)
+    if not match:
+        return ""
+    return html.unescape(re.sub(r"\s+", " ", match.group(1)).strip())
+
+
 class DevHandler(http.server.SimpleHTTPRequestHandler):
     server_version = "SelfDotSendDev/1.0"
 
@@ -56,6 +97,128 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _read_json(self) -> dict | None:
+        try:
+            content_len = int(self.headers.get("Content-Length", "0"))
+            payload = self.rfile.read(content_len)
+            return json.loads(payload.decode("utf-8"))
+        except Exception:
+            return None
+
+    def _git_add(self, path: Path) -> None:
+        try:
+            subprocess.run(
+                ["git", "-C", str(self.blog_dir), "add", str(path)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass
+
+    def _save_post(self, data: dict) -> None:
+        title = str(data.get("title", "")).strip()
+        body = str(data.get("body", "")).strip()
+        mode = str(data.get("mode", "draft")).strip().lower()
+        if not title:
+            self._json(400, {"ok": False, "error": "Title is required"})
+            return
+        if mode not in {"draft", "publish"}:
+            self._json(400, {"ok": False, "error": "Mode must be draft or publish"})
+            return
+        target_dir = self.blog_dir / ("posts" if mode == "publish" else "drafts")
+        target_dir.mkdir(parents=True, exist_ok=True)
+        slug = slugify(title)
+        filename = target_dir / f"{slug}.org"
+        if filename.exists():
+            stamp = dt.datetime.now().strftime("%H%M%S")
+            filename = target_dir / f"{slug}-{stamp}.org"
+        filename.write_text(org_draft_text(title, body), encoding="utf-8")
+        self._git_add(filename)
+        self._json(
+            200,
+            {
+                "ok": True,
+                "mode": mode,
+                "path": str(filename.relative_to(self.blog_dir)),
+                "message": "Draft saved.",
+            },
+        )
+
+    def _upload_image(self, data: dict) -> None:
+        filename = str(data.get("filename", "upload")).strip() or "upload"
+        data_url = str(data.get("dataUrl", "")).strip()
+        match = re.match(r"^data:(image/[a-zA-Z0-9.+-]+);base64,(.+)$", data_url)
+        if not match:
+            self._json(400, {"ok": False, "error": "Invalid image payload"})
+            return
+        mime = match.group(1).lower()
+        encoded = match.group(2)
+        try:
+            raw = base64.b64decode(encoded, validate=True)
+        except Exception:
+            self._json(400, {"ok": False, "error": "Corrupt image data"})
+            return
+        if len(raw) > 20 * 1024 * 1024:
+            self._json(400, {"ok": False, "error": "Image too large (20MB max)"})
+            return
+        stem = slugify(Path(filename).stem) or "image"
+        ext = safe_ext_from_mime(mime)
+        now = dt.datetime.now()
+        rel_dir = Path("assets") / "uploads" / now.strftime("%Y") / now.strftime("%m")
+        out_dir = self.blog_dir / rel_dir
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_file = out_dir / f"{stem}-{now.strftime('%H%M%S')}{ext}"
+        out_file.write_bytes(raw)
+        self._git_add(out_file)
+        self._json(
+            200,
+            {
+                "ok": True,
+                "path": str(out_file.relative_to(self.blog_dir)),
+                "url": "/" + str((rel_dir / out_file.name).as_posix()),
+            },
+        )
+
+    def _fetch_meta(self, data: dict) -> None:
+        raw_url = str(data.get("url", "")).strip()
+        safe_url = abs_http_url(raw_url)
+        if not safe_url:
+            self._json(400, {"ok": False, "error": "URL must start with http/https"})
+            return
+        try:
+            req = Request(
+                safe_url,
+                headers={
+                    "User-Agent": "SelfDotSendEditor/1.0 (+https://selfdotsend.com)"
+                },
+            )
+            with urlopen(req, timeout=8) as resp:
+                payload = resp.read(1024 * 1024)
+            doc = payload.decode("utf-8", errors="ignore")
+        except Exception as err:
+            self._json(502, {"ok": False, "error": f"Failed to fetch metadata: {err}"})
+            return
+        title = extract_meta_value(doc, ["og:title", "twitter:title"]) or extract_title(doc)
+        description = extract_meta_value(
+            doc, ["og:description", "twitter:description", "description"]
+        )
+        image = extract_meta_value(doc, ["og:image", "twitter:image"])
+        site_name = extract_meta_value(doc, ["og:site_name"]) or (urlparse(safe_url).hostname or "")
+        if image:
+            image = urljoin(safe_url, image)
+        self._json(
+            200,
+            {
+                "ok": True,
+                "url": safe_url,
+                "title": title or safe_url,
+                "description": description,
+                "image": image,
+                "site": site_name,
+            },
+        )
 
     def _dev_edit_injection(self) -> str:
         return """
@@ -136,57 +299,31 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
-        if path not in {"/editor/api/save", "/__editor/api/save"}:
+        if path not in {
+            "/editor/api/save",
+            "/__editor/api/save",
+            "/editor/api/upload",
+            "/editor/api/fetch-meta",
+        }:
             self.send_error(404, "Not Found")
             return
 
-        try:
-            content_len = int(self.headers.get("Content-Length", "0"))
-            payload = self.rfile.read(content_len)
-            data = json.loads(payload.decode("utf-8"))
-        except Exception:
+        data = self._read_json()
+        if data is None:
             self._json(400, {"ok": False, "error": "Invalid JSON"})
             return
 
-        title = str(data.get("title", "")).strip()
-        body = str(data.get("body", "")).strip()
-        mode = str(data.get("mode", "draft")).strip().lower()
-        if not title:
-            self._json(400, {"ok": False, "error": "Title is required"})
+        if path in {"/editor/api/save", "/__editor/api/save"}:
+            self._save_post(data)
             return
 
-        if mode not in {"draft", "publish"}:
-            self._json(400, {"ok": False, "error": "Mode must be draft or publish"})
+        if path == "/editor/api/upload":
+            self._upload_image(data)
             return
 
-        target_dir = self.blog_dir / ("posts" if mode == "publish" else "drafts")
-        target_dir.mkdir(parents=True, exist_ok=True)
-        slug = slugify(title)
-        filename = target_dir / f"{slug}.org"
-        # Avoid accidental overwrite of an existing draft.
-        if filename.exists():
-            stamp = dt.datetime.now().strftime("%H%M%S")
-            filename = target_dir / f"{slug}-{stamp}.org"
-
-        filename.write_text(org_draft_text(title, body), encoding="utf-8")
-        try:
-            subprocess.run(
-                ["git", "-C", str(self.blog_dir), "add", str(filename)],
-                check=False,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-        except Exception:
-            pass
-        self._json(
-            200,
-            {
-                "ok": True,
-                "mode": mode,
-                "path": str(filename.relative_to(self.blog_dir)),
-                "message": "Draft saved.",
-            },
-        )
+        if path == "/editor/api/fetch-meta":
+            self._fetch_meta(data)
+            return
 
 
 def main() -> int:

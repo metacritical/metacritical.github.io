@@ -12,6 +12,7 @@
       --paper: #fffdf8;
       --line: #e2ddd3;
       --accent: #0d6a57;
+      --green: #148d2b;
     }
     body {
       margin: 0;
@@ -20,38 +21,44 @@
       color: var(--ink);
     }
     .wrap {
-      max-width: 860px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 28px 20px 80px;
     }
     .bar {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       margin: -28px -20px 20px;
       padding: 14px 20px;
-      background: rgba(247, 246, 242, 0.92);
+      background: rgba(247, 246, 242, 0.94);
       backdrop-filter: blur(6px);
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      flex-wrap: wrap;
     }
     .bar h1 {
       margin: 0;
       font-size: 14px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    .actions { display: flex; gap: 10px; align-items: center; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
     button {
       border: 1px solid #0f5f4f;
       background: var(--accent);
       color: #fff;
-      padding: 9px 14px;
+      padding: 8px 12px;
       border-radius: 999px;
       font-size: 13px;
       cursor: pointer;
@@ -61,6 +68,15 @@
       background: transparent;
       color: var(--accent);
       border-color: #9db8b1;
+    }
+    input[type="color"] {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #c4c0b8;
+      border-radius: 8px;
+      padding: 2px;
+      background: #fff;
+      cursor: pointer;
     }
     .status {
       font-size: 13px;
@@ -74,8 +90,12 @@
       border-radius: 18px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.06);
       padding: 36px 42px;
+      position: relative;
+      overflow: visible;
     }
-    [contenteditable="true"]:focus { outline: none; }
+    [contenteditable="true"]:focus {
+      outline: none;
+    }
     #title {
       font-size: clamp(34px, 6vw, 56px);
       line-height: 1.1;
@@ -103,9 +123,7 @@
       font-size: 13px;
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    .editor-area {
-      position: relative;
-    }
+
     .bubble {
       position: fixed;
       z-index: 9999;
@@ -124,10 +142,14 @@
       border-radius: 8px;
       padding: 8px 10px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
+      min-width: 34px;
     }
     .bubble button:hover {
       background: rgba(255,255,255,0.14);
+    }
+    .bubble .soft {
+      color: #b6d5ff;
     }
     .bubble .hl {
       color: #d9f0b2;
@@ -142,14 +164,15 @@
       background: #1f1f1f;
       transform: translateX(-50%) rotate(45deg);
     }
+
     .plus-rail {
       position: absolute;
-      left: -58px;
+      left: -66px;
       top: 100px;
-      z-index: 20;
+      z-index: 25;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .plus-main {
       width: 46px;
@@ -159,26 +182,69 @@
       background: #fff;
       color: #3b3b3b;
       font-size: 28px;
-      line-height: 40px;
+      line-height: 1;
       padding: 0;
+      font-family: Georgia, serif;
+    }
+    .plus-main.open {
+      font-size: 30px;
     }
     .plus-tools {
       display: none;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      border-left: 1px solid #cfc8bb;
+      padding-left: 14px;
     }
     .plus-tools.open {
-      display: flex;
+      display: inline-flex;
     }
     .plus-tools button {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      border: 2px solid #0d8e23;
-      background: #f7fff8;
-      color: #0d8e23;
-      font-size: 14px;
+      border: 2px solid var(--green);
+      background: #f9fff9;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
       padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
+    .plus-tools button.more-open {
+      background: #f0fff0;
+    }
+
+    .extra-tools {
+      display: none;
+      position: absolute;
+      left: 58px;
+      top: 58px;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #ddd4c6;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+      z-index: 30;
+    }
+    .extra-tools.open {
+      display: inline-flex;
+    }
+    .extra-tools button {
+      width: auto;
+      min-width: 42px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid #0f5f4f;
+      background: #fff;
+      color: #0f5f4f;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
     #body mark {
       color: #1a1a1a;
       padding: 0.02em 0.12em;
@@ -186,8 +252,10 @@
       box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
     }
+
     #body.reading-highlight p,
-    #body.reading-highlight div {
+    #body.reading-highlight div,
+    #body.reading-highlight li {
       background: var(--reading-hl, #e6f1e8);
       display: inline;
       padding: 0.01em 0.08em;
@@ -197,7 +265,89 @@
     #body.reading-highlight br {
       line-height: 1.8;
     }
-    @media (max-width: 920px) {
+
+    #body pre.code-block {
+      background: #25232f;
+      color: #f3f1f7;
+      border-radius: 10px;
+      padding: 16px;
+      overflow: auto;
+      font-size: 16px;
+      line-height: 1.5;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      white-space: pre;
+      position: relative;
+    }
+    #body pre.code-block:before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #a9a3bd;
+      letter-spacing: 0.04em;
+    }
+
+    #body figure.image-block,
+    #body figure.embed-card,
+    #body figure.video-embed {
+      margin: 22px 0;
+      border: 1px solid #d9d2c5;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+    #body figure.image-block img,
+    #body figure.embed-card img {
+      width: 100%;
+      display: block;
+    }
+    #body figure.image-block figcaption {
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #5f5a54;
+      border-top: 1px solid #eee6d8;
+    }
+    #body figure.video-embed iframe {
+      width: 100%;
+      min-height: 380px;
+      border: 0;
+      display: block;
+      background: #111;
+    }
+
+    .embed-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      min-height: 190px;
+    }
+    .embed-card-copy {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+    .embed-card-copy h4 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+    .embed-card-copy p {
+      margin: 0;
+      color: #57534f;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+    .embed-card-copy small {
+      color: #7a756d;
+      font-size: 15px;
+    }
+
+    @media (max-width: 980px) {
       .plus-rail {
         left: -8px;
         top: 8px;
@@ -205,11 +355,17 @@
       .plus-main {
         width: 40px;
         height: 40px;
-        line-height: 34px;
       }
       .plus-tools button {
         width: 36px;
         height: 36px;
+        font-size: 10px;
+      }
+      .embed-card-link {
+        grid-template-columns: 1fr;
+      }
+      #body figure.video-embed iframe {
+        min-height: 260px;
       }
     }
   </style>
@@ -229,20 +385,30 @@
 
     <div class="status" id="status">This page exists only in local doorman mode.</div>
 
-    <article class="sheet editor-area">
+    <article class="sheet">
       <div class="plus-rail">
-        <button class="plus-main" id="plusMainBtn" type="button">+</button>
+        <button class="plus-main" id="plusMainBtn" type="button" title="Open insert menu">+</button>
         <div class="plus-tools" id="plusTools">
-          <button type="button" id="insertH2Btn" title="Heading">H2</button>
-          <button type="button" id="insertQuoteBtn" title="Quote">"</button>
-          <button type="button" id="insertCodeBtn" title="Code">{"}"</button>
-          <button type="button" id="insertHrBtn" title="Divider">---</button>
-          <button type="button" id="inlineHlBtn" title="Highlight">HL</button>
+          <button type="button" id="imgBtn" title="Image URL">Img</button>
+          <button type="button" id="uploadBtn" title="Upload image">Up</button>
+          <button type="button" id="unsplashBtn" title="Unsplash search">U</button>
+          <button type="button" id="videoBtn" title="Video embed">Vid</button>
+          <button type="button" id="embedBtn" title="Add embed">&lt;&gt;</button>
+          <button type="button" id="codeBtn" title="Code block">{ }</button>
+          <button type="button" id="moreBtn" title="More">...</button>
+        </div>
+        <div class="extra-tools" id="extraTools">
+          <button type="button" id="h2Btn">H2</button>
+          <button type="button" id="quoteBtn">Quote</button>
+          <button type="button" id="ruleBtn">Rule</button>
         </div>
       </div>
+
+      <input id="uploadInput" type="file" accept="image/*" hidden>
+
       <div id="title" contenteditable="true" spellcheck="true"></div>
       <div id="body" contenteditable="true" spellcheck="true"></div>
-      <div class="hint">Select text for floating tools. Use + menu for blocks. Highlights are saved to Org using inline HTML marks.</div>
+      <div class="hint">Selection toolbar: bold/italic/link, text color, highlight on/off. Insert menu: image upload, Unsplash, video, link card, code with language.</div>
     </article>
   </div>
 
@@ -250,41 +416,267 @@
     <button type="button" data-cmd="bold"><b>B</b></button>
     <button type="button" data-cmd="italic"><i>I</i></button>
     <button type="button" data-action="link">Link</button>
-    <button type="button" data-action="h2">H2</button>
-    <button type="button" data-action="quote">Quote</button>
-    <button type="button" data-action="code">Code</button>
+    <button type="button" class="soft" data-action="h2">H2</button>
+    <button type="button" data-action="quote">Q</button>
+    <button type="button" data-action="code">{ }</button>
     <button type="button" class="hl" data-action="highlight">HL</button>
-    <input id="inlineColor" type="color" value="#dff0df" title="Highlight color">
+    <button type="button" data-action="clear-hl">HL-</button>
+    <input id="inlineColor" type="color" value="#ffea55" title="Highlight color">
+    <input id="textColor" type="color" value="#1c1b19" title="Text color">
+    <button type="button" data-action="clear-color">Clr</button>
   </div>
 
   <script>
     const titleEl = document.getElementById("title");
     const bodyEl = document.getElementById("body");
     const statusEl = document.getElementById("status");
+
     const saveDraftBtn = document.getElementById("saveDraftBtn");
     const publishBtn = document.getElementById("publishBtn");
     const copyBtn = document.getElementById("copyBtn");
+
     const readingModeBtn = document.getElementById("readingModeBtn");
     const readingColor = document.getElementById("readingColor");
+
     const plusMainBtn = document.getElementById("plusMainBtn");
     const plusTools = document.getElementById("plusTools");
-    const insertH2Btn = document.getElementById("insertH2Btn");
-    const insertQuoteBtn = document.getElementById("insertQuoteBtn");
-    const insertCodeBtn = document.getElementById("insertCodeBtn");
-    const insertHrBtn = document.getElementById("insertHrBtn");
-    const inlineHlBtn = document.getElementById("inlineHlBtn");
+    const extraTools = document.getElementById("extraTools");
+    const moreBtn = document.getElementById("moreBtn");
+
+    const imgBtn = document.getElementById("imgBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const unsplashBtn = document.getElementById("unsplashBtn");
+    const videoBtn = document.getElementById("videoBtn");
+    const embedBtn = document.getElementById("embedBtn");
+    const codeBtn = document.getElementById("codeBtn");
+
+    const h2Btn = document.getElementById("h2Btn");
+    const quoteBtn = document.getElementById("quoteBtn");
+    const ruleBtn = document.getElementById("ruleBtn");
+
+    const uploadInput = document.getElementById("uploadInput");
+
     const bubble = document.getElementById("bubble");
     const inlineColor = document.getElementById("inlineColor");
+    const textColor = document.getElementById("textColor");
 
-    const KEY = "selfdotsend-local-editor-v1";
+    const KEY = "selfdotsend-local-editor-v2";
+    let savedRange = null;
 
     function setStatus(text, bad) {
       statusEl.textContent = text;
       statusEl.style.color = bad ? "#9d2e2e" : "#6d6a64";
     }
 
+    function escHtml(v) {
+      return String(v || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escOrg(v) {
+      return String(v || "").replace(/[\r\n]+/g, " ").trim();
+    }
+
     function pickNodeText(node) {
       return (node.textContent || "").replace(/\u00a0/g, " ");
+    }
+
+    function toEmbedUrl(raw) {
+      try {
+        const u = new URL(raw);
+        if (u.hostname.includes("youtube.com")) {
+          const id = u.searchParams.get("v");
+          return id ? `https://www.youtube.com/embed/${id}` : raw;
+        }
+        if (u.hostname.includes("youtu.be")) {
+          const id = u.pathname.replace(/^\//, "");
+          return id ? `https://www.youtube.com/embed/${id}` : raw;
+        }
+        if (u.hostname.includes("vimeo.com")) {
+          const id = u.pathname.split("/").filter(Boolean).pop();
+          return id ? `https://player.vimeo.com/video/${id}` : raw;
+        }
+      } catch (_) {}
+      return raw;
+    }
+
+    function isSelectionInBody() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return false;
+      return bodyEl.contains(sel.getRangeAt(0).commonAncestorContainer);
+    }
+
+    function rememberSelection() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || !isSelectionInBody()) return;
+      savedRange = sel.getRangeAt(0).cloneRange();
+    }
+
+    function restoreSelection() {
+      if (!savedRange) return false;
+      const sel = window.getSelection();
+      if (!sel) return false;
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+      return true;
+    }
+
+    function exec(cmd, value) {
+      if (!restoreSelection()) {
+        bodyEl.focus();
+      }
+      document.execCommand(cmd, false, value || null);
+      rememberSelection();
+      saveLocal();
+      showBubble();
+    }
+
+    function showBubble() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed || !isSelectionInBody()) {
+        bubble.style.display = "none";
+        return;
+      }
+      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      bubble.style.display = "flex";
+      bubble.style.top = `${Math.max(8, rect.top - 58)}px`;
+      bubble.style.left = `${Math.max(8, rect.left + rect.width / 2 - bubble.offsetWidth / 2)}px`;
+      rememberSelection();
+    }
+
+    function clearInlineHighlight() {
+      if (!restoreSelection()) return;
+      document.execCommand("hiliteColor", false, "transparent");
+      const spans = bodyEl.querySelectorAll("span");
+      spans.forEach((s) => {
+        const bg = s.style.backgroundColor || "";
+        if (bg && (bg.includes("rgba(0, 0, 0, 0)") || bg === "transparent")) {
+          s.style.backgroundColor = "";
+        }
+      });
+      saveLocal();
+      showBubble();
+    }
+
+    function clearTextColor() {
+      exec("foreColor", "#1c1b19");
+    }
+
+    function insertHTMLAtCursor(html) {
+      bodyEl.focus();
+      document.execCommand("insertHTML", false, html);
+      saveLocal();
+    }
+
+    function insertHeading() {
+      exec("formatBlock", "h2");
+    }
+
+    function insertQuote() {
+      exec("formatBlock", "blockquote");
+    }
+
+    function insertRule() {
+      insertHTMLAtCursor("<hr><p><br></p>");
+    }
+
+    function insertCodeBlock(language, codeText) {
+      const lang = escHtml(language || "text");
+      const text = escHtml(codeText || `# write ${lang} code here`);
+      insertHTMLAtCursor(`<pre class=\"code-block\" data-lang=\"${lang}\"><code>${text}</code></pre><p><br></p>`);
+    }
+
+    function insertImageFromUrl(url, caption) {
+      const src = escHtml(url);
+      const cap = escHtml(caption || "");
+      const fig = `<figure class=\"image-block\"><img src=\"${src}\" alt=\"${cap || "image"}\"><figcaption contenteditable=\"true\">${cap}</figcaption></figure><p><br></p>`;
+      insertHTMLAtCursor(fig);
+    }
+
+    async function promptImageUrl() {
+      const url = prompt("Image URL");
+      if (!url) return;
+      const caption = prompt("Caption (optional)") || "";
+      insertImageFromUrl(url, caption);
+    }
+
+    async function uploadImage(file) {
+      const reader = new FileReader();
+      const dataUrl = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch("/editor/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: file.name, dataUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+      return data.url;
+    }
+
+    async function handleUploadClick() {
+      uploadInput.click();
+    }
+
+    async function insertUnsplash() {
+      const q = prompt("Unsplash search query");
+      if (!q) return;
+      const src = `https://source.unsplash.com/1600x900/?${encodeURIComponent(q)}&sig=${Date.now()}`;
+      insertImageFromUrl(src, `Unsplash: ${q}`);
+    }
+
+    async function insertVideo() {
+      const raw = prompt("Video URL (YouTube/Vimeo/embed URL)");
+      if (!raw) return;
+      const embed = escHtml(toEmbedUrl(raw));
+      const html = `<figure class=\"video-embed\" contenteditable=\"false\" data-src=\"${embed}\"><iframe src=\"${embed}\" loading=\"lazy\" allow=\"autoplay; encrypted-media; picture-in-picture\" allowfullscreen></iframe></figure><p><br></p>`;
+      insertHTMLAtCursor(html);
+    }
+
+    async function insertLinkCard() {
+      const raw = prompt("URL to embed");
+      if (!raw) return;
+      try {
+        const res = await fetch("/editor/api/fetch-meta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: raw }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Unable to fetch URL metadata");
+
+        const url = escHtml(data.url || raw);
+        const title = escHtml(data.title || raw);
+        const desc = escHtml(data.description || "");
+        const site = escHtml(data.site || "");
+        const image = data.image ? `<img src=\"${escHtml(data.image)}\" alt=\"${title}\">` : "";
+
+        const card = `
+          <figure class=\"embed-card\" contenteditable=\"false\" data-url=\"${url}\" data-title=\"${title}\" data-description=\"${desc}\" data-site=\"${site}\" data-image=\"${escHtml(data.image || "")}\">
+            <a class=\"embed-card-link\" href=\"${url}\" target=\"_blank\" rel=\"noopener\">
+              <div class=\"embed-card-copy\">
+                <h4>${title}</h4>
+                <p>${desc}</p>
+                <small>${site}</small>
+              </div>
+              ${image}
+            </a>
+          </figure>
+          <p><br></p>
+        `;
+        insertHTMLAtCursor(card);
+      } catch (err) {
+        setStatus(String(err.message || err), true);
+      }
     }
 
     function nodeToOrg(node) {
@@ -301,19 +693,67 @@
       if (tag === "br") return "\n";
       if (tag === "strong" || tag === "b") return `*${inner().trim()}*`;
       if (tag === "em" || tag === "i") return `/${inner().trim()}/`;
-      if (tag === "code" && node.parentElement && node.parentElement.tagName.toLowerCase() !== "pre") {
+      if (tag === "code" && (!node.parentElement || node.parentElement.tagName.toLowerCase() !== "pre")) {
         return `~${pickNodeText(node).trim()}~`;
+      }
+      if (tag === "a" && node.classList.contains("embed-card-link")) {
+        return "";
       }
       if (tag === "a") {
         const href = node.getAttribute("href") || "";
         const text = inner().trim() || href;
         return href ? `[[${href}][${text}]]` : text;
       }
-      if (tag === "mark") {
-        const color = node.style.backgroundColor || "#dff0df";
-        const text = inner().trim();
-        return `@@html:<mark style="background-color:${color}">${text}</mark>@@`;
+
+      if (tag === "figure" && node.classList.contains("image-block")) {
+        const img = node.querySelector("img");
+        const cap = node.querySelector("figcaption");
+        const src = img ? img.getAttribute("src") || "" : "";
+        if (!src) return "";
+        const caption = cap ? escOrg(cap.textContent || "") : "";
+        return `${caption ? `#+CAPTION: ${caption}\n` : ""}[[${src}]]\n\n`;
       }
+
+      if (tag === "figure" && node.classList.contains("video-embed")) {
+        const src = node.getAttribute("data-src") || (node.querySelector("iframe")?.getAttribute("src") || "");
+        if (!src) return "";
+        return `#+BEGIN_EXPORT html\n<div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;\"><iframe src=\"${escHtml(src)}\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;border:0;\" loading=\"lazy\" allow=\"autoplay; encrypted-media; picture-in-picture\" allowfullscreen></iframe></div>\n#+END_EXPORT\n\n`;
+      }
+
+      if (tag === "figure" && node.classList.contains("embed-card")) {
+        const url = node.getAttribute("data-url") || "";
+        const title = node.getAttribute("data-title") || url;
+        const desc = node.getAttribute("data-description") || "";
+        const site = node.getAttribute("data-site") || "";
+        const image = node.getAttribute("data-image") || "";
+        return `#+BEGIN_EXPORT html\n<div style=\"border:1px solid #ddd;border-radius:8px;overflow:hidden;display:grid;grid-template-columns:1fr 220px;margin:16px 0;\"><a href=\"${escHtml(url)}\" style=\"padding:14px;text-decoration:none;color:inherit;\"><div style=\"font-size:24px;font-weight:600;line-height:1.3;\">${escHtml(title)}</div><div style=\"margin-top:8px;color:#555;\">${escHtml(desc)}</div><div style=\"margin-top:12px;color:#777;\">${escHtml(site)}</div></a>${image ? `<img src=\"${escHtml(image)}\" alt=\"${escHtml(title)}\" style=\"width:100%;height:100%;object-fit:cover;\">` : ""}</div>\n#+END_EXPORT\n\n`;
+      }
+
+      if (tag === "img") {
+        const src = node.getAttribute("src") || "";
+        return src ? `[[${src}]]` : "";
+      }
+
+      if (tag === "mark") {
+        const color = node.style.backgroundColor || "#ffea55";
+        const text = pickNodeText(node).trim();
+        return text ? `@@html:<mark style=\"background-color:${escHtml(color)}\">${escHtml(text)}</mark>@@` : "";
+      }
+
+      if (tag === "span") {
+        const color = node.style.color || "";
+        const bg = node.style.backgroundColor || "";
+        const text = pickNodeText(node).trim();
+        if (!text) return "";
+        if (bg && bg !== "transparent") {
+          return `@@html:<mark style=\"background-color:${escHtml(bg)}\">${escHtml(text)}</mark>@@`;
+        }
+        if (color) {
+          return `@@html:<span style=\"color:${escHtml(color)}\">${escHtml(text)}</span>@@`;
+        }
+        return inner();
+      }
+
       if (tag === "h1") return `* ${inner().trim()}\n\n`;
       if (tag === "h2") return `** ${inner().trim()}\n\n`;
       if (tag === "h3") return `*** ${inner().trim()}\n\n`;
@@ -321,7 +761,10 @@
         return `#+BEGIN_QUOTE\n${inner().trim()}\n#+END_QUOTE\n\n`;
       }
       if (tag === "pre") {
-        return `#+BEGIN_SRC text\n${pickNodeText(node).trim()}\n#+END_SRC\n\n`;
+        const lang = (node.getAttribute("data-lang") || "text").trim() || "text";
+        const codeNode = node.querySelector("code");
+        const code = codeNode ? pickNodeText(codeNode).trimEnd() : pickNodeText(node).trimEnd();
+        return `#+BEGIN_SRC ${lang}\n${code}\n#+END_SRC\n\n`;
       }
       if (tag === "hr") return "\n-----\n\n";
       if (tag === "div" || tag === "p") return `${inner().trimEnd()}\n\n`;
@@ -364,60 +807,12 @@
         if (data.readingHighlight) {
           bodyEl.classList.add("reading-highlight");
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
 
     function getOrgBody() {
       return htmlToOrg(bodyEl);
-    }
-
-    function selectionInsideBody() {
-      const sel = window.getSelection();
-      if (!sel || sel.rangeCount === 0) return false;
-      const range = sel.getRangeAt(0);
-      return bodyEl.contains(range.commonAncestorContainer);
-    }
-
-    function showBubble() {
-      const sel = window.getSelection();
-      if (!sel || sel.rangeCount === 0 || sel.isCollapsed || !selectionInsideBody()) {
-        bubble.style.display = "none";
-        return;
-      }
-      const rect = sel.getRangeAt(0).getBoundingClientRect();
-      bubble.style.display = "flex";
-      bubble.style.top = `${Math.max(8, rect.top - 56)}px`;
-      bubble.style.left = `${Math.max(8, rect.left + rect.width / 2 - bubble.offsetWidth / 2)}px`;
-    }
-
-    function exec(cmd, value) {
-      document.execCommand(cmd, false, value || null);
-      bodyEl.focus();
-      saveLocal();
-      showBubble();
-    }
-
-    function promptLink() {
-      const url = prompt("Enter URL");
-      if (!url) return;
-      exec("createLink", url);
-    }
-
-    function applyInlineHighlight(color) {
-      exec("hiliteColor", color);
-    }
-
-    function wrapBlock(tagName) {
-      exec("formatBlock", tagName);
-    }
-
-    function insertCodeBlock() {
-      exec("insertHTML", "<pre><code>// code</code></pre><p><br></p>");
-    }
-
-    function insertHr() {
-      exec("insertHorizontalRule");
-      exec("insertHTML", "<p><br></p>");
     }
 
     function toggleReadingHighlight() {
@@ -442,11 +837,8 @@
           body: JSON.stringify({ title, body, mode }),
         });
         const data = await res.json();
-        if (!res.ok || !data.ok) {
-          throw new Error(data.error || "Failed to save draft");
-        }
-        const label = data.mode === "publish" ? "Published" : "Draft saved";
-        setStatus(`${label}: ${data.path}`);
+        if (!res.ok || !data.ok) throw new Error(data.error || "Failed to save");
+        setStatus(`${data.mode === "publish" ? "Published" : "Draft saved"}: ${data.path}`);
       } catch (err) {
         setStatus(String(err.message || err), true);
       }
@@ -463,16 +855,94 @@
       }
     }
 
+    plusMainBtn.addEventListener("click", () => {
+      const open = plusTools.classList.toggle("open");
+      plusMainBtn.classList.toggle("open", open);
+      plusMainBtn.textContent = open ? "x" : "+";
+      if (!open) {
+        extraTools.classList.remove("open");
+        moreBtn.classList.remove("more-open");
+      }
+    });
+
+    moreBtn.addEventListener("click", () => {
+      extraTools.classList.toggle("open");
+      moreBtn.classList.toggle("more-open", extraTools.classList.contains("open"));
+    });
+
+    imgBtn.addEventListener("click", promptImageUrl);
+    uploadBtn.addEventListener("click", handleUploadClick);
+    unsplashBtn.addEventListener("click", insertUnsplash);
+    videoBtn.addEventListener("click", insertVideo);
+    embedBtn.addEventListener("click", insertLinkCard);
+    codeBtn.addEventListener("click", () => {
+      const lang = (prompt("Code language (e.g. python, sh, js)", "text") || "text").trim() || "text";
+      insertCodeBlock(lang, `# write ${lang} code here`);
+    });
+
+    h2Btn.addEventListener("click", insertHeading);
+    quoteBtn.addEventListener("click", insertQuote);
+    ruleBtn.addEventListener("click", insertRule);
+
+    uploadInput.addEventListener("change", async () => {
+      const file = uploadInput.files && uploadInput.files[0];
+      uploadInput.value = "";
+      if (!file) return;
+      try {
+        const url = await uploadImage(file);
+        insertImageFromUrl(url, file.name);
+        setStatus(`Uploaded: ${url}`);
+      } catch (err) {
+        setStatus(String(err.message || err), true);
+      }
+    });
+
+    bubble.addEventListener("click", (evt) => {
+      const btn = evt.target.closest("button");
+      if (!btn) return;
+      const cmd = btn.getAttribute("data-cmd");
+      const action = btn.getAttribute("data-action");
+      if (cmd) {
+        exec(cmd);
+        return;
+      }
+      if (action === "link") {
+        const url = prompt("Enter URL");
+        if (url) exec("createLink", url);
+      }
+      if (action === "h2") insertHeading();
+      if (action === "quote") insertQuote();
+      if (action === "code") {
+        const lang = (prompt("Code language", "text") || "text").trim() || "text";
+        insertCodeBlock(lang, `# write ${lang} code here`);
+      }
+      if (action === "highlight") exec("hiliteColor", inlineColor.value);
+      if (action === "clear-hl") clearInlineHighlight();
+      if (action === "clear-color") clearTextColor();
+    });
+
+    inlineColor.addEventListener("input", () => {
+      exec("hiliteColor", inlineColor.value);
+    });
+
+    textColor.addEventListener("input", () => {
+      exec("foreColor", textColor.value);
+    });
+
     titleEl.addEventListener("input", saveLocal);
     bodyEl.addEventListener("input", saveLocal);
     bodyEl.addEventListener("mouseup", showBubble);
     bodyEl.addEventListener("keyup", showBubble);
-    document.addEventListener("selectionchange", showBubble);
+    document.addEventListener("selectionchange", () => {
+      showBubble();
+      rememberSelection();
+    });
     document.addEventListener("click", (evt) => {
       if (!bubble.contains(evt.target)) {
         showBubble();
       }
     });
+
     saveDraftBtn.addEventListener("click", () => saveDoc("draft"));
     publishBtn.addEventListener("click", () => saveDoc("publish"));
     copyBtn.addEventListener("click", copyOrg);
@@ -480,26 +950,6 @@
     readingColor.addEventListener("input", () => {
       bodyEl.style.setProperty("--reading-hl", readingColor.value);
       saveLocal();
-    });
-    plusMainBtn.addEventListener("click", () => plusTools.classList.toggle("open"));
-    insertH2Btn.addEventListener("click", () => wrapBlock("h2"));
-    insertQuoteBtn.addEventListener("click", () => wrapBlock("blockquote"));
-    insertCodeBtn.addEventListener("click", insertCodeBlock);
-    insertHrBtn.addEventListener("click", insertHr);
-    inlineHlBtn.addEventListener("click", () => applyInlineHighlight(inlineColor.value));
-    inlineColor.addEventListener("input", () => applyInlineHighlight(inlineColor.value));
-
-    bubble.addEventListener("click", (evt) => {
-      const btn = evt.target.closest("button");
-      if (!btn) return;
-      const cmd = btn.getAttribute("data-cmd");
-      const action = btn.getAttribute("data-action");
-      if (cmd) exec(cmd);
-      if (action === "link") promptLink();
-      if (action === "h2") wrapBlock("h2");
-      if (action === "quote") wrapBlock("blockquote");
-      if (action === "code") exec("formatBlock", "pre");
-      if (action === "highlight") applyInlineHighlight(inlineColor.value);
     });
 
     loadLocal();
