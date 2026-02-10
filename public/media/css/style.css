@@ -71,7 +71,7 @@ h2 {
 
 .profile #wrapper {
 	/* padding: 100px 40px 0px; */
-	max-width: 800px;
+	max-width: 760px;
 	margin: 0 auto;
 	padding: 14px 40px 8px;
 }
@@ -114,17 +114,64 @@ nav.main-nav {
 	background: #faf9f5;
 	margin: 0 auto;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	align-items: center;
 	gap: 10px;
 	border-bottom: 1px solid #e6e1d5;
 	z-index: 100;
 }
 
+.nav-left.site-brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.brand-logo-link {
+	display: inline-flex;
+	align-items: center;
+}
+
+.brand-logo {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+}
+
+.brand-copy {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 0;
+}
+
+.brand-title {
+	color: #1f1f1b;
+	font-size: 24px;
+	font-weight: 500;
+	line-height: 1.05;
+	letter-spacing: -0.01em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.brand-tagline {
+	font-size: 13px;
+	line-height: 1.2;
+	color: #7b7569;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .nav-right {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
 }
 
 nav.main-nav a {
@@ -472,7 +519,7 @@ body.search-open {
 
 
 #wrapper {
-  max-width: 800px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 22px 40px 70px 40px;
 }
@@ -655,6 +702,26 @@ em, i {
 	margin-bottom:2 0px;
 	color: #222;
 	font: 300 32px/1.4em "Helvetica Neue", Helvetica,Arial,sans-serif;
+}
+
+.post-author-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: -4px 0 22px;
+}
+
+.post-author-avatar {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid #ded8ca;
+}
+
+.post-author-name {
+	font: 600 18px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #2b2822;
 }
 
 .post h2 {

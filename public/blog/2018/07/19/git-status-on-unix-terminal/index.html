@@ -12,12 +12,19 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770741502" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770741521" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770748455" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770748471" type="text/css">
 </head>
 
   <body class="container">
 <nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Self dot send (Computing Blog)</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
   <div class="nav-right">
     <a href="/">Blog</a>
     <a href="/archive/">Archive</a>
@@ -38,15 +45,6 @@
     </a>
   </div>
 </nav>
-<div class="profile">
-  <section id="wrapper">
-    <header id="header">
-      <a href="/"><img id="avatar" class="2x" src="/media/images/logo.png"></a>
-      <h1>Self dot send (Computing Blog)</h1>
-      <h2>Message passing is just a procedure call.</h2>
-    </header>
-  </section>
-</div>
 <div id="site-search-overlay" class="site-search-overlay" hidden>
   <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
     <div class="site-search-top">
@@ -62,6 +60,12 @@
 <section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Git status on Unix terminal</h1>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+    </div>
+  </div>
   <p>
 It is often required to get git stats on terminal PS1, most solutions are based 
 aound bash can be slow sometimes or if you are like me who programmed something 
@@ -196,7 +200,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="org8a83b47" class="figure">
+<div id="org6e6ad1f" class="figure">
 <p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -206,7 +210,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org6c8a4ad" class="figure">
+<div id="org3a83780" class="figure">
 <p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
