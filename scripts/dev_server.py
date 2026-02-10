@@ -225,23 +225,35 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
 <script>
 (function () {
   if (location.pathname === "/editor" || location.pathname === "/editor/") return;
-  if (document.getElementById("local-dev-edit-link")) return;
-  var a = document.createElement("a");
-  a.id = "local-dev-edit-link";
-  a.href = "/editor";
-  a.setAttribute("aria-label", "Search");
-  a.title = "Search";
-  a.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="#666" stroke-width="2"></circle><line x1="16.65" y1="16.65" x2="21" y2="21" stroke="#666" stroke-width="2" stroke-linecap="round"></line></svg><span style="margin-left:8px;font:500 14px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#666;white-space:nowrap;">Search '/'</span>`;
-  a.style.cssText = "margin-left:12px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:6px;background:transparent;";
   var host = document.querySelector("nav.main-nav .nav-right, .site-nav, .site-nav-left ul.nav, .main-nav");
-  if (host) {
-    host.appendChild(a);
-  } else {
-    a.style.position = "fixed";
-    a.style.right = "16px";
-    a.style.top = "16px";
-    a.style.zIndex = "9999";
-    document.body.appendChild(a);
+
+  if (!document.getElementById("local-dev-write-link")) {
+    var write = document.createElement("a");
+    write.id = "local-dev-write-link";
+    write.href = "/editor";
+    write.setAttribute("aria-label", "Write");
+    write.title = "Write";
+    write.innerHTML = `<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:1.5px solid #777;border-radius:3px;"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25zm18-11.5a1 1 0 0 0 0-1.41L19.66 3a1 1 0 0 0-1.41 0l-1.59 1.59 3.75 3.75L21 5.75z" fill="#666"></path></svg></span><span style="font:500 14px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#666;">Write</span>`;
+    write.style.cssText = "margin-left:12px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:6px 8px;background:transparent;border-radius:8px;";
+    if (host) {
+      host.appendChild(write);
+    } else {
+      write.style.position = "fixed";
+      write.style.right = "16px";
+      write.style.top = "16px";
+      write.style.zIndex = "9999";
+      document.body.appendChild(write);
+    }
+  }
+
+  var searchBtn = document.getElementById("site-search-open");
+  if (searchBtn && !searchBtn.dataset.devEnhanced) {
+    searchBtn.dataset.devEnhanced = "1";
+    searchBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="margin-right:6px;vertical-align:-2px;"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle><line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg><span>Search</span><kbd style="margin-left:8px;padding:1px 6px;border:1px solid rgba(0,0,0,.28);border-radius:5px;font:600 11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(255,255,255,.65);">/</kbd>`;
+    searchBtn.style.display = "inline-flex";
+    searchBtn.style.alignItems = "center";
+    searchBtn.style.gap = "2px";
+    searchBtn.style.whiteSpace = "nowrap";
   }
 })();
 </script>
