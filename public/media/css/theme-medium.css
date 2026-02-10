@@ -40,11 +40,20 @@ html[data-theme="medium"] .theme-switch {
   font-family: "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-html[data-theme="medium"] .theme-switch,
-html[data-theme="medium"] .search-btn {
+html[data-theme="medium"] .theme-switch {
   border: 1px solid #d6d1c4;
   border-radius: 14px;
   background: transparent;
+}
+
+html[data-theme="medium"] .search-btn {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
 }
 
 html[data-theme="medium"] .profile #wrapper {
