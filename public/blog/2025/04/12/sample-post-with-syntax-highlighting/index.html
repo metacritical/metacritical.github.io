@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-  <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2 - Self dot send (Computing Blog)</title>
+  <title>Sample Post with Syntax Highlighting - Self dot send (Computing Blog)</title>
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Exploration to find the right data structure for teh editor." />
-  <meta name="keywords" content="scheme, editor-data-structures, gap-buffer" />
+  
+  
   <link rel="icon" href="/media/img/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="/media/css/style.css" type="text/css">
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
@@ -54,20 +54,94 @@
 
 <section id="wrapper" class="post-page">
   <div class="post">
-  <h1 class="title">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
-  <p>
-In my quest to write a programmable editor the first problem that i came across was
-which datastructure to hold the text in? What do other text editors use? For instance 
-emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
-with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
-like.
+  <h1 class="title">Sample Post with Syntax Highlighting</h1>
+  <div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#introduction">1. Introduction</a></li>
+<li><a href="#code-examples">2. Code Examples</a>
+<ul>
+<li><a href="#elisp">2.1. Elisp</a></li>
+<li><a href="#javascript">2.2. JavaScript</a></li>
+</ul>
+</li>
+<li><a href="#conclusion">3. Conclusion</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-introduction" class="outline-2">
+<h2 id="introduction"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-introduction">
+<p>
+This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist.
+</p>
+</div>
+</div>
+<div id="outline-container-code-examples" class="outline-2">
+<h2 id="code-examples"><span class="section-number-2">2.</span> Code Examples</h2>
+<div class="outline-text-2" id="text-code-examples">
+</div>
+<div id="outline-container-elisp" class="outline-3">
+<h3 id="elisp"><span class="section-number-3">2.1.</span> Elisp</h3>
+<div class="outline-text-3" id="text-elisp">
+<p>
+Here's an example of Elisp code with syntax highlighting:
 </p>
 
-
-
-<div id="orgc5bd3f9" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">alchemist-publish</span> (<span class="org-type">&amp;optional</span> blog-dir theme)
+  <span class="org-doc">"Publish a blog with a specified THEME from BLOG-DIR."</span>
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">let*</span> ((blog-dir (<span class="org-keyword">or</span> blog-dir (alchemist--select-blog)))
+         (theme (<span class="org-keyword">or</span> theme alchemist-default-theme))
+         (output-dir (expand-file-name <span class="org-string">"public"</span> blog-dir)))
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">Export the site
+</span>    (alchemist-export-site blog-dir output-dir theme)
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">Return the output directory
+</span>    output-dir))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-javascript" class="outline-3">
+<h3 id="javascript"><span class="section-number-3">2.2.</span> JavaScript</h3>
+<div class="outline-text-3" id="text-javascript">
+<p>
+Here's an example of JavaScript code:
 </p>
+
+<div class="org-src-container">
+<pre class="src src-js">document.addEventListener(<span class="org-string">'DOMContentLoaded'</span>, <span class="org-keyword">function</span>() {
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Initialize syntax highlighting
+</span>  <span class="org-keyword">const</span> <span class="org-variable-name">blocks</span> = document.querySelectorAll(<span class="org-string">'pre.src'</span>);
+  blocks.forEach(<span class="org-keyword">function</span>(<span class="org-variable-name">block</span>) {
+    block.classList.add(<span class="org-string">'prettyprint'</span>);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">Convert language class
+</span>    Array.from(block.classList).forEach(<span class="org-keyword">function</span>(<span class="org-variable-name">cls</span>) {
+      <span class="org-keyword">if</span> (cls.startsWith(<span class="org-string">'src-'</span>)) {
+        <span class="org-keyword">const</span> <span class="org-variable-name">lang</span> = cls.substring(4);
+        block.classList.add(<span class="org-string">'lang-'</span> + lang);
+      }
+    });
+  });
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Initialize prettify
+</span>  prettyPrint();
+});
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-conclusion" class="outline-2">
+<h2 id="conclusion"><span class="section-number-2">3.</span> Conclusion</h2>
+<div class="outline-text-2" id="text-conclusion">
+<p>
+The Metacritical theme provides excellent syntax highlighting using Org-mode's native capabilities, making it perfect for technical blogs and code-focused content.
+</p>
+</div>
 </div>
 
   </div>
@@ -76,7 +150,7 @@ like.
 <div>
   <section id="wrapper" class="post-meta-wrap">
     <div class="post-meta">
-      <span title="post date" class="post-info post-info--date">2018-08-11</span>
+      <span title="post date" class="post-info post-info--date">2025-04-12</span>
       <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
     </div>
   </section>
@@ -84,8 +158,8 @@ like.
     <h1>Responses</h1>
     <div id="disqus_thread"></div>
     <script type="text/javascript">
-      var disqus_identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
-      var disqus_url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+      var disqus_identifier = "/blog/2025/04/12/sample-post-with-syntax-highlighting/";
+      var disqus_url = "https://selfdotsend.com/blog/2025/04/12/sample-post-with-syntax-highlighting/";
       var disqus_shortname = "SelfDotSend";
       (function() {
         var dsq = document.createElement("script");
@@ -107,7 +181,7 @@ like.
     <div align="center">
       <footer id="footer">
         <p class="small">
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; Pankajs-MacBook-Pro &lt;dot&gt; local">Pankaj Doharey</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
           <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>

@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770693194" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770693194" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770701239" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770701240" type="text/css">
 </head>
 
   <body class="container">
@@ -57,9 +57,9 @@
   <h1 class="title">Git status on Unix terminal</h1>
   <p>
 It is often required to get git stats on terminal PS1, most solutions are based 
-around bash which can be slow sometimes or if you are like me who programmed 
-something in ruby also turned out to be slow. We can make things faster by 
-porting such scripts to golang. Here is one such solution :
+aound bash can be slow sometimes or if you are like me who programmed something 
+in ruby also turned out to be slow. We can make things faster by porting such 
+scripts to golang. one such solution can be this :
 </p>
 
 <div class="org-src-container">
@@ -157,7 +157,7 @@ porting such scripts to golang. Here is one such solution :
 </div>
 
 <p>
-You can download this by executing the following command on your terminal :
+You can download this by executing the following command on your terminal:
 </p>
 
 <div class="org-src-container">
@@ -170,13 +170,13 @@ And then compiling it with go.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">go gits.go -o gits
+<pre class="src src-bash">go build gits.go -o gits
 </pre>
 </div>
 
 <p>
-Once that is done you should put it somewhere and included in the PATH.
-Also the PS1 should be modified like so.
+Once that is done you should put it somewhere and include it in the PATH.
+Also the PS1 should be modified like this.
 </p>
 
 <div class="org-src-container">
@@ -185,22 +185,22 @@ Also the PS1 should be modified like so.
 </div>
 
 <p>
-This would yield a prompt like this :
+This would yield a prompt like this:
 </p>
 
 
-<div id="git no changes." class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" style="width:auto" />
+<div id="orgfd60e3c" class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
 
 <p>
-If git files are unstaged on the current path then may be like this :
+If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="git no changes." class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" style="width:auto" />
+<div id="orgca65ced" class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
 
