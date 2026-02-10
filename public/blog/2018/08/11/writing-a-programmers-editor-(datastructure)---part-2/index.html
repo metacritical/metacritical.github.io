@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770649667" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770651722" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770693194" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770693194" type="text/css">
 </head>
 
   <body class="container">
@@ -64,10 +64,32 @@ like.
 </p>
 
 
+<div class="org-src-container">
+<pre class="src src-ditaa">
+Initial Gap Buffer
++----------------+
+       ^
+       |
+    +-----+
+    |     |
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+  |cBF0|cBF0| H | E | L | L | O |   | W | O | R | L | D |
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+       |
+       +---+
+           |
+           v
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+  | H |cBF0|cBF0| E | L | L | O |   | W | O | R | L | D |
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+        |     |
+        +-----+
+           |
+           v
++------------------------------+
+ Gap Buffer representing cursor.
 
-<div id="org913eb56" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
-</p>
+</pre>
 </div>
 
   </div>

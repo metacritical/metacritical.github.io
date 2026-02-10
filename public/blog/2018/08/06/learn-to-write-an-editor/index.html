@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770649667" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770651722" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770693194" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770693194" type="text/css">
 </head>
 
   <body class="container">
@@ -56,21 +56,21 @@
   <div class="post">
   <h1 class="title">Writing a Programmers Editor - Part 1</h1>
   <p>
-Since the time i learnt emacs i have toyed with the idea of writing my own
-programming text editor. Though emacs is a powerful tool it can be obtuse to
-people with no lisp/scheme knowledge, one cannot be very effective in emacs
+Since the time i learnt emacs i have toyed with the idea of writing my own 
+programming text editor. Though emacs is a powerful tool it can be obtuse to 
+people with no lisp/scheme knowledge, one cannot be very effective in emacs 
 without learning elisp. When i floated the idea of writing my own text editor my
-fellow programmers often speculated that it is the most difficult endeavour one
-can undertake as a programmer, the arguments that were made varied from <i>Emacs
-and vim they have been in development for over 3 decades</i> to <i>it is a massive
-undertertaking for an individual</i> since companies like IntelliJ's entire business is
+fellow programmers often speculated that it is the most difficult endeavour one 
+can undertake as a programmer, the arguments that were made varied from <i>Emacs 
+and vim they have been in development for over 3 decades</i> to <i>it is a massive 
+untertaking for an individual</i> since companies like IntelliJ's entire business is
 around the development of text editors/IDE's.
 </p>
 
 <p>
-And perhaps they are right, despite these editors being touted as highly
-configurable or programmable, programmers regularly dive into the <code>C</code> code to
-upgrade them. It is infact a delicate exercise in the balance of power, between
+And perhaps they are right, despite these editors being touted as highly 
+configurable or programmable, programmers regularly dive into the <code>C</code> code to 
+upgrade them. It is infact a delicate exercise in the balance of power, between 
 the <i>C-Runtime</i> and the scripting language of the editor.
 </p>
 
@@ -91,7 +91,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="orgb6dbc4e" class="figure">
+<div id="fig:emacs-percentage" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -106,15 +106,16 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="org287406b" class="figure">
+<div id="fig:vim-percentage" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
 </div>
 
+
 <p>
-<code>Vimscript</code> on the other hand may very well be suited for extending the editor
-in but it surely is no match for a full fledged programming language like lisp,
+<code>Vimscript</code> on the other hand may very well be suited for extending the editor 
+in but it surely is no match for a full fledged programming language like lisp, 
 but again the question is <i>How much power does one need in a programming editor ?</i>.
 </p>
 
@@ -122,19 +123,20 @@ but again the question is <i>How much power does one need in a programming edito
 <b>In other words where does the sweetspot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b>
 </p>
 
+<blockquote>
 <ul class="org-ul">
 <li><b>Are these languages equally powerful in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b></li>
 <li><b>How do these existing Editors work?</b></li>
 <li><b>Is there an efficiency equation that we are unaware of?</b></li>
 <li><b>What if the Delicate balance in powers of the runtime and scripting exists</b></li>
 </ul>
-
 <p>
 <b>for a reason and has a penalty when disturbed?</b>
 </p>
+</blockquote>
 
 <p>
-Whenever i encounter subjective questions such as these, my approach is to find
+Whenever i encounter subjective questions such as these, my approach is to find 
 an objective reasoning for the thought. The approach draws its inspiration
 from a famous Feynman quote.
 </p>
@@ -150,14 +152,15 @@ lisp fits that bill being a lisp, though elisp has "borrowed power" and can move
 so much as the runtime itself allows it.
 </p>
 
+<blockquote>
 <ul class="org-ul">
 <li>What if emacs was written in <b>100%</b> <code>elisp</code>?</li>
 <li>What if we write an Editor in a lisp or scheme which gives us the power to</li>
 </ul>
-
 <p>
-extend the editor in the same language as the editor itself is written in?
+extend the editor in the same language as the editor itself is written in ?
 </p>
+</blockquote>
 
 <p>
 A thought worthy of exploration! In the next few assays we would explore this idea

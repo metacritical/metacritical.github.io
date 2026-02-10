@@ -1,23 +1,5 @@
 [
   {
-    "title": "Nano Chat",
-    "url": "/blog/2026/02/09/nano-chat/",
-    "date": "2026-02-09",
-    "excerpt": "Local in-browser mini LLM chat for this site. Model runs in your browser (no server endpoint)."
-  },
-  {
-    "title": "Sample Post with Syntax Highlighting",
-    "url": "/blog/2025/04/12/sample-post-with-syntax-highlighting/",
-    "date": "2025-04-12",
-    "excerpt": "This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist."
-  },
-  {
-    "title": "First Post",
-    "url": "/blog/2025/04/10/first-post/",
-    "date": "2025-04-10",
-    "excerpt": "This is your first blog post with Alchemist. Edit this file to get started."
-  },
-  {
     "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
     "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
     "date": "2018-08-11",
@@ -33,13 +15,13 @@
     "title": "Git status on Unix terminal",
     "url": "/blog/2018/07/19/git-status-on-unix-terminal/",
     "date": "2018-07-19",
-    "excerpt": "It is often required to get git stats on terminal PS1, most solutions are based aound bash can be slow sometimes or if you are like me who programmed something in ruby also turned out to be slow. We can make things fa..."
+    "excerpt": "It is often required to get git stats on terminal PS1, most solutions are based around bash which can be slow sometimes or if you are like me who programmed something in ruby also turned out to be slow. We can make th..."
   },
   {
-    "title": "Lolcat in Arm Assembly",
-    "url": "/blog/2018/07/14/lolcat-in-arm-assembly/",
+    "title": "Lolcat in 64 arm assembly.",
+    "url": "/blog/2018/07/14/lolcat-in-64-arm-assembly/",
     "date": "2018-07-14",
-    "excerpt": ""
+    "excerpt": "Some Stuff in Lolcat"
   },
   {
     "title": "Self dot send (Computing Blog)",

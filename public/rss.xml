@@ -4,265 +4,37 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Mon, 09 Feb 2026 21:12:01 IST</pubDate>
-    <lastBuildDate>Mon, 09 Feb 2026 21:12:01 IST</lastBuildDate>
+    <pubDate>Tue, 10 Feb 2026 08:43:13 IST</pubDate>
+    <lastBuildDate>Tue, 10 Feb 2026 08:43:13 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
     <item>
-      <title>First Post</title>
-      <link>https://selfdotsend.com/blog/2025/04/10/first-post/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">First Post</h1>
-  <div id="outline-container-hello-world" class="outline-2">
-<h2 id="hello-world">Hello World</h2>
-<div class="outline-text-2" id="text-hello-world">
-<p>
-This is your first blog post with Alchemist. Edit this file to get started.
-</p>
-</div>
-</div>
-<div id="outline-container-features" class="outline-2">
-<h2 id="features">Features</h2>
-<div class="outline-text-2" id="text-features">
-<ul class="org-ul">
-<li>Org-mode syntax</li>
-<li>Flexible theming</li>
-<li>Simple publishing</li>
-</ul>
-</div>
-</div>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2025/04/10/first-post/</guid>
-    </item>
-    <item>
-      <title>Git status on Unix terminal</title>
-      <link>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</link>
-      <description><![CDATA[Get git status on unix terminal (PS1).]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</guid>
-    </item>
-    <item>
-      <title>All Posts</title>
-      <link>https://selfdotsend.com/blog/2025/04/10/all-posts/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">All Posts</h1>
-  <div id="outline-container-all-posts" class="outline-2">
-<h2 id="all-posts">All Posts</h2>
-<div class="outline-text-2" id="text-all-posts">
-</div>
-</div>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2025/04/10/all-posts/</guid>
+      <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</title>
+      <link>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</link>
+      <description><![CDATA[Exploration to find the right data structure for teh editor.]]></description>
+      <pubDate>2018-09-08</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</guid>
     </item>
     <item>
       <title>Writing a Programmers Editor - Part 1</title>
       <link>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</link>
       <description><![CDATA[A series of Assays on writing a programmers editor.]]></description>
-      <pubDate>2026-02-09</pubDate>
+      <pubDate>2018-08-12</pubDate>
       <guid>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</guid>
     </item>
     <item>
-      <title>Sample Post with Syntax Highlighting</title>
-      <link>https://selfdotsend.com/blog/2025/04/12/sample-post-with-syntax-highlighting/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">Sample Post with Syntax Highlighting</h1>
-  <div id="table-of-contents" role="doc-toc">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents" role="doc-toc">
-<ul>
-<li><a href="#introduction">1. Introduction</a></li>
-<li><a href="#code-examples">2. Code Examples</a>
-<ul>
-<li><a href="#elisp">2.1. Elisp</a></li>
-<li><a href="#javascript">2.2. JavaScript</a></li>
-</ul>
-</li>
-<li><a href="#conclusion">3. Conclusion</a></li>
-</ul>
-</div>
-</div>
-<div id="outline-container-introduction" class="outline-2">
-<h2 id="introduction"><span class="section-number-2">1.</span> Introduction</h2>
-<div class="outline-text-2" id="text-introduction">
-<p>
-This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist.
-</p>
-</div>
-</div>
-<div id="outline-container-code-examples" class="outline-2">
-<h2 id="code-examples"><span class="section-number-2">2.</span> Code Examples</h2>
-<div class="outline-text-2" id="text-code-examples">
-</div>
-<div id="outline-container-elisp" class="outline-3">
-<h3 id="elisp"><span class="section-number-3">2.1.</span> Elisp</h3>
-<div class="outline-text-3" id="text-elisp">
-<p>
-Here's an example of Elisp code with syntax highlighting:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">alchemist-publish</span> (<span class="org-type">&amp;optional</span> blog-dir theme)
-  <span class="org-doc">"Publish a blog with a specified THEME from BLOG-DIR."</span>
-  (<span class="org-keyword">interactive</span>)
-  (<span class="org-keyword">let*</span> ((blog-dir (<span class="org-keyword">or</span> blog-dir (alchemist--select-blog)))
-         (theme (<span class="org-keyword">or</span> theme alchemist-default-theme))
-         (output-dir (expand-file-name <span class="org-string">"public"</span> blog-dir)))
-    <span class="org-comment-delimiter">;; </span><span class="org-comment">Export the site
-</span>    (alchemist-export-site blog-dir output-dir theme)
-    <span class="org-comment-delimiter">;; </span><span class="org-comment">Return the output directory
-</span>    output-dir))
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-javascript" class="outline-3">
-<h3 id="javascript"><span class="section-number-3">2.2.</span> JavaScript</h3>
-<div class="outline-text-3" id="text-javascript">
-<p>
-Here's an example of JavaScript code:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-js">document.addEventListener(<span class="org-string">'DOMContentLoaded'</span>, <span class="org-keyword">function</span>() {
-  <span class="org-comment-delimiter">// </span><span class="org-comment">Initialize syntax highlighting
-</span>  <span class="org-keyword">const</span> <span class="org-variable-name">blocks</span> = document.querySelectorAll(<span class="org-string">'pre.src'</span>);
-  blocks.forEach(<span class="org-keyword">function</span>(<span class="org-variable-name">block</span>) {
-    block.classList.add(<span class="org-string">'prettyprint'</span>);
-
-    <span class="org-comment-delimiter">// </span><span class="org-comment">Convert language class
-</span>    Array.from(block.classList).forEach(<span class="org-keyword">function</span>(<span class="org-variable-name">cls</span>) {
-      <span class="org-keyword">if</span> (cls.startsWith(<span class="org-string">'src-'</span>)) {
-        <span class="org-keyword">const</span> <span class="org-variable-name">lang</span> = cls.substring(4);
-        block.classList.add(<span class="org-string">'lang-'</span> + lang);
-      }
-    });
-  });
-
-  <span class="org-comment-delimiter">// </span><span class="org-comment">Initialize prettify
-</span>  prettyPrint();
-});
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-conclusion" class="outline-2">
-<h2 id="conclusion"><span class="section-number-2">3.</span> Conclusion</h2>
-<div class="outline-text-2" id="text-conclusion">
-<p>
-The Metacritical theme provides excellent syntax highlighting using Org-mode's native capabilities, making it perfect for technical blogs and code-focused content.
-</p>
-</div>
-</div>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2025/04/12/sample-post-with-syntax-highlighting/</guid>
+      <title>Lolcat in 64 arm assembly.</title>
+      <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</link>
+      <description><![CDATA[Porting locat written in x64 assembly to arm assembly.]]></description>
+      <pubDate>2018-08-06</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/07/14/lolcat-in-64-arm-assembly</guid>
     </item>
     <item>
-      <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</title>
-      <link>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</link>
-      <description><![CDATA[Exploration to find the right data structure for teh editor.]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</guid>
-    </item>
-    <item>
-      <title>Archive</title>
-      <link>https://selfdotsend.com/blog/2026/02/09/archive/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">Archive</h1>
-  <div id="outline-container-archive" class="outline-2">
-<h2 id="archive">Archive</h2>
-<div class="outline-text-2" id="text-archive">
-</div>
-<div id="outline-container-august-2018" class="outline-3">
-<h3 id="august-2018">August [2018</h3>
-<div class="outline-text-3" id="text-august-2018">
-<dl class="org-dl">
-<dt><span class="timestamp-wrapper"><span class="timestamp">[2018-08-06 Mon]</span></span></dt><dd><a href="posts/learn-to-write-an-editor.html">Learn to Write an Editor</a></dd>
-</dl>
-</div>
-</div>
-<div id="outline-container-april-2025" class="outline-3">
-<h3 id="april-2025">April 2025</h3>
-<div class="outline-text-3" id="text-april-2025">
-<dl class="org-dl">
-<dt>2025-04-10</dt><dd><a href="posts/index.html">All Posts</a></dd>
-<dt>2025-04-10</dt><dd><a href="posts/first-post.html">First Post</a></dd>
-<dt>2025-04-12</dt><dd><a href="posts/sample-post.html">Sample Post with Syntax Highlighting</a></dd>
-</dl>
-</div>
-</div>
-<div id="outline-container-august-2018-2" class="outline-3">
-<h3 id="august-2018-2">August 2018</h3>
-<div class="outline-text-3" id="text-august-2018-2">
-<dl class="org-dl">
-<dt>2018-08-11 Sat</dt><dd><a href="posts/writing-a-programmers-editor-part-2.html">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</a></dd>
-</dl>
-</div>
-</div>
-<div id="outline-container-july-2018" class="outline-3">
-<h3 id="july-2018">July 2018</h3>
-<div class="outline-text-3" id="text-july-2018">
-<dl class="org-dl">
-<dt>2018-07-14 Sat</dt><dd><a href="posts/new-post.html">Lolcat in Arm Assembly</a></dd>
-<dt>2018-07-19 Thu</dt><dd><a href="posts/git-stats-on-unix-terminal-prompt.html">Git status on Unix terminal</a></dd>
-</dl>
-</div>
-</div>
-</div>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2026/02/09/archive/</guid>
-    </item>
-    <item>
-      <title>Nano Chat</title>
-      <link>https://selfdotsend.com/blog/2026/02/09/nano-chat/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">Nano Chat</h1>
-  <section class="nano-chat">
-  <p>Local in-browser mini LLM chat for this site. Model runs in your browser (no server endpoint).</p>
-  <div class="nano-chat-toolbar">
-    <button id="nano-init" class="nano-btn" type="button">Load Nano Model</button>
-    <span id="nano-status" class="nano-status">Model not loaded.</span>
-  </div>
-  <div id="nano-messages" class="nano-messages"></div>
-  <div class="nano-input-row">
-    <textarea id="nano-input" class="nano-input" placeholder="Ask Nano Chat..." disabled></textarea>
-    <button id="nano-send" class="nano-btn" type="button" disabled>Send</button>
-  </div>
-</section>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2026/02/09/nano-chat/</guid>
-    </item>
-    <item>
-      <title>Lolcat in Arm Assembly</title>
-      <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly</link>
-      <description><![CDATA[Rewriting x86 Lolcat in Arm assembly.]]></description>
-      <pubDate>2025-04-12</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly</guid>
+      <title>Git status on Unix terminal</title>
+      <link>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</link>
+      <description><![CDATA[Get git status on unix terminal (PS1).]]></description>
+      <pubDate>2018-07-19</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</guid>
     </item>
   </channel>
 </rss>
