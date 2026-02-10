@@ -103,6 +103,115 @@
       font-size: 13px;
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+    .editor-area {
+      position: relative;
+    }
+    .bubble {
+      position: fixed;
+      z-index: 9999;
+      display: none;
+      gap: 6px;
+      align-items: center;
+      background: #1f1f1f;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.2);
+    }
+    .bubble button {
+      border: none;
+      background: transparent;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .bubble button:hover {
+      background: rgba(255,255,255,0.14);
+    }
+    .bubble .hl {
+      color: #d9f0b2;
+    }
+    .bubble:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      width: 14px;
+      height: 14px;
+      background: #1f1f1f;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .plus-rail {
+      position: absolute;
+      left: -58px;
+      top: 100px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plus-main {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid #4f4f4f;
+      background: #fff;
+      color: #3b3b3b;
+      font-size: 28px;
+      line-height: 40px;
+      padding: 0;
+    }
+    .plus-tools {
+      display: none;
+      gap: 8px;
+    }
+    .plus-tools.open {
+      display: flex;
+    }
+    .plus-tools button {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #0d8e23;
+      background: #f7fff8;
+      color: #0d8e23;
+      font-size: 14px;
+      padding: 0;
+    }
+    #body mark {
+      color: #1a1a1a;
+      padding: 0.02em 0.12em;
+      border-radius: 0.18em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    #body.reading-highlight p,
+    #body.reading-highlight div {
+      background: var(--reading-hl, #e6f1e8);
+      display: inline;
+      padding: 0.01em 0.08em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    #body.reading-highlight br {
+      line-height: 1.8;
+    }
+    @media (max-width: 920px) {
+      .plus-rail {
+        left: -8px;
+        top: 8px;
+      }
+      .plus-main {
+        width: 40px;
+        height: 40px;
+        line-height: 34px;
+      }
+      .plus-tools button {
+        width: 36px;
+        height: 36px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -113,16 +222,39 @@
         <button class="secondary" id="copyBtn" type="button">Copy Org</button>
         <button class="secondary" id="saveDraftBtn" type="button">Save Draft</button>
         <button id="publishBtn" type="button">Publish to posts/</button>
+        <button class="secondary" id="readingModeBtn" type="button">Highlight Mode</button>
+        <input id="readingColor" type="color" value="#dff0df" title="Highlight color">
       </div>
     </div>
 
     <div class="status" id="status">This page exists only in local doorman mode.</div>
 
-    <article class="sheet">
+    <article class="sheet editor-area">
+      <div class="plus-rail">
+        <button class="plus-main" id="plusMainBtn" type="button">+</button>
+        <div class="plus-tools" id="plusTools">
+          <button type="button" id="insertH2Btn" title="Heading">H2</button>
+          <button type="button" id="insertQuoteBtn" title="Quote">"</button>
+          <button type="button" id="insertCodeBtn" title="Code">{"}"</button>
+          <button type="button" id="insertHrBtn" title="Divider">---</button>
+          <button type="button" id="inlineHlBtn" title="Highlight">HL</button>
+        </div>
+      </div>
       <div id="title" contenteditable="true" spellcheck="true"></div>
       <div id="body" contenteditable="true" spellcheck="true"></div>
-      <div class="hint">Use Cmd/Ctrl+B and Cmd/Ctrl+I for browser-native bold/italic while drafting.</div>
+      <div class="hint">Select text for floating tools. Use + menu for blocks. Highlights are saved to Org using inline HTML marks.</div>
     </article>
+  </div>
+
+  <div class="bubble" id="bubble">
+    <button type="button" data-cmd="bold"><b>B</b></button>
+    <button type="button" data-cmd="italic"><i>I</i></button>
+    <button type="button" data-action="link">Link</button>
+    <button type="button" data-action="h2">H2</button>
+    <button type="button" data-action="quote">Quote</button>
+    <button type="button" data-action="code">Code</button>
+    <button type="button" class="hl" data-action="highlight">HL</button>
+    <input id="inlineColor" type="color" value="#dff0df" title="Highlight color">
   </div>
 
   <script>
@@ -132,6 +264,17 @@
     const saveDraftBtn = document.getElementById("saveDraftBtn");
     const publishBtn = document.getElementById("publishBtn");
     const copyBtn = document.getElementById("copyBtn");
+    const readingModeBtn = document.getElementById("readingModeBtn");
+    const readingColor = document.getElementById("readingColor");
+    const plusMainBtn = document.getElementById("plusMainBtn");
+    const plusTools = document.getElementById("plusTools");
+    const insertH2Btn = document.getElementById("insertH2Btn");
+    const insertQuoteBtn = document.getElementById("insertQuoteBtn");
+    const insertCodeBtn = document.getElementById("insertCodeBtn");
+    const insertHrBtn = document.getElementById("insertHrBtn");
+    const inlineHlBtn = document.getElementById("inlineHlBtn");
+    const bubble = document.getElementById("bubble");
+    const inlineColor = document.getElementById("inlineColor");
 
     const KEY = "selfdotsend-local-editor-v1";
 
@@ -140,23 +283,70 @@
       statusEl.style.color = bad ? "#9d2e2e" : "#6d6a64";
     }
 
-    function bodyToOrg(text) {
-      return text
-        .replace(/\r\n/g, "\n")
-        .split("\n")
-        .map(line => line.trimEnd())
-        .join("\n");
+    function pickNodeText(node) {
+      return (node.textContent || "").replace(/\u00a0/g, " ");
+    }
+
+    function nodeToOrg(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.nodeValue || "";
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return "";
+      }
+
+      const tag = node.tagName.toLowerCase();
+      const inner = () => Array.from(node.childNodes).map(nodeToOrg).join("");
+
+      if (tag === "br") return "\n";
+      if (tag === "strong" || tag === "b") return `*${inner().trim()}*`;
+      if (tag === "em" || tag === "i") return `/${inner().trim()}/`;
+      if (tag === "code" && node.parentElement && node.parentElement.tagName.toLowerCase() !== "pre") {
+        return `~${pickNodeText(node).trim()}~`;
+      }
+      if (tag === "a") {
+        const href = node.getAttribute("href") || "";
+        const text = inner().trim() || href;
+        return href ? `[[${href}][${text}]]` : text;
+      }
+      if (tag === "mark") {
+        const color = node.style.backgroundColor || "#dff0df";
+        const text = inner().trim();
+        return `@@html:<mark style="background-color:${color}">${text}</mark>@@`;
+      }
+      if (tag === "h1") return `* ${inner().trim()}\n\n`;
+      if (tag === "h2") return `** ${inner().trim()}\n\n`;
+      if (tag === "h3") return `*** ${inner().trim()}\n\n`;
+      if (tag === "blockquote") {
+        return `#+BEGIN_QUOTE\n${inner().trim()}\n#+END_QUOTE\n\n`;
+      }
+      if (tag === "pre") {
+        return `#+BEGIN_SRC text\n${pickNodeText(node).trim()}\n#+END_SRC\n\n`;
+      }
+      if (tag === "hr") return "\n-----\n\n";
+      if (tag === "div" || tag === "p") return `${inner().trimEnd()}\n\n`;
+      return inner();
+    }
+
+    function htmlToOrg(root) {
+      return Array.from(root.childNodes)
+        .map(nodeToOrg)
+        .join("")
+        .replace(/\n{3,}/g, "\n\n")
+        .trimEnd();
     }
 
     function toOrgDocument(title, body) {
       const date = new Date().toISOString().slice(0, 10);
-      return `#+TITLE: ${title}\n#+DATE: ${date}\n#+OPTIONS: toc:nil\n#+DESCRIPTION: Draft post\n\n${bodyToOrg(body)}\n`;
+      return `#+TITLE: ${title}\n#+DATE: ${date}\n#+OPTIONS: toc:nil\n#+DESCRIPTION: Draft post\n\n${body}\n`;
     }
 
     function saveLocal() {
       localStorage.setItem(KEY, JSON.stringify({
         title: titleEl.innerText.trim(),
-        body: bodyEl.innerText,
+        bodyHtml: bodyEl.innerHTML,
+        readingHighlight: bodyEl.classList.contains("reading-highlight"),
+        readingColor: readingColor.value,
       }));
     }
 
@@ -166,20 +356,87 @@
         if (!raw) return;
         const data = JSON.parse(raw);
         if (data.title) titleEl.innerText = data.title;
-        if (data.body) bodyEl.innerText = data.body;
+        if (data.bodyHtml) bodyEl.innerHTML = data.bodyHtml;
+        if (data.readingColor) {
+          readingColor.value = data.readingColor;
+          bodyEl.style.setProperty("--reading-hl", data.readingColor);
+        }
+        if (data.readingHighlight) {
+          bodyEl.classList.add("reading-highlight");
+        }
       } catch (_) {}
+    }
+
+    function getOrgBody() {
+      return htmlToOrg(bodyEl);
+    }
+
+    function selectionInsideBody() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return false;
+      const range = sel.getRangeAt(0);
+      return bodyEl.contains(range.commonAncestorContainer);
+    }
+
+    function showBubble() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed || !selectionInsideBody()) {
+        bubble.style.display = "none";
+        return;
+      }
+      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      bubble.style.display = "flex";
+      bubble.style.top = `${Math.max(8, rect.top - 56)}px`;
+      bubble.style.left = `${Math.max(8, rect.left + rect.width / 2 - bubble.offsetWidth / 2)}px`;
+    }
+
+    function exec(cmd, value) {
+      document.execCommand(cmd, false, value || null);
+      bodyEl.focus();
+      saveLocal();
+      showBubble();
+    }
+
+    function promptLink() {
+      const url = prompt("Enter URL");
+      if (!url) return;
+      exec("createLink", url);
+    }
+
+    function applyInlineHighlight(color) {
+      exec("hiliteColor", color);
+    }
+
+    function wrapBlock(tagName) {
+      exec("formatBlock", tagName);
+    }
+
+    function insertCodeBlock() {
+      exec("insertHTML", "<pre><code>// code</code></pre><p><br></p>");
+    }
+
+    function insertHr() {
+      exec("insertHorizontalRule");
+      exec("insertHTML", "<p><br></p>");
+    }
+
+    function toggleReadingHighlight() {
+      bodyEl.classList.toggle("reading-highlight");
+      const on = bodyEl.classList.contains("reading-highlight");
+      setStatus(on ? "Highlight mode enabled." : "Highlight mode disabled.");
+      saveLocal();
     }
 
     async function saveDoc(mode) {
       const title = titleEl.innerText.trim();
-      const body = bodyEl.innerText;
+      const body = getOrgBody();
       if (!title) {
         setStatus("Title is required before saving.", true);
         titleEl.focus();
         return;
       }
       try {
-        const res = await fetch("/__editor/api/save", {
+        const res = await fetch("/editor/api/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ title, body, mode }),
@@ -197,7 +454,7 @@
 
     async function copyOrg() {
       const title = titleEl.innerText.trim() || "Draft";
-      const org = toOrgDocument(title, bodyEl.innerText || "");
+      const org = toOrgDocument(title, getOrgBody());
       try {
         await navigator.clipboard.writeText(org);
         setStatus("Org text copied to clipboard.");
@@ -208,11 +465,45 @@
 
     titleEl.addEventListener("input", saveLocal);
     bodyEl.addEventListener("input", saveLocal);
+    bodyEl.addEventListener("mouseup", showBubble);
+    bodyEl.addEventListener("keyup", showBubble);
+    document.addEventListener("selectionchange", showBubble);
+    document.addEventListener("click", (evt) => {
+      if (!bubble.contains(evt.target)) {
+        showBubble();
+      }
+    });
     saveDraftBtn.addEventListener("click", () => saveDoc("draft"));
     publishBtn.addEventListener("click", () => saveDoc("publish"));
     copyBtn.addEventListener("click", copyOrg);
+    readingModeBtn.addEventListener("click", toggleReadingHighlight);
+    readingColor.addEventListener("input", () => {
+      bodyEl.style.setProperty("--reading-hl", readingColor.value);
+      saveLocal();
+    });
+    plusMainBtn.addEventListener("click", () => plusTools.classList.toggle("open"));
+    insertH2Btn.addEventListener("click", () => wrapBlock("h2"));
+    insertQuoteBtn.addEventListener("click", () => wrapBlock("blockquote"));
+    insertCodeBtn.addEventListener("click", insertCodeBlock);
+    insertHrBtn.addEventListener("click", insertHr);
+    inlineHlBtn.addEventListener("click", () => applyInlineHighlight(inlineColor.value));
+    inlineColor.addEventListener("input", () => applyInlineHighlight(inlineColor.value));
+
+    bubble.addEventListener("click", (evt) => {
+      const btn = evt.target.closest("button");
+      if (!btn) return;
+      const cmd = btn.getAttribute("data-cmd");
+      const action = btn.getAttribute("data-action");
+      if (cmd) exec(cmd);
+      if (action === "link") promptLink();
+      if (action === "h2") wrapBlock("h2");
+      if (action === "quote") wrapBlock("blockquote");
+      if (action === "code") exec("formatBlock", "pre");
+      if (action === "highlight") applyInlineHighlight(inlineColor.value);
+    });
 
     loadLocal();
+    bodyEl.style.setProperty("--reading-hl", readingColor.value);
   </script>
 </body>
 </html>

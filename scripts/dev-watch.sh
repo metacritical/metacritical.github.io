@@ -16,8 +16,12 @@ acquire_lock() {
     local old_pid
     old_pid="$(cat "$LOCK_PID_FILE" 2>/dev/null || true)"
     if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
-      echo "[watch] Another watcher is already running (pid: $old_pid). Exiting this instance."
-      exit 0
+      echo "[watch] Existing watcher detected (pid: $old_pid). Taking over..."
+      kill "$old_pid" 2>/dev/null || true
+      sleep 1
+      if kill -0 "$old_pid" 2>/dev/null; then
+        kill -9 "$old_pid" 2>/dev/null || true
+      fi
     fi
   fi
 

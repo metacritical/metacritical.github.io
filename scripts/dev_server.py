@@ -3,8 +3,8 @@
 
 Serves:
 - /... from BLOG_DIR/public
-- /__editor from BLOG_DIR/editor/index.html
-- POST /__editor/api/save to persist a draft .org file in BLOG_DIR/drafts
+- /editor from BLOG_DIR/editor/index.html
+- POST /editor/api/save to persist a draft .org file in BLOG_DIR/drafts
 """
 
 from __future__ import annotations
@@ -57,11 +57,65 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _dev_edit_injection(self) -> str:
+        return """
+<script>
+(function () {
+  if (location.pathname === "/editor" || location.pathname === "/editor/") return;
+  if (document.getElementById("local-dev-edit-link")) return;
+  var a = document.createElement("a");
+  a.id = "local-dev-edit-link";
+  a.href = "/editor";
+  a.setAttribute("aria-label", "Search");
+  a.title = "Search";
+  a.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="#666" stroke-width="2"></circle><line x1="16.65" y1="16.65" x2="21" y2="21" stroke="#666" stroke-width="2" stroke-linecap="round"></line></svg><span style="margin-left:8px;font:500 14px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#666;white-space:nowrap;">Search '/'</span>`;
+  a.style.cssText = "margin-left:12px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:6px;background:transparent;";
+  var host = document.querySelector("nav.main-nav .nav-right, .site-nav, .site-nav-left ul.nav, .main-nav");
+  if (host) {
+    host.appendChild(a);
+  } else {
+    a.style.position = "fixed";
+    a.style.right = "16px";
+    a.style.top = "16px";
+    a.style.zIndex = "9999";
+    document.body.appendChild(a);
+  }
+})();
+</script>
+"""
+
+    def _try_serve_injected_html(self, path: str) -> bool:
+        rel = path.lstrip("/")
+        if not rel:
+            candidate = self.public_dir / "index.html"
+        else:
+            candidate = self.public_dir / rel
+            if candidate.is_dir():
+                candidate = candidate / "index.html"
+        if not candidate.exists() or not candidate.is_file() or candidate.suffix != ".html":
+            return False
+        try:
+            html = candidate.read_text(encoding="utf-8")
+        except Exception:
+            return False
+        injection = self._dev_edit_injection()
+        if "</body>" in html:
+            html = html.replace("</body>", injection + "\n</body>", 1)
+        else:
+            html += injection
+        body = html.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+        return True
+
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
 
-        if path == "/__editor" or path == "/__editor/":
+        if path in {"/editor", "/editor/", "/__editor", "/__editor/"}:
             editor_html = self.editor_dir / "index.html"
             if not editor_html.exists():
                 self.send_error(404, "Editor not found")
@@ -74,12 +128,15 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
 
+        if self._try_serve_injected_html(path):
+            return
+
         super().do_GET()
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
-        if path != "/__editor/api/save":
+        if path not in {"/editor/api/save", "/__editor/api/save"}:
             self.send_error(404, "Not Found")
             return
 
@@ -151,7 +208,7 @@ def main() -> int:
         ),
     ) as httpd:
         print(f"[web] Serving {public_dir} on http://localhost:{port}")
-        print(f"[web] Editor available at http://localhost:{port}/__editor")
+        print(f"[web] Editor available at http://localhost:{port}/editor")
         httpd.serve_forever()
 
     return 0
