@@ -14,6 +14,31 @@ EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
 DRAFTS="${DRAFTS:-0}"
+DRAFT_PREVIEW_DIR="$BLOG_DIR/posts/draft-preview-temp"
+
+prepare_draft_preview_files() {
+  rm -rf "$DRAFT_PREVIEW_DIR"
+  if [ "$DRAFTS" != "1" ]; then
+    return
+  fi
+  if [ ! -d "$BLOG_DIR/drafts" ]; then
+    return
+  fi
+  mkdir -p "$DRAFT_PREVIEW_DIR"
+  find "$BLOG_DIR/drafts" -type f -name "*.org" -print0 | while IFS= read -r -d '' draft_file; do
+    cp "$draft_file" "$DRAFT_PREVIEW_DIR/$(basename "$draft_file")"
+  done
+  if git -C "$BLOG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+    git -C "$BLOG_DIR" add "$DRAFT_PREVIEW_DIR"/*.org >/dev/null 2>&1 || true
+  fi
+}
+
+cleanup_draft_preview_files() {
+  if git -C "$BLOG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+    git -C "$BLOG_DIR" reset -q HEAD -- "$DRAFT_PREVIEW_DIR" >/dev/null 2>&1 || true
+  fi
+  rm -rf "$DRAFT_PREVIEW_DIR"
+}
 
 cleanup_post_build_artifacts() {
   # Keep the repo root tidy for commits by archiving known legacy folders.
@@ -48,6 +73,9 @@ cleanup_post_build_artifacts() {
 # Ensure exported section anchors are readable and stable (CUSTOM_ID slugs).
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/normalize_org_custom_ids.el" "$BLOG_DIR"
 
+prepare_draft_preview_files
+trap cleanup_draft_preview_files EXIT
+
 # Render Org Babel diagrams by default.
 # Disable explicitly with: RENDER_DIAGRAMS=0 ./publish.sh
 if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
@@ -66,6 +94,10 @@ fi
 
 # Publish with AOG using native selfdotsend theme.
 echo "Publishing blog with AOG..."
+if [ -n "$START_BRANCH" ]; then
+  export AOG_REPOSITORY_ORG_BRANCH="$START_BRANCH"
+  export AOG_REPOSITORY_HTML_BRANCH="$START_BRANCH"
+fi
 if [ "$DRAFTS" = "1" ]; then
   echo "Including drafts in this build (DRAFTS=1)."
   export AOG_INCLUDE_DRAFTS=1
@@ -197,6 +229,13 @@ fi
 
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"
+
+# Local preview helper for drafts: generates /drafts/ pages only when DRAFTS=1.
+if [ "$DRAFTS" = "1" ]; then
+  python "$BLOG_DIR/scripts/generate_draft_preview.py" "$BLOG_DIR"
+else
+  rm -rf "$BLOG_DIR/public/drafts"
+fi
 
 # Optional cleanup step to keep commit diffs clean after each build.
 if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then

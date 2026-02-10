@@ -13,6 +13,7 @@ import datetime as dt
 import http.server
 import json
 import os
+import subprocess
 import re
 import socketserver
 import sys
@@ -111,6 +112,15 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             filename = target_dir / f"{slug}-{stamp}.org"
 
         filename.write_text(org_draft_text(title, body), encoding="utf-8")
+        try:
+            subprocess.run(
+                ["git", "-C", str(self.blog_dir), "add", str(filename)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass
         self._json(
             200,
             {

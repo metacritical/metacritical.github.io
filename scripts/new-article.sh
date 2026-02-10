@@ -62,4 +62,9 @@ cat > "$TARGET_FILE" <<EOF
 Write your draft here.
 EOF
 
+# Track new files immediately so AOG git-based publish can preview drafts.
+if git -C "$BLOG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+  git -C "$BLOG_DIR" add "$TARGET_FILE" >/dev/null 2>&1 || true
+fi
+
 echo "Created: ${TARGET_FILE#$BLOG_DIR/}"
