@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Draft Editor</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --ink: #1c1b19;
+      --muted: #6d6a64;
+      --paper: #fffdf8;
+      --line: #e2ddd3;
+      --accent: #0d6a57;
+    }
+    body {
+      margin: 0;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+      background: radial-gradient(circle at 8% 2%, #f0ebe1, var(--bg) 45%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -28px -20px 20px;
+      padding: 14px 20px;
+      background: rgba(247, 246, 242, 0.92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .bar h1 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .actions { display: flex; gap: 10px; align-items: center; }
+    button {
+      border: 1px solid #0f5f4f;
+      background: var(--accent);
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border-color: #9db8b1;
+    }
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .sheet {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.06);
+      padding: 36px 42px;
+    }
+    [contenteditable="true"]:focus { outline: none; }
+    #title {
+      font-size: clamp(34px, 6vw, 56px);
+      line-height: 1.1;
+      min-height: 66px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    #title:empty::before {
+      content: "Title";
+      color: #b0aaa0;
+    }
+    #body {
+      min-height: 58vh;
+      font-size: 23px;
+      line-height: 1.65;
+      letter-spacing: 0.01em;
+    }
+    #body:empty::before {
+      content: "Tell your story...";
+      color: #b0aaa0;
+    }
+    .hint {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>Local Draft Editor</h1>
+      <div class="actions">
+        <button class="secondary" id="copyBtn" type="button">Copy Org</button>
+        <button id="saveBtn" type="button">Save to drafts/</button>
+      </div>
+    </div>
+
+    <div class="status" id="status">This page exists only in local doorman mode.</div>
+
+    <article class="sheet">
+      <div id="title" contenteditable="true" spellcheck="true"></div>
+      <div id="body" contenteditable="true" spellcheck="true"></div>
+      <div class="hint">Use Cmd/Ctrl+B and Cmd/Ctrl+I for browser-native bold/italic while drafting.</div>
+    </article>
+  </div>
+
+  <script>
+    const titleEl = document.getElementById("title");
+    const bodyEl = document.getElementById("body");
+    const statusEl = document.getElementById("status");
+    const saveBtn = document.getElementById("saveBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    const KEY = "selfdotsend-local-editor-v1";
+
+    function setStatus(text, bad) {
+      statusEl.textContent = text;
+      statusEl.style.color = bad ? "#9d2e2e" : "#6d6a64";
+    }
+
+    function bodyToOrg(text) {
+      return text
+        .replace(/\r\n/g, "\n")
+        .split("\n")
+        .map(line => line.trimEnd())
+        .join("\n");
+    }
+
+    function toOrgDocument(title, body) {
+      const date = new Date().toISOString().slice(0, 10);
+      return `#+TITLE: ${title}\n#+DATE: ${date}\n#+OPTIONS: toc:nil\n#+DESCRIPTION: Draft post\n\n${bodyToOrg(body)}\n`;
+    }
+
+    function saveLocal() {
+      localStorage.setItem(KEY, JSON.stringify({
+        title: titleEl.innerText.trim(),
+        body: bodyEl.innerText,
+      }));
+    }
+
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (data.title) titleEl.innerText = data.title;
+        if (data.body) bodyEl.innerText = data.body;
+      } catch (_) {}
+    }
+
+    async function saveDraft() {
+      const title = titleEl.innerText.trim();
+      const body = bodyEl.innerText;
+      if (!title) {
+        setStatus("Title is required before saving.", true);
+        titleEl.focus();
+        return;
+      }
+      try {
+        const res = await fetch("/__editor/api/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, body }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || "Failed to save draft");
+        }
+        setStatus(`Saved: ${data.path}`);
+      } catch (err) {
+        setStatus(String(err.message || err), true);
+      }
+    }
+
+    async function copyOrg() {
+      const title = titleEl.innerText.trim() || "Draft";
+      const org = toOrgDocument(title, bodyEl.innerText || "");
+      try {
+        await navigator.clipboard.writeText(org);
+        setStatus("Org text copied to clipboard.");
+      } catch (_) {
+        setStatus("Clipboard copy failed.", true);
+      }
+    }
+
+    titleEl.addEventListener("input", saveLocal);
+    bodyEl.addEventListener("input", saveLocal);
+    saveBtn.addEventListener("click", saveDraft);
+    copyBtn.addEventListener("click", copyOrg);
+
+    loadLocal();
+  </script>
+</body>
+</html>

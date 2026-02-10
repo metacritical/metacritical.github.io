@@ -14,4 +14,4 @@ fi
 
 cd "$BLOG_DIR/public"
 echo "[web] Serving $PWD on http://localhost:$PORT"
-python -m http.server "$PORT"
+python "$BLOG_DIR/scripts/dev_server.py" "$BLOG_DIR" "$PORT"

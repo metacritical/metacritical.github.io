@@ -67,6 +67,9 @@ doorman
 Processes started:
 - `watch`: `./scripts/dev-watch.sh` (polls source changes and rebuilds)
 - `web`: `./scripts/dev-web.sh` serves `public/` on `http://localhost:8080`
+- Local editor (dev only): `http://localhost:8080/__editor`
+  - Only available while `doorman` is running
+  - Saves drafts to `drafts/*.org` via local API
 
 Tuning:
 - `WATCH_POLL_SECONDS=1 doorman` to poll faster
