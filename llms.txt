@@ -1,0 +1,23 @@
+# Selfdotsend
+> Selfdotsend is a computing blog by Pankaj Doharey focused on programming languages, data structures, systems programming, Unix tooling, and applied AI.
+
+## Site
+- [Home](https://www.selfdotsend.com/)
+- [Blog](https://www.selfdotsend.com/blog/)
+- [Archive](https://www.selfdotsend.com/archive/)
+- [About](https://www.selfdotsend.com/about/)
+- [Tags](https://www.selfdotsend.com/tags/)
+- [Nano Chat](https://www.selfdotsend.com/nano-chat/)
+
+## Feeds
+- [RSS](https://www.selfdotsend.com/rss.xml)
+
+## Selected Technical Posts
+- [Git status on Unix terminal](https://www.selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal/)
+- [Learn to write an editor](https://www.selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor/)
+- [Writing a Programmers Editor (DS/Gapbuffer) - Part 2](https://www.selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/)
+- [Lolcat in ARM assembly](https://www.selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly/)
+
+## Notes
+- Primary content is published as HTML pages generated from Org-mode source.
+- For canonical navigation, use the URLs listed above.
