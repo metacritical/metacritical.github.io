@@ -781,9 +781,11 @@ em, i {
 	cursor: pointer;
 }
 
-.story-clap-btn svg {
-	width: 24px;
-	height: 24px;
+.story-clap-btn img {
+	width: 30px;
+	height: 30px;
+	object-fit: contain;
+	display: block;
 }
 
 .story-clap-count,
