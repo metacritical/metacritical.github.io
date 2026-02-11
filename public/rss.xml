@@ -4,8 +4,8 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Wed, 11 Feb 2026 00:08:38 IST</pubDate>
-    <lastBuildDate>Wed, 11 Feb 2026 00:08:38 IST</lastBuildDate>
+    <pubDate>Wed, 11 Feb 2026 06:25:18 IST</pubDate>
+    <lastBuildDate>Wed, 11 Feb 2026 06:25:18 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
     <item>
@@ -14,6 +14,14 @@
       <description><![CDATA[<section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Archive</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">👏</button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
   <div class="post-author-row">
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
@@ -74,6 +82,14 @@
       <description><![CDATA[<section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Nano Chat</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">👏</button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
   <div class="post-author-row">
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
@@ -106,6 +122,14 @@
       <description><![CDATA[<section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">First Post</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">👏</button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
   <div class="post-author-row">
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
@@ -151,6 +175,14 @@ This is your first blog post with Alchemist. Edit this file to get started.
       <description><![CDATA[<section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">All Posts</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">👏</button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
   <div class="post-author-row">
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">
@@ -190,6 +222,14 @@ This is your first blog post with Alchemist. Edit this file to get started.
       <description><![CDATA[<section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Sample Post with Syntax Highlighting</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">👏</button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
   <div class="post-author-row">
     <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
     <div class="post-author-meta">

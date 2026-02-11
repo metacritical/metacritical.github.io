@@ -148,7 +148,7 @@ nav.main-nav {
 
 .brand-title {
 	color: #1f1f1b;
-	font-size: 24px;
+	font-size: 20px;
 	font-weight: 500;
 	line-height: 1.05;
 	letter-spacing: -0.01em;
@@ -524,6 +524,10 @@ body.search-open {
   padding: 22px 40px 70px 40px;
 }
 
+#wrapper.post-page {
+  max-width: 788px;
+}
+
 #wrapper.home {
 	max-width: 600px;
 	margin: 0 auto;
@@ -733,6 +737,50 @@ em, i {
 .post-author-date {
 	font: 500 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: #7b7569;
+}
+
+.post {
+	position: relative;
+}
+
+.story-rail {
+	position: absolute;
+	left: -88px;
+	top: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: 56px;
+}
+
+.story-clap-btn,
+.story-share-link {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	border: 1px solid #d7d1c4;
+	background: #fff;
+	color: #595348;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	font: 600 15px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.story-clap-btn {
+	cursor: pointer;
+}
+
+.story-clap-count,
+.story-share-label {
+	font: 500 12px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #7b7569;
+}
+
+.story-share-label {
+	margin-top: 2px;
 }
 
 .post h2 {

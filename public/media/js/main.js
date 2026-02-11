@@ -1,4 +1,107 @@
 (function () {
+  function estimateReadMinutes(text) {
+    var words = (text || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(" ")
+      .filter(Boolean).length;
+    return Math.max(1, Math.ceil(words / 220));
+  }
+
+  function appendReadTime(base, minutes) {
+    if (!base || !minutes) return;
+    var next = base + " \u00b7 " + minutes + " min read";
+    return next;
+  }
+
+  function getPostTextForReadTime() {
+    var post = document.querySelector(".post");
+    if (!post) return "";
+    var clone = post.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll("pre, code, .org-src-container, script, style"), function (el) {
+      el.remove();
+    });
+    return (clone.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function applyStoryReadTime() {
+    var authorDateEl = document.querySelector(".post-author-date");
+    if (!authorDateEl) return;
+    var text = getPostTextForReadTime();
+    if (!text) return;
+    var mins = estimateReadMinutes(text);
+    var baseDate = (authorDateEl.textContent || "").trim();
+    authorDateEl.textContent = appendReadTime(baseDate || "", mins);
+  }
+
+  function enhanceHomeReadTimeCards() {
+    var cards = document.querySelectorAll(".medium-post-card");
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      var link = card.querySelector(".medium-post-main");
+      var meta = card.querySelector(".medium-post-meta");
+      if (!link || !meta) return;
+      var href = link.getAttribute("href");
+      if (!href) return;
+      var key = "readtime:" + href;
+
+      var cached = sessionStorage.getItem(key);
+      if (cached) {
+        meta.textContent = appendReadTime((meta.textContent || "").trim(), parseInt(cached, 10));
+        return;
+      }
+
+      fetch(href, { credentials: "same-origin" })
+        .then(function (res) {
+          if (!res.ok) throw new Error("bad response");
+          return res.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, "text/html");
+          var post = doc.querySelector(".post");
+          if (!post) return;
+          Array.prototype.forEach.call(post.querySelectorAll("pre, code, .org-src-container, script, style"), function (el) {
+            el.remove();
+          });
+          var mins = estimateReadMinutes((post.textContent || "").replace(/\s+/g, " ").trim());
+          sessionStorage.setItem(key, String(mins));
+          meta.textContent = appendReadTime((meta.textContent || "").trim(), mins);
+        })
+        .catch(function () {});
+    });
+  }
+
+  function setupStoryActions() {
+    var rail = document.querySelector(".story-rail");
+    if (!rail) return;
+
+    var clapBtn = rail.querySelector(".story-clap-btn");
+    var clapCount = rail.querySelector(".story-clap-count");
+    var xLink = rail.querySelector(".story-share-x");
+    var fbLink = rail.querySelector(".story-share-fb");
+    var lnLink = rail.querySelector(".story-share-ln");
+    var url = window.location.href;
+    var title = (document.querySelector(".post .title") || {}).textContent || document.title;
+    var key = "story_claps:" + window.location.pathname;
+
+    var count = parseInt(localStorage.getItem(key) || "0", 10);
+    if (!Number.isFinite(count)) count = 0;
+    clapCount.textContent = String(count);
+
+    clapBtn.addEventListener("click", function () {
+      count += 1;
+      localStorage.setItem(key, String(count));
+      clapCount.textContent = String(count);
+    });
+
+    var eUrl = encodeURIComponent(url);
+    var eTitle = encodeURIComponent(title);
+    xLink.href = "https://twitter.com/intent/tweet?url=" + eUrl + "&text=" + eTitle;
+    fbLink.href = "https://www.facebook.com/sharer/sharer.php?u=" + eUrl;
+    lnLink.href = "https://www.linkedin.com/sharing/share-offsite/?url=" + eUrl;
+  }
+
   function isRetina() {
     var mq = "(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)";
     return (window.devicePixelRatio && window.devicePixelRatio > 1) ||
@@ -114,5 +217,9 @@
         }
       }
     }
+
+    applyStoryReadTime();
+    enhanceHomeReadTimeCards();
+    setupStoryActions();
   });
 })();

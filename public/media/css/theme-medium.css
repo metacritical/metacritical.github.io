@@ -41,10 +41,10 @@ html[data-theme="medium"] .brand-logo {
 
 html[data-theme="medium"] .brand-title {
   font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  font-size: 42px;
-  line-height: 1.0;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 24px;
+  line-height: 1.06;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: #1f1f1b;
 }
 
@@ -119,7 +119,7 @@ html[data-theme="medium"] #wrapper.home {
 }
 
 html[data-theme="medium"] #wrapper.post-page {
-  max-width: 760px;
+  max-width: 788px;
 }
 
 html[data-theme="medium"] .home .post > h1.title {
@@ -265,6 +265,25 @@ html[data-theme="medium"] .post-author-name {
 html[data-theme="medium"] .post-author-date {
   font: 500 16px/1.25 "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #6a655a;
+}
+
+html[data-theme="medium"] .story-rail {
+  left: -98px;
+}
+
+@media (max-width: 1180px) {
+  html[data-theme="medium"] .story-rail {
+    position: static;
+    flex-direction: row;
+    width: auto;
+    margin: 0 0 14px;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  html[data-theme="medium"] .story-share-label {
+    margin: 0 4px 0 6px;
+  }
 }
 
 html[data-theme="medium"] .post h2,
