@@ -164,6 +164,10 @@ nav.main-nav .nav-left.site-brand .brand-title {
 	text-overflow: ellipsis;
 }
 
+nav.main-nav .nav-left.site-brand .brand-title .brand-o {
+	color: #36c9c7;
+}
+
 .brand-tagline {
 	font-size: clamp(11px, 1.05vw, 14px);
 	line-height: 1.2;
