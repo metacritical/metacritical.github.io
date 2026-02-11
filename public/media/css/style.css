@@ -156,10 +156,11 @@ nav.main-nav .nav-left.site-brand .brand-title {
 	color: #1f1f1b;
 	font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
 	font-size: 3.1em;
-	font-weight: 500;
-	line-height: 1;
+	font-weight: 700;
+	line-height: 1.15;
 	letter-spacing: -0.02em;
 	white-space: nowrap;
+	font-style: italic;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
