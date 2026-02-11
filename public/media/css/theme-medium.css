@@ -35,8 +35,8 @@ html[data-theme="medium"] .nav-left.site-brand {
 }
 
 html[data-theme="medium"] .brand-logo {
-  width: 42px;
-  height: 42px;
+  width: 68px;
+  height: 68px;
 }
 
 html[data-theme="medium"] .brand-title {
@@ -49,7 +49,7 @@ html[data-theme="medium"] .brand-title {
 }
 
 html[data-theme="medium"] .brand-tagline {
-  font-size: 16px;
+  font-size: 13px;
   color: #6f6a5e;
 }
 
