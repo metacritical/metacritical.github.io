@@ -147,6 +147,9 @@ while IFS= read -r -d '' html_file; do
 
     # Add LinkedIn profile icon link next to author in footer when missing.
     s@(<a href="mailto:pankajdoharey(?:%40gmail\.com|\.com)">Pankaj Doharey</a>)(?!\s*<a[^>]*footer-linkedin)@$1 <a class="footer-linkedin" href="https://www.linkedin.com/in/pankajdoharey/" target="_blank" rel="noopener" aria-label="LinkedIn profile" title="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3A2.25 2.25 0 1 0 5.3 7.5 2.25 2.25 0 0 0 5.25 3zM20 13.22c0-3.49-1.86-5.12-4.34-5.12-2 0-2.9 1.1-3.4 1.88V8.5H8.88V20h3.38v-5.7c0-1.5.28-2.95 2.14-2.95 1.83 0 1.85 1.72 1.85 3.04V20h3.38v-6.78z"/></svg></a>@g;
+
+    # Normalize powered-by footer copy.
+    s@Powered by\s*<a href="https://github\.com/metacritical/AOG" target="_blank">AOG</a>@Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a> + Modalert 💊@g;
   ' "$html_file"
 done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
 
