@@ -147,14 +147,19 @@ nav.main-nav {
 	min-width: 0;
 }
 
-.brand-title {
+nav.main-nav .nav-left.site-brand .brand-logo-link,
+nav.main-nav .nav-left.site-brand .brand-title {
+	padding: 0;
+}
+
+nav.main-nav .nav-left.site-brand .brand-title {
 	color: #1f1f1b;
-	font-family: "Sohne", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: clamp(46px, 5.8vw, 86px);
+	font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+	font-size: clamp(44px, 3.4vw, 62px);
 	font-weight: 700;
-	line-height: 0.96;
-	letter-spacing: -0.035em;
-	white-space: normal;
+	line-height: 0.98;
+	letter-spacing: -0.02em;
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
