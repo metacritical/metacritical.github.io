@@ -157,6 +157,9 @@ printf 'www.selfdotsend.com\n' > "$BLOG_DIR/public/CNAME"
 if [ -f "$BLOG_DIR/llms.txt" ]; then
   cp "$BLOG_DIR/llms.txt" "$BLOG_DIR/public/llms.txt"
 fi
+if [ -f "$BLOG_DIR/404.html" ]; then
+  cp "$BLOG_DIR/404.html" "$BLOG_DIR/public/404.html"
+fi
 
 # Normalize Org-exported file:// URLs to site-root absolute URLs.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \

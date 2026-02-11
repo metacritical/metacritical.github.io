@@ -176,14 +176,29 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         body = "\n".join(body_lines).strip()
         return title, body
 
+    def _resolve_draft_file(self, slug: str) -> Path | None:
+        drafts_dir = self.blog_dir / "drafts"
+        exact = drafts_dir / f"{slug}.org"
+        if exact.exists():
+            return exact
+        if not drafts_dir.exists():
+            return None
+
+        # Fallback for legacy/non-normalized filenames: match by slugified stem.
+        candidates = sorted(drafts_dir.glob("*.org"))
+        for candidate in candidates:
+            if slugify(candidate.stem) == slug:
+                return candidate
+        return None
+
     def _load_draft(self, query: str) -> None:
         params = parse_qs(query, keep_blank_values=False)
         slug = (params.get("slug", [""])[0]).strip().lower()
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug):
             self._json(400, {"ok": False, "error": "Invalid draft slug"})
             return
-        draft_file = self.blog_dir / "drafts" / f"{slug}.org"
-        if not draft_file.exists():
+        draft_file = self._resolve_draft_file(slug)
+        if draft_file is None or not draft_file.exists():
             self._json(404, {"ok": False, "error": "Draft not found"})
             return
         title, body = self._parse_org_draft(draft_file)
@@ -194,7 +209,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 "slug": slug,
                 "title": title,
                 "body": body,
-                "targetPath": f"drafts/{slug}.org",
+                "targetPath": f"drafts/{draft_file.name}",
             },
         )
 
