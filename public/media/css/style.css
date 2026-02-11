@@ -786,6 +786,7 @@ em, i {
 	height: 30px;
 	object-fit: contain;
 	display: block;
+	transform: translate(1px, -1px);
 }
 
 .story-clap-count,
