@@ -134,10 +134,10 @@ nav.main-nav {
 }
 
 .brand-logo {
-	width: 52px;
-	height: 52px;
+	width: 44px;
+	height: 44px;
 	border-radius: 50%;
-	flex: 0 0 52px;
+	flex: 0 0 44px;
 }
 
 .brand-copy {
