@@ -1,24 +1,51 @@
 #+TITLE: About
 #+AUTHOR: Pankaj Doharey
 #+DATE: 2025-04-12
+#+OPTIONS: toc:t
 
 * About Self dot send
 :PROPERTIES:
 :CUSTOM_ID: about-self-dot-send
 :END:
 
-Self dot send is a computing blog focusing on programming languages, software design, and technical concepts.
+Self dot send is a computing blog focused on programming languages, software
+design, data structures, systems programming, and applied AI topics such as
+large language models and speech recognition. [[https://selfdotsend.com][selfdotsend.com]]
+
+It publishes hands-on tutorials, including editor internals like gap buffers,
+and practical notes on Unix tooling, ARM assembly, and day-to-day engineering
+workflow.
+
+The goal is clear, technically rigorous writing for developers solving real
+software problems.
 
 * About the Author
 :PROPERTIES:
 :CUSTOM_ID: about-the-author
 :END:
 
-Pankaj Doharey is a software developer with interests in Emacs, Org-mode, functional programming, and system design.
+Pankaj Doharey is a software engineer and ML-focused builder working on
+production AI systems, voice agents, telephony infrastructure, and distributed
+software.
+
+His interests include Emacs and Org-mode customization, functional
+programming, systems languages, LLM systems, speech-to-text tooling, and
+applied market analysis. [[https://github.com/metacritical][GitHub: metacritical]]
+
+He focuses on practical architecture that balances low-level reliability,
+performance, and modern ML-driven product development.
 
 * About this Blog
 :PROPERTIES:
 :CUSTOM_ID: about-this-blog
 :END:
 
-This blog is powered by Alchemist, a flexible blogging system for Emacs Org mode, customized with the metacritical theme.
+This blog is powered by AOG (Act of Genius), an Emacs Org-mode static
+publishing system customized with the metacritical/selfdotsend theme.
+[[https://github.com/metacritical/AOG][AOG on GitHub]]
+
+Posts are written in Org files and published through an editor-first workflow,
+so technical content can be iterated quickly without leaving Emacs.
+
+It is deployed on GitHub Pages and reflects a strong preference for open-source
+tooling, version-controlled content, and reproducible publishing.
