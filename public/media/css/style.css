@@ -156,8 +156,8 @@ nav.main-nav .nav-left.site-brand .brand-title {
 	color: #1f1f1b;
 	font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
 	font-size: clamp(44px, 3.4vw, 62px);
-	font-weight: 700;
-	line-height: 0.98;
+	font-weight: 500;
+	line-height: 1;
 	letter-spacing: -0.02em;
 	white-space: nowrap;
 	overflow: hidden;
@@ -577,6 +577,11 @@ body.search-open {
 /* Homepage card feed should not inherit pink link styles */
 .medium-home {
 	margin-top: 4px;
+}
+
+.post:has(> .medium-home) > .story-rail,
+.post:has(> .medium-home) > .post-author-row {
+	display: none;
 }
 
 .medium-home .medium-post-card {
