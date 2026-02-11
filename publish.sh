@@ -13,32 +13,6 @@ PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
-DRAFTS="${DRAFTS:-0}"
-DRAFT_PREVIEW_DIR="$BLOG_DIR/posts/draft-preview-temp"
-
-prepare_draft_preview_files() {
-  rm -rf "$DRAFT_PREVIEW_DIR"
-  if [ "$DRAFTS" != "1" ]; then
-    return
-  fi
-  if [ ! -d "$BLOG_DIR/drafts" ]; then
-    return
-  fi
-  mkdir -p "$DRAFT_PREVIEW_DIR"
-  find "$BLOG_DIR/drafts" -type f -name "*.org" -print0 | while IFS= read -r -d '' draft_file; do
-    cp "$draft_file" "$DRAFT_PREVIEW_DIR/$(basename "$draft_file")"
-  done
-  if git -C "$BLOG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-    git -C "$BLOG_DIR" add "$DRAFT_PREVIEW_DIR"/*.org >/dev/null 2>&1 || true
-  fi
-}
-
-cleanup_draft_preview_files() {
-  if git -C "$BLOG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-    git -C "$BLOG_DIR" reset -q HEAD -- "$DRAFT_PREVIEW_DIR" >/dev/null 2>&1 || true
-  fi
-  rm -rf "$DRAFT_PREVIEW_DIR"
-}
 
 cleanup_post_build_artifacts() {
   # Keep the repo root tidy for commits by archiving known legacy folders.
@@ -73,9 +47,6 @@ cleanup_post_build_artifacts() {
 # Ensure exported section anchors are readable and stable (CUSTOM_ID slugs).
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/normalize_org_custom_ids.el" "$BLOG_DIR"
 
-prepare_draft_preview_files
-trap cleanup_draft_preview_files EXIT
-
 # Render Org Babel diagrams by default.
 # Disable explicitly with: RENDER_DIAGRAMS=0 ./publish.sh
 if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
@@ -98,12 +69,9 @@ if [ -n "$START_BRANCH" ]; then
   export AOG_REPOSITORY_ORG_BRANCH="$START_BRANCH"
   export AOG_REPOSITORY_HTML_BRANCH="$START_BRANCH"
 fi
-if [ "$DRAFTS" = "1" ]; then
-  echo "Including drafts in this build (DRAFTS=1)."
-  export AOG_INCLUDE_DRAFTS=1
-else
-  export AOG_INCLUDE_DRAFTS=0
-fi
+# Drafts are previewed via /public/drafts pages; keep AOG's main publish feed
+# limited to published posts only.
+export AOG_INCLUDE_DRAFTS=0
 rm -rf "$BLOG_DIR/public"
 # AOG emits a large volume of benign link-validation warnings during
 # generation; filter them so real failures are visible in dev output.
@@ -167,6 +135,20 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
     -e 's|file:///blog/|/blog/|g' \
     -e 's|file:///assets/|/assets/|g' \
     -e 's|file:///media/|/media/|g'
+
+# Ensure nav/footer consistency across all generated pages.
+while IFS= read -r -d '' html_file; do
+  perl -0777 -i -pe '
+    # Add Drafts nav link on main site header when missing.
+    s@(<a href="/nano-chat/">Nano Chat</a>)(?!\s*<a href="/drafts/">Drafts</a>)@$1\n    <a href="/drafts/">Drafts</a>@g;
+
+    # Normalize author mailto link.
+    s@<a href="mailto:[^"]*">Pankaj Doharey</a>@<a href="mailto:pankajdoharey%40gmail.com">Pankaj Doharey</a>@g;
+
+    # Add LinkedIn profile icon link next to author in footer when missing.
+    s@(<a href="mailto:pankajdoharey(?:%40gmail\.com|\.com)">Pankaj Doharey</a>)(?!\s*<a[^>]*footer-linkedin)@$1 <a class="footer-linkedin" href="https://www.linkedin.com/in/pankajdoharey/" target="_blank" rel="noopener" aria-label="LinkedIn profile" title="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3A2.25 2.25 0 1 0 5.3 7.5 2.25 2.25 0 0 0 5.25 3zM20 13.22c0-3.49-1.86-5.12-4.34-5.12-2 0-2.9 1.1-3.4 1.88V8.5H8.88V20h3.38v-5.7c0-1.5.28-2.95 2.14-2.95 1.83 0 1.85 1.72 1.85 3.04V20h3.38v-6.78z"/></svg></a>@g;
+  ' "$html_file"
+done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
 
 # Remove synthetic homepage title injected by generic post template.
 if [ -f "$BLOG_DIR/public/index.html" ]; then
@@ -236,12 +218,8 @@ fi
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"
 
-# Local preview helper for drafts: generates /drafts/ pages only when DRAFTS=1.
-if [ "$DRAFTS" = "1" ]; then
-  "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
-else
-  rm -rf "$BLOG_DIR/public/drafts"
-fi
+# Always generate draft preview pages from /drafts.
+"$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
 
 # Optional cleanup step to keep commit diffs clean after each build.
 if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then

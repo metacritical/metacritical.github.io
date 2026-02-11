@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-theme="medium">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Draft Preview</title>
+  <link rel="icon" href="/media/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
+  <style>
+    body { margin: 0; background: #f7f6f2; color: #1d1b18; }
+    nav.main-nav { padding:12px 22px; background:#faf9f5; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:10px; border-bottom:1px solid #e6e1d5; }
+    .nav-left.site-brand { display:flex; align-items:center; gap:12px; min-width:0; }
+    .brand-logo { width:50px; height:50px; border-radius:50%; flex:0 0 50px; }
+    .brand-copy { display:flex; flex-direction:column; justify-content:center; min-width:0; }
+    .brand-title { color:#1f1f1b; font-family:"Charter","Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif; font-size:3.1em; font-weight:500; line-height:1; letter-spacing:-0.02em; white-space:nowrap; text-decoration:none; }
+    .brand-o { color:#36c9c7; }
+    .draft-badge { font-size:17px; vertical-align:super; margin-left:3px; color:#37c9c7; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:400; letter-spacing:0; font-style:italic; }
+    .brand-tagline { font-size:12px; line-height:1.2; color:#7b7569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .nav-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .nav-right > a { color:#2d2b27; font-size:14px; font-weight:500; padding:8px 10px; text-decoration:none; }
+    .draft-write-action { margin-left:12px; display:inline-flex; align-items:center; gap:8px; text-decoration:none; padding:6px 8px; background:transparent; border-radius:8px; }
+    .draft-write-action .icon { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border:1.5px solid #777; border-radius:3px; }
+    .draft-write-action .label { font:500 14px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#666; }
+    #wrapper.post-page { max-width: 980px; padding: 18px 30px 64px; }
+    #wrapper.post-page .post { margin-top: 34px; }
+    .medium-home { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+    .draft-preview-head { margin-bottom: 22px; }
+    .draft-preview-head h1.title { margin-bottom:8px; }
+    .lead { margin: 0 0 10px; color:#6a655a; font-size: 24px; line-height:1.35; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif; }
+    .group-head { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #dfd8cc; margin-bottom:12px; }
+    .group-head h2 { margin: 0 0 -1px; display:inline-block; font-size: 24px; line-height: 1.1; border-bottom:2px solid #b6b0a4; padding-bottom: 6px; font-family: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    .draft-group { margin: 0 0 28px; }
+    .draft-grid { display:block; }
+    .draft-card { border:0; border-radius:0; background:transparent; padding:0; }
+    .draft-card.medium-post-card { display:grid; grid-template-columns: 1fr 220px; gap: 26px; align-items: center; padding: 34px 0; border-bottom: 1px solid #ece8dd; }
+    .draft-link.medium-post-main { color:inherit; text-decoration:none; display:block; min-width:0; }
+    .draft-link.medium-post-main h2 { margin: 0 0 10px; font-size: 38px; line-height: 1.12; letter-spacing: -0.02em; font-family: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#1f1f1b; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .draft-link.medium-post-main p { margin: 0 0 12px; font-size: 25px; line-height: 1.28; color:#5c5a52; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .draft-meta-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .draft-link .medium-post-meta { font-size: 18px; color:#4b4740; font-weight: 600; letter-spacing: 0.01em; }
+    .draft-bookmark-icon { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; opacity:.85; flex:0 0 24px; }
+    .draft-bookmark-icon svg { width:24px; height:24px; display:block; }
+    .draft-thumb.medium-post-thumb { display:block; min-width:0; }
+    .draft-thumb.medium-post-thumb img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:8px; border:1px solid #ddd7ca; display:block; }
+    @media (max-width: 960px) {
+      #wrapper.post-page { padding: 14px 20px 48px; }
+      .draft-card.medium-post-card { grid-template-columns: 1fr; gap: 14px; }
+      .draft-link.medium-post-main h2 { font-size: 32px; }
+      .draft-link.medium-post-main p { font-size: 21px; }
+      .lead { font-size:20px; }
+    }
+  </style>
+</head>
+<body>
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy"><a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend<sup class="draft-badge">Draft</sup></a><div class="brand-tagline">Message passing is just a procedure call.</div></div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button class="search-btn" type="button" aria-label="Search">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+    <a class="draft-write-action" href="/editor" aria-label="Write" title="Write"><span class="icon"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25zm18-11.5a1 1 0 0 0 0-1.41L19.66 3a1 1 0 0 0-1.41 0l-1.59 1.59 3.75 3.75L21 5.75z" fill="#666"></path></svg></span><span class="label">Write</span></a>
+  </div>
+</nav>
+<section id="wrapper" class="post-page">
+  <div class="post">
+    <div class="draft-preview-head">
+      <h1 class="title">Draft Preview</h1>
+      <p class="lead">Browse and edit drafts before publishing.</p>
+    </div>
+    <section class="medium-home"><section class="draft-group">
+  <div class="group-head"><h2>Untagged</h2></div>
+  <div class="draft-grid"><article class="draft-card medium-post-card">
+  <a class="draft-link medium-post-main" href="/drafts/mnist-with-a-twist/">
+    <h2>MNIST with a TWIST</h2>
+    <p>Write your draft here.</p>
+    <div class="draft-meta-row">
+      <div class="medium-post-meta">2026-02-11 · 1 min read</div>
+      <span class="draft-bookmark-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#000" d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4z"></path></svg></span>
+    </div>
+  </a>
+  <a class="draft-thumb medium-post-thumb" href="/drafts/mnist-with-a-twist/"><img src="/media/images/placeholder.png" alt="Self dot send placeholder"></a>
+</article>
+<article class="draft-card medium-post-card">
+  <a class="draft-link medium-post-main" href="/drafts/untitled-draft-150036/">
+    <h2>Untitled Draft</h2>
+    <p>Write your draft here.</p>
+    <div class="draft-meta-row">
+      <div class="medium-post-meta">2026-02-11 · 1 min read</div>
+      <span class="draft-bookmark-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#000" d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4z"></path></svg></span>
+    </div>
+  </a>
+  <a class="draft-thumb medium-post-thumb" href="/drafts/untitled-draft-150036/"><img src="/media/images/placeholder.png" alt="Self dot send placeholder"></a>
+</article>
+<article class="draft-card medium-post-card">
+  <a class="draft-link medium-post-main" href="/drafts/untitled-draft-150214/">
+    <h2>Untitled Draft</h2>
+    <p>Write your draft here.</p>
+    <div class="draft-meta-row">
+      <div class="medium-post-meta">2026-02-11 · 1 min read</div>
+      <span class="draft-bookmark-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#000" d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4z"></path></svg></span>
+    </div>
+  </a>
+  <a class="draft-thumb medium-post-thumb" href="/drafts/untitled-draft-150214/"><img src="/media/images/placeholder.png" alt="Self dot send placeholder"></a>
+</article>
+<article class="draft-card medium-post-card">
+  <a class="draft-link medium-post-main" href="/drafts/untitled-draft/">
+    <h2>The Mumbo and the Jumbo of LLM's</h2>
+    <p>Write your draft here.</p>
+    <div class="draft-meta-row">
+      <div class="medium-post-meta">2026-02-11 · 1 min read</div>
+      <span class="draft-bookmark-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#000" d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4z"></path></svg></span>
+    </div>
+  </a>
+  <a class="draft-thumb medium-post-thumb" href="/drafts/untitled-draft/"><img src="/media/images/placeholder.png" alt="Self dot send placeholder"></a>
+</article></div>
+</section></section>
+  </div>
+</section>
+</body>
+</html>

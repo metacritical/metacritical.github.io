@@ -1,7 +1,6 @@
-#+TITLE: MNIST with a TWIST
+#+TITLE: The Mumbo and the Jumbo of LLM's
 #+DATE: 2026-02-11
 #+OPTIONS: toc:nil
 #+DESCRIPTION: Draft post
-#+FILETAGS: :untagged:
 
 Write your draft here.

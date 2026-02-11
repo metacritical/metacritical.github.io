@@ -47,8 +47,9 @@ What this does:
 8. Generates `public/search-index.json`
 
 Draft behavior:
-- Default publish excludes `drafts/`
-- Preview with drafts included: `DRAFTS=1 ./publish.sh`
+- `./publish.sh` always generates draft preview pages at `public/drafts/`
+- Published feeds/pages remain based on `posts/` only
+- Drafts stay previewable until you publish/remove the draft file
 
 ## 4) Local Preview
 
@@ -71,9 +72,11 @@ doorman
 Processes started:
 - `watch`: `./scripts/dev-watch.sh` (polls source changes and rebuilds)
 - `web`: `./scripts/dev-web.sh` serves `public/` on `http://localhost:8080`
-- Local editor (dev only): `http://localhost:8080/editor`
+- Draft-first editor (dev only): `http://localhost:8080/editor` (redirects to `/drafts/new/`)
   - Only available while `doorman` is running
   - Saves drafts to `drafts/*.org` via local API
+- Rich editor (dev only): `http://localhost:8080/__editor`
+  - Can load/edit drafts and published posts via query params
   - Can publish directly to `posts/*.org` via local API
 
 Tuning:
@@ -84,7 +87,7 @@ Tuning:
 Notes:
 - `dev-watch` is single-instance guarded, so accidental duplicate `doorman`
   runs won't create multiple rebuild loops.
-- `dev-watch` runs `DRAFTS=1`, so local preview includes drafts.
+- `dev-watch` always rebuilds `public/drafts/` automatically.
 
 Create articles from CLI:
 

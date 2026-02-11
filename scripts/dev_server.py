@@ -32,13 +32,18 @@ def slugify(value: str) -> str:
     return lowered or f"draft-{dt.datetime.now().strftime('%Y%m%d-%H%M%S')}"
 
 
-def org_draft_text(title: str, body: str) -> str:
+def org_draft_text(title: str, body: str, tags: list[str] | None = None) -> str:
     now = dt.datetime.now().strftime("%Y-%m-%d")
+    clean_tags = [t.strip().lower() for t in (tags or []) if t and t.strip()]
+    clean_tags = [re.sub(r"[^a-z0-9_-]+", "-", t).strip("-") for t in clean_tags]
+    clean_tags = [t for t in clean_tags if t]
+    tags_line = f"#+FILETAGS: :{':'.join(clean_tags)}:\n" if clean_tags else ""
     return (
         f"#+TITLE: {title}\n"
         f"#+DATE: {now}\n"
         "#+OPTIONS: toc:nil\n"
         "#+DESCRIPTION: Draft post\n"
+        f"{tags_line}"
         "\n"
         f"{body.strip()}\n"
     )
@@ -117,9 +122,29 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         except Exception:
             pass
 
+    def _git_add_all_for(self, path: Path) -> None:
+        try:
+            subprocess.run(
+                ["git", "-C", str(self.blog_dir), "add", "-A", str(path)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass
+
     def _save_post(self, data: dict) -> None:
         title = str(data.get("title", "")).strip()
         body = str(data.get("body", "")).strip()
+        raw_tags = data.get("tags", [])
+        if isinstance(raw_tags, str):
+            tags = [t.strip() for t in raw_tags.split(",")]
+        elif isinstance(raw_tags, list):
+            tags = [str(t).strip() for t in raw_tags]
+        else:
+            tags = []
+        tags = [re.sub(r"[^a-z0-9_-]+", "-", t.lower()).strip("-") for t in tags]
+        tags = [t for t in tags if t]
         mode = str(data.get("mode", "draft")).strip().lower()
         target_path = str(data.get("targetPath", "")).strip()
         if not title:
@@ -129,6 +154,9 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self._json(400, {"ok": False, "error": "Mode must be draft or publish"})
             return
         overwrite_existing = False
+        drafts_root = (self.blog_dir / "drafts").resolve()
+        posts_root = (self.blog_dir / "posts").resolve()
+        remove_after_publish: Path | None = None
 
         if mode == "draft" and target_path:
             rel = Path(target_path)
@@ -136,12 +164,37 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 self._json(400, {"ok": False, "error": "Invalid draft target path"})
                 return
             filename = (self.blog_dir / rel).resolve()
-            drafts_root = (self.blog_dir / "drafts").resolve()
             if not str(filename).startswith(str(drafts_root) + os.sep):
                 self._json(400, {"ok": False, "error": "Draft target must be under drafts/"})
                 return
             filename.parent.mkdir(parents=True, exist_ok=True)
             overwrite_existing = filename.exists()
+        elif mode == "publish" and target_path:
+            rel = Path(target_path)
+            if rel.is_absolute() or ".." in rel.parts or rel.suffix.lower() != ".org":
+                self._json(400, {"ok": False, "error": "Invalid publish target path"})
+                return
+            resolved_target = (self.blog_dir / rel).resolve()
+            if str(resolved_target).startswith(str(posts_root) + os.sep):
+                filename = resolved_target
+                filename.parent.mkdir(parents=True, exist_ok=True)
+                overwrite_existing = filename.exists()
+            elif str(resolved_target).startswith(str(drafts_root) + os.sep):
+                if resolved_target.exists():
+                    remove_after_publish = resolved_target
+                slug = slugify(title)
+                filename = (posts_root / f"{slug}.org").resolve()
+                filename.parent.mkdir(parents=True, exist_ok=True)
+                overwrite_existing = filename.exists()
+            else:
+                self._json(
+                    400,
+                    {
+                        "ok": False,
+                        "error": "Publish target must be under posts/ or drafts/",
+                    },
+                )
+                return
         else:
             target_dir = self.blog_dir / ("posts" if mode == "publish" else "drafts")
             target_dir.mkdir(parents=True, exist_ok=True)
@@ -151,8 +204,11 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 stamp = dt.datetime.now().strftime("%H%M%S")
                 filename = target_dir / f"{slug}-{stamp}.org"
 
-        filename.write_text(org_draft_text(title, body), encoding="utf-8")
+        filename.write_text(org_draft_text(title, body, tags), encoding="utf-8")
         self._git_add(filename)
+        if mode == "publish" and remove_after_publish and remove_after_publish.exists():
+            remove_after_publish.unlink()
+            self._git_add_all_for(remove_after_publish)
         self._json(
             200,
             {
@@ -160,21 +216,38 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 "mode": mode,
                 "path": str(filename.relative_to(self.blog_dir)),
                 "message": "Draft updated." if overwrite_existing else "Draft saved.",
+                "removedDraftPath": (
+                    str(remove_after_publish.relative_to(self.blog_dir))
+                    if (mode == "publish" and remove_after_publish)
+                    else ""
+                ),
             },
         )
 
-    def _parse_org_draft(self, draft_file: Path) -> tuple[str, str]:
+    def _parse_org_draft(self, draft_file: Path) -> tuple[str, str, list[str]]:
         title = draft_file.stem.replace("-", " ").strip().title()
         body_lines: list[str] = []
+        tags: list[str] = []
         for line in draft_file.read_text(encoding="utf-8").splitlines():
             if line.startswith("#+TITLE:"):
                 title = line[len("#+TITLE:") :].strip() or title
+                continue
+            if line.startswith("#+FILETAGS:"):
+                raw = line[len("#+FILETAGS:") :].strip()
+                if raw.startswith(":") and raw.endswith(":"):
+                    tags.extend([t.strip().lower() for t in raw.split(":") if t.strip()])
+                else:
+                    tags.extend([t.strip().lower() for t in re.split(r"[, ]+", raw) if t.strip()])
                 continue
             if line.startswith("#+"):
                 continue
             body_lines.append(line)
         body = "\n".join(body_lines).strip()
-        return title, body
+        uniq_tags: list[str] = []
+        for tag in tags:
+            if tag not in uniq_tags:
+                uniq_tags.append(tag)
+        return title, body, uniq_tags
 
     def _resolve_draft_file(self, slug: str) -> Path | None:
         drafts_dir = self.blog_dir / "drafts"
@@ -191,25 +264,51 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 return candidate
         return None
 
+    def _resolve_post_file(self, slug: str) -> Path | None:
+        posts_dir = self.blog_dir / "posts"
+        exact = posts_dir / f"{slug}.org"
+        if exact.exists():
+            return exact
+        if not posts_dir.exists():
+            return None
+
+        candidates = sorted(posts_dir.glob("*.org"))
+        for candidate in candidates:
+            if slugify(candidate.stem) == slug:
+                return candidate
+        return None
+
     def _load_draft(self, query: str) -> None:
         params = parse_qs(query, keep_blank_values=False)
         slug = (params.get("slug", [""])[0]).strip().lower()
+        kind = (params.get("kind", ["draft"])[0]).strip().lower()
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug):
             self._json(400, {"ok": False, "error": "Invalid draft slug"})
             return
-        draft_file = self._resolve_draft_file(slug)
-        if draft_file is None or not draft_file.exists():
-            self._json(404, {"ok": False, "error": "Draft not found"})
+        if kind == "post":
+            source_file = self._resolve_post_file(slug)
+            source_mode = "publish"
+            not_found = "Post not found"
+            target_prefix = "posts"
+        else:
+            source_file = self._resolve_draft_file(slug)
+            source_mode = "draft"
+            not_found = "Draft not found"
+            target_prefix = "drafts"
+        if source_file is None or not source_file.exists():
+            self._json(404, {"ok": False, "error": not_found})
             return
-        title, body = self._parse_org_draft(draft_file)
+        title, body, tags = self._parse_org_draft(source_file)
         self._json(
             200,
             {
                 "ok": True,
                 "slug": slug,
+                "mode": source_mode,
                 "title": title,
                 "body": body,
-                "targetPath": f"drafts/{draft_file.name}",
+                "tags": tags,
+                "targetPath": f"{target_prefix}/{source_file.name}",
             },
         )
 
@@ -292,11 +391,15 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
 <script>
 (function () {
   if (location.pathname === "/editor" || location.pathname === "/editor/") return;
-  var host = document.querySelector("nav.main-nav .nav-right, .site-nav, .site-nav-left ul.nav, .main-nav");
+  var navRight = document.querySelector("nav.main-nav .nav-right");
+  var host = navRight || document.querySelector(".site-nav, .site-nav-left ul.nav, .main-nav");
   var draftMatch = location.pathname.match(/^\\/drafts\\/([^\\/]+)\\/?$/);
   var isDraftDetail = !!draftMatch && location.pathname !== "/drafts/";
   var isDraftRoute = /^\\/drafts(?:\\/|$)/.test(location.pathname);
   var draftSlug = isDraftDetail ? draftMatch[1] : "";
+  var postMatch = location.pathname.match(/^\\/blog\\/(?:\\d{4}\\/\\d{2}\\/\\d{2}\\/)?([^\\/]+)\\/?$/);
+  var isPublishedStory = !!postMatch;
+  var postSlug = isPublishedStory ? postMatch[1] : "";
 
   function buildActionLink(id, label, href) {
     var el = document.createElement("a");
@@ -309,19 +412,74 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
     return el;
   }
 
-  if (!document.getElementById("local-dev-drafts-link")) {
+  function setActionLabel(link, label) {
+    if (!link) return;
+    var textSpan = link.querySelector("span:last-child");
+    if (textSpan && /write|edit/i.test((textSpan.textContent || "").trim())) {
+      textSpan.textContent = label;
+      return;
+    }
+    if (/<|>/.test(link.innerHTML) && /\\bWrite\\b|\\bEdit\\b/.test(link.innerHTML)) {
+      link.innerHTML = link.innerHTML.replace(/\\bWrite\\b|\\bEdit\\b/g, label);
+      return;
+    }
+    var txt = (link.textContent || "").trim();
+    if (!txt || /write|edit/i.test(txt)) {
+      link.textContent = label;
+    }
+  }
+
+  if (host) {
+    var draftLinks = host.querySelectorAll('a[href="/drafts"], a[href="/drafts/"]');
+    for (var i = 1; i < draftLinks.length; i++) {
+      draftLinks[i].remove();
+    }
+  }
+
+  var existingDraftLink = host && host.querySelector('a[href="/drafts"], a[href="/drafts/"]');
+  if (!isDraftRoute && host && !existingDraftLink) {
     var drafts = document.createElement("a");
     drafts.id = "local-dev-drafts-link";
     drafts.href = "/drafts/";
     drafts.textContent = "Drafts";
-    drafts.style.cssText = "margin-left:8px;padding:8px 10px;color:#666;text-decoration:none;font:500 14px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;";
-    if (host) host.appendChild(drafts);
+    host.appendChild(drafts);
+  }
+  if (isDraftRoute && existingDraftLink) {
+    existingDraftLink.remove();
   }
 
-  if (!isDraftRoute && !document.getElementById("local-dev-write-link")) {
-    var actionLabel = isDraftDetail ? "Edit" : "Write";
-    var actionHref = isDraftDetail ? ("/editor?draft=" + encodeURIComponent(draftSlug)) : "/editor";
-    var write = buildActionLink("local-dev-write-link", actionLabel, actionHref);
+  var existingAction = host && (
+    host.querySelector("#local-dev-write-link") ||
+    host.querySelector('a[href="/editor"]') ||
+    host.querySelector('a[href="/editor/"]')
+  );
+
+  if (isDraftRoute) {
+    var injected = document.getElementById("local-dev-write-link");
+    if (injected && injected.getAttribute("href") !== "/editor" && injected.getAttribute("href") !== "/editor/") {
+      injected.remove();
+    }
+  } else if (isPublishedStory) {
+    var editHref = "/__editor?post=" + encodeURIComponent(postSlug);
+    if (existingAction) {
+      existingAction.href = editHref;
+      existingAction.title = "Edit";
+      existingAction.setAttribute("aria-label", "Edit");
+      setActionLabel(existingAction, "Edit");
+    } else if (!document.getElementById("local-dev-write-link")) {
+      var edit = buildActionLink("local-dev-write-link", "Edit", editHref);
+      if (host) {
+        host.appendChild(edit);
+      } else {
+        edit.style.position = "fixed";
+        edit.style.right = "16px";
+        edit.style.top = "16px";
+        edit.style.zIndex = "9999";
+        document.body.appendChild(edit);
+      }
+    }
+  } else if (!existingAction && !document.getElementById("local-dev-write-link")) {
+    var write = buildActionLink("local-dev-write-link", "Write", "/editor");
     if (host) {
       host.appendChild(write);
     } else {
@@ -331,14 +489,20 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
       write.style.zIndex = "9999";
       document.body.appendChild(write);
     }
-  } else {
+  } else if (existingAction && /\\/__editor\\?post=/.test(existingAction.getAttribute("href") || "")) {
+    existingAction.href = "/editor";
+    existingAction.title = "Write";
+    existingAction.setAttribute("aria-label", "Write");
+    setActionLabel(existingAction, "Write");
+  }
+
+  if (isDraftDetail) {
     var existing = document.getElementById("local-dev-write-link");
-    if (existing && isDraftDetail) {
+    if (existing && (!existing.getAttribute("href") || /\\/editor/.test(existing.getAttribute("href")))) {
       existing.href = "/editor?draft=" + encodeURIComponent(draftSlug);
       existing.title = "Edit";
       existing.setAttribute("aria-label", "Edit");
-      var textSpan = existing.querySelector("span:last-child");
-      if (textSpan) textSpan.textContent = "Edit";
+      setActionLabel(existing, "Edit");
     }
   }
 
@@ -390,7 +554,13 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self._load_draft(parsed.query)
             return
 
-        if path in {"/editor", "/editor/", "/__editor", "/__editor/"}:
+        if path in {"/editor", "/editor/"}:
+            self.send_response(302)
+            self.send_header("Location", "/drafts/new/")
+            self.end_headers()
+            return
+
+        if path in {"/__editor", "/__editor/"}:
             editor_html = self.editor_dir / "index.html"
             if not editor_html.exists():
                 self.send_error(404, "Editor not found")

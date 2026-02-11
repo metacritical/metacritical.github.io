@@ -463,7 +463,9 @@
     const KEY = "selfdotsend-local-editor-v2";
     const params = new URLSearchParams(window.location.search);
     const draftSlugParam = (params.get("draft") || "").trim();
+    const postSlugParam = (params.get("post") || "").trim();
     let activeDraftTargetPath = "";
+    let activeSourceMode = "";
     let savedRange = null;
 
     function setStatus(text, bad) {
@@ -896,15 +898,18 @@
     }
 
     async function loadDraftFromQuery() {
-      if (!draftSlugParam) return false;
+      const slug = draftSlugParam || postSlugParam;
+      if (!slug) return false;
+      const kind = postSlugParam ? "post" : "draft";
       try {
-        const res = await fetch(`/editor/api/load-draft?slug=${encodeURIComponent(draftSlugParam)}`);
+        const res = await fetch(`/editor/api/load-draft?slug=${encodeURIComponent(slug)}&kind=${encodeURIComponent(kind)}`);
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Unable to load draft");
         titleEl.innerText = data.title || "";
         bodyEl.innerHTML = renderOrgToHtml(data.body || "");
         activeDraftTargetPath = data.targetPath || "";
-        setStatus(`Editing draft: ${activeDraftTargetPath || draftSlugParam}`);
+        activeSourceMode = data.mode || (kind === "post" ? "publish" : "draft");
+        setStatus(`Editing ${activeSourceMode === "publish" ? "published post" : "draft"}: ${activeDraftTargetPath || slug}`);
         saveLocal();
         return true;
       } catch (err) {
@@ -961,7 +966,9 @@
       }
       try {
         const payload = { title, body, mode };
-        if (mode === "draft" && activeDraftTargetPath) {
+        if (mode === "draft" && activeDraftTargetPath && activeDraftTargetPath.startsWith("drafts/")) {
+          payload.targetPath = activeDraftTargetPath;
+        } else if (mode === "publish" && activeDraftTargetPath) {
           payload.targetPath = activeDraftTargetPath;
         }
         const res = await fetch("/editor/api/save", {
@@ -971,8 +978,11 @@
         });
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Failed to save");
-        if (data.mode === "draft" && data.path) {
+        if (data.path) {
           activeDraftTargetPath = data.path;
+        }
+        if (data.mode) {
+          activeSourceMode = data.mode;
         }
         setStatus(`${data.mode === "publish" ? "Published" : "Draft saved"}: ${data.path}`);
       } catch (err) {
