@@ -134,8 +134,8 @@ nav.main-nav {
 }
 
 .brand-logo {
-	width: 68px;
-	height: 68px;
+	width: 44px;
+	height: 44px;
 	border-radius: 50%;
 }
 
@@ -148,7 +148,7 @@ nav.main-nav {
 
 .brand-title {
 	color: #1f1f1b;
-	font-size: 20px;
+	font-size: 40px;
 	font-weight: 500;
 	line-height: 1.05;
 	letter-spacing: -0.01em;
