@@ -237,7 +237,7 @@
 <body>
 <main>
   <h1>Draft Preview</h1>
-  <p class=\"lead\">Visible only in local dev builds (<code>DRAFTS=1</code>).</p>
+  <p class=\"lead\">Browse and edit drafts before publishing.</p>
   %s
 </main>
 </body>

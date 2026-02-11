@@ -61,10 +61,17 @@
 (defun sds-generate-search-index (blog-dir)
   (let* ((public-dir (expand-file-name "public" blog-dir))
          (output-file (expand-file-name "search-index.json" public-dir))
+         (html-files '())
          (entries '()))
-    (dolist (html-file (directory-files-recursively public-dir "index\\.html$"))
+    (setq html-files
+          (condition-case nil
+              (directory-files-recursively public-dir "index\\.html$")
+            (file-missing '())))
+    (dolist (html-file html-files)
       (let* ((url (sds-post-url public-dir html-file))
-             (html (sds-read-file html-file))
+             (html (condition-case nil
+                       (sds-read-file html-file)
+                     (file-missing "")))
              (title (sds-extract-title html)))
         (when (and (sds-searchable-post-p url)
                    title
@@ -86,4 +93,3 @@
 
 (let ((blog-dir (or (car command-line-args-left) default-directory)))
   (sds-generate-search-index blog-dir))
-
