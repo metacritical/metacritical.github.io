@@ -764,8 +764,8 @@ em, i {
 
 .story-clap-btn,
 .story-share-link {
-	width: 38px;
-	height: 38px;
+	width: 50px;
+	height: 50px;
 	border-radius: 50%;
 	border: 1px solid #d7d1c4;
 	background: #fff;
@@ -774,7 +774,7 @@ em, i {
 	align-items: center;
 	justify-content: center;
 	text-decoration: none;
-	font: 600 15px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 600 24px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .story-clap-btn {
