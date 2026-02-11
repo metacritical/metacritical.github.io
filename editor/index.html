@@ -461,6 +461,9 @@
     const textColor = document.getElementById("textColor");
 
     const KEY = "selfdotsend-local-editor-v2";
+    const params = new URLSearchParams(window.location.search);
+    const draftSlugParam = (params.get("draft") || "").trim();
+    let activeDraftTargetPath = "";
     let savedRange = null;
 
     function setStatus(text, bad) {
@@ -784,6 +787,132 @@
       return `#+TITLE: ${title}\n#+DATE: ${date}\n#+OPTIONS: toc:nil\n#+DESCRIPTION: Draft post\n\n${body}\n`;
     }
 
+    function renderOrgToHtml(orgText) {
+      const lines = String(orgText || "").replace(/\r\n?/g, "\n").split("\n");
+      const out = [];
+      let para = [];
+      let inSrc = false;
+      let srcLang = "text";
+      let srcLines = [];
+      let inQuote = false;
+      let quoteLines = [];
+
+      const flushPara = () => {
+        if (!para.length) return;
+        const text = para.join(" ").trim();
+        para = [];
+        if (!text) return;
+        out.push(`<p>${escHtml(text)}</p>`);
+      };
+
+      const flushQuote = () => {
+        if (!quoteLines.length) return;
+        out.push(`<blockquote>${escHtml(quoteLines.join("\n"))}</blockquote><p><br></p>`);
+        quoteLines = [];
+      };
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+
+        if (inSrc) {
+          if (/^#\+END_SRC\b/i.test(trimmed)) {
+            out.push(`<pre class="code-block" data-lang="${escHtml(srcLang)}"><code>${escHtml(srcLines.join("\n"))}</code></pre><p><br></p>`);
+            inSrc = false;
+            srcLang = "text";
+            srcLines = [];
+          } else {
+            srcLines.push(line);
+          }
+          continue;
+        }
+
+        if (inQuote) {
+          if (/^#\+END_QUOTE\b/i.test(trimmed)) {
+            flushQuote();
+            inQuote = false;
+          } else {
+            quoteLines.push(line);
+          }
+          continue;
+        }
+
+        if (/^#\+BEGIN_SRC\b/i.test(trimmed)) {
+          flushPara();
+          const match = trimmed.match(/^#\+BEGIN_SRC\s+([a-zA-Z0-9_+-]+)/i);
+          srcLang = match ? match[1] : "text";
+          inSrc = true;
+          continue;
+        }
+
+        if (/^#\+BEGIN_QUOTE\b/i.test(trimmed)) {
+          flushPara();
+          inQuote = true;
+          continue;
+        }
+
+        if (/^#\+/.test(trimmed)) {
+          continue;
+        }
+
+        if (!trimmed) {
+          flushPara();
+          continue;
+        }
+
+        const heading = trimmed.match(/^(\*{1,3})\s+(.+)$/);
+        if (heading) {
+          flushPara();
+          const level = Math.min(heading[1].length, 3);
+          out.push(`<h${level}>${escHtml(heading[2])}</h${level}>`);
+          continue;
+        }
+
+        const imageMatch = trimmed.match(/^\[\[([^\]]+\.(?:png|jpe?g|gif|webp|svg))(?:\]\[([^\]]+))?\]\]$/i);
+        if (imageMatch) {
+          flushPara();
+          const src = escHtml(imageMatch[1]);
+          const cap = escHtml(imageMatch[2] || "");
+          const fig = `<figure class="image-block"><img src="${src}" alt="${cap || "image"}">${cap ? `<figcaption contenteditable="true">${cap}</figcaption>` : ""}</figure><p><br></p>`;
+          out.push(fig);
+          continue;
+        }
+
+        const linkMatch = trimmed.match(/^\[\[([^\]]+)\]\[([^\]]+)\]\]$/);
+        if (linkMatch) {
+          flushPara();
+          out.push(`<p><a href="${escHtml(linkMatch[1])}" target="_blank" rel="noopener">${escHtml(linkMatch[2])}</a></p>`);
+          continue;
+        }
+
+        para.push(trimmed);
+      }
+
+      flushPara();
+      if (inQuote) flushQuote();
+      if (inSrc && srcLines.length) {
+        out.push(`<pre class="code-block" data-lang="${escHtml(srcLang)}"><code>${escHtml(srcLines.join("\n"))}</code></pre><p><br></p>`);
+      }
+      return out.join("\n");
+    }
+
+    async function loadDraftFromQuery() {
+      if (!draftSlugParam) return false;
+      try {
+        const res = await fetch(`/editor/api/load-draft?slug=${encodeURIComponent(draftSlugParam)}`);
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Unable to load draft");
+        titleEl.innerText = data.title || "";
+        bodyEl.innerHTML = renderOrgToHtml(data.body || "");
+        activeDraftTargetPath = data.targetPath || "";
+        setStatus(`Editing draft: ${activeDraftTargetPath || draftSlugParam}`);
+        saveLocal();
+        return true;
+      } catch (err) {
+        setStatus(String(err.message || err), true);
+        return false;
+      }
+    }
+
     function saveLocal() {
       localStorage.setItem(KEY, JSON.stringify({
         title: titleEl.innerText.trim(),
@@ -831,13 +960,20 @@
         return;
       }
       try {
+        const payload = { title, body, mode };
+        if (mode === "draft" && activeDraftTargetPath) {
+          payload.targetPath = activeDraftTargetPath;
+        }
         const res = await fetch("/editor/api/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, body, mode }),
+          body: JSON.stringify(payload),
         });
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Failed to save");
+        if (data.mode === "draft" && data.path) {
+          activeDraftTargetPath = data.path;
+        }
         setStatus(`${data.mode === "publish" ? "Published" : "Draft saved"}: ${data.path}`);
       } catch (err) {
         setStatus(String(err.message || err), true);
@@ -952,8 +1088,13 @@
       saveLocal();
     });
 
-    loadLocal();
-    bodyEl.style.setProperty("--reading-hl", readingColor.value);
+    (async function initEditor() {
+      const loadedDraft = await loadDraftFromQuery();
+      if (!loadedDraft) {
+        loadLocal();
+      }
+      bodyEl.style.setProperty("--reading-hl", readingColor.value);
+    })();
   </script>
 </body>
 </html>
