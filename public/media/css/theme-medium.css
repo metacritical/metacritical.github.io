@@ -246,7 +246,7 @@ html[data-theme="medium"] .post .title {
 }
 
 html[data-theme="medium"] .post-author-row {
-  margin: -8px 0 24px;
+  margin: 24px 0 40px;
   gap: 12px;
 }
 
@@ -265,6 +265,14 @@ html[data-theme="medium"] .post-author-name {
 html[data-theme="medium"] .post-author-date {
   font: 500 16px/1.25 "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #6a655a;
+}
+
+html[data-theme="medium"] #wrapper.post-page .post > h1.title {
+  margin-bottom: 0;
+}
+
+html[data-theme="medium"] #wrapper.post-page .post > p:first-of-type {
+  margin-top: 16px;
 }
 
 html[data-theme="medium"] .story-rail {
