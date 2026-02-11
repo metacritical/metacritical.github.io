@@ -43,11 +43,10 @@ html[data-theme="medium"] .brand-logo {
 html[data-theme="medium"] .brand-title {
   font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
   font-size: 3.1em;
-  line-height: 1.15;
-  font-weight: 700;
+  line-height: 1;
+  font-weight: 500;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  font-style: italic;
   color: #1f1f1b;
 }
 
@@ -59,11 +58,10 @@ html[data-theme="medium"] nav.main-nav .nav-left.site-brand .brand-logo-link {
 html[data-theme="medium"] nav.main-nav .nav-left.site-brand .brand-title {
   font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
   font-size: 3.1em;
-  line-height: 1.15;
-  font-weight: 700;
+  line-height: 1;
+  font-weight: 500;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  font-style: italic;
 }
 
 html[data-theme="medium"] .brand-tagline {
