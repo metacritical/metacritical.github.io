@@ -175,20 +175,18 @@
       gap: 10px;
     }
     .plus-main {
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      border: 2px solid #4f4f4f;
-      background: #fff;
-      color: #3b3b3b;
-      font-size: 28px;
-      line-height: 1;
+      border: 1px solid #2f2f2f;
+      background: #1f1f1f;
+      color: #fff;
       padding: 0;
-      font-family: Georgia, serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-    .plus-main.open {
-      font-size: 30px;
-    }
+    .plus-main svg { width: 25px; height: 25px; fill: currentColor; }
     .plus-tools {
       display: none;
       align-items: center;
@@ -387,7 +385,9 @@
 
     <article class="sheet">
       <div class="plus-rail">
-        <button class="plus-main" id="plusMainBtn" type="button" title="Open insert menu">+</button>
+        <button class="plus-main" id="plusMainBtn" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part">
+          <svg viewBox="0 0 25 25" aria-hidden="true"><path d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg>
+        </button>
         <div class="plus-tools" id="plusTools">
           <button type="button" id="imgBtn" title="Image URL">Img</button>
           <button type="button" id="uploadBtn" title="Upload image">Up</button>

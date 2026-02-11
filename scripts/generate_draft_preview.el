@@ -160,8 +160,8 @@
   <style>
     body { background:#faf9f5; }
     #wrapper.post-page { max-width: 900px; }
-    .draft-top { margin-bottom: 10px; }
-    .draft-back { color:#0d6a57; text-decoration:none; font:600 14px/1.2 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
+    .draft-badge { font-size:.5em; vertical-align:super; margin-left:6px; color:#6f6a5e; font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; font-weight:600; letter-spacing:0; }
+    .draft-nav-link { color:#2d2b27; font-size:14px; font-weight:500; font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; padding:8px 10px; text-decoration:none; }
     .draft-editable { min-height: 40vh; }
     .draft-editable[contenteditable=\"true\"]:focus { outline: none; }
     .draft-editable p { margin-bottom: 20px; }
@@ -170,17 +170,21 @@
     .draft-tools button { border:none; background:transparent; color:#fff; border-radius:8px; padding:8px 10px; font-weight:700; font-size:13px; min-width:34px; }
     .draft-tools button:hover { background: rgba(255,255,255,.14); }
     .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:8px; }
-    .draft-plus button { width:36px; height:36px; border-radius:50%%; border:1px solid #0f5f4f; background:#fff; color:#0f5f4f; font:700 12px/1 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
+    .draft-plus-toggle { width:44px; height:44px; border-radius:50%%; border:1px solid #2f2f2f; background:#1f1f1f; color:#fff; display:inline-flex; align-items:center; justify-content:center; padding:0; }
+    .draft-plus-toggle svg { width:25px; height:25px; fill: currentColor; }
+    .draft-plus-menu { display:none; align-items:center; gap:8px; }
+    .draft-plus.open .draft-plus-menu { display:inline-flex; }
+    .draft-plus-menu button { width:36px; height:36px; border-radius:50%%; border:1px solid #0f5f4f; background:#fff; color:#0f5f4f; font:700 12px/1 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
   </style>
 </head>
 <body class=\"container\">
 <nav class=\"main-nav medium-nav\">
   <div class=\"nav-left site-brand\">
     <a class=\"brand-logo-link\" href=\"/\"><img class=\"brand-logo\" src=\"/media/images/logo.png\" alt=\"Self dot send\"></a>
-    <div class=\"brand-copy\"><a class=\"brand-title\" href=\"/\">Selfd<span class=\"brand-o\">o</span>tsend</a><div class=\"brand-tagline\">Message passing is just a procedure call.</div></div>
+    <div class=\"brand-copy\"><a class=\"brand-title\" href=\"/\">Selfd<span class=\"brand-o\">o</span>tsend<sup class=\"draft-badge\">Draft</sup></a><div class=\"brand-tagline\">Message passing is just a procedure call.</div></div>
   </div>
   <div class=\"nav-right\">
-    <a href=\"/\">Blog</a><a href=\"/archive/\">Archive</a><a href=\"/tags/\">Tag</a><a href=\"/about/\">About</a><a href=\"/nano-chat/\">Nano Chat</a>
+    <a class=\"draft-nav-link\" href=\"/drafts/\">Drafts</a><a class=\"draft-nav-link\" href=\"/editor\">Write</a><a class=\"draft-nav-link\" href=\"/\">Published</a>
   </div>
 </nav>
 <section id=\"wrapper\" class=\"post-page\">
@@ -190,7 +194,6 @@
       <span class=\"story-clap-count\">0</span><div class=\"story-share-label\">Share</div>
       <a class=\"story-share-link\" href=\"#\" aria-label=\"Share on X\">𝕏</a><a class=\"story-share-link\" href=\"#\" aria-label=\"Share on Facebook\">f</a><a class=\"story-share-link\" href=\"#\" aria-label=\"Share on LinkedIn\">in</a>
     </aside>
-    <div class=\"draft-top\"><a class=\"draft-back\" href=\"/drafts/\">Back to drafts</a></div>
     <h1 class=\"title\" id=\"draft-title\" contenteditable=\"true\">%s</h1>
     <div class=\"post-author-row\"><img class=\"post-author-avatar\" src=\"/media/images/avatar.jpg\" alt=\"Pankaj Doharey\"><div class=\"post-author-meta\"><span class=\"post-author-name\">Pankaj Doharey</span><span class=\"post-author-date\">%s · %s min read</span></div></div>
     <div class=\"tags\">%s</div>
@@ -206,11 +209,14 @@
   <button type=\"button\" data-action=\"clear\">Clr</button>
 </div>
 <div class=\"draft-plus\" id=\"draft-plus\">
-  <button type=\"button\" data-action=\"image\">Img</button>
-  <button type=\"button\" data-action=\"upload\">Up</button>
-  <button type=\"button\" data-action=\"video\">Vid</button>
-  <button type=\"button\" data-action=\"embed\">&lt;&gt;</button>
-  <button type=\"button\" data-action=\"code\">{}</button>
+  <button class=\"draft-plus-toggle\" id=\"draft-plus-toggle\" type=\"button\" title=\"Add an image, video, embed, or new part\" aria-label=\"Add an image, video, embed, or new part\"><svg viewBox=\"0 0 25 25\" aria-hidden=\"true\"><path d=\"M20 12h-7V5h-1v7H5v1h7v7h1v-7h7\" fill-rule=\"evenodd\"></path></svg></button>
+  <div class=\"draft-plus-menu\" id=\"draft-plus-menu\">
+    <button type=\"button\" data-action=\"image\">Img</button>
+    <button type=\"button\" data-action=\"upload\">Up</button>
+    <button type=\"button\" data-action=\"video\">Vid</button>
+    <button type=\"button\" data-action=\"embed\">&lt;&gt;</button>
+    <button type=\"button\" data-action=\"code\">{}</button>
+  </div>
   <input id=\"draft-upload\" type=\"file\" accept=\"image/*\" hidden>
 </div>
 
@@ -220,6 +226,8 @@
   const title = document.getElementById('draft-title');
   const tools = document.getElementById('draft-tools');
   const plus = document.getElementById('draft-plus');
+  const plusToggle = document.getElementById('draft-plus-toggle');
+  const plusMenu = document.getElementById('draft-plus-menu');
   const upload = document.getElementById('draft-upload');
   const targetPath = body.dataset.targetPath;
   let saveTimer = null;
@@ -240,6 +248,7 @@
     if (!sel || sel.rangeCount === 0) return;
     const rect = sel.getRangeAt(0).getBoundingClientRect();
     plus.style.display='inline-flex';
+    plus.classList.remove('open');
     plus.style.left = Math.max(8, rect.left - 8) + 'px';
     plus.style.top = (rect.bottom + 8) + 'px';
     clearTimeout(plusTimer);
@@ -251,24 +260,24 @@
     if (node.nodeType === Node.TEXT_NODE) return node.textContent;
     if (node.nodeType !== Node.ELEMENT_NODE) return '';
     const tag = node.tagName.toLowerCase();
-    if (tag === 'h2') return '\n** ' + node.textContent.trim() + '\n';
-    if (tag === 'h3') return '\n*** ' + node.textContent.trim() + '\n';
-    if (tag === 'blockquote') return '\n#+BEGIN_QUOTE\n' + node.textContent.trim() + '\n#+END_QUOTE\n';
+    if (tag === 'h2') return '\\n** ' + node.textContent.trim() + '\\n';
+    if (tag === 'h3') return '\\n*** ' + node.textContent.trim() + '\\n';
+    if (tag === 'blockquote') return '\\n#+BEGIN_QUOTE\\n' + node.textContent.trim() + '\\n#+END_QUOTE\\n';
     if (tag === 'pre') {
       const lang = (node.dataset.lang || '').trim() || 'text';
-      return '\n#+BEGIN_SRC ' + lang + '\n' + node.innerText.replace(/\n+$/,'') + '\n#+END_SRC\n';
+      return '\\n#+BEGIN_SRC ' + lang + '\\n' + node.innerText.replace(/\\n+$/,'') + '\\n#+END_SRC\\n';
     }
     if (tag === 'figure' && node.classList.contains('image-block')) {
       const img = node.querySelector('img');
       const cap = node.querySelector('figcaption');
       if (!img) return '';
       const alt = (cap ? cap.textContent.trim() : (img.getAttribute('alt') || '')).trim();
-      return '\n[[' + (img.getAttribute('src') || '') + '][' + alt + ']]\n';
+      return '\\n[[' + (img.getAttribute('src') || '') + '][' + alt + ']]\\n';
     }
     if (tag === 'figure' && (node.classList.contains('video-embed') || node.classList.contains('embed-card'))) {
-      return '\n#+BEGIN_EXPORT html\n' + node.outerHTML + '\n#+END_EXPORT\n';
+      return '\\n#+BEGIN_EXPORT html\\n' + node.outerHTML + '\\n#+END_EXPORT\\n';
     }
-    if (tag === 'div' || tag === 'p') return '\n' + node.textContent.trim() + '\n';
+    if (tag === 'div' || tag === 'p') return '\\n' + node.textContent.trim() + '\\n';
     let out = '';
     node.childNodes.forEach(ch => { out += htmlToOrgNode(ch); });
     return out;
@@ -277,7 +286,7 @@
   function htmlToOrg(){
     let bodyOrg = '';
     body.childNodes.forEach(n => { bodyOrg += htmlToOrgNode(n); });
-    bodyOrg = bodyOrg.replace(/\n{3,}/g, '\n\n').trim();
+    bodyOrg = bodyOrg.replace(/\\n{3,}/g, '\\n\\n').trim();
     const t = (title.innerText || '').trim() || 'Untitled Draft';
     return { title: t, body: bodyOrg };
   }
@@ -328,7 +337,9 @@
     if (action === 'clear') { document.execCommand('removeFormat', false, null); scheduleSave(); }
   });
 
-  plus.addEventListener('click', async (e)=>{
+  plusToggle.addEventListener('click', ()=>{ plus.classList.toggle('open'); });
+
+  plusMenu.addEventListener('click', async (e)=>{
     const btn = e.target.closest('button');
     if (!btn) return;
     const action = btn.dataset.action;
@@ -433,7 +444,17 @@
   <link rel=\"icon\" href=\"/media/images/logo.png\" type=\"image/png\">
   <style>
     body { margin: 0; background: #f7f6f2; color: #1d1b18; font-family: ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
-    main { max-width: 1320px; margin: 0 auto; padding: 28px 28px 64px; }
+    nav.main-nav { padding:12px 22px; background:#faf9f5; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:10px; border-bottom:1px solid #e6e1d5; }
+    .nav-left.site-brand { display:flex; align-items:center; gap:12px; min-width:0; }
+    .brand-logo { width:50px; height:50px; border-radius:50%%; flex:0 0 50px; }
+    .brand-copy { display:flex; flex-direction:column; justify-content:center; min-width:0; }
+    .brand-title { color:#1f1f1b; font-family:\"Charter\",\"Iowan Old Style\",\"Palatino Linotype\",Palatino,\"Times New Roman\",serif; font-size:3.1em; font-weight:500; line-height:1; letter-spacing:-0.02em; white-space:nowrap; text-decoration:none; }
+    .brand-o { color:#36c9c7; }
+    .draft-badge { font-size:.5em; vertical-align:super; margin-left:6px; color:#6f6a5e; font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; font-weight:600; }
+    .brand-tagline { font-size:12px; line-height:1.2; color:#7b7569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .nav-right { display:flex; align-items:center; gap:8px; }
+    .draft-nav-link { color:#2d2b27; font-size:14px; font-weight:500; padding:8px 10px; text-decoration:none; }
+    main { max-width: 1320px; margin: 0 auto; padding: 22px 28px 64px; }
     h1 { margin: 0 0 8px; font-size: clamp(30px, 4.2vw, 56px); line-height: 1.04; font-family: ui-serif, Georgia, Cambria, serif; }
     .lead { margin: 0 0 24px; color:#6a655a; font-size: 15px; }
     .group-head { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #dfd8cc; margin-bottom:12px; }
@@ -457,6 +478,15 @@
   </style>
 </head>
 <body>
+<nav class=\"main-nav medium-nav\">
+  <div class=\"nav-left site-brand\">
+    <a class=\"brand-logo-link\" href=\"/\"><img class=\"brand-logo\" src=\"/media/images/logo.png\" alt=\"Self dot send\"></a>
+    <div class=\"brand-copy\"><a class=\"brand-title\" href=\"/\">Selfd<span class=\"brand-o\">o</span>tsend<sup class=\"draft-badge\">Draft</sup></a><div class=\"brand-tagline\">Message passing is just a procedure call.</div></div>
+  </div>
+  <div class=\"nav-right\">
+    <a class=\"draft-nav-link\" href=\"/drafts/\">Drafts</a><a class=\"draft-nav-link\" href=\"/editor\">Write</a><a class=\"draft-nav-link\" href=\"/\">Published</a>
+  </div>
+</nav>
 <main>
   <h1>Draft Preview</h1>
   <p class=\"lead\">Browse and edit drafts before publishing.</p>
