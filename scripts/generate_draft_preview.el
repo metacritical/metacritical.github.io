@@ -2,6 +2,7 @@
 
 (require 'subr-x)
 (require 'seq)
+(require 'ox-html)
 
 (defun sds/slugify (s)
   (let* ((lower (downcase (string-trim s)))
@@ -76,6 +77,26 @@
                ((string= (car b) "untagged") t)
                (t (string< (car a) (car b)))))))))
 
+(defun sds/org-file-to-editable-html (path)
+  (condition-case nil
+      (with-temp-buffer
+        (insert-file-contents path)
+        (let ((org-export-with-toc nil)
+              (org-export-with-section-numbers nil)
+              (org-export-with-author nil)
+              (org-export-with-date nil)
+              (org-export-with-title nil)
+              (org-export-with-tags nil)
+              (org-html-htmlize-output-type 'css))
+          (org-export-string-as (buffer-string) 'html t
+                                '(:with-toc nil
+                                  :section-numbers nil
+                                  :with-author nil
+                                  :with-date nil
+                                  :with-title nil
+                                  :with-tags nil))))
+    (error "")))
+
 (defun sds/parse-org (path)
   (with-temp-buffer
     (insert-file-contents path)
@@ -109,18 +130,20 @@
         (forward-line 1))
       (let* ((body (string-trim (string-join (nreverse body-lines) "\n")))
              (clean-tags (delete-dups (seq-filter (lambda (it) (not (string-empty-p it))) tags)))
-             (image (sds/extract-first-image body)))
+             (image (sds/extract-first-image body))
+             (html-body (sds/org-file-to-editable-html path)))
         (list :title title
               :date date
               :description description
               :tags clean-tags
               :body body
+              :html-body html-body
               :image image)))))
 
 (defun sds/detail-page (item)
   (let* ((title (sds/html-escape (plist-get item :title)))
-         (body (sds/html-escape (plist-get item :body)))
-         (slug (sds/html-escape (plist-get item :slug)))
+         (body-html (or (plist-get item :html-body) ""))
+         (draft-path (sds/html-escape (plist-get item :draft-path)))
          (date (sds/html-escape (or (plist-get item :date) "")))
          (tags (or (plist-get item :tags) '("untagged")))
          (tag-html (mapconcat (lambda (tag) (format "<span class=\"tag\">%s</span>" (sds/html-escape tag))) tags ""))
@@ -132,37 +155,236 @@
   <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">
   <title>%s</title>
   <link rel=\"icon\" href=\"/media/images/logo.png\" type=\"image/png\">
+  <link rel=\"stylesheet\" href=\"/media/css/style.css\" type=\"text/css\">
+  <link rel=\"stylesheet\" href=\"/media/css/theme-medium.css\" type=\"text/css\">
   <style>
-    body { margin: 0; background: #f7f6f2; color: #1c1b19; font-family: ui-serif, Georgia, Cambria, serif; }
-    main { max-width: 920px; margin: 0 auto; padding: 30px 22px 64px; }
-    .top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 14px; }
-    .top a { color: #0d6a57; text-decoration:none; font:600 14px/1.2 ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
-    .edit { display:inline-flex; align-items:center; gap:8px; border:1px solid #d2ccc0; border-radius:10px; padding:8px 10px; color:#444; }
-    .edit svg { width:14px; height:14px; }
-    h1 { margin: 8px 0 8px; font-size: clamp(34px, 5.2vw, 58px); line-height: 1.06; }
-    .meta { color:#6b665c; font:500 14px/1.35 ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; margin-bottom: 8px; }
-    .tags { display:flex; flex-wrap:wrap; gap:8px; margin: 12px 0 22px; }
-    .tag { background:#ece7dc; color:#4f4a3f; border-radius:999px; padding:4px 10px; font:600 12px/1.2 ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
-    pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; line-height: 1.7; background: #fff; border: 1px solid #e3ddd1; padding: 16px; border-radius: 12px; }
+    body { background:#faf9f5; }
+    #wrapper.post-page { max-width: 900px; }
+    .draft-top { margin-bottom: 10px; }
+    .draft-back { color:#0d6a57; text-decoration:none; font:600 14px/1.2 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
+    .draft-editable { min-height: 40vh; }
+    .draft-editable[contenteditable=\"true\"]:focus { outline: none; }
+    .draft-editable p { margin-bottom: 20px; }
+    .tag { background:#ece7dc; color:#4f4a3f; border-radius:999px; padding:4px 10px; font:600 12px/1.2 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; margin-right:8px; }
+    .draft-tools { position: fixed; z-index: 9999; display:none; gap:6px; align-items:center; background:#1f1f1f; border-radius:12px; padding:8px; box-shadow: 0 12px 22px rgba(0,0,0,.2); }
+    .draft-tools button { border:none; background:transparent; color:#fff; border-radius:8px; padding:8px 10px; font-weight:700; font-size:13px; min-width:34px; }
+    .draft-tools button:hover { background: rgba(255,255,255,.14); }
+    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:8px; }
+    .draft-plus button { width:36px; height:36px; border-radius:50%%; border:1px solid #0f5f4f; background:#fff; color:#0f5f4f; font:700 12px/1 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; }
   </style>
 </head>
-<body>
-<main>
-  <div class=\"top\">
-    <a href=\"/drafts/\">Back to drafts</a>
-    <a class=\"edit\" href=\"/editor?draft=%s\" aria-label=\"Edit this draft\">
-      <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25zm18-11.5a1 1 0 0 0 0-1.41L19.66 3a1 1 0 0 0-1.41 0l-1.59 1.59 3.75 3.75L21 5.75z\" fill=\"currentColor\"></path></svg>
-      <span>Edit</span>
-    </a>
+<body class=\"container\">
+<nav class=\"main-nav medium-nav\">
+  <div class=\"nav-left site-brand\">
+    <a class=\"brand-logo-link\" href=\"/\"><img class=\"brand-logo\" src=\"/media/images/logo.png\" alt=\"Self dot send\"></a>
+    <div class=\"brand-copy\"><a class=\"brand-title\" href=\"/\">Selfd<span class=\"brand-o\">o</span>tsend</a><div class=\"brand-tagline\">Message passing is just a procedure call.</div></div>
   </div>
-  <h1>%s</h1>
-  <div class=\"meta\">%s · %s min read</div>
-  <div class=\"tags\">%s</div>
-  <pre>%s</pre>
-</main>
+  <div class=\"nav-right\">
+    <a href=\"/\">Blog</a><a href=\"/archive/\">Archive</a><a href=\"/tags/\">Tag</a><a href=\"/about/\">About</a><a href=\"/nano-chat/\">Nano Chat</a>
+  </div>
+</nav>
+<section id=\"wrapper\" class=\"post-page\">
+  <div class=\"post\">
+    <aside class=\"story-rail\" aria-label=\"Story actions\">
+      <button class=\"story-clap-btn\" type=\"button\" aria-label=\"Clap for this story\"><img src=\"/media/images/clap.png\" alt=\"\" aria-hidden=\"true\"></button>
+      <span class=\"story-clap-count\">0</span><div class=\"story-share-label\">Share</div>
+      <a class=\"story-share-link\" href=\"#\" aria-label=\"Share on X\">𝕏</a><a class=\"story-share-link\" href=\"#\" aria-label=\"Share on Facebook\">f</a><a class=\"story-share-link\" href=\"#\" aria-label=\"Share on LinkedIn\">in</a>
+    </aside>
+    <div class=\"draft-top\"><a class=\"draft-back\" href=\"/drafts/\">Back to drafts</a></div>
+    <h1 class=\"title\" id=\"draft-title\" contenteditable=\"true\">%s</h1>
+    <div class=\"post-author-row\"><img class=\"post-author-avatar\" src=\"/media/images/avatar.jpg\" alt=\"Pankaj Doharey\"><div class=\"post-author-meta\"><span class=\"post-author-name\">Pankaj Doharey</span><span class=\"post-author-date\">%s · %s min read</span></div></div>
+    <div class=\"tags\">%s</div>
+    <div id=\"draft-body\" class=\"draft-editable\" contenteditable=\"true\" data-target-path=\"%s\">%s</div>
+  </div>
+</section>
+
+<div class=\"draft-tools\" id=\"draft-tools\">
+  <button type=\"button\" data-cmd=\"bold\"><b>B</b></button>
+  <button type=\"button\" data-cmd=\"italic\"><i>I</i></button>
+  <button type=\"button\" data-action=\"link\">Link</button>
+  <button type=\"button\" data-action=\"highlight\">HL</button>
+  <button type=\"button\" data-action=\"clear\">Clr</button>
+</div>
+<div class=\"draft-plus\" id=\"draft-plus\">
+  <button type=\"button\" data-action=\"image\">Img</button>
+  <button type=\"button\" data-action=\"upload\">Up</button>
+  <button type=\"button\" data-action=\"video\">Vid</button>
+  <button type=\"button\" data-action=\"embed\">&lt;&gt;</button>
+  <button type=\"button\" data-action=\"code\">{}</button>
+  <input id=\"draft-upload\" type=\"file\" accept=\"image/*\" hidden>
+</div>
+
+<script>
+(function(){
+  const body = document.getElementById('draft-body');
+  const title = document.getElementById('draft-title');
+  const tools = document.getElementById('draft-tools');
+  const plus = document.getElementById('draft-plus');
+  const upload = document.getElementById('draft-upload');
+  const targetPath = body.dataset.targetPath;
+  let saveTimer = null;
+  let plusTimer = null;
+
+  function setSelPos(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) { tools.style.display='none'; return; }
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    if (!rect || !rect.width) { tools.style.display='none'; return; }
+    tools.style.display='inline-flex';
+    tools.style.left = Math.max(8, rect.left + rect.width/2 - tools.offsetWidth/2) + 'px';
+    tools.style.top = Math.max(8, rect.top - tools.offsetHeight - 10) + 'px';
+  }
+
+  function showPlusNearCaret(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    plus.style.display='inline-flex';
+    plus.style.left = Math.max(8, rect.left - 8) + 'px';
+    plus.style.top = (rect.bottom + 8) + 'px';
+    clearTimeout(plusTimer);
+    plusTimer = setTimeout(()=>{ plus.style.display='none'; }, 5000);
+  }
+
+  function htmlToOrgNode(node){
+    if (!node) return '';
+    if (node.nodeType === Node.TEXT_NODE) return node.textContent;
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    const tag = node.tagName.toLowerCase();
+    if (tag === 'h2') return '\n** ' + node.textContent.trim() + '\n';
+    if (tag === 'h3') return '\n*** ' + node.textContent.trim() + '\n';
+    if (tag === 'blockquote') return '\n#+BEGIN_QUOTE\n' + node.textContent.trim() + '\n#+END_QUOTE\n';
+    if (tag === 'pre') {
+      const lang = (node.dataset.lang || '').trim() || 'text';
+      return '\n#+BEGIN_SRC ' + lang + '\n' + node.innerText.replace(/\n+$/,'') + '\n#+END_SRC\n';
+    }
+    if (tag === 'figure' && node.classList.contains('image-block')) {
+      const img = node.querySelector('img');
+      const cap = node.querySelector('figcaption');
+      if (!img) return '';
+      const alt = (cap ? cap.textContent.trim() : (img.getAttribute('alt') || '')).trim();
+      return '\n[[' + (img.getAttribute('src') || '') + '][' + alt + ']]\n';
+    }
+    if (tag === 'figure' && (node.classList.contains('video-embed') || node.classList.contains('embed-card'))) {
+      return '\n#+BEGIN_EXPORT html\n' + node.outerHTML + '\n#+END_EXPORT\n';
+    }
+    if (tag === 'div' || tag === 'p') return '\n' + node.textContent.trim() + '\n';
+    let out = '';
+    node.childNodes.forEach(ch => { out += htmlToOrgNode(ch); });
+    return out;
+  }
+
+  function htmlToOrg(){
+    let bodyOrg = '';
+    body.childNodes.forEach(n => { bodyOrg += htmlToOrgNode(n); });
+    bodyOrg = bodyOrg.replace(/\n{3,}/g, '\n\n').trim();
+    const t = (title.innerText || '').trim() || 'Untitled Draft';
+    return { title: t, body: bodyOrg };
+  }
+
+  function saveDraft(){
+    const payload = htmlToOrg();
+    fetch('/editor/api/save', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ title: payload.title, body: payload.body, mode: 'draft', targetPath })
+    }).catch(()=>{});
+  }
+
+  function scheduleSave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveDraft, 1200);
+  }
+
+  function insertHtmlAtCursor(html){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    const frag = document.createDocumentFragment();
+    let node; let last = null;
+    while ((node = wrap.firstChild)) { last = frag.appendChild(node); }
+    range.insertNode(frag);
+    if (last) {
+      range.setStartAfter(last); range.collapse(true);
+      sel.removeAllRanges(); sel.addRange(range);
+    }
+    scheduleSave();
+  }
+
+  tools.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const cmd = btn.dataset.cmd;
+    const action = btn.dataset.action;
+    if (cmd) { document.execCommand(cmd, false, null); scheduleSave(); setSelPos(); return; }
+    if (action === 'link') {
+      const url = prompt('URL');
+      if (url) { document.execCommand('createLink', false, url); scheduleSave(); }
+    }
+    if (action === 'highlight') { document.execCommand('hiliteColor', false, '#ffea55'); scheduleSave(); }
+    if (action === 'clear') { document.execCommand('removeFormat', false, null); scheduleSave(); }
+  });
+
+  plus.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'image') {
+      const url = prompt('Image URL');
+      if (url) insertHtmlAtCursor('<figure class=\"image-block\"><img src=\"' + url + '\" alt=\"\"><figcaption></figcaption></figure><p><br></p>');
+      return;
+    }
+    if (action === 'upload') { upload.click(); return; }
+    if (action === 'video') {
+      const url = prompt('Video embed URL');
+      if (url) insertHtmlAtCursor('<figure class=\"video-embed\"><iframe src=\"' + url + '\" loading=\"lazy\" allowfullscreen></iframe></figure><p><br></p>');
+      return;
+    }
+    if (action === 'embed') {
+      const url = prompt('Link URL');
+      if (!url) return;
+      try {
+        const r = await fetch('/editor/api/fetch-meta', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({url}) });
+        const j = await r.json();
+        const t = j.title || url, d = j.description || '', s = j.site || '', img = j.image || '';
+        insertHtmlAtCursor('<figure class=\"embed-card\"><a class=\"embed-card-link\" href=\"'+url+'\"><div class=\"embed-card-copy\"><h4>'+t+'</h4><p>'+d+'</p><small>'+s+'</small></div>' + (img ? '<img src=\"'+img+'\" alt=\"'+t+'\">' : '') + '</a></figure><p><br></p>');
+      } catch (_) {}
+      return;
+    }
+    if (action === 'code') {
+      const lang = (prompt('Language (e.g. python, sh, js)') || 'text').trim();
+      insertHtmlAtCursor('<pre class=\"code-block\" data-lang=\"'+lang+'\">\\n</pre><p><br></p>');
+      return;
+    }
+  });
+
+  upload.addEventListener('change', async ()=>{
+    const file = upload.files && upload.files[0];
+    if (!file) return;
+    try {
+      const reader = new FileReader();
+      const dataUrl = await new Promise((resolve, reject)=>{ reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+      const r = await fetch('/editor/api/upload', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ filename: file.name, dataUrl }) });
+      const j = await r.json();
+      if (j && j.ok && j.url) insertHtmlAtCursor('<figure class=\"image-block\"><img src=\"'+j.url+'\" alt=\"'+file.name+'\"><figcaption>'+file.name+'</figcaption></figure><p><br></p>');
+    } catch (_) {}
+    upload.value = '';
+  });
+
+  document.addEventListener('selectionchange', ()=>{ setTimeout(setSelPos, 0); });
+  body.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') showPlusNearCaret(); scheduleSave(); });
+  body.addEventListener('input', scheduleSave);
+  title.addEventListener('input', scheduleSave);
+
+  setInterval(saveDraft, 5000);
+})();
+</script>
 </body>
 </html>\n"
-            title slug title date mins tag-html body)))
+            title title date mins tag-html draft-path body-html)))
 
 (defun sds/card-html (item)
   (let* ((slug (sds/html-escape (plist-get item :slug)))
@@ -264,12 +486,15 @@
                (description (plist-get parsed :description))
                (excerpt (sds/excerpt description body))
                (image (plist-get parsed :image))
+               (html-body (plist-get parsed :html-body))
                (read-mins (sds/estimate-read-mins body))
                (item (list :slug slug
                            :title title
                            :date date
                            :tags tags
                            :body body
+                           :html-body html-body
+                           :draft-path (concat "drafts/" (file-name-nondirectory draft))
                            :excerpt excerpt
                            :read-mins read-mins
                            :image image))

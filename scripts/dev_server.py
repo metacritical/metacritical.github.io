@@ -295,6 +295,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
   var host = document.querySelector("nav.main-nav .nav-right, .site-nav, .site-nav-left ul.nav, .main-nav");
   var draftMatch = location.pathname.match(/^\\/drafts\\/([^\\/]+)\\/?$/);
   var isDraftDetail = !!draftMatch && location.pathname !== "/drafts/";
+  var isDraftRoute = /^\\/drafts(?:\\/|$)/.test(location.pathname);
   var draftSlug = isDraftDetail ? draftMatch[1] : "";
 
   function buildActionLink(id, label, href) {
@@ -317,7 +318,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
     if (host) host.appendChild(drafts);
   }
 
-  if (!document.getElementById("local-dev-write-link")) {
+  if (!isDraftRoute && !document.getElementById("local-dev-write-link")) {
     var actionLabel = isDraftDetail ? "Edit" : "Write";
     var actionHref = isDraftDetail ? ("/editor?draft=" + encodeURIComponent(draftSlug)) : "/editor";
     var write = buildActionLink("local-dev-write-link", actionLabel, actionHref);
