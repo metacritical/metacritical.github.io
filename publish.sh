@@ -155,6 +155,14 @@ if [ -f "$BLOG_DIR/public/index.html" ]; then
   sed -i '' -e 's|<h1 class="title">Home</h1>||g' "$BLOG_DIR/public/index.html"
 fi
 
+# About page uses a dedicated author portrait.
+if [ -f "$BLOG_DIR/public/about/index.html" ]; then
+  sed -i '' -e 's|/media/images/avatar.jpg|/media/images/pankaj.png|g' "$BLOG_DIR/public/about/index.html"
+  perl -0777 -i -pe '
+    s@<aside class="story-rail" aria-label="Story actions">.*?</aside>@<aside class="story-rail" aria-label="Profile links">\n    <button class="story-clap-btn" type="button" aria-label="Clap for this page">\n      <img src="/media/images/clap.png" alt="" aria-hidden="true">\n    </button>\n    <span class="story-clap-count">0</span>\n    <a class="story-share-link story-share-x" href="https://x.com/pankajdoharey" target="_blank" rel="noopener" aria-label="X profile" title="X">\n      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.77 7.74L23.2 22h-6.27l-4.9-6.41L6.44 22H3.3l7.24-8.28L.8 2h6.43l4.43 5.85L18.9 2zm-2.2 18h1.74L6.27 3.9H4.4L16.7 20z"/></svg>\n    </a>\n    <a class="story-share-link story-share-ln" href="https://www.linkedin.com/in/pankaj-doharey/" target="_blank" rel="noopener" aria-label="LinkedIn profile" title="LinkedIn">\n      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3A2.25 2.25 0 1 0 5.3 7.5 2.25 2.25 0 0 0 5.25 3zM20 13.22c0-3.49-1.86-5.12-4.34-5.12-2 0-2.9 1.1-3.4 1.88V8.5H8.88V20h3.38v-5.7c0-1.5.28-2.95 2.14-2.95 1.83 0 1.85 1.72 1.85 3.04V20h3.38v-6.78z"/></svg>\n    </a>\n    <a class="story-share-link story-share-yc" href="https://news.ycombinator.com/threads?id=pankajdoharey" target="_blank" rel="noopener" aria-label="Hacker News profile" title="Hacker News">\n      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="2" fill="#ff6600"></rect><path fill="#fff" d="M7.4 6h2.2l2.5 4.3L14.6 6h2.1l-3.6 6.2V18h-2v-5.8z"/></svg>\n    </a>\n    <a class="story-share-link story-share-devto" href="https://dev.to/metacritical" target="_blank" rel="noopener" aria-label="dev.to profile" title="dev.to">\n      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="2" fill="#0a0a0a"></rect><path fill="#fff" d="M6.2 8.3h2.1c1.8 0 3.1 1.2 3.1 3.7 0 2.5-1.3 3.7-3.1 3.7H6.2V8.3zm2 .9v5.6h.2c1.2 0 2-1 2-2.8s-.8-2.8-2-2.8h-.2zm4.4-.9h5.1v1h-3.9v2h3.3v1h-3.3v2.4h4.1v1h-5.3V8.3z"/></svg>\n    </a>\n  </aside>@s;
+  ' "$BLOG_DIR/public/about/index.html"
+fi
+
 # Build-time syntax highlighting fallback for exported src blocks.
 # This guarantees visible highlighting even when editor-side htmlize
 # output is unavailable for some languages/modes.
