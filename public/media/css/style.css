@@ -781,6 +781,11 @@ em, i {
 	cursor: pointer;
 }
 
+.story-clap-btn svg {
+	width: 24px;
+	height: 24px;
+}
+
 .story-clap-count,
 .story-share-label {
 	font: 500 12px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
