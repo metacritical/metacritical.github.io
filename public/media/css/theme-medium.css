@@ -35,21 +35,23 @@ html[data-theme="medium"] .nav-left.site-brand {
 }
 
 html[data-theme="medium"] .brand-logo {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
 }
 
 html[data-theme="medium"] .brand-title {
-  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  font-size: 40px;
-  line-height: 1.05;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-family: "Sohne", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(46px, 5.8vw, 86px);
+  line-height: 0.96;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  white-space: normal;
   color: #1f1f1b;
 }
 
 html[data-theme="medium"] .brand-tagline {
-  font-size: 12px;
+  font-size: clamp(11px, 1.05vw, 14px);
   color: #6f6a5e;
 }
 

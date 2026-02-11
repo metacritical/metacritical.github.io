@@ -134,9 +134,10 @@ nav.main-nav {
 }
 
 .brand-logo {
-	width: 56px;
-	height: 56px;
+	width: 52px;
+	height: 52px;
 	border-radius: 50%;
+	flex: 0 0 52px;
 }
 
 .brand-copy {
@@ -148,17 +149,18 @@ nav.main-nav {
 
 .brand-title {
 	color: #1f1f1b;
-	font-size: 40px;
-	font-weight: 500;
-	line-height: 1.05;
-	letter-spacing: -0.01em;
-	white-space: nowrap;
+	font-family: "Sohne", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: clamp(46px, 5.8vw, 86px);
+	font-weight: 700;
+	line-height: 0.96;
+	letter-spacing: -0.035em;
+	white-space: normal;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .brand-tagline {
-	font-size: 12px;
+	font-size: clamp(11px, 1.05vw, 14px);
 	line-height: 1.2;
 	color: #7b7569;
 	white-space: nowrap;
