@@ -35,21 +35,21 @@ html[data-theme="medium"] .nav-left.site-brand {
 }
 
 html[data-theme="medium"] .brand-logo {
-  width: 42px;
-  height: 42px;
+  width: 56px;
+  height: 56px;
 }
 
 html[data-theme="medium"] .brand-title {
   font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  font-size: 40px;
-  line-height: 1.06;
+  font-size: 30px;
+  line-height: 1.08;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: #1f1f1b;
 }
 
 html[data-theme="medium"] .brand-tagline {
-  font-size: 13px;
+  font-size: 12px;
   color: #6f6a5e;
 }
 
