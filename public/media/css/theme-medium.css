@@ -35,9 +35,9 @@ html[data-theme="medium"] .nav-left.site-brand {
 }
 
 html[data-theme="medium"] .brand-logo {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
 }
 
 html[data-theme="medium"] .brand-title {
