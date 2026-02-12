@@ -65,7 +65,7 @@ hash_state() {
 }
 
 echo "[watch] Initial publish..."
-"$BLOG_DIR/publish.sh"
+LOCAL_DEV=1 "$BLOG_DIR/publish.sh"
 
 LAST_HASH="$(hash_state)"
 echo "[watch] Watching for changes every ${POLL_SECONDS}s..."
@@ -75,7 +75,7 @@ while true; do
   NEXT_HASH="$(hash_state)"
   if [ "$NEXT_HASH" != "$LAST_HASH" ]; then
     echo "[watch] Change detected. Rebuilding..."
-    if "$BLOG_DIR/publish.sh"; then
+    if LOCAL_DEV=1 "$BLOG_DIR/publish.sh"; then
       LAST_HASH="$NEXT_HASH"
       echo "[watch] Rebuild complete."
     else

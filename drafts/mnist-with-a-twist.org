@@ -1,7 +1,13 @@
 #+TITLE: MNIST with a TWIST
-#+DATE: 2026-02-11
+#+DATE: 2026-02-12
 #+OPTIONS: toc:nil
 #+DESCRIPTION: Draft post
 #+FILETAGS: :machine-learning:
 
-Write your draft here.
+[[/assets/uploads/2026/02/placeholder-000833.png][placeholder.png]]
+
+#+BEGIN_SRC ruby
+def hello
+  puts "HI"
+end
+#+END_SRC

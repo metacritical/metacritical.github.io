@@ -276,6 +276,25 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         for candidate in candidates:
             if slugify(candidate.stem) == slug:
                 return candidate
+        # Fallback for historical URL slugs that don't exactly match post filenames.
+        requested_tokens = [t for t in slug.split("-") if t]
+        requested_set = set(requested_tokens)
+        best_candidate: Path | None = None
+        best_score = 0
+        for candidate in candidates:
+            cand_slug = slugify(candidate.stem)
+            cand_tokens = [t for t in cand_slug.split("-") if t]
+            cand_set = set(cand_tokens)
+            if not cand_set:
+                continue
+            # Prefer token-subset matches; e.g. URL has extra descriptor token.
+            if cand_set.issubset(requested_set) or requested_set.issubset(cand_set):
+                score = len(cand_set & requested_set)
+                if score > best_score:
+                    best_score = score
+                    best_candidate = candidate
+        if best_candidate is not None:
+            return best_candidate
         return None
 
     def _load_draft(self, query: str) -> None:
@@ -397,7 +416,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
   var isDraftDetail = !!draftMatch && location.pathname !== "/drafts/";
   var isDraftRoute = /^\\/drafts(?:\\/|$)/.test(location.pathname);
   var draftSlug = isDraftDetail ? draftMatch[1] : "";
-  var postMatch = location.pathname.match(/^\\/blog\\/(?:\\d{4}\\/\\d{2}\\/\\d{2}\\/)?([^\\/]+)\\/?$/);
+  var postMatch = location.pathname.match(/^\\/blog\\/(?:\\d{4}\\/\\d{2}\\/\\d{2}\\/)?([^\\/]+)(?:\\/index\\.html|\\/)?$/);
   var isPublishedStory = !!postMatch;
   var postSlug = isPublishedStory ? postMatch[1] : "";
 
@@ -429,6 +448,31 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
     }
   }
 
+  function ensureInlineEditLink(href) {
+    if (!isPublishedStory) return;
+    var target = document.querySelector(".post-author-name");
+    var meta = document.querySelector(".post-author-meta");
+    if (!target) return;
+    var existing = document.getElementById("local-dev-inline-edit-link");
+    if (existing) {
+      existing.href = href;
+      return;
+    }
+    var inline = document.createElement("a");
+    inline.id = "local-dev-inline-edit-link";
+    inline.href = href;
+    inline.textContent = "Edit";
+    inline.setAttribute("aria-label", "Edit");
+    inline.title = "Edit";
+    inline.style.cssText = "display:inline-flex;align-items:center;justify-content:center;margin-left:10px;padding:2px 10px;border:1px solid #d8d0c3;border-radius:999px;color:#4f4a3f;text-decoration:none;font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f1e8;vertical-align:middle;";
+    target.insertAdjacentElement("afterend", inline);
+    if (meta) {
+      meta.style.display = "flex";
+      meta.style.flexDirection = "column";
+      meta.style.alignItems = "flex-start";
+    }
+  }
+
   if (host) {
     var draftLinks = host.querySelectorAll('a[href="/drafts"], a[href="/drafts/"]');
     for (var i = 1; i < draftLinks.length; i++) {
@@ -437,15 +481,12 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
   }
 
   var existingDraftLink = host && host.querySelector('a[href="/drafts"], a[href="/drafts/"]');
-  if (!isDraftRoute && host && !existingDraftLink) {
+  if (host && !existingDraftLink) {
     var drafts = document.createElement("a");
     drafts.id = "local-dev-drafts-link";
     drafts.href = "/drafts/";
     drafts.textContent = "Drafts";
     host.appendChild(drafts);
-  }
-  if (isDraftRoute && existingDraftLink) {
-    existingDraftLink.remove();
   }
 
   var existingAction = host && (
@@ -460,7 +501,8 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
       injected.remove();
     }
   } else if (isPublishedStory) {
-    var editHref = "/__editor?post=" + encodeURIComponent(postSlug);
+    var editHref = "/drafts/published/" + encodeURIComponent(postSlug) + "/";
+    ensureInlineEditLink(editHref);
     if (existingAction) {
       existingAction.href = editHref;
       existingAction.title = "Edit";
@@ -550,6 +592,40 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
 
+        if path == "/drafts":
+            self.send_response(302)
+            self.send_header("Location", "/drafts/")
+            self.end_headers()
+            return
+
+        published_edit_match = re.fullmatch(r"/drafts/published/([^/]+)/?", path)
+        rewritten_path = path
+        if published_edit_match:
+            requested_slug = slugify(published_edit_match.group(1))
+            resolved = self._resolve_post_file(requested_slug)
+            if resolved is not None:
+                canonical_slug = slugify(resolved.stem)
+                if canonical_slug:
+                    # Serve canonical generated page while keeping original URL,
+                    # so legacy slug context remains available to client-side path resolution.
+                    rewritten_path = f"/drafts/published/{canonical_slug}/"
+
+        # Local-dev fallback: serve live source assets even before publish sync into public/.
+        if path.startswith("/assets/"):
+            rel = path.lstrip("/")
+            source_file = (self.blog_dir / rel).resolve()
+            assets_root = (self.blog_dir / "assets").resolve()
+            if str(source_file).startswith(str(assets_root) + os.sep) and source_file.is_file():
+                ctype, _ = mimetypes.guess_type(str(source_file))
+                ctype = ctype or "application/octet-stream"
+                body = source_file.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
         if path in {"/editor/api/load-draft", "/__editor/api/load-draft"}:
             self._load_draft(parsed.query)
             return
@@ -573,7 +649,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
 
-        if self._try_serve_injected_html(path):
+        if self._try_serve_injected_html(rewritten_path):
             return
 
         super().do_GET()

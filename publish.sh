@@ -13,6 +13,8 @@ PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
+# Draft preview pages/nav are local-dev only.
+ENABLE_DRAFT_PREVIEW="${LOCAL_DEV:-${DRAFTS:-0}}"
 
 cleanup_post_build_artifacts() {
   # Keep the repo root tidy for commits by archiving known legacy folders.
@@ -139,9 +141,6 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
 # Ensure nav/footer consistency across all generated pages.
 while IFS= read -r -d '' html_file; do
   perl -0777 -i -pe '
-    # Add Drafts nav link on main site header when missing.
-    s@(<a href="/nano-chat/">Nano Chat</a>)(?!\s*<a href="/drafts/">Drafts</a>)@$1\n    <a href="/drafts/">Drafts</a>@g;
-
     # Normalize author mailto link.
     s@<a href="mailto:[^"]*">Pankaj Doharey</a>@<a href="mailto:pankajdoharey%40gmail.com">Pankaj Doharey</a>@g;
 
@@ -152,6 +151,17 @@ while IFS= read -r -d '' html_file; do
     s@Powered by\s*<a href="https://github\.com/metacritical/AOG" target="_blank">AOG</a>@Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a> + Modalert 💊@g;
   ' "$html_file"
 done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
+
+# Draft nav link should only exist in local development builds.
+if [ "$ENABLE_DRAFT_PREVIEW" = "1" ]; then
+  find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
+    xargs -0 perl -0777 -i -pe \
+      's@(<a href="/nano-chat/">Nano Chat</a>)(?!\s*<a href="/drafts/">Drafts</a>)@$1\n    <a href="/drafts/">Drafts</a>@g;'
+else
+  find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
+    xargs -0 perl -0777 -i -pe \
+      's@\s*<a href="/drafts/">Drafts</a>@@g;'
+fi
 
 # Remove synthetic homepage title injected by generic post template.
 if [ -f "$BLOG_DIR/public/index.html" ]; then
@@ -178,6 +188,51 @@ TARGET_THEME_CSS="$BLOG_DIR/public/media/css/theme-medium.css"
 TARGET_CODE_CSS="$BLOG_DIR/public/media/css/code-theme-monokai-pro.css"
 if [ -f "$DOOM_CSS" ] && [ -f "$TARGET_THEME_CSS" ]; then
   cp "$DOOM_CSS" "$TARGET_CODE_CSS"
+
+  # Keep Disqus/comments readable in Medium theme regardless of browser
+  # auto dark-mode heuristics.
+  if ! rg -q 'selfdotsend-disqus-readability' "$TARGET_THEME_CSS"; then
+    cat >> "$TARGET_THEME_CSS" <<'EOF'
+/* selfdotsend-disqus-readability */
+html[data-theme="medium"] body {
+  color-scheme: light;
+}
+html[data-theme="medium"] #disqus_thread {
+  background: #fff;
+  border: 1px solid #e6e1d5;
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 180px;
+  color: #1f1f1b;
+  color-scheme: light;
+}
+html[data-theme="medium"] #disqus_thread iframe {
+  opacity: 1 !important;
+  filter: none !important;
+}
+EOF
+  fi
+
+  # Keep footer social icon baseline aligned with author name text.
+  if ! rg -q 'selfdotsend-footer-linkedin-align' "$TARGET_THEME_CSS"; then
+    cat >> "$TARGET_THEME_CSS" <<'EOF'
+/* selfdotsend-footer-linkedin-align */
+html[data-theme="medium"] #footer .small a.footer-linkedin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 6px;
+  position: relative;
+  top: -1px;
+}
+html[data-theme="medium"] #footer .small a.footer-linkedin svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+EOF
+  fi
 
   THEME_VER="$(stat -f '%m' "$TARGET_THEME_CSS" 2>/dev/null || date +%s)"
   CODE_VER="$(stat -f '%m' "$TARGET_CODE_CSS" 2>/dev/null || date +%s)"
@@ -229,8 +284,12 @@ fi
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"
 
-# Always generate draft preview pages from /drafts.
-"$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
+# Draft preview pages are local-dev only.
+if [ "$ENABLE_DRAFT_PREVIEW" = "1" ]; then
+  "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
+else
+  rm -rf "$BLOG_DIR/public/drafts"
+fi
 
 # Optional cleanup step to keep commit diffs clean after each build.
 if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then

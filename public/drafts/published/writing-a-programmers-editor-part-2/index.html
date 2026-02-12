@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="en" data-theme="medium">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</title>
+  <link rel="icon" href="/media/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
+  <style>
+    body { background:#faf9f5; }
+    #wrapper.post-page { max-width: 900px; }
+    .draft-badge { font-size:17px; vertical-align:super; margin-left:3px; color:#37c9c7; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:400; letter-spacing:0; font-style:italic; }
+    .nav-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .nav-right > a { color:#2d2b27; font-size:14px; font-weight:500; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; padding:8px 10px; text-decoration:none; }
+    .draft-write-action { margin-left:12px; display:inline-flex; align-items:center; gap:8px; text-decoration:none; padding:6px 8px; background:transparent; border-radius:8px; }
+    .draft-write-action .icon { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border:1.5px solid #777; border-radius:3px; }
+    .draft-write-action .label { font:500 14px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#666; }
+    .draft-editable { min-height: 40vh; }
+    .draft-editable[contenteditable="true"]:focus { outline: none; }
+    #draft-title[contenteditable="true"]:focus { outline: none; box-shadow: none; border: 0; }
+    .draft-editable p { margin-bottom: 20px; }
+    .draft-inline-tags { display:inline-flex; align-items:center; gap:8px; margin-left:8px; flex-wrap:wrap; }
+    .draft-tag-pill { background:#ece7dc; color:#4f4a3f; border-radius:999px; padding:3px 10px; font:600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .draft-tag-pill.untagged { opacity:.9; }
+    .draft-tag-add { border:1px solid #d8d0c3; background:#fff; color:#4f4a3f; border-radius:999px; padding:3px 10px; font:600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; cursor:pointer; }
+    .draft-tag-pop { position:fixed; z-index:10005; width:min(360px, calc(100vw - 24px)); background:#fff; border:1px solid #ddd7ca; border-radius:12px; box-shadow:0 16px 36px rgba(0,0,0,.18); padding:10px; display:none; }
+    .draft-tag-pop.open { display:block; }
+    .draft-tag-grid { display:flex; flex-wrap:wrap; gap:8px; max-height:180px; overflow-y:auto; overflow-x:hidden; margin-bottom:10px; padding:2px 2px 8px; align-content:flex-start; }
+    .draft-tag-choice { border:1px solid #d8d0c3; background:#fff; color:#4f4a3f; border-radius:999px; padding:6px 14px; font:600 12px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; cursor:pointer; }
+    .draft-tag-choice.active { border-color:#36c9c7; color:#0f5f4f; background:#ebfbfa; }
+    .draft-tag-actions { display:flex; align-items:center; gap:8px; }
+    .draft-tag-new-btn, .draft-tag-save-btn { border:1px solid #d8d0c3; background:#fff; color:#4f4a3f; border-radius:8px; padding:8px 12px; font:600 12px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; cursor:pointer; }
+    .draft-tag-save-btn { border-color:#36c9c7; color:#0f5f4f; }
+    .draft-tag-new-input { flex:1; min-width:0; border:1px solid #d8d0c3; border-radius:8px; padding:9px 11px; font:500 13px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; display:none; }
+    .draft-tag-new-input.open { display:block; }
+    .draft-editable figure.image-block {
+      display: inline-block;
+      width: 760px;
+      max-width: 100%;
+      min-width: 220px;
+      resize: both;
+      overflow: auto;
+      margin: 14px 0 18px;
+      border: 1px dashed transparent;
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .draft-editable figure.image-block:focus-within { border-color:#cfc7b7; }
+    .draft-editable figure.image-block img { width:100%; height:auto; display:block; border-radius:6px; }
+    .draft-editable figure.image-block figcaption { font-size:14px; color:#7a756b; margin-top:8px; }
+    .draft-editable pre.code-block {
+      margin: 12px 0 20px;
+      padding: 18px 20px;
+      border: 1px solid #d9d1c3;
+      border-radius: 14px;
+      background: #2d2a2e;
+      color: #fcfcfa;
+      font: 500 18px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      white-space: pre;
+      overflow-x: auto;
+      tab-size: 2;
+      -moz-tab-size: 2;
+      outline: none;
+      spellcheck: false;
+    }
+    .draft-editable pre.code-block .tok-com { color:#727072; }
+    .draft-editable pre.code-block .tok-str { color:#ffd866; }
+    .draft-editable pre.code-block .tok-kw  { color:#ff6188; font-weight:600; }
+    .draft-editable pre.code-block .tok-id  { color:#78dce8; }
+    .draft-editable pre.code-block .tok-num { color:#ab9df2; }
+    .draft-editable pre.code-block .tok-op  { color:#fcfcfa; }
+    .draft-save-state { margin-top:6px; color:#7b7569; font:500 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; display:inline-flex; align-items:center; gap:6px; }
+    .draft-save-state::before { content:""; width:7px; height:7px; border-radius:50%; background:#b9b19f; display:inline-block; }
+    .draft-save-state.is-saving::before { background:#c98b2f; animation:draftPulse 1s infinite; }
+    .draft-save-state.is-dirty::before { background:#d35454; }
+    .draft-save-state.is-saved::before { background:#36c9c7; }
+    .draft-save-state.is-error::before { background:#d35454; }
+    @keyframes draftPulse { 0% { opacity:.45; } 50% { opacity:1; } 100% { opacity:.45; } }
+    .post-author-name-row { display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+    .draft-tools { position: fixed; z-index: 9999; display:none; gap:6px; align-items:center; background:#1f1f1f; border-radius:12px; padding:8px; box-shadow: 0 12px 22px rgba(0,0,0,.2); }
+    .draft-tools button { border:none; background:transparent; color:#fff; border-radius:8px; padding:8px 10px; font-weight:700; font-size:13px; min-width:34px; }
+    .draft-tools button:hover { background: rgba(255,255,255,.14); }
+    .draft-tools .sep { width:1px; height:22px; background:rgba(255,255,255,.18); margin:0 2px; }
+    .draft-tools select { border:1px solid rgba(255,255,255,.25); background:#2b2b2b; color:#fff; border-radius:8px; padding:6px 8px; font-size:12px; font-weight:600; max-width:150px; min-width:96px; }
+    .draft-tools input[type="color"] { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+    .draft-color-control {
+      border: 1px solid rgba(255,255,255,.32) !important;
+      background: #2b2b2b !important;
+      color: #fff;
+      border-radius: 9px !important;
+      min-width: auto !important;
+      padding: 6px 10px !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(0,0,0,.45);
+    }
+    .draft-color-label { font:700 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.01em; }
+    .draft-color-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 7px;
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.22), 0 1px 2px rgba(0,0,0,.32);
+      background-clip: padding-box;
+    }
+    .draft-color-pop {
+      position: fixed;
+      z-index: 10020;
+      display: none;
+      min-width: 200px;
+      max-width: 240px;
+      background: #252525;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 10px;
+      box-shadow: 0 18px 38px rgba(0,0,0,.42);
+      padding: 8px;
+    }
+    .draft-color-pop.open { display: block; }
+    .draft-color-pop-title { color:#fff; opacity:.9; font:700 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; margin:0 0 7px; }
+    .draft-color-pop-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:7px; margin-bottom:8px; }
+    .draft-color-chip-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.5);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+      padding: 0;
+      min-width: 24px !important;
+    }
+    .draft-color-pop-more {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.3) !important;
+      border-radius: 8px !important;
+      background: #2e2e2e !important;
+      color: #fff;
+      padding: 6px 8px !important;
+      font: 600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:8px; pointer-events:auto; }
+    .draft-plus-toggle { width:25px; height:25px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+    .draft-plus-toggle:hover { background:#f5fffe; }
+    .draft-plus-toggle svg { width:14px; height:14px; fill: currentColor; transition: transform .15s ease; }
+    .draft-plus-menu { display:none; align-items:center; gap:8px; }
+    .draft-plus.open .draft-plus-menu { display:inline-flex; }
+    .draft-plus-menu button { width:36px; height:36px; border-radius:50%; border:1px solid #0f5f4f; background:#fff; color:#0f5f4f; display:inline-flex; align-items:center; justify-content:center; padding:0; }
+    .draft-plus-menu button svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .draft-input-modal[hidden] { display:none; }
+    .draft-input-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10030;
+      background: rgba(16,15,14,.45);
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+    .draft-input-card {
+      width: min(540px, calc(100vw - 24px));
+      border-radius: 14px;
+      border: 1px solid #d8d0c3;
+      background: #fff;
+      box-shadow: 0 22px 54px rgba(0,0,0,.28);
+      padding: 16px;
+    }
+    .draft-input-title {
+      margin: 0 0 10px;
+      font: 700 16px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color: #27231f;
+    }
+    .draft-input-label {
+      display:block;
+      margin: 0 0 6px;
+      font: 600 12px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:#6b655b;
+    }
+    .draft-input-field {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #d8d0c3;
+      border-radius: 10px;
+      background: #fff;
+      color: #27231f;
+      padding: 10px 12px;
+      font: 500 14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .draft-input-actions {
+      margin-top: 12px;
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .draft-input-btn {
+      border:1px solid #d8d0c3;
+      background:#fff;
+      color:#4f4a3f;
+      border-radius:8px;
+      padding:8px 12px;
+      font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      cursor:pointer;
+    }
+    .draft-input-btn.primary { border-color:#36c9c7; color:#0f5f4f; }
+  </style>
+</head>
+<body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy"><a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend<sup class="draft-badge">Draft</sup></a><div class="brand-tagline">Message passing is just a procedure call.</div></div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+    <a class="draft-write-action" href="/editor" aria-label="Write" title="Write"><span class="icon"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25zm18-11.5a1 1 0 0 0 0-1.41L19.66 3a1 1 0 0 0-1.41 0l-1.59 1.59 3.75 3.75L21 5.75z" fill="#666"></path></svg></span><span class="label">Write</span></a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+<section id="wrapper" class="post-page">
+  <div class="post">
+    <aside class="story-rail" aria-label="Story actions">
+      <button class="story-clap-btn" type="button" aria-label="Clap for this story"><img src="/media/images/clap.png" alt="" aria-hidden="true"></button>
+      <span class="story-clap-count">0</span>
+    </aside>
+    <h1 class="title" id="draft-title" contenteditable="true">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
+    <div class="post-author-row"><img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey"><div class="post-author-meta"><span class="post-author-name-row"><span class="post-author-name">Pankaj Doharey</span><span id="draft-tags-inline" class="draft-inline-tags"></span><button id="draft-add-tag" class="draft-tag-add" type="button">+ Tag</button></span><span class="post-author-date">2018-08-11 Sat · 1 min read</span><span id="draft-save-state" class="draft-save-state" aria-live="polite">Saved</span></div></div>
+    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="posts/writing-a-programmers-editor-part-2.org" data-tags="scheme,editor-data-structures,gap-buffer,data,structures,editor,gap,buffer"><p>
+In my quest to write a programmable editor the first problem that i came across was
+which datastructure to hold the text in? What do other text editors use? For instance 
+emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
+with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
+like.
+</p>
+
+<figure class="image-block" style="width:760px;max-width:100%;"><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png"><figcaption>gapbuffer.png</figcaption></figure>
+</div>
+  </div>
+</section>
+
+<div class="draft-tools" id="draft-tools">
+  <button type="button" data-cmd="bold"><b>B</b></button>
+  <button type="button" data-cmd="italic"><span style="font-style:italic; font-family:Georgia,serif;">i</span></button>
+  <span class="sep" aria-hidden="true"></span>
+  <select id="draft-font-family" title="Font family" aria-label="Font family">
+    <option value="">Font</option>
+    <option value="Charter, Georgia, serif">Serif</option>
+    <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Sans</option>
+    <option value="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Mono</option>
+  </select>
+  <button id="draft-hl-control" class="draft-color-control" type="button" data-action="open-hl" title="Highlight color" aria-label="Highlight color">
+    <span class="draft-color-label">HL</span><span id="draft-hl-swatch" class="draft-color-swatch" style="background:#ffea55"></span>
+  </button>
+  <button id="draft-fg-control" class="draft-color-control" type="button" data-action="open-fg" title="Text color" aria-label="Text color">
+    <span class="draft-color-label">FG</span><span id="draft-fg-swatch" class="draft-color-swatch" style="background:#1d1b18"></span>
+  </button>
+  <button type="button" data-action="link">Link</button>
+  <button type="button" data-action="text-color">Text</button>
+  <button type="button" data-action="code-lang">Lang</button>
+  <button type="button" data-action="clear">Clr</button>
+  <input id="draft-highlight-custom" type="color" value="#ffea55" aria-hidden="true" tabindex="-1">
+  <input id="draft-foreground-custom" type="color" value="#1d1b18" aria-hidden="true" tabindex="-1">
+</div>
+<div class="draft-color-pop" id="draft-color-pop">
+  <div id="draft-color-pop-title" class="draft-color-pop-title">Color</div>
+  <div id="draft-color-pop-grid" class="draft-color-pop-grid"></div>
+  <button id="draft-color-pop-more" class="draft-color-pop-more" type="button">More</button>
+</div>
+<div class="draft-plus" id="draft-plus">
+  <button class="draft-plus-toggle" id="draft-plus-toggle" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part"><svg viewBox="0 0 25 25" aria-hidden="true"><path id="draft-plus-icon" d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg></button>
+  <div class="draft-plus-menu" id="draft-plus-menu">
+    <button type="button" data-action="image" title="Image" aria-label="Image">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M4.5 17l5.2-4.8 3.7 3.1 2.6-2.2 3.5 3.9"></path></svg>
+    </button>
+    <button type="button" data-action="upload" title="Upload" aria-label="Upload">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5"></path><path d="M8.4 8.6 12 5l3.6 3.6"></path><path d="M5 17.5v1a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18.5v-1"></path></svg>
+    </button>
+    <button type="button" data-action="video" title="Video" aria-label="Video">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="12" height="12" rx="2"></rect><path d="M15.5 10.2 20 7.8v8.4l-4.5-2.4z"></path></svg>
+    </button>
+    <button type="button" data-action="embed" title="Embed" aria-label="Embed">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8 5 12l4 4"></path><path d="M15 8l4 4-4 4"></path></svg>
+    </button>
+    <button type="button" data-action="code" title="Code" aria-label="Code">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 6 12l3 5"></path><path d="M15 7l3 5-3 5"></path><path d="M13.5 5.5 10.5 18.5"></path></svg>
+    </button>
+  </div>
+  <input id="draft-upload" type="file" accept="image/*" hidden>
+</div>
+<div class="draft-tag-pop" id="draft-tag-pop">
+  <div class="draft-tag-grid" id="draft-tag-grid"></div>
+  <div class="draft-tag-actions">
+    <button type="button" class="draft-tag-new-btn" id="draft-tag-new-btn">+ New</button>
+    <input type="text" class="draft-tag-new-input" id="draft-tag-new-input" placeholder="new-tag">
+    <button type="button" class="draft-tag-save-btn" id="draft-tag-save-btn">Save</button>
+  </div>
+</div>
+<div class="draft-input-modal" id="draft-input-modal" hidden>
+  <div class="draft-input-card" role="dialog" aria-modal="true" aria-labelledby="draft-input-title">
+    <h3 id="draft-input-title" class="draft-input-title">Input</h3>
+    <label id="draft-input-label" class="draft-input-label" for="draft-input-field">Value</label>
+    <input id="draft-input-field" class="draft-input-field" type="text" autocomplete="off">
+    <div class="draft-input-actions">
+      <button id="draft-input-cancel" class="draft-input-btn" type="button">Cancel</button>
+      <button id="draft-input-ok" class="draft-input-btn primary" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const body = document.getElementById('draft-body');
+  const title = document.getElementById('draft-title');
+  const tools = document.getElementById('draft-tools');
+  const plus = document.getElementById('draft-plus');
+  const plusToggle = document.getElementById('draft-plus-toggle');
+  const plusIcon = document.getElementById('draft-plus-icon');
+  const plusMenu = document.getElementById('draft-plus-menu');
+  const tagsInline = document.getElementById('draft-tags-inline');
+  const addTagBtn = document.getElementById('draft-add-tag');
+  const tagPop = document.getElementById('draft-tag-pop');
+  const tagGrid = document.getElementById('draft-tag-grid');
+  const tagNewBtn = document.getElementById('draft-tag-new-btn');
+  const tagNewInput = document.getElementById('draft-tag-new-input');
+  const tagSaveBtn = document.getElementById('draft-tag-save-btn');
+  const inputModal = document.getElementById('draft-input-modal');
+  const inputTitle = document.getElementById('draft-input-title');
+  const inputLabel = document.getElementById('draft-input-label');
+  const inputField = document.getElementById('draft-input-field');
+  const inputOk = document.getElementById('draft-input-ok');
+  const inputCancel = document.getElementById('draft-input-cancel');
+  const fontFamily = document.getElementById('draft-font-family');
+  const hlControl = document.getElementById('draft-hl-control');
+  const fgControl = document.getElementById('draft-fg-control');
+  const hlSwatch = document.getElementById('draft-hl-swatch');
+  const fgSwatch = document.getElementById('draft-fg-swatch');
+  const colorPop = document.getElementById('draft-color-pop');
+  const colorPopTitle = document.getElementById('draft-color-pop-title');
+  const colorPopGrid = document.getElementById('draft-color-pop-grid');
+  const colorPopMore = document.getElementById('draft-color-pop-more');
+  const highlightCustom = document.getElementById('draft-highlight-custom');
+  const foregroundCustom = document.getElementById('draft-foreground-custom');
+  const upload = document.getElementById('draft-upload');
+  const saveState = document.getElementById('draft-save-state');
+  const availableTags = ["git","status","terminal","unix","ps1","editor","emacs","vim","scheme","arm","assembly","64","lolcat","assembler","alchemist","org-mode","blog","editor-data-structures","gap-buffer","data","structures","gap","buffer","machine-learning"];
+  let targetPath = body.dataset.targetPath || '';
+  let draftTags = (body.dataset.tags || '').split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+  let savedRange = null;
+  let saveSeq = 0;
+  let dirty = false;
+  let isSaving = false;
+  let changeVersion = 0;
+  let activeColorKind = null;
+  const HIGHLIGHT_PRESETS = ['#ffea55', '#fff3a3', '#b7f7c7', '#b8ddff', '#ffd1dc', '#e3d7ff'];
+  const FOREGROUND_PRESETS = ['#1d1b18', '#ff6188', '#78dce8', '#a9dc76', '#ffd866', '#ab9df2'];
+
+  function setSaveState(state, label){
+    if (!saveState) return;
+    saveState.classList.remove('is-saving', 'is-dirty', 'is-saved', 'is-error');
+    if (state) saveState.classList.add(state);
+    saveState.textContent = label;
+  }
+
+  function markDirty(){
+    dirty = true;
+    changeVersion += 1;
+    setSaveState('is-dirty', 'Unsaved changes');
+  }
+
+  function normalizeTag(tag){
+    return (tag || '').trim().toLowerCase().replace(/[^a-z0-9-_ ]+/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  function askInput(opts){
+    return new Promise((resolve)=>{
+      const o = opts || {};
+      const prior = document.activeElement;
+      inputTitle.textContent = o.title || 'Input';
+      inputLabel.textContent = o.label || 'Value';
+      inputField.placeholder = o.placeholder || '';
+      inputField.value = o.value || '';
+      inputOk.textContent = o.okText || 'OK';
+      inputCancel.textContent = o.cancelText || 'Cancel';
+      inputModal.hidden = false;
+
+      const finish = (val)=>{
+        inputModal.hidden = true;
+        inputField.value = '';
+        inputField.placeholder = '';
+        inputModal.removeEventListener('click', onBackdrop);
+        inputField.removeEventListener('keydown', onKeyDown);
+        inputOk.removeEventListener('click', onOk);
+        inputCancel.removeEventListener('click', onCancel);
+        if (prior && prior.focus) prior.focus();
+        resolve(val);
+      };
+      const onOk = ()=> finish(inputField.value.trim());
+      const onCancel = ()=> finish(null);
+      const onBackdrop = (e)=> { if (e.target === inputModal) finish(null); };
+      const onKeyDown = (e)=>{
+        if (e.key === 'Enter') { e.preventDefault(); onOk(); }
+        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+      };
+
+      inputModal.addEventListener('click', onBackdrop);
+      inputField.addEventListener('keydown', onKeyDown);
+      inputOk.addEventListener('click', onOk);
+      inputCancel.addEventListener('click', onCancel);
+      setTimeout(()=> inputField.focus(), 0);
+    });
+  }
+
+  function renderInlineTags(){
+    tagsInline.innerHTML = '';
+    if (!draftTags.length) {
+      const pill = document.createElement('span');
+      pill.className = 'draft-tag-pill untagged';
+      pill.textContent = 'untagged';
+      tagsInline.appendChild(pill);
+      return;
+    }
+    draftTags.forEach((tag) => {
+      const pill = document.createElement('span');
+      pill.className = 'draft-tag-pill';
+      pill.textContent = tag;
+      tagsInline.appendChild(pill);
+    });
+  }
+
+  function openTagPopover(){
+    const rect = addTagBtn.getBoundingClientRect();
+    tagPop.style.left = Math.max(8, Math.min(window.innerWidth - tagPop.offsetWidth - 8, rect.left)) + 'px';
+    tagPop.style.top = Math.min(window.innerHeight - 12, rect.bottom + 8) + 'px';
+    tagPop.classList.add('open');
+    renderTagChoices();
+  }
+
+  function closeTagPopover(){
+    tagPop.classList.remove('open');
+    tagNewInput.classList.remove('open');
+    tagNewInput.value = '';
+  }
+
+  function renderTagChoices(){
+    const sorted = [...new Set(availableTags.map(normalizeTag).filter(Boolean))].sort();
+    tagGrid.innerHTML = '';
+    if (!sorted.length) {
+      const empty = document.createElement('span');
+      empty.style.cssText = 'font:500 12px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#8a8478;';
+      empty.textContent = 'No tags yet';
+      tagGrid.appendChild(empty);
+      return;
+    }
+    sorted.forEach((tag) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'draft-tag-choice' + (draftTags.includes(tag) ? ' active' : '');
+      b.textContent = tag;
+      b.addEventListener('click', () => {
+        if (draftTags.includes(tag)) {
+          draftTags = draftTags.filter(t => t !== tag);
+        } else {
+          draftTags.push(tag);
+        }
+        draftTags = draftTags.filter(t => t !== 'untagged');
+        renderInlineTags();
+        renderTagChoices();
+        markDirty();
+      });
+      tagGrid.appendChild(b);
+    });
+  }
+  function inBodySelection(range){
+    if (!range) return false;
+    return body.contains(range.commonAncestorContainer);
+  }
+
+  function caretRectForRange(range){
+    if (!range) return null;
+    const clone = range.cloneRange();
+    let rect = clone.getBoundingClientRect();
+    if (rect && (rect.width || rect.height)) return rect;
+
+    const marker = document.createElement('span');
+    marker.textContent = '\u200b';
+    marker.style.display = 'inline-block';
+    marker.style.width = '1px';
+    marker.style.height = '1em';
+    clone.insertNode(marker);
+    rect = marker.getBoundingClientRect();
+    clone.setStartAfter(marker);
+    clone.collapse(true);
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(clone);
+    }
+    marker.remove();
+    return rect;
+  }
+
+  function nearestBlock(node){
+    let cur = node && (node.nodeType === Node.TEXT_NODE ? node.parentElement : node);
+    while (cur && cur !== body) {
+      if (cur.matches && cur.matches('p,div,h1,h2,h3,blockquote,pre,figure,li')) return cur;
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function placeToolsForSelection(range){
+    const rect = range ? range.getBoundingClientRect() : null;
+    if (!rect || (!rect.width && !rect.height)) { tools.style.display='none'; return; }
+    tools.style.display='inline-flex';
+    tools.style.left = Math.max(8, rect.left + rect.width/2 - tools.offsetWidth/2) + 'px';
+    tools.style.top = Math.max(8, rect.top - tools.offsetHeight - 10) + 'px';
+  }
+
+  function placePlusAtCaret(range){
+    const caretRect = caretRectForRange(range);
+    if (!caretRect) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const block = nearestBlock(range.startContainer);
+    const blockRect = block ? block.getBoundingClientRect() : caretRect;
+    const rail = document.querySelector('.story-rail');
+    const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;
+    let left = blockRect.left - toggleSize - 14;
+    if (rail) {
+      const railRect = rail.getBoundingClientRect();
+      left = Math.max(left, railRect.right + 10);
+    }
+    left = Math.max(8, Math.min(left, window.innerWidth - toggleSize - 8));
+    let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
+    if (plus.classList.contains('open')) {
+      const lh = parseFloat(getComputedStyle(block || body).lineHeight || '0') || 34;
+      top = Math.max(8, caretRect.top - lh - 6);
+    }
+    plus.style.display='inline-flex';
+    plus.style.left = Math.round(left) + 'px';
+    plus.style.top = Math.round(top) + 'px';
+  }
+
+  function syncPlusIcon(){
+    if (!plusIcon) return;
+    if (plus.classList.contains('open')) {
+      plusIcon.setAttribute('d', 'M16 5 9 12l7 7');
+      plusToggle.setAttribute('aria-label', 'Collapse add menu');
+      plusToggle.setAttribute('title', 'Collapse add menu');
+    } else {
+      plusIcon.setAttribute('d', 'M20 12h-7V5h-1v7H5v1h7v7h1v-7h7');
+      plusToggle.setAttribute('aria-label', 'Add an image, video, embed, or new part');
+      plusToggle.setAttribute('title', 'Add an image, video, embed, or new part');
+    }
+  }
+
+  function updateFloatingUi(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) {
+      tools.style.display='none';
+      plus.style.display='none';
+      plus.classList.remove('open');
+      syncPlusIcon();
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (!inBodySelection(range)) {
+      tools.style.display='none';
+      plus.style.display='none';
+      plus.classList.remove('open');
+      syncPlusIcon();
+      return;
+    }
+    if (sel.isCollapsed) {
+      tools.style.display='none';
+      placePlusAtCaret(range);
+      return;
+    }
+    plus.style.display='none';
+    plus.classList.remove('open');
+    syncPlusIcon();
+    placeToolsForSelection(range);
+  }
+
+  function htmlToOrgNode(node){
+    if (!node) return '';
+    if (node.nodeType === Node.TEXT_NODE) return (node.textContent || '').replace(/\u200b/g, '');
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    const tag = node.tagName.toLowerCase();
+    const childrenToOrg = () => {
+      let out = '';
+      node.childNodes.forEach(ch => { out += htmlToOrgNode(ch); });
+      return out;
+    };
+    if (tag === 'br') return '\n';
+    if (tag === 'h2') return '\n** ' + node.textContent.trim() + '\n';
+    if (tag === 'h3') return '\n*** ' + node.textContent.trim() + '\n';
+    if (tag === 'blockquote') return '\n#+BEGIN_QUOTE\n' + node.textContent.trim() + '\n#+END_QUOTE\n';
+    if (tag === 'pre') {
+      const lang = (node.dataset.lang || '').trim() || 'text';
+      const code = (node.textContent || '').replace(/\u200b/g, '').replace(/\n+$/, '');
+      return '\n#+BEGIN_SRC ' + lang + '\n' + code + '\n#+END_SRC\n';
+    }
+    if (tag === 'img') {
+      const src = (node.getAttribute('src') || '').trim();
+      if (!src) return '';
+      const alt = (node.getAttribute('alt') || '').trim();
+      const fig = '<figure class="image-block" style="width:760px;max-width:100%;"><img src="' + src + '" alt="' + alt + '"><figcaption>' + alt + '</figcaption></figure>';
+      return '\n#+BEGIN_EXPORT html\n' + fig + '\n#+END_EXPORT\n';
+    }
+    if (tag === 'figure' && node.classList.contains('image-block')) {
+      return '\n#+BEGIN_EXPORT html\n' + node.outerHTML + '\n#+END_EXPORT\n';
+    }
+    if (tag === 'figure' && (node.classList.contains('video-embed') || node.classList.contains('embed-card'))) {
+      return '\n#+BEGIN_EXPORT html\n' + node.outerHTML + '\n#+END_EXPORT\n';
+    }
+    if (tag === 'a') {
+      const href = (node.getAttribute('href') || '').trim();
+      const label = node.textContent.trim();
+      if (href && /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(href)) {
+        const fig = '<figure class="image-block" style="width:760px;max-width:100%;"><img src="' + href + '" alt="' + label + '"><figcaption>' + label + '</figcaption></figure>';
+        return '\n#+BEGIN_EXPORT html\n' + fig + '\n#+END_EXPORT\n';
+      }
+      if (href && label) return '[[' + href + '][' + label + ']]';
+      return label;
+    }
+    if (tag === 'div' || tag === 'p') {
+      const inner = childrenToOrg().trim();
+      return inner ? ('\n' + inner + '\n') : '\n';
+    }
+    return childrenToOrg();
+  }
+
+  function htmlToOrg(){
+    canonicalizeLegacyImageNodes();
+    let bodyOrg = '';
+    body.childNodes.forEach(n => { bodyOrg += htmlToOrgNode(n); });
+    bodyOrg = bodyOrg.replace(/\n{3,}/g, '\n\n').trim();
+    const t = (title.innerText || '').trim() || 'Untitled Draft';
+    return { title: t, body: bodyOrg };
+  }
+
+  function escapeHtml(s){
+    return (s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function codeKeywordsFor(lang){
+    const l = (lang || 'text').toLowerCase();
+    if (l === 'ruby' || l === 'rb') return ['def','class','module','if','elsif','else','end','do','while','until','for','in','begin','rescue','ensure','return','yield','self','case','when','then','unless','require'];
+    if (l === 'python' || l === 'py') return ['def','class','if','elif','else','for','while','in','return','import','from','as','try','except','finally','with','lambda','yield','pass','break','continue','True','False','None'];
+    if (l === 'javascript' || l === 'js' || l === 'typescript' || l === 'ts') return ['function','const','let','var','if','else','for','while','return','class','new','try','catch','finally','import','from','export','async','await'];
+    if (l === 'go' || l === 'golang') return ['package','import','func','var','const','type','struct','interface','if','else','for','range','return','switch','case','default','go','defer','select','map'];
+    if (l === 'sh' || l === 'bash' || l === 'zsh' || l === 'shell') return ['if','then','else','elif','fi','for','in','do','done','case','esac','while','until','function'];
+    return [];
+  }
+
+  function highlightCodeText(lang, raw){
+    const stash = [];
+    const take = (pattern, klass, text) => text.replace(pattern, (m) => {
+      const key = '@@TOK' + stash.length + '@@';
+      stash.push('<span class="' + klass + '">' + m + '</span>');
+      return key;
+    });
+    const putBack = (text) => text.replace(/@@TOK(\d+)@@/g, (_, i) => stash[Number(i)] || '');
+
+    let out = escapeHtml(raw || '');
+    out = take(/(#.*$|\/\/.*$)/gm, 'tok-com', out);
+    out = take(/'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`/g, 'tok-str', out);
+    out = out.replace(/\b\d+(?:\.\d+)?\b/g, '<span class="tok-num">$&</span>');
+
+    const kws = codeKeywordsFor(lang);
+    if (kws.length) {
+      const re = new RegExp('\\b(?:' + kws.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'g');
+      out = out.replace(re, '<span class="tok-kw">$&</span>');
+    }
+    out = out.replace(/\b[a-zA-Z_][a-zA-Z0-9_]*\s*(?=\()/g, '<span class="tok-id">$&</span>');
+    return putBack(out);
+  }
+
+  function toCodePlainMode(pre){
+    if (!pre) return;
+    const raw = pre.dataset.raw !== undefined ? pre.dataset.raw : (pre.textContent || '');
+    pre.dataset.raw = raw.replace(/\u200b/g, '');
+    pre.textContent = pre.dataset.raw;
+    pre.dataset.codeMode = 'plain';
+  }
+
+  function toCodeHighlightMode(pre){
+    if (!pre) return;
+    if (document.activeElement === pre || pre.contains(document.activeElement)) return;
+    const raw = pre.dataset.raw !== undefined ? pre.dataset.raw : (pre.textContent || '');
+    pre.dataset.raw = raw.replace(/\u200b/g, '');
+    pre.innerHTML = highlightCodeText(pre.dataset.lang || pre.getAttribute('data-lang') || 'text', pre.dataset.raw);
+    pre.dataset.codeMode = 'highlight';
+  }
+
+  function canonicalizeLegacyImageNodes(){
+    const isImageUrl = (v) => /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test((v || '').trim());
+    const cleanSrc = (src) => (src || '').replace(/^file:\/\//i, '');
+    const toFigure = (src, caption) => {
+      const fig = document.createElement('figure');
+      fig.className = 'image-block';
+      fig.setAttribute('style', 'width:760px;max-width:100%;');
+      const img = document.createElement('img');
+      img.setAttribute('src', src);
+      img.setAttribute('alt', caption || '');
+      const fc = document.createElement('figcaption');
+      fc.textContent = caption || '';
+      fig.appendChild(img);
+      fig.appendChild(fc);
+      return fig;
+    };
+
+    Array.from(body.children).forEach((el)=>{
+      if (!el || !el.tagName) return;
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'figure') return;
+
+      if (tag === 'img') {
+        const src = cleanSrc((el.getAttribute('src') || '').trim());
+        if (!src) return;
+        el.replaceWith(toFigure(src, (el.getAttribute('alt') || '').trim()));
+        return;
+      }
+
+      if (tag === 'a') {
+        const href = cleanSrc((el.getAttribute('href') || '').trim());
+        if (!isImageUrl(href)) return;
+        el.replaceWith(toFigure(href, (el.textContent || '').trim()));
+        return;
+      }
+
+      if (tag === 'div' && el.classList.contains('org-src-container')) {
+        const srcPre = el.querySelector('pre.src');
+        if (!srcPre) return;
+        const klass = srcPre.className || '';
+        const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
+        const lang = m ? m[1].toLowerCase() : 'text';
+        const pre = document.createElement('pre');
+        pre.className = 'code-block src src-' + lang;
+        pre.setAttribute('data-lang', lang);
+        pre.setAttribute('spellcheck', 'false');
+        pre.dataset.raw = (srcPre.textContent || '').replace(/\u200b/g, '');
+        pre.textContent = pre.dataset.raw;
+        el.replaceWith(pre);
+        toCodeHighlightMode(pre);
+        return;
+      }
+
+      if (tag === 'pre' && el.classList.contains('src') && !el.classList.contains('code-block')) {
+        const klass = el.className || '';
+        const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
+        const lang = m ? m[1].toLowerCase() : 'text';
+        el.className = 'code-block src src-' + lang;
+        el.setAttribute('data-lang', lang);
+        el.setAttribute('spellcheck', 'false');
+        el.dataset.raw = (el.textContent || '').replace(/\u200b/g, '');
+        toCodeHighlightMode(el);
+        return;
+      }
+
+      if (tag !== 'p') return;
+      const firstChild = el.firstElementChild;
+      const img = (firstChild && firstChild.tagName && firstChild.tagName.toLowerCase() === 'img') ? firstChild : null;
+      if (img) {
+        const src = cleanSrc((img.getAttribute('src') || '').trim());
+        if (!src) return;
+        const tail = Array.from(el.childNodes)
+          .filter(n => n.nodeType === Node.TEXT_NODE)
+          .map(n => (n.textContent || '').trim())
+          .join(' ')
+          .trim();
+        const caption = tail || (img.getAttribute('alt') || '').trim();
+        el.replaceWith(toFigure(src, caption));
+        return;
+      }
+      const a = (firstChild && firstChild.tagName && firstChild.tagName.toLowerCase() === 'a') ? firstChild : null;
+      if (a) {
+        const href = cleanSrc((a.getAttribute('href') || '').trim());
+        if (!isImageUrl(href)) return;
+        el.replaceWith(toFigure(href, (a.textContent || '').trim()));
+      }
+    });
+  }
+
+  function saveDraft(){
+    const seq = ++saveSeq;
+    const payload = htmlToOrg();
+    if (!dirty || isSaving) return;
+    const versionAtStart = changeVersion;
+    const saveMode = /^posts\//.test((targetPath || '').trim()) ? 'publish' : 'draft';
+    isSaving = true;
+    setSaveState('is-saving', 'Saving...');
+    fetch('/editor/api/save', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ title: payload.title, body: payload.body, mode: saveMode, targetPath, tags: draftTags })
+    }).then(r => r.json()).then((resp)=>{
+      if (seq !== saveSeq) return;
+      if (resp && resp.ok && resp.path) {
+        targetPath = resp.path;
+        body.dataset.targetPath = resp.path;
+        if (changeVersion === versionAtStart) {
+          dirty = false;
+          setSaveState('is-saved', 'Saved just now');
+        } else {
+          setSaveState('is-dirty', 'Unsaved changes');
+        }
+      } else {
+        setSaveState('is-error', 'Save failed');
+      }
+    }).catch(()=>{
+      if (seq !== saveSeq) return;
+      setSaveState('is-error', 'Save failed');
+    }).finally(()=>{
+      isSaving = false;
+    });
+  }
+
+  function insertHtmlAtCursor(html){
+    restoreSelection();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    const frag = document.createDocumentFragment();
+    let node; let last = null;
+    while ((node = wrap.firstChild)) { last = frag.appendChild(node); }
+    range.insertNode(frag);
+    if (last) {
+      range.setStartAfter(last); range.collapse(true);
+      sel.removeAllRanges(); sel.addRange(range);
+    }
+    normalizeMediaUrls();
+    markDirty();
+  }
+
+  function insertCodeBlockAtCursor(lang){
+    restoreSelection();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+
+    const codeLang = (lang || 'text').toLowerCase();
+    const pre = document.createElement('pre');
+    pre.className = 'code-block src src-' + codeLang;
+    pre.setAttribute('data-lang', codeLang);
+    pre.setAttribute('spellcheck', 'false');
+    const codeText = document.createTextNode('\n');
+    pre.appendChild(codeText);
+
+    const para = document.createElement('p');
+    para.innerHTML = '<br>';
+
+    range.insertNode(para);
+    range.insertNode(pre);
+
+    const caret = document.createRange();
+    caret.setStart(codeText, 0);
+    caret.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(caret);
+    cacheSelection();
+    if (typeof toCodePlainMode === 'function') toCodePlainMode(pre);
+    markDirty();
+    updateFloatingUi();
+  }
+
+  function isSelectionInsideEditor(range){
+    if (!range) return false;
+    const node = range.commonAncestorContainer;
+    return body.contains(node) || title.contains(node);
+  }
+
+  function cacheSelection(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    if (!isSelectionInsideEditor(range)) return;
+    savedRange = range.cloneRange();
+  }
+
+  function restoreSelection(){
+    if (!savedRange) return;
+    const sel = window.getSelection();
+    if (!sel) return;
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  }
+
+  function execWithSelection(fn){
+    restoreSelection();
+    fn();
+    cacheSelection();
+    markDirty();
+    updateFloatingUi();
+  }
+
+  async function populateFontLibrary(){
+    if (!fontFamily) return;
+    const compactLabel = (name) => {
+      if (!name) return '';
+      const trimmed = name.trim();
+      return trimmed.length > 24 ? (trimmed.slice(0, 23) + '…') : trimmed;
+    };
+    const base = [
+      { label: 'Serif', value: 'Charter, Georgia, serif' },
+      { label: 'Sans', value: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' },
+      { label: 'Mono', value: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' }
+    ];
+    fontFamily.innerHTML = '<option value="">Font</option>';
+    base.forEach((f)=>{
+      const opt = document.createElement('option');
+      opt.value = f.value;
+      opt.textContent = f.label;
+      fontFamily.appendChild(opt);
+    });
+    if (!('queryLocalFonts' in window)) return;
+    try {
+      const fonts = await window.queryLocalFonts();
+      const families = [...new Set((fonts || []).map(f => (f.family || '').trim()).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b));
+      if (!families.length) return;
+      const sep = document.createElement('option');
+      sep.value = '';
+      sep.textContent = '────────';
+      sep.disabled = true;
+      fontFamily.appendChild(sep);
+      families.forEach((family)=>{
+        const opt = document.createElement('option');
+        opt.value = '"' + family.replace(/"/g, '\\"') + '", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        opt.textContent = compactLabel(family);
+        opt.title = family;
+        fontFamily.appendChild(opt);
+      });
+    } catch (_) {
+      // Permission denied or unsupported context; keep defaults only.
+    }
+  }
+
+  function applyHighlight(color){
+    wrapSelectionWithStyle('background-color:' + color + ';');
+  }
+
+  function applyForeground(color){
+    wrapSelectionWithStyle('color:' + color + ';');
+  }
+
+  function setColorSwatch(kind, color){
+    const swatch = kind === 'highlight' ? hlSwatch : fgSwatch;
+    if (!swatch) return;
+    swatch.style.background = color;
+  }
+
+  function setColorValue(kind, color){
+    if (kind === 'highlight' && highlightCustom) highlightCustom.value = color;
+    if (kind === 'foreground' && foregroundCustom) foregroundCustom.value = color;
+    setColorSwatch(kind, color);
+  }
+
+  function applyColor(kind, color){
+    if (!color) return;
+    setColorValue(kind, color);
+    if (kind === 'highlight') applyHighlight(color);
+    else applyForeground(color);
+  }
+
+  function closeColorPopover(){
+    if (!colorPop) return;
+    colorPop.classList.remove('open');
+    activeColorKind = null;
+  }
+
+  function openColorPopover(kind, anchor){
+    if (!colorPop || !colorPopGrid || !anchor) return;
+    activeColorKind = kind;
+    colorPopTitle.textContent = kind === 'highlight' ? 'Highlight' : 'Text color';
+    const presets = kind === 'highlight' ? HIGHLIGHT_PRESETS : FOREGROUND_PRESETS;
+    colorPopGrid.innerHTML = '';
+    presets.forEach((color)=>{
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'draft-color-chip-btn';
+      chip.style.background = color;
+      chip.setAttribute('aria-label', color);
+      chip.setAttribute('title', color);
+      chip.addEventListener('click', ()=>{
+        applyColor(kind, color);
+        closeColorPopover();
+      });
+      colorPopGrid.appendChild(chip);
+    });
+    colorPop.classList.add('open');
+    const rect = anchor.getBoundingClientRect();
+    const width = colorPop.offsetWidth || 220;
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+    const top = Math.max(8, rect.bottom + 8);
+    colorPop.style.left = Math.round(left) + 'px';
+    colorPop.style.top = Math.round(top) + 'px';
+  }
+
+  function nearestPre(node){
+    let cur = node && (node.nodeType === Node.TEXT_NODE ? node.parentElement : node);
+    while (cur && cur !== body) {
+      if (cur.tagName && cur.tagName.toLowerCase() === 'pre') return cur;
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function wrapSelectionWithStyle(styleText){
+    restoreSelection();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    if (!isSelectionInsideEditor(range)) return;
+    const span = document.createElement('span');
+    span.setAttribute('style', styleText);
+    try {
+      range.surroundContents(span);
+      sel.removeAllRanges();
+      const r2 = document.createRange();
+      r2.selectNodeContents(span);
+      sel.addRange(r2);
+    } catch (_) {
+      const frag = range.extractContents();
+      span.appendChild(frag);
+      range.insertNode(span);
+      sel.removeAllRanges();
+      const r2 = document.createRange();
+      r2.selectNodeContents(span);
+      sel.addRange(r2);
+    }
+    cacheSelection();
+    markDirty();
+    updateFloatingUi();
+  }
+
+  tools.addEventListener('mousedown', (e)=>{
+    if (e.target.closest('button')) e.preventDefault();
+  });
+
+  tools.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const cmd = btn.dataset.cmd;
+    const action = btn.dataset.action;
+    if (cmd) { execWithSelection(() => document.execCommand(cmd, false, null)); return; }
+    if (action === 'link') {
+      const url = await askInput({ title:'Add Link', label:'URL', placeholder:'https://example.com' });
+      if (url) { execWithSelection(() => document.execCommand('createLink', false, url)); }
+    }
+    if (action === 'text-color') {
+      const color = (foregroundCustom && foregroundCustom.value) || '#1d1b18';
+      applyForeground(color);
+    }
+    if (action === 'open-hl') {
+      openColorPopover('highlight', hlControl || btn);
+      return;
+    }
+    if (action === 'open-fg') {
+      openColorPopover('foreground', fgControl || btn);
+      return;
+    }
+    if (action === 'code-lang') {
+      restoreSelection();
+      const sel = window.getSelection();
+      const range = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+      const pre = range ? nearestPre(range.commonAncestorContainer) : null;
+      if (!pre) return;
+      const current = (pre.dataset.lang || pre.getAttribute('data-lang') || 'text').trim();
+      const lang = (await askInput({ title:'Code Language', label:'Language', placeholder:'python, sh, js', value: current || 'text', okText:'Apply' }) || current).trim();
+      if (!lang) return;
+      pre.dataset.lang = lang;
+      pre.setAttribute('data-lang', lang);
+      pre.classList.add('code-block', 'src', 'src-' + lang);
+      markDirty();
+      toCodeHighlightMode(pre);
+    }
+    if (action === 'clear') { execWithSelection(() => document.execCommand('removeFormat', false, null)); }
+  });
+
+  if (fontFamily) {
+    fontFamily.addEventListener('change', ()=>{
+      const family = fontFamily.value;
+      if (!family) return;
+      wrapSelectionWithStyle('font-family:' + family + ';');
+      fontFamily.selectedIndex = 0;
+    });
+  }
+  if (hlControl) {
+    hlControl.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openColorPopover('highlight', hlControl);
+    });
+  }
+  if (fgControl) {
+    fgControl.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openColorPopover('foreground', fgControl);
+    });
+  }
+  if (highlightCustom) {
+    highlightCustom.addEventListener('input', ()=>{
+      const color = highlightCustom.value || '#ffea55';
+      applyColor('highlight', color);
+    });
+  }
+  if (foregroundCustom) {
+    foregroundCustom.addEventListener('input', ()=>{
+      const color = foregroundCustom.value || '#1d1b18';
+      applyColor('foreground', color);
+    });
+  }
+  if (colorPopMore) {
+    colorPopMore.addEventListener('click', ()=>{
+      if (activeColorKind === 'highlight' && highlightCustom) highlightCustom.click();
+      if (activeColorKind === 'foreground' && foregroundCustom) foregroundCustom.click();
+    });
+  }
+
+  plusToggle.addEventListener('click', ()=>{
+    plus.classList.toggle('open');
+    syncPlusIcon();
+    updateFloatingUi();
+  });
+
+  addTagBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if (tagPop.classList.contains('open')) closeTagPopover();
+    else openTagPopover();
+  });
+
+  tagNewBtn.addEventListener('click', ()=>{
+    tagNewInput.classList.add('open');
+    tagNewInput.focus();
+  });
+
+  tagSaveBtn.addEventListener('click', ()=>{
+    const tag = normalizeTag(tagNewInput.value);
+    if (!tag) return;
+    if (!availableTags.includes(tag)) availableTags.push(tag);
+    if (!draftTags.includes(tag)) draftTags.push(tag);
+    draftTags = draftTags.filter(t => t !== 'untagged');
+    tagNewInput.value = '';
+    tagNewInput.classList.remove('open');
+    renderInlineTags();
+    renderTagChoices();
+    markDirty();
+  });
+
+  tagNewInput.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      tagSaveBtn.click();
+    }
+  });
+
+  document.addEventListener('click', (e)=>{
+    if (!tagPop.classList.contains('open')) return;
+    if (tagPop.contains(e.target) || addTagBtn.contains(e.target)) return;
+    closeTagPopover();
+  });
+  document.addEventListener('click', (e)=>{
+    if (!colorPop.classList.contains('open')) return;
+    if (colorPop.contains(e.target) || (hlControl && hlControl.contains(e.target)) || (fgControl && fgControl.contains(e.target))) return;
+    closeColorPopover();
+  });
+
+  plusMenu.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'image') {
+      const url = await askInput({ title:'Insert Image', label:'Image URL', placeholder:'https://.../image.png', okText:'Insert' });
+      if (url) insertHtmlAtCursor('<figure class="image-block" style="width:760px;max-width:100%;"><img src="' + url + '" alt=""><figcaption></figcaption></figure><p><br></p>');
+      return;
+    }
+    if (action === 'upload') { upload.click(); return; }
+    if (action === 'video') {
+      const url = await askInput({ title:'Insert Video', label:'Video URL', placeholder:'https://youtube.com/... or embed URL', okText:'Insert' });
+      if (url) insertHtmlAtCursor('<figure class="video-embed"><iframe src="' + url + '" loading="lazy" allowfullscreen></iframe></figure><p><br></p>');
+      return;
+    }
+    if (action === 'embed') {
+      const url = await askInput({ title:'Embed Link', label:'URL', placeholder:'https://example.com', okText:'Embed' });
+      if (!url) return;
+      try {
+        const r = await fetch('/editor/api/fetch-meta', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({url}) });
+        const j = await r.json();
+        const t = j.title || url, d = j.description || '', s = j.site || '', img = j.image || '';
+        insertHtmlAtCursor('<figure class="embed-card"><a class="embed-card-link" href="'+url+'"><div class="embed-card-copy"><h4>'+t+'</h4><p>'+d+'</p><small>'+s+'</small></div>' + (img ? '<img src="'+img+'" alt="'+t+'">' : '') + '</a></figure><p><br></p>');
+      } catch (_) {}
+      return;
+    }
+    if (action === 'code') {
+      const lang = ((await askInput({ title:'Insert Code Block', label:'Language', placeholder:'python, sh, js', value:'text', okText:'Insert' })) || 'text').trim();
+      insertCodeBlockAtCursor(lang);
+      return;
+    }
+  });
+
+  upload.addEventListener('change', async ()=>{
+    const file = upload.files && upload.files[0];
+    if (!file) return;
+    try {
+      const reader = new FileReader();
+      const dataUrl = await new Promise((resolve, reject)=>{ reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+      const r = await fetch('/editor/api/upload', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ filename: file.name, dataUrl }) });
+      const j = await r.json();
+      if (j && j.ok && j.url) insertHtmlAtCursor('<figure class="image-block" style="width:760px;max-width:100%;"><img src="'+j.url+'" alt="'+file.name+'"><figcaption>'+file.name+'</figcaption></figure><p><br></p>');
+    } catch (_) {}
+    upload.value = '';
+  });
+
+  function normalizeMediaUrls(){
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const slug = pathParts.length ? pathParts[pathParts.length - 1] : '';
+    const sourceSlug = new URLSearchParams(location.search).get('srcslug') || '';
+    const dateText = (document.querySelector('.post-author-date')?.textContent || '').trim();
+    const datePart = (dateText.match(/\d{4}-\d{2}-\d{2}/) || [])[0] || '';
+    const datePath = datePart ? datePart.replace(/-/g, '/') : '';
+    body.querySelectorAll('img').forEach((img)=>{
+      const raw = (img.getAttribute('src') || '').trim();
+      if (!raw) return;
+      if (/^(https?:|data:|\/)/i.test(raw)) return;
+      if (/^file:\/\/\/assets\//i.test(raw)) {
+        img.setAttribute('src', raw.replace(/^file:\/\//i, ''));
+        return;
+      }
+      if (/^file:\/\/\/media\//i.test(raw)) {
+        img.setAttribute('src', raw.replace(/^file:\/\//i, ''));
+        return;
+      }
+      let clean = raw.replace(/^\.\//, '');
+      clean = clean.replace(/^file:\/\/\//i, '');
+      clean = clean.replace(/^.*\/assets\//i, '');
+      clean = clean.replace(/^.*\/media\/images\//i, '');
+      const cands = [];
+      if (datePath && slug) cands.push('/assets/blog/' + datePath + '/' + slug + '/' + clean);
+      if (datePath && sourceSlug && sourceSlug !== slug) cands.push('/assets/blog/' + datePath + '/' + sourceSlug + '/' + clean);
+      cands.push('/assets/' + clean);
+      cands.push('/media/images/' + clean);
+      img.setAttribute('src', cands[0]);
+      let idx = 0;
+      img.onerror = () => {
+        idx += 1;
+        if (idx < cands.length) img.setAttribute('src', cands[idx]);
+      };
+    });
+  }
+
+  document.addEventListener('selectionchange', ()=>{ cacheSelection(); setTimeout(updateFloatingUi, 0); });
+  body.addEventListener('keyup', updateFloatingUi);
+  body.addEventListener('mouseup', updateFloatingUi);
+  body.addEventListener('click', updateFloatingUi);
+  body.addEventListener('focus', updateFloatingUi);
+  body.addEventListener('input', markDirty);
+  body.addEventListener('input', (e)=>{
+    const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
+    if (!pre) return;
+    pre.dataset.raw = (pre.textContent || '').replace(/\u200b/g, '');
+  });
+  body.addEventListener('focusin', (e)=>{
+    const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
+    if (!pre) return;
+    toCodePlainMode(pre);
+  });
+  body.addEventListener('focusout', (e)=>{
+    const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
+    if (!pre) return;
+    setTimeout(()=>{
+      if (document.activeElement === pre || pre.contains(document.activeElement)) return;
+      toCodeHighlightMode(pre);
+    }, 0);
+  });
+  body.addEventListener('input', normalizeMediaUrls);
+  title.addEventListener('input', markDirty);
+  renderInlineTags();
+  populateFontLibrary();
+  if (highlightCustom) setColorSwatch('highlight', highlightCustom.value || '#ffea55');
+  if (foregroundCustom) setColorSwatch('foreground', foregroundCustom.value || '#1d1b18');
+  syncPlusIcon();
+  canonicalizeLegacyImageNodes();
+  body.querySelectorAll('pre.code-block').forEach(toCodeHighlightMode);
+  normalizeMediaUrls();
+  setSaveState('is-saved', 'Saved');
+  setInterval(()=>{ if (dirty) saveDraft(); }, 5000);
+})();
+</script>
+<script src="/media/js/main.js"></script>
+<script src="/media/js/theme-switcher.js"></script>
+<script src="/media/js/search.js"></script>
+</body>
+</html>

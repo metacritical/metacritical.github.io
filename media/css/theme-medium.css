@@ -2,6 +2,7 @@
 html[data-theme="medium"] body {
   background: #faf9f5;
   color: #1f1f1b;
+  color-scheme: light;
   font-family: "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -230,6 +231,21 @@ html[data-theme="medium"] #comments {
   padding: 0 24px;
 }
 
+html[data-theme="medium"] #disqus_thread {
+  background: #fff;
+  border: 1px solid #e6e1d5;
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 180px;
+  color: #1f1f1b;
+  color-scheme: light;
+}
+
+html[data-theme="medium"] #disqus_thread iframe {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
 html[data-theme="medium"] #comments h1 {
   font-size: 42px;
   letter-spacing: -0.02em;
@@ -238,6 +254,22 @@ html[data-theme="medium"] #comments h1 {
 
 html[data-theme="medium"] #footer .small {
   color: #7a756b;
+}
+
+html[data-theme="medium"] #footer .small a.footer-linkedin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+html[data-theme="medium"] #footer .small a.footer-linkedin svg {
+  display: block;
+  width: 14px;
+  height: 14px;
 }
 
 @media (max-width: 980px) {

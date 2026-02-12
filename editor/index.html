@@ -123,6 +123,50 @@
       font-size: 13px;
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+    .input-modal[hidden] { display: none; }
+    .input-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 11000;
+      background: rgba(16,15,14,0.45);
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+    .input-card {
+      width: min(540px, calc(100vw - 24px));
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 22px 54px rgba(0,0,0,0.28);
+      padding: 16px;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .input-title { margin: 0 0 10px; font-size: 16px; line-height: 1.25; color: #27231f; }
+    .input-label { display: block; margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6b655b; }
+    .input-field {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: #27231f;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .input-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
+    .input-actions .btn {
+      border: 1px solid #d8d0c3;
+      background: #fff;
+      color: #4f4a3f;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .input-actions .btn.primary { border-color: #36c9c7; color: #0f5f4f; }
 
     .bubble {
       position: fixed;
@@ -425,6 +469,17 @@
     <input id="textColor" type="color" value="#1c1b19" title="Text color">
     <button type="button" data-action="clear-color">Clr</button>
   </div>
+  <div class="input-modal" id="inputModal" hidden>
+    <div class="input-card" role="dialog" aria-modal="true" aria-labelledby="inputTitle">
+      <h3 id="inputTitle" class="input-title">Input</h3>
+      <label id="inputLabel" class="input-label" for="inputField">Value</label>
+      <input id="inputField" class="input-field" type="text" autocomplete="off">
+      <div class="input-actions">
+        <button id="inputCancel" class="btn" type="button">Cancel</button>
+        <button id="inputOk" class="btn primary" type="button">OK</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const titleEl = document.getElementById("title");
@@ -459,6 +514,12 @@
     const bubble = document.getElementById("bubble");
     const inlineColor = document.getElementById("inlineColor");
     const textColor = document.getElementById("textColor");
+    const inputModal = document.getElementById("inputModal");
+    const inputTitle = document.getElementById("inputTitle");
+    const inputLabel = document.getElementById("inputLabel");
+    const inputField = document.getElementById("inputField");
+    const inputOk = document.getElementById("inputOk");
+    const inputCancel = document.getElementById("inputCancel");
 
     const KEY = "selfdotsend-local-editor-v2";
     const params = new URLSearchParams(window.location.search);
@@ -571,6 +632,44 @@
       exec("foreColor", "#1c1b19");
     }
 
+    function askInput(opts = {}) {
+      return new Promise((resolve) => {
+        const prior = document.activeElement;
+        inputTitle.textContent = opts.title || "Input";
+        inputLabel.textContent = opts.label || "Value";
+        inputField.placeholder = opts.placeholder || "";
+        inputField.value = opts.value || "";
+        inputOk.textContent = opts.okText || "OK";
+        inputCancel.textContent = opts.cancelText || "Cancel";
+        inputModal.hidden = false;
+
+        const finish = (value) => {
+          inputModal.hidden = true;
+          inputField.value = "";
+          inputField.placeholder = "";
+          inputModal.removeEventListener("click", onBackdrop);
+          inputField.removeEventListener("keydown", onKeyDown);
+          inputOk.removeEventListener("click", onOk);
+          inputCancel.removeEventListener("click", onCancel);
+          if (prior && prior.focus) prior.focus();
+          resolve(value);
+        };
+        const onOk = () => finish(inputField.value.trim());
+        const onCancel = () => finish(null);
+        const onBackdrop = (e) => { if (e.target === inputModal) finish(null); };
+        const onKeyDown = (e) => {
+          if (e.key === "Enter") { e.preventDefault(); onOk(); }
+          if (e.key === "Escape") { e.preventDefault(); onCancel(); }
+        };
+
+        inputModal.addEventListener("click", onBackdrop);
+        inputField.addEventListener("keydown", onKeyDown);
+        inputOk.addEventListener("click", onOk);
+        inputCancel.addEventListener("click", onCancel);
+        setTimeout(() => inputField.focus(), 0);
+      });
+    }
+
     function insertHTMLAtCursor(html) {
       bodyEl.focus();
       document.execCommand("insertHTML", false, html);
@@ -603,9 +702,9 @@
     }
 
     async function promptImageUrl() {
-      const url = prompt("Image URL");
+      const url = await askInput({ title: "Insert Image", label: "Image URL", placeholder: "https://.../image.png", okText: "Insert" });
       if (!url) return;
-      const caption = prompt("Caption (optional)") || "";
+      const caption = (await askInput({ title: "Image Caption", label: "Caption (optional)", placeholder: "Caption", okText: "Apply" })) || "";
       insertImageFromUrl(url, caption);
     }
 
@@ -633,14 +732,14 @@
     }
 
     async function insertUnsplash() {
-      const q = prompt("Unsplash search query");
+      const q = await askInput({ title: "Unsplash Search", label: "Query", placeholder: "nature, coding, architecture...", okText: "Insert" });
       if (!q) return;
       const src = `https://source.unsplash.com/1600x900/?${encodeURIComponent(q)}&sig=${Date.now()}`;
       insertImageFromUrl(src, `Unsplash: ${q}`);
     }
 
     async function insertVideo() {
-      const raw = prompt("Video URL (YouTube/Vimeo/embed URL)");
+      const raw = await askInput({ title: "Insert Video", label: "Video URL", placeholder: "https://youtube.com/... or embed URL", okText: "Insert" });
       if (!raw) return;
       const embed = escHtml(toEmbedUrl(raw));
       const html = `<figure class=\"video-embed\" contenteditable=\"false\" data-src=\"${embed}\"><iframe src=\"${embed}\" loading=\"lazy\" allow=\"autoplay; encrypted-media; picture-in-picture\" allowfullscreen></iframe></figure><p><br></p>`;
@@ -648,7 +747,7 @@
     }
 
     async function insertLinkCard() {
-      const raw = prompt("URL to embed");
+      const raw = await askInput({ title: "Embed Link", label: "URL", placeholder: "https://example.com", okText: "Embed" });
       if (!raw) return;
       try {
         const res = await fetch("/editor/api/fetch-meta", {
@@ -1021,8 +1120,8 @@
     unsplashBtn.addEventListener("click", insertUnsplash);
     videoBtn.addEventListener("click", insertVideo);
     embedBtn.addEventListener("click", insertLinkCard);
-    codeBtn.addEventListener("click", () => {
-      const lang = (prompt("Code language (e.g. python, sh, js)", "text") || "text").trim() || "text";
+    codeBtn.addEventListener("click", async () => {
+      const lang = ((await askInput({ title: "Insert Code Block", label: "Language", placeholder: "python, sh, js", value: "text", okText: "Insert" })) || "text").trim() || "text";
       insertCodeBlock(lang, `# write ${lang} code here`);
     });
 
@@ -1053,14 +1152,15 @@
         return;
       }
       if (action === "link") {
-        const url = prompt("Enter URL");
-        if (url) exec("createLink", url);
+        askInput({ title: "Add Link", label: "URL", placeholder: "https://example.com", okText: "Insert" })
+          .then((url) => { if (url) exec("createLink", url); });
       }
       if (action === "h2") insertHeading();
       if (action === "quote") insertQuote();
       if (action === "code") {
-        const lang = (prompt("Code language", "text") || "text").trim() || "text";
-        insertCodeBlock(lang, `# write ${lang} code here`);
+        askInput({ title: "Code Language", label: "Language", placeholder: "python, sh, js", value: "text", okText: "Insert" })
+          .then((v) => ((v || "text").trim() || "text"))
+          .then((lang) => insertCodeBlock(lang, `# write ${lang} code here`));
       }
       if (action === "highlight") exec("hiliteColor", inlineColor.value);
       if (action === "clear-hl") clearInlineHighlight();

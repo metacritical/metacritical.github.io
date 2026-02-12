@@ -15,5 +15,6 @@ emacs in which this blog is written uses gap buffer. Gap buffer the a linear arr
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 
-
-[[file:/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png]]
+#+BEGIN_EXPORT html
+<figure class="image-block" style="width:760px;max-width:100%;"><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png"><figcaption>gapbuffer.png</figcaption></figure>
+#+END_EXPORT
