@@ -49,6 +49,55 @@ def org_draft_text(title: str, body: str, tags: list[str] | None = None) -> str:
     )
 
 
+def org_post_text_preserve_meta(
+    existing_file: Path, title: str, body: str, tags: list[str] | None = None
+) -> str:
+    existing_lines = existing_file.read_text(encoding="utf-8").splitlines()
+    clean_tags = [t.strip().lower() for t in (tags or []) if t and t.strip()]
+    clean_tags = [re.sub(r"[^a-z0-9_-]+", "-", t).strip("-") for t in clean_tags]
+    clean_tags = [t for t in clean_tags if t]
+    tags_line = f"#+FILETAGS: :{':'.join(clean_tags)}:" if clean_tags else None
+
+    header_end = 0
+    for idx, line in enumerate(existing_lines):
+        if line.startswith("#+"):
+            header_end = idx + 1
+            continue
+        if line.strip() == "":
+            header_end = idx + 1
+            continue
+        break
+
+    header = existing_lines[:header_end]
+    body_out = body.strip()
+
+    saw_title = False
+    saw_filetags = False
+    out_header: list[str] = []
+    for line in header:
+        if line.startswith("#+TITLE:"):
+            out_header.append(f"#+TITLE: {title}")
+            saw_title = True
+            continue
+        if line.startswith("#+FILETAGS:"):
+            if tags_line:
+                out_header.append(tags_line)
+                saw_filetags = True
+            continue
+        out_header.append(line)
+
+    if not saw_title:
+        out_header.insert(0, f"#+TITLE: {title}")
+    if tags_line and not saw_filetags:
+        insert_at = 1 if out_header and out_header[0].startswith("#+TITLE:") else 0
+        out_header.insert(insert_at, tags_line)
+
+    while out_header and out_header[-1].strip() == "":
+        out_header.pop()
+
+    return "\n".join(out_header) + "\n\n" + body_out + "\n"
+
+
 def safe_ext_from_mime(mime: str) -> str:
     ext = mimetypes.guess_extension(mime) or ".bin"
     if ext == ".jpe":
@@ -204,7 +253,11 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 stamp = dt.datetime.now().strftime("%H%M%S")
                 filename = target_dir / f"{slug}-{stamp}.org"
 
-        filename.write_text(org_draft_text(title, body, tags), encoding="utf-8")
+        if mode == "publish" and overwrite_existing and filename.exists():
+            text = org_post_text_preserve_meta(filename, title, body, tags)
+        else:
+            text = org_draft_text(title, body, tags)
+        filename.write_text(text, encoding="utf-8")
         self._git_add(filename)
         if mode == "publish" and remove_after_publish and remove_after_publish.exists():
             remove_after_publish.unlink()

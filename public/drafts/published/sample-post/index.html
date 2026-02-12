@@ -81,6 +81,8 @@
     .draft-tools { position: fixed; z-index: 9999; display:none; gap:6px; align-items:center; background:#1f1f1f; border-radius:12px; padding:8px; box-shadow: 0 12px 22px rgba(0,0,0,.2); }
     .draft-tools button { border:none; background:transparent; color:#fff; border-radius:8px; padding:8px 10px; font-weight:700; font-size:13px; min-width:34px; }
     .draft-tools button:hover { background: rgba(255,255,255,.14); }
+    .draft-tools .draft-link-btn { padding:8px 10px; min-width:34px; }
+    .draft-tools .draft-link-btn svg { display:block; }
     .draft-tools .sep { width:1px; height:22px; background:rgba(255,255,255,.18); margin:0 2px; }
     .draft-tools select { border:1px solid rgba(255,255,255,.25); background:#2b2b2b; color:#fff; border-radius:8px; padding:6px 8px; font-size:12px; font-weight:600; max-width:150px; min-width:96px; }
     .draft-tools input[type="color"] { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
@@ -343,9 +345,12 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
   <button id="draft-fg-control" class="draft-color-control" type="button" data-action="open-fg" title="Text color" aria-label="Text color">
     <span class="draft-color-label">FG</span><span id="draft-fg-swatch" class="draft-color-swatch" style="background:#1d1b18"></span>
   </button>
-  <button type="button" data-action="link">Link</button>
-  <button type="button" data-action="text-color">Text</button>
-  <button type="button" data-action="code-lang">Lang</button>
+  <button type="button" data-action="link" class="draft-link-btn" aria-label="Link" title="Link">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+      <path d="M10.6 13.4a1 1 0 0 0 1.4 1.4l4.2-4.2a3 3 0 1 0-4.2-4.2l-1.5 1.5a1 1 0 1 0 1.4 1.4l1.5-1.5a1 1 0 1 1 1.4 1.4L10.6 13.4z" fill="currentColor"></path>
+      <path d="M13.4 10.6a1 1 0 0 0-1.4-1.4l-4.2 4.2a3 3 0 0 0 4.2 4.2l1.5-1.5a1 1 0 0 0-1.4-1.4l-1.5 1.5a1 1 0 1 1-1.4-1.4l4.2-4.2z" fill="currentColor"></path>
+    </svg>
+  </button>
   <button type="button" data-action="clear">Clr</button>
   <input id="draft-highlight-custom" type="color" value="#ffea55" aria-hidden="true" tabindex="-1">
   <input id="draft-foreground-custom" type="color" value="#1d1b18" aria-hidden="true" tabindex="-1">
@@ -375,6 +380,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     </button>
   </div>
   <input id="draft-upload" type="file" accept="image/*" hidden>
+  <input id="draft-file-upload" type="file" hidden>
 </div>
 <div class="draft-tag-pop" id="draft-tag-pop">
   <div class="draft-tag-grid" id="draft-tag-grid"></div>
@@ -430,6 +436,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
   const highlightCustom = document.getElementById('draft-highlight-custom');
   const foregroundCustom = document.getElementById('draft-foreground-custom');
   const upload = document.getElementById('draft-upload');
+  const fileUpload = document.getElementById('draft-file-upload');
   const saveState = document.getElementById('draft-save-state');
   const availableTags = ["git","status","terminal","unix","ps1","editor","emacs","vim","scheme","arm","assembly","64","lolcat","assembler","alchemist","org-mode","blog","editor-data-structures","gap-buffer","data","structures","gap","buffer","machine-learning"];
   let targetPath = body.dataset.targetPath || '';
@@ -618,7 +625,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
       left = Math.max(left, railRect.right + 10);
     }
     left = Math.max(8, Math.min(left, window.innerWidth - toggleSize - 8));
-    let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
+    let top = Math.max(8, caretRect.top + Math.max(0, (caretRect.height - toggleSize) / 2));
     if (plus.classList.contains('open')) {
       const lh = parseFloat(getComputedStyle(block || body).lineHeight || '0') || 34;
       top = Math.max(8, caretRect.top - lh - 6);
@@ -1143,10 +1150,6 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
       const url = await askInput({ title:'Add Link', label:'URL', placeholder:'https://example.com' });
       if (url) { execWithSelection(() => document.execCommand('createLink', false, url)); }
     }
-    if (action === 'text-color') {
-      const color = (foregroundCustom && foregroundCustom.value) || '#1d1b18';
-      applyForeground(color);
-    }
     if (action === 'open-hl') {
       openColorPopover('highlight', hlControl || btn);
       return;
@@ -1154,21 +1157,6 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     if (action === 'open-fg') {
       openColorPopover('foreground', fgControl || btn);
       return;
-    }
-    if (action === 'code-lang') {
-      restoreSelection();
-      const sel = window.getSelection();
-      const range = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
-      const pre = range ? nearestPre(range.commonAncestorContainer) : null;
-      if (!pre) return;
-      const current = (pre.dataset.lang || pre.getAttribute('data-lang') || 'text').trim();
-      const lang = (await askInput({ title:'Code Language', label:'Language', placeholder:'python, sh, js', value: current || 'text', okText:'Apply' }) || current).trim();
-      if (!lang) return;
-      pre.dataset.lang = lang;
-      pre.setAttribute('data-lang', lang);
-      pre.classList.add('code-block', 'src', 'src-' + lang);
-      markDirty();
-      toCodeHighlightMode(pre);
     }
     if (action === 'clear') { execWithSelection(() => document.execCommand('removeFormat', false, null)); }
   });
@@ -1267,11 +1255,10 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     if (!btn) return;
     const action = btn.dataset.action;
     if (action === 'image') {
-      const url = await askInput({ title:'Insert Image', label:'Image URL', placeholder:'https://.../image.png', okText:'Insert' });
-      if (url) insertHtmlAtCursor('<figure class="image-block" style="width:760px;max-width:100%;"><img src="' + url + '" alt=""><figcaption></figcaption></figure><p><br></p>');
+      upload.click();
       return;
     }
-    if (action === 'upload') { upload.click(); return; }
+    if (action === 'upload') { fileUpload.click(); return; }
     if (action === 'video') {
       const url = await askInput({ title:'Insert Video', label:'Video URL', placeholder:'https://youtube.com/... or embed URL', okText:'Insert' });
       if (url) insertHtmlAtCursor('<figure class="video-embed"><iframe src="' + url + '" loading="lazy" allowfullscreen></iframe></figure><p><br></p>');
@@ -1307,6 +1294,24 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     } catch (_) {}
     upload.value = '';
   });
+
+  if (fileUpload) {
+    fileUpload.addEventListener('change', async ()=>{
+      const file = fileUpload.files && fileUpload.files[0];
+      if (!file) return;
+      try {
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject)=>{ reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+        const r = await fetch('/editor/api/upload', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ filename: file.name, dataUrl }) });
+        const j = await r.json();
+        if (j && j.ok && j.url) {
+          const safeName = (file.name || 'download').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          insertHtmlAtCursor('<p><a href="' + j.url + '" download>' + safeName + '</a></p><p><br></p>');
+        }
+      } catch (_) {}
+      fileUpload.value = '';
+    });
+  }
 
   function normalizeMediaUrls(){
     const pathParts = location.pathname.split('/').filter(Boolean);
