@@ -4,6 +4,8 @@
 #+DESCRIPTION: Draft post
 #+FILETAGS: :test:
 
+#+ATTR_HTML: :data-bg dark
+#+ATTR_HTML: :data-syntax-theme one-dark
 #+BEGIN_SRC ruby
 def hello
   puts "Hello World!"

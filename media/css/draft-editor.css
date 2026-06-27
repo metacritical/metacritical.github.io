@@ -8,6 +8,12 @@
   --de-green: #148d2b;
 }
 
+/* Neutralize global code border/background on editor code blocks */
+.de-body pre.code-block code {
+  border: none !important;
+  background: none !important;
+}
+
 .de-sheet {
   background: var(--de-paper);
   border: 1px solid var(--de-line);
