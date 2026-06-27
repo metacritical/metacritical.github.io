@@ -346,7 +346,7 @@
       padding: 6px 8px !important;
       font: 600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; flex-direction: row-reverse; }
+    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; }
     .draft-plus-toggle { width:25px; height:25px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(0,0,0,.08); }
     .draft-plus-toggle:hover { background:#f5fffe; }
     .draft-plus-toggle svg { width:14px; height:14px; fill: currentColor; transition: transform .15s ease; }
@@ -592,7 +592,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="org6c997c2" class="figure">
+<div id="org589690c" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -602,7 +602,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org23e0749" class="figure">
+<div id="org87394d0" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -648,7 +648,6 @@ Thats it folks! Happy hacking.
   <button id="draft-color-pop-more" class="draft-color-pop-more" type="button">More</button>
 </div>
 <div class="draft-plus" id="draft-plus">
-  <button class="draft-plus-toggle" id="draft-plus-toggle" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part"><svg viewBox="0 0 25 25" aria-hidden="true"><path id="draft-plus-icon" d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg></button>
   <div class="draft-plus-menu" id="draft-plus-menu">
     <button type="button" data-action="text" title="Text" aria-label="Text">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
@@ -687,6 +686,7 @@ Thats it folks! Happy hacking.
       <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='17' text-anchor='middle' font-size='14' fill='currentColor' font-weight='600'>∑</text></svg>
     </button>
   </div>
+  <button class="draft-plus-toggle" id="draft-plus-toggle" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part"><svg viewBox="0 0 25 25" aria-hidden="true"><path id="draft-plus-icon" d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg></button>
   <input id="draft-upload" type="file" accept="image/*" hidden>
   <input id="draft-file-upload" type="file" hidden>
 </div>
@@ -1068,13 +1068,13 @@ Thats it folks! Happy hacking.
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;
     const gapFromBody = 12;
-    let left = bodyRect.right + gapFromBody;
-    left = Math.min(left, window.innerWidth - toggleSize - gapFromBody);
+    let right = window.innerWidth - bodyRect.right + gapFromBody;
+    right = Math.min(right, window.innerWidth - toggleSize - gapFromBody);
     let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
     plus.style.display='inline-flex';
     _markPlusReady();
-    plus.style.left = Math.round(left) + 'px';
-    plus.style.right = 'auto';
+    plus.style.right = Math.round(right) + 'px';
+    plus.style.left = 'auto';
     plus.style.top = Math.round(top) + 'px';
   }
 
