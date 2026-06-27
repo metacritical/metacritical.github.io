@@ -156,7 +156,9 @@
           (description "")
           (uri "")
           (tags '())
-          (body-lines '()))
+          (body-lines '())
+          (code-bg "light")
+          (code-syntax-theme "default"))
       (goto-char (point-min))
       (while (not (eobp))
         (let ((line (buffer-substring-no-properties
@@ -177,6 +179,10 @@
             (setq tags (append tags (sds/parse-tag-list (substring line (length "#+TAGS:"))))))
            ((string-match-p "\\`#\\+KEYWORDS:" line)
             (setq tags (append tags (sds/parse-tag-list (substring line (length "#+KEYWORDS:"))))))
+           ((string-match-p "\\`#\\+ATTR_HTML: :data-bg " line)
+            (setq code-bg (string-trim (substring line (length "#+ATTR_HTML: :data-bg ")))))
+           ((string-match-p "\\`#\\+ATTR_HTML: :data-syntax-theme " line)
+            (setq code-syntax-theme (string-trim (substring line (length "#+ATTR_HTML: :data-syntax-theme ")))))
            ((string-match-p "\\`#\\+" line)
             nil)
            (t
@@ -194,7 +200,9 @@
               :tags clean-tags
               :body body
               :html-body html-body
-              :image image)))))
+              :image image
+              :code-bg code-bg
+              :code-syntax-theme code-syntax-theme)))))
 
 (defcustom sds/code-block-attrs-re
   (rx "#+ATTR_HTML: :" (or "data-bg" "data-syntax-theme")
@@ -221,11 +229,12 @@
          (tags (or (plist-get item :tags) '()))
          (tags-csv (sds/html-escape (string-join tags ",")))
          (known-tags-json (json-encode (vconcat (delete-dups (append known-tags tags)))))
-         (code-attrs (sds/collect-code-block-attrs (plist-get item :body)))
+         (code-bg (or (plist-get item :code-bg) "light"))
+         (code-syntax-theme (or (plist-get item :code-syntax-theme) "default"))
          (code-meta-json (sds/html-escape (json-encode
                            (let ((obj (make-hash-table :test 'equal)))
-                             (dolist (pair code-attrs obj)
-                               (puthash (substring (symbol-name (car pair)) 1) (cdr pair) obj))
+                             (puthash "data-bg" code-bg obj)
+                             (puthash "data-syntax-theme" code-syntax-theme obj)
                              obj))))
          (mins (number-to-string (or (plist-get item :read-mins) 1))))
     (format "<!doctype html>
@@ -3221,16 +3230,18 @@
                (image (plist-get parsed :image))
                (html-body (plist-get parsed :html-body))
                (read-mins (sds/estimate-read-mins body))
-               (item (list :slug slug
-                           :title title
-                           :date date
-                           :tags tags
-                           :body body
-                           :html-body html-body
-                           :draft-path (concat "drafts/" (file-name-nondirectory draft))
-                           :excerpt excerpt
-                           :read-mins read-mins
-                           :image image))
+                (item (list :slug slug
+                            :title title
+                            :date date
+                            :tags tags
+                            :body body
+                            :html-body html-body
+                            :draft-path (concat "drafts/" (file-name-nondirectory draft))
+                            :excerpt excerpt
+                            :read-mins read-mins
+                            :image image
+                            :code-bg (plist-get parsed :code-bg)
+                            :code-syntax-theme (plist-get parsed :code-syntax-theme)))
                (out-dir (expand-file-name slug public-drafts-dir))
                (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)
@@ -3277,7 +3288,9 @@
                             :draft-path (concat "posts/" (file-name-nondirectory post))
                             :excerpt excerpt
                             :read-mins read-mins
-                            :image image))
+                            :image image
+                            :code-bg (plist-get parsed :code-bg)
+                            :code-syntax-theme (plist-get parsed :code-syntax-theme)))
                 (out-dir (expand-file-name slug public-published-edit-dir))
                 (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)
