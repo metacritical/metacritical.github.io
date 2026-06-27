@@ -37,4 +37,4 @@
 - [x] 6.2 `emacs --batch -f batch-byte-compile scripts/generate_draft_preview.el`
 - [x] 6.3 `LOCAL_DEV=1 ./publish.sh`
 - [x] 6.4 Extract inline script and `node --check`
-- [ ] 6.5 Commit changes
+- [x] 6.5 Commit changes
