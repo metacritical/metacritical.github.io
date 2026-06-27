@@ -213,6 +213,16 @@
   <link rel=\"icon\" href=\"/media/images/logo.png\" type=\"image/png\">
   <link rel=\"stylesheet\" href=\"/media/css/style.css\" type=\"text/css\">
   <link rel=\"stylesheet\" href=\"/media/css/theme-medium.css\" type=\"text/css\">
+  <link rel=\"stylesheet\" href=\"/media/vendor/prism/prism.min.css\" type=\"text/css\">
+  <link rel=\"stylesheet\" href=\"/media/vendor/prism/prism-dark.min.css\" type=\"text/css\">
+  <link rel=\"stylesheet\" href=\"/media/vendor/prism/prism-monokai.min.css\" type=\"text/css\">
+  <script src=\"/media/vendor/prism/prism.min.js\" data-manual></script>
+  <script src=\"/media/vendor/prism/prism-autoloader.min.js\"></script>
+  <script>
+    if (window.Prism \u0026\u0026 Prism.plugins \u0026\u0026 Prism.plugins.autoloader) {
+      Prism.plugins.autoloader.languages_path = '/media/vendor/prism/';
+    }
+  </script>
   <style>
     body { background:#faf9f5; }
     #wrapper.post-page { max-width: 900px; }
@@ -371,7 +381,7 @@
     .draft-editable pre.code-block {
       position: relative;
       margin: 12px 0 20px;
-      padding: 18px 20px;
+      padding: 34px 20px 18px;
       border: 1px solid #d9d1c3;
       border-radius: 14px;
       background: #2d2a2e;
@@ -384,22 +394,131 @@
       outline: none;
       spellcheck: false;
     }
+    .draft-editable pre.code-block.theme-light,
+    .draft-editable pre.code-block.theme-light code { background:#f5f2f0; color:#000; text-shadow:0 1px #fff; }
+    .draft-editable pre.code-block.theme-monokai,
+    .draft-editable pre.code-block.theme-monokai code { background:#272822; color:#f8f8f2; text-shadow:0 1px rgba(0,0,0,0.3); }
+    .draft-code-block-actions {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 5;
+    }
+    .draft-editable pre.code-block:hover .draft-code-block-actions,
+    .draft-editable pre.code-block[data-mode=\"preview\"] .draft-code-block-actions,
+    .draft-code-block-actions:focus-within { opacity: 1; }
+    .draft-code-block-actions select,
+    .draft-code-block-actions button {
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid #4a455a;
+      background: #2a2738;
+      color: #c9c3db;
+      padding: 0 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;
+    }
+    .draft-code-block-actions select { min-width: 90px; appearance: auto; }
+    .draft-code-block-actions .draft-code-mode-toggle { margin-left: auto; min-width: 56px; }
+    .draft-editable pre.code-block.theme-light .draft-code-block-actions select,
+    .draft-editable pre.code-block.theme-light .draft-code-block-actions button {
+      border-color: #d9d2c5;
+      background: #fff;
+      color: #5c5750;
+    }
+    .draft-editable pre.code-block.theme-monokai .draft-code-block-actions select,
+    .draft-editable pre.code-block.theme-monokai .draft-code-block-actions button {
+      border-color: #4a455a;
+      background: #2a2738;
+      color: #c9c3db;
+    }
     .image-resize-handle { position:absolute; right:2px; bottom:2px; width:14px; height:14px; cursor:nwse-resize; background:linear-gradient(135deg, transparent 50%%, rgba(54,201,199,.85) 50%%); border-radius:0 0 5px 0; pointer-events:auto; }
-    .draft-editable pre.code-block .tok-com { color:#727072; }
-    .draft-editable pre.code-block .tok-str { color:#ffd866; }
-    .draft-editable pre.code-block .tok-kw  { color:#ff6188; font-weight:600; }
-    .draft-editable pre.code-block .tok-id  { color:#78dce8; }
-    .draft-editable pre.code-block .tok-num { color:#ab9df2; }
-    .draft-editable pre.code-block .tok-op  { color:#fcfcfa; }
-    .draft-editable pre.code-block[data-theme=\"light\"] { background:#f7f6f2; color:#1d1b18; border-color:#d9d1c3; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-com { color:#737373; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-str { color:#b58900; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-kw  { color:#d33682; font-weight:600; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-id  { color:#268bd2; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-num { color:#6c71c4; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .tok-op  { color:#1d1b18; }
-    .draft-code-theme-btn { position:absolute; top:6px; right:6px; border:none; background:rgba(255,255,255,.15); color:#fff; border-radius:6px; padding:4px 8px; font:600 11px/1 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif; cursor:pointer; }
-    .draft-editable pre.code-block[data-theme=\"light\"] .draft-code-theme-btn { background:rgba(0,0,0,.08); color:#1d1b18; }
+    .draft-editable pre.code-block.theme-light .token.comment { color:#708090; }
+    .draft-editable pre.code-block.theme-light .token.punctuation { color:#999; }
+    .draft-editable pre.code-block.theme-light .token.property,
+    .draft-editable pre.code-block.theme-light .token.tag,
+    .draft-editable pre.code-block.theme-light .token.boolean,
+    .draft-editable pre.code-block.theme-light .token.number,
+    .draft-editable pre.code-block.theme-light .token.constant,
+    .draft-editable pre.code-block.theme-light .token.symbol { color:#905; }
+    .draft-editable pre.code-block.theme-light .token.selector,
+    .draft-editable pre.code-block.theme-light .token.attr-name,
+    .draft-editable pre.code-block.theme-light .token.string,
+    .draft-editable pre.code-block.theme-light .token.char,
+    .draft-editable pre.code-block.theme-light .token.builtin,
+    .draft-editable pre.code-block.theme-light .token.inserted { color:#690; }
+    .draft-editable pre.code-block.theme-light .token.operator,
+    .draft-editable pre.code-block.theme-light .token.entity,
+    .draft-editable pre.code-block.theme-light .token.url,
+    .draft-editable pre.code-block.theme-light .language-css .token.string,
+    .draft-editable pre.code-block.theme-light .style .token.string { color:#9a6e3a; background:hsla(0,0%%,100%%,.5); }
+    .draft-editable pre.code-block.theme-light .token.atrule,
+    .draft-editable pre.code-block.theme-light .token.attr-value,
+    .draft-editable pre.code-block.theme-light .token.keyword { color:#07a; }
+    .draft-editable pre.code-block.theme-light .token.function,
+    .draft-editable pre.code-block.theme-light .token.class-name { color:#dd4a68; }
+    .draft-editable pre.code-block.theme-light .token.regex,
+    .draft-editable pre.code-block.theme-light .token.important,
+    .draft-editable pre.code-block.theme-light .token.variable { color:#e90; }
+    .draft-editable pre.code-block.theme-dark .token.comment { color:#997f66; }
+    .draft-editable pre.code-block.theme-dark .token.punctuation { opacity:.7; }
+    .draft-editable pre.code-block.theme-dark .token.property,
+    .draft-editable pre.code-block.theme-dark .token.tag,
+    .draft-editable pre.code-block.theme-dark .token.boolean,
+    .draft-editable pre.code-block.theme-dark .token.number,
+    .draft-editable pre.code-block.theme-dark .token.constant,
+    .draft-editable pre.code-block.theme-dark .token.symbol { color:#d1939e; }
+    .draft-editable pre.code-block.theme-dark .token.selector,
+    .draft-editable pre.code-block.theme-dark .token.attr-name,
+    .draft-editable pre.code-block.theme-dark .token.string,
+    .draft-editable pre.code-block.theme-dark .token.char,
+    .draft-editable pre.code-block.theme-dark .token.builtin,
+    .draft-editable pre.code-block.theme-dark .token.inserted { color:#bce051; }
+    .draft-editable pre.code-block.theme-dark .token.operator,
+    .draft-editable pre.code-block.theme-dark .token.entity,
+    .draft-editable pre.code-block.theme-dark .token.url,
+    .draft-editable pre.code-block.theme-dark .language-css .token.string,
+    .draft-editable pre.code-block.theme-dark .style .token.string,
+    .draft-editable pre.code-block.theme-dark .token.variable { color:#f4b73d; }
+    .draft-editable pre.code-block.theme-dark .token.atrule,
+    .draft-editable pre.code-block.theme-dark .token.attr-value,
+    .draft-editable pre.code-block.theme-dark .token.keyword { color:#d1939e; }
+    .draft-editable pre.code-block.theme-dark .token.function { color:#fff; }
+    .draft-editable pre.code-block.theme-dark .token.regex,
+    .draft-editable pre.code-block.theme-dark .token.important { color:#e90; }
+    .draft-editable pre.code-block.theme-monokai .token.comment { color:#75715e; }
+    .draft-editable pre.code-block.theme-monokai .token.punctuation { color:#f8f8f2; }
+    .draft-editable pre.code-block.theme-monokai .token.property,
+    .draft-editable pre.code-block.theme-monokai .token.tag,
+    .draft-editable pre.code-block.theme-monokai .token.constant,
+    .draft-editable pre.code-block.theme-monokai .token.symbol,
+    .draft-editable pre.code-block.theme-monokai .token.deleted { color:#f92672; }
+    .draft-editable pre.code-block.theme-monokai .token.boolean,
+    .draft-editable pre.code-block.theme-monokai .token.number { color:#ae81ff; }
+    .draft-editable pre.code-block.theme-monokai .token.selector,
+    .draft-editable pre.code-block.theme-monokai .token.attr-name,
+    .draft-editable pre.code-block.theme-monokai .token.string,
+    .draft-editable pre.code-block.theme-monokai .token.char,
+    .draft-editable pre.code-block.theme-monokai .token.builtin,
+    .draft-editable pre.code-block.theme-monokai .token.inserted { color:#a6e22e; }
+    .draft-editable pre.code-block.theme-monokai .token.operator,
+    .draft-editable pre.code-block.theme-monokai .token.entity,
+    .draft-editable pre.code-block.theme-monokai .token.url,
+    .draft-editable pre.code-block.theme-monokai .language-css .token.string,
+    .draft-editable pre.code-block.theme-monokai .style .token.string,
+    .draft-editable pre.code-block.theme-monokai .token.variable { color:#f8f8f2; }
+    .draft-editable pre.code-block.theme-monokai .token.atrule,
+    .draft-editable pre.code-block.theme-monokai .token.attr-value,
+    .draft-editable pre.code-block.theme-monokai .token.keyword { color:#f92672; }
+    .draft-editable pre.code-block.theme-monokai .token.function { color:#e6db74; }
+    .draft-editable pre.code-block.theme-monokai .token.regex,
+    .draft-editable pre.code-block.theme-monokai .token.important { color:#fd971f; }
     .draft-editable figure.table-block { margin: 12px 0 20px; overflow-x: auto; }
     .draft-editable figure.table-block.selected { border: 2px dashed #36c9c7; box-shadow: 0 0 0 3px rgba(54, 201, 199, 0.12); outline: none; border-radius: 8px; }
     .draft-editable figure.table-block table { width: 100%%; border-collapse: collapse; font: 500 17px/1.4 ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif; }
@@ -790,7 +909,7 @@
       this.bodyEl.innerHTML = state.bodyHtml;
       if (this.titleEl) this.titleEl.innerText = state.titleText;
       // Re-attach dynamic helpers that get lost on innerHTML swap.
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeThemeButton(pre); toCodeHighlightMode(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); toCodeHighlightMode(pre); });
       refreshImageBlocks();
       normalizeMediaUrls();
       if (state.selection) {
@@ -1672,13 +1791,13 @@
         let out = '';
         Array.from(n.childNodes).forEach(c => {
           if (c.nodeType === Node.TEXT_NODE) out += c.nodeValue || '';
-          else if (c.nodeType === Node.ELEMENT_NODE && c.classList && (c.classList.contains('draft-code-theme-btn') || c.classList.contains('image-resize-handle'))) return;
+          else if (c.nodeType === Node.ELEMENT_NODE && c.classList && (c.classList.contains('draft-code-block-actions') || c.classList.contains('image-resize-handle'))) return;
           else if (c.tagName && c.tagName.toLowerCase() === 'br') out += '\\n';
           else out += collect(c);
         });
         return out;
       };
-      const code = collect(node).replace(/\\u200b/g, '').trimEnd();
+      const code = (node.dataset.raw || collect(node)).replace(/\\u200b/g, '').trimEnd();
       let out = '\\n';
       if (theme && theme !== 'dark') out += '#+ATTR_HTML: :data-theme ' + theme + '\\n';
       out += '#+BEGIN_SRC ' + lang + '\\n' + code + '\\n#+END_SRC\\n';
@@ -1772,84 +1891,137 @@
       .replace(/>/g, '&gt;');
   }
 
-  function codeKeywordsFor(lang){
-    const l = (lang || 'text').toLowerCase();
-    if (l === 'ruby' || l === 'rb') return ['def','class','module','if','elsif','else','end','do','while','until','for','in','begin','rescue','ensure','return','yield','self','case','when','then','unless','require'];
-    if (l === 'python' || l === 'py') return ['def','class','if','elif','else','for','while','in','return','import','from','as','try','except','finally','with','lambda','yield','pass','break','continue','True','False','None'];
-    if (l === 'javascript' || l === 'js' || l === 'typescript' || l === 'ts') return ['function','const','let','var','if','else','for','while','return','class','new','try','catch','finally','import','from','export','async','await'];
-    if (l === 'go' || l === 'golang') return ['package','import','func','var','const','type','struct','interface','if','else','for','range','return','switch','case','default','go','defer','select','map'];
-    if (l === 'sh' || l === 'bash' || l === 'zsh' || l === 'shell') return ['if','then','else','elif','fi','for','in','do','done','case','esac','while','until','function'];
-    return [];
+  const CODE_LANGUAGES = [
+    ['text', 'Plain text'], ['bash', 'Bash'], ['c', 'C'], ['cpp', 'C++'], ['css', 'CSS'],
+    ['elixir', 'Elixir'], ['go', 'Go'], ['graphql', 'GraphQL'], ['haskell', 'Haskell'],
+    ['html', 'HTML'], ['java', 'Java'], ['javascript', 'JavaScript'], ['json', 'JSON'],
+    ['latex', 'LaTeX'], ['markdown', 'Markdown'], ['python', 'Python'], ['ruby', 'Ruby'],
+    ['rust', 'Rust'], ['scheme', 'Scheme'], ['sql', 'SQL'], ['typescript', 'TypeScript'],
+    ['yaml', 'YAML'], ['__other__', 'Other...']
+  ];
+  const CODE_THEMES = [['dark', 'Dark'], ['light', 'Light'], ['monokai', 'Monokai']];
+
+  function codeBlockToolbarHtml(){
+    const langOpts = CODE_LANGUAGES.map(([value, label]) => '<option value=\"' + escapeHtml(value) + '\">' + escapeHtml(label) + '</option>').join('');
+    const themeOpts = CODE_THEMES.map(([value, label]) => '<option value=\"' + escapeHtml(value) + '\">' + escapeHtml(label) + '</option>').join('');
+    return '<div class=\"draft-code-block-actions\" contenteditable=\"false\"><select class=\"draft-code-theme-select\" title=\"Theme\">' + themeOpts + '</select><select class=\"draft-code-lang-select\" title=\"Language\">' + langOpts + '</select><button class=\"draft-code-mode-toggle\" type=\"button\" title=\"Toggle preview\">Preview</button></div>';
   }
 
-  function highlightCodeText(lang, raw){
-    const stash = [];
-    const take = (pattern, klass, text) => text.replace(pattern, (m) => {
-      const key = '@@TOK' + stash.length + '@@';
-      stash.push('<span class=\"' + klass + '\">' + m + '</span>');
-      return key;
-    });
-    const putBack = (text) => text.replace(/@@TOK(\\d+)@@/g, (_, i) => stash[Number(i)] || '');
-
-    let out = escapeHtml(raw || '');
-    out = take(/(#.*$|\\/\\/.*$)/gm, 'tok-com', out);
-    out = take(/'(?:\\\\.|[^'\\\\])*'|\"(?:\\\\.|[^\"\\\\])*\"|`(?:\\\\.|[^`\\\\])*`/g, 'tok-str', out);
-    out = out.replace(/\\b\\d+(?:\\.\\d+)?\\b/g, '<span class=\"tok-num\">$&</span>');
-
-    const kws = codeKeywordsFor(lang);
-    if (kws.length) {
-      const re = new RegExp('\\\\b(?:' + kws.map(k => k.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')).join('|') + ')\\\\b', 'g');
-      out = out.replace(re, '<span class=\"tok-kw\">$&</span>');
+  function syncCodeBlockToolbar(pre){
+    const theme = pre.getAttribute('data-theme') || 'dark';
+    const lang = pre.getAttribute('data-lang') || 'text';
+    const mode = pre.getAttribute('data-mode') || 'plain';
+    const themeSelect = pre.querySelector('.draft-code-theme-select');
+    const langSelect = pre.querySelector('.draft-code-lang-select');
+    const modeToggle = pre.querySelector('.draft-code-mode-toggle');
+    if (themeSelect) themeSelect.value = theme;
+    if (langSelect) {
+      const known = CODE_LANGUAGES.some(([v]) => v === lang);
+      langSelect.value = known ? lang : '__other__';
     }
-    out = out.replace(/\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*(?=\\()/g, '<span class=\"tok-id\">$&</span>');
-    return putBack(out);
+    if (modeToggle) modeToggle.textContent = mode === 'plain' ? 'Preview' : 'Edit';
+  }
+
+  function bindCodeBlockToolbar(pre){
+    const themeSelect = pre.querySelector('.draft-code-theme-select');
+    const langSelect = pre.querySelector('.draft-code-lang-select');
+    const modeToggle = pre.querySelector('.draft-code-mode-toggle');
+    if (themeSelect) {
+      themeSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        setCodeBlockTheme(pre, e.target.value);
+      });
+    }
+    if (langSelect) {
+      langSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        let lang = e.target.value;
+        if (lang === '__other__') {
+          lang = prompt('Language', pre.getAttribute('data-lang') || 'text');
+        }
+        setCodeBlockLang(pre, (lang || 'text').trim().toLowerCase());
+      });
+    }
+    if (modeToggle) {
+      modeToggle.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const mode = pre.getAttribute('data-mode') || 'plain';
+        if (mode === 'plain') toCodeHighlightMode(pre);
+        else toCodePlainMode(pre);
+      });
+    }
   }
 
   function toCodePlainMode(pre){
     if (!pre) return;
-    const raw = pre.dataset.raw !== undefined ? pre.dataset.raw : (pre.textContent || '');
-    pre.dataset.raw = raw.replace(/\\u200b/g, '');
-    pre.textContent = pre.dataset.raw;
-    pre.dataset.codeMode = 'plain';
-    ensureCodeThemeButton(pre);
+    const existingCode = pre.querySelector('code');
+    let raw = pre.dataset.raw;
+    if (raw === undefined) {
+      raw = existingCode ? existingCode.textContent : pre.textContent;
+    }
+    raw = (raw || '').replace(/\\u200b/g, '');
+    pre.dataset.raw = raw;
+    const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
+    const theme = (pre.getAttribute('data-theme') || 'dark').trim().toLowerCase();
+    pre.setAttribute('data-mode', 'plain');
+    pre.classList.add('theme-' + theme, 'language-' + lang);
+    pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck=\"false\" class=\"language-' + escapeHtml(lang) + '\" contenteditable=\"true\">' + escapeHtml(raw || '\\n') + '</code>';
+    bindCodeBlockToolbar(pre);
+    syncCodeBlockToolbar(pre);
   }
 
   function toCodeHighlightMode(pre){
     if (!pre) return;
     if (document.activeElement === pre || pre.contains(document.activeElement)) return;
-    const raw = pre.dataset.raw !== undefined ? pre.dataset.raw : (pre.textContent || '');
-    pre.dataset.raw = raw.replace(/\\u200b/g, '');
-    pre.innerHTML = highlightCodeText(pre.dataset.lang || pre.getAttribute('data-lang') || 'text', pre.dataset.raw);
-    pre.dataset.codeMode = 'highlight';
-    ensureCodeThemeButton(pre);
-  }
-
-  function ensureCodeThemeButton(pre){
-    if (!pre) return;
-    let btn = pre.querySelector('.draft-code-theme-btn');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'draft-code-theme-btn';
-      btn.title = 'Toggle dark / light theme';
-      btn.setAttribute('contenteditable', 'false');
-      pre.appendChild(btn);
+    const existingCode = pre.querySelector('code');
+    let raw = pre.dataset.raw;
+    if (raw === undefined) {
+      raw = existingCode ? existingCode.textContent : pre.textContent;
     }
-    const theme = pre.getAttribute('data-theme') || 'dark';
-    btn.textContent = theme === 'dark' ? '◐' : '◑';
-    btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleCodeTheme(pre); };
+    raw = (raw || '').replace(/\\u200b/g, '');
+    pre.dataset.raw = raw;
+    const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
+    const theme = (pre.getAttribute('data-theme') || 'dark').trim().toLowerCase();
+    pre.setAttribute('data-mode', 'preview');
+    pre.classList.add('theme-' + theme, 'language-' + lang);
+    pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck=\"false\" class=\"language-' + escapeHtml(lang) + '\"></code>';
+    const code = pre.querySelector('code');
+    if (code) {
+      code.textContent = raw || '\\n';
+      if (window.Prism) Prism.highlightElement(code);
+    }
+    bindCodeBlockToolbar(pre);
+    syncCodeBlockToolbar(pre);
   }
 
-  function toggleCodeTheme(pre){
-    if (!pre) return;
-    const current = pre.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    pre.setAttribute('data-theme', next);
-    const raw = pre.dataset.raw || (pre.textContent || '').replace(/\\u200b/g, '');
-    pre.dataset.raw = raw;
-    pre.innerHTML = highlightCodeText(pre.dataset.lang || pre.getAttribute('data-lang') || 'text', raw);
-    ensureCodeThemeButton(pre);
+  function setCodeBlockTheme(pre, theme){
+    const oldTheme = pre.getAttribute('data-theme') || 'dark';
+    pre.classList.remove('theme-' + oldTheme);
+    theme = (theme || 'dark').trim().toLowerCase();
+    if (!CODE_THEMES.some(([v]) => v === theme)) theme = 'dark';
+    pre.setAttribute('data-theme', theme);
+    pre.classList.add('theme-' + theme);
+    syncCodeBlockToolbar(pre);
+    if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
     markDirty();
+  }
+
+  function setCodeBlockLang(pre, lang){
+    const oldLang = pre.getAttribute('data-lang') || 'text';
+    pre.classList.remove('language-' + oldLang);
+    lang = (lang || 'text').trim().toLowerCase();
+    pre.setAttribute('data-lang', lang);
+    pre.classList.add('language-' + lang);
+    const code = pre.querySelector('code');
+    if (code) code.className = 'language-' + escapeHtml(lang);
+    syncCodeBlockToolbar(pre);
+    if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
+    markDirty();
+  }
+
+  function ensureCodeBlockToolbar(pre){
+    if (!pre || pre.querySelector('.draft-code-block-actions')) return;
+    toCodePlainMode(pre);
   }
 
   function isPlaceholderCaption(text, src){
@@ -1895,53 +2067,12 @@
       const tag = el.tagName.toLowerCase();
       if (tag === 'figure') return;
 
-    if (tag === 'pre') {
-      const lang = (node.dataset.lang || node.getAttribute('data-lang') || '').trim() || 'text';
-      const theme = (node.getAttribute('data-theme') || 'dark').trim();
-      const collect = (n) => {
-        let out = '';
-        Array.from(n.childNodes).forEach(c => {
-          if (c.nodeType === Node.TEXT_NODE) out += c.nodeValue || '';
-          else if (c.nodeType === Node.ELEMENT_NODE && c.classList && (c.classList.contains('draft-code-theme-btn') || c.classList.contains('image-resize-handle'))) return;
-          else if (c.tagName && c.tagName.toLowerCase() === 'br') out += '\\n';
-          else out += collect(c);
-        });
-        return out;
-      };
-      const code = collect(node).replace(/\\u200b/g, '').trimEnd();
-      let out = '\\n';
-      if (theme && theme !== 'dark') out += '#+ATTR_HTML: :data-theme ' + theme + '\\n';
-      out += '#+BEGIN_SRC ' + lang + '\\n' + code + '\\n#+END_SRC\\n';
-      return out;
+    if (tag === 'pre' && el.classList.contains('code-block')) {
+      ensureCodeBlockToolbar(el);
+      return;
     }
-    if (tag === 'figure' && node.classList.contains('table-block')) {
-      const table = node.querySelector('table');
-      if (!table) return '';
-      const rows = Array.from(table.querySelectorAll('tr'));
-      const lines = rows.map(tr => {
-        const cells = Array.from(tr.children).map(td => (td.innerText || '').replace(/[\\r\\n]+/g, ' ').trim()).join(' | ');
-        return '| ' + cells + ' |';
-      });
-      return '\\n' + lines.join('\\n') + '\\n';
-    }
-    if (tag === 'table') {
-      const rows = Array.from(node.querySelectorAll('tr'));
-      const lines = rows.map(tr => {
-        const cells = Array.from(tr.children).map(td => (td.innerText || '').replace(/[\\r\\n]+/g, ' ').trim()).join(' | ');
-        return '| ' + cells + ' |';
-      });
-      return '\\n' + lines.join('\\n') + '\\n';
-    }
-    if (tag === 'span' && node.classList.contains('math')) {
-      const latex = (node.getAttribute('data-latex') || node.textContent || '').trim();
-      return latex ? '\\\\(' + latex + '\\\\)' : '';
-    }
-    if (tag === 'div' && node.classList.contains('math')) {
-      const latex = (node.getAttribute('data-latex') || node.textContent || '').trim();
-      if (!latex) return '';
-      return '\\n#+BEGIN_EXPORT html\\n<div class=\"math\" data-latex=\"' + latex.replace(/\"/g, '&quot;') + '\">' + latex + '</div>\\n#+END_EXPORT\\n';
-    }
-    if (tag === 'img') {
+
+      if (tag === 'img') {
         const src = cleanSrc((el.getAttribute('src') || '').trim());
         if (!src) return;
         el.replaceWith(toFigure(src, (el.getAttribute('alt') || '').trim()));
@@ -1963,12 +2094,12 @@
         const lang = m ? m[1].toLowerCase() : 'text';
         const theme = srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'dark';
         const pre = document.createElement('pre');
-        pre.className = 'code-block src src-' + lang;
+        pre.className = 'code-block theme-' + theme + ' language-' + lang;
         pre.setAttribute('data-lang', lang);
         pre.setAttribute('data-theme', theme);
+        pre.setAttribute('data-mode', 'preview');
         pre.setAttribute('spellcheck', 'false');
         pre.dataset.raw = (srcPre.textContent || '').replace(/\\u200b/g, '');
-        pre.textContent = pre.dataset.raw;
         el.replaceWith(pre);
         toCodeHighlightMode(pre);
         return;
@@ -1979,9 +2110,10 @@
         const m = klass.match(/\\bsrc-([a-z0-9-]+)\\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const theme = el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'dark';
-        el.className = 'code-block src src-' + lang;
+        el.className = 'code-block theme-' + theme + ' language-' + lang;
         el.setAttribute('data-lang', lang);
         el.setAttribute('data-theme', theme);
+        el.setAttribute('data-mode', 'preview');
         el.setAttribute('spellcheck', 'false');
         el.dataset.raw = (el.textContent || '').replace(/\\u200b/g, '');
         toCodeHighlightMode(el);
@@ -2091,12 +2223,11 @@
 
     const codeLang = (lang || 'text').toLowerCase();
     const pre = document.createElement('pre');
-    pre.className = 'code-block src src-' + codeLang;
+    pre.className = 'code-block theme-dark language-' + codeLang;
     pre.setAttribute('data-lang', codeLang);
     pre.setAttribute('data-theme', 'dark');
+    pre.setAttribute('data-mode', 'plain');
     pre.setAttribute('spellcheck', 'false');
-    const codeText = document.createTextNode('\\n');
-    pre.appendChild(codeText);
 
     const para = document.createElement('p');
     para.innerHTML = '<br>';
@@ -2104,13 +2235,17 @@
     range.insertNode(para);
     range.insertNode(pre);
 
-    const caret = document.createRange();
-    caret.setStart(codeText, 0);
-    caret.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(caret);
+    toCodePlainMode(pre);
+    const code = pre.querySelector('code');
+    if (code) {
+      const caret = document.createRange();
+      caret.selectNodeContents(code);
+      caret.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(caret);
+      code.focus();
+    }
     cacheSelection();
-    if (typeof toCodePlainMode === 'function') toCodePlainMode(pre);
     refreshImageBlocks();
     markDirty();
     updateFloatingUi();
@@ -2738,20 +2873,28 @@
   body.addEventListener('input', (e)=>{
     const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
     if (!pre) return;
-    pre.dataset.raw = (pre.textContent || '').replace(/\\u200b/g, '');
+    const code = pre.querySelector('code');
+    if (!code) return;
+    pre.dataset.raw = (code.textContent || '').replace(/\\u200b/g, '');
+    clearTimeout(pre._debounceHighlight);
+    pre._debounceHighlight = setTimeout(()=>{
+      if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
+    }, 600);
   });
   body.addEventListener('focusin', (e)=>{
     const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
     if (!pre) return;
+    if (e.target.closest('.draft-code-block-actions')) return;
     toCodePlainMode(pre);
   });
   body.addEventListener('focusout', (e)=>{
     const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
     if (!pre) return;
+    if (pre.contains(e.relatedTarget)) return;
     setTimeout(()=>{
-      if (document.activeElement === pre || pre.contains(document.activeElement)) return;
+      if (pre.contains(document.activeElement)) return;
       toCodeHighlightMode(pre);
-    }, 0);
+    }, 80);
   });
   body.addEventListener('input', normalizeMediaUrls);
   title.addEventListener('input', markDirty);
@@ -2832,7 +2975,7 @@
   syncPlusIcon();
   canonicalizeLegacyImageNodes();
   refreshImageBlocks();
-  body.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeThemeButton(pre); toCodeHighlightMode(pre); });
+  body.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); toCodeHighlightMode(pre); });
   normalizeMediaUrls();
   history.push('load');
   setSaveState('is-saved', 'Saved');

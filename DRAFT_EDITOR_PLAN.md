@@ -38,3 +38,13 @@
 - [x] 6.3 `LOCAL_DEV=1 ./publish.sh`
 - [x] 6.4 Extract inline script and `node --check`
 - [x] 6.5 Commit changes
+
+## 7. Code block syntax highlighting and themes
+- [x] 7.1 Add Prism.js highlighter to standalone editor page
+- [x] 7.2 Add Prism.js highlighter to inline editor detail page
+- [x] 7.3 Replace clear half-moon button with theme/language menu in standalone editor
+- [x] 7.4 Replace clear half-moon button with theme/language menu in inline editor
+- [x] 7.5 Re-highlight code blocks on insert, language change, theme change, and after typing
+- [x] 7.6 Provide light, dark, and Monokai themes
+- [x] 7.7 Ensure Org export/import preserves language and theme
+- [x] 7.8 Verify all build checks and commit

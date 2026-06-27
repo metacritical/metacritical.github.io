@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Draft Editor</title>
   <link rel="stylesheet" href="/media/css/draft-editor.css">
+  <link rel="stylesheet" href="/media/vendor/prism/prism.min.css">
+  <link rel="stylesheet" href="/media/vendor/prism/prism-dark.min.css">
+  <link rel="stylesheet" href="/media/vendor/prism/prism-monokai.min.css">
+  <script src="/media/vendor/prism/prism.min.js" data-manual></script>
+  <script src="/media/vendor/prism/prism-autoloader.min.js"></script>
+  <script>
+    if (window.Prism && Prism.plugins && Prism.plugins.autoloader) {
+      Prism.plugins.autoloader.languages_path = '/media/vendor/prism/';
+    }
+  </script>
   <style>
     * { box-sizing: border-box; }
     body {
