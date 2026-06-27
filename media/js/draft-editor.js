@@ -777,7 +777,10 @@ class DraftEditor {
     this.insertMenu.classList.add('open');
     const rect = anchor.getBoundingClientRect();
     const menuWidth = this.insertMenu.offsetWidth || 280;
-    let left = rect.right + 8;
+    let left = rect.left - menuWidth - 8;
+    if (left < 8) {
+      left = rect.right + 8;
+    }
     if (left + menuWidth > window.innerWidth - 8) {
       left = Math.max(8, window.innerWidth - menuWidth - 8);
     }
@@ -889,6 +892,7 @@ class DraftEditor {
       const range = sel.getRangeAt(0);
       if (e.key === 'ArrowDown' && this._isAtEndOfNode(code, range)) {
         e.preventDefault();
+        e.stopPropagation();
         const next = pre.nextElementSibling;
         if (next && this.isBlock(next)) {
           this.placeCaretAtStart(next);
@@ -903,6 +907,7 @@ class DraftEditor {
       }
       if (e.key === 'ArrowUp' && this._isAtStartOfNode(code, range)) {
         e.preventDefault();
+        e.stopPropagation();
         const prev = pre.previousElementSibling;
         if (prev && this.isBlock(prev)) {
           this.placeCaretAtEnd(prev);
@@ -2098,6 +2103,23 @@ Bob --> Alice: Hi
       }
       if (evt.target === this.bodyEl) {
         this._deselectBlocks();
+        const blocks = this.bodyEl.children;
+        const last = blocks.length ? blocks[blocks.length - 1] : null;
+        const lastType = last ? this.getBlockType(last) : null;
+        if (last && !this.isTextBlock(lastType)) {
+          const p = this.createParagraph();
+          this.bodyEl.appendChild(p);
+          this.placeCaretAtEnd(p);
+          this._positionBlockPlus(p);
+        } else if (last && this.isTextBlock(lastType)) {
+          this.placeCaretAtEnd(last);
+          this._positionBlockPlus(last);
+        } else {
+          const p = this.createParagraph();
+          this.bodyEl.appendChild(p);
+          this.placeCaretAtEnd(p);
+          this._positionBlockPlus(p);
+        }
         return;
       }
       if (this.blockToolbar && !this.blockToolbar.contains(evt.target) && !(this.imageToolbar && this.imageToolbar.contains(evt.target)) && !(this.multiToolbar && this.multiToolbar.contains(evt.target))) this._deselectBlocks();

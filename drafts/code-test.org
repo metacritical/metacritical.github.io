@@ -5,7 +5,7 @@
 #+FILETAGS: :test:
 
 #+ATTR_HTML: :data-bg dark
-#+ATTR_HTML: :data-syntax-theme monokai
+#+ATTR_HTML: :data-syntax-theme okaidia
 #+BEGIN_SRC ruby
 def hello
   puts "Hello World!"

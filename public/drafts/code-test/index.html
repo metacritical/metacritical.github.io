@@ -346,7 +346,7 @@
       padding: 6px 8px !important;
       font: 600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; }
+    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; flex-direction: row-reverse; }
     .draft-plus-toggle { width:25px; height:25px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(0,0,0,.08); }
     .draft-plus-toggle:hover { background:#f5fffe; }
     .draft-plus-toggle svg { width:14px; height:14px; fill: currentColor; transition: transform .15s ease; }
@@ -458,7 +458,7 @@
     </aside>
     <h1 class="title" id="draft-title" contenteditable="true">Code Test</h1>
     <div class="post-author-row"><img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey"><div class="post-author-meta"><span class="post-author-name-row"><span class="post-author-name">Pankaj Doharey</span><span id="draft-tags-inline" class="draft-inline-tags"></span><button id="draft-add-tag" class="draft-tag-add" type="button">+ Tag</button></span><span class="post-author-date">2026-06-27 · 1 min read</span><span id="draft-save-state" class="draft-save-state" aria-live="polite">Saved</span></div></div>
-    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="drafts/code-test.org" data-tags="test" data-code-meta="{&quot;data-bg&quot;:&quot;dark&quot;,&quot;data-syntax-theme&quot;:&quot;monokai&quot;}"><div class="org-src-container">
+    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="drafts/code-test.org" data-tags="test" data-code-meta="{&quot;data-bg&quot;:&quot;dark&quot;,&quot;data-syntax-theme&quot;:&quot;okaidia&quot;}"><div class="org-src-container">
 <pre class="src src-ruby"><span class="org-keyword">def</span> <span class="org-function-name">hello</span>
   <span class="org-builtin">puts</span> <span class="org-string">"Hello World!"</span>
 <span class="org-keyword">end</span>
@@ -1097,6 +1097,7 @@
         const next = block.nextElementSibling;
         if (next && next.parentElement === body){ placeCaretIn(next, true); }
         else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
+        updateFloatingUi();
       }
     } else {
       const code = t === 'pre' ? block.querySelector('code') : null;
@@ -1743,15 +1744,19 @@
       const range = sel.getRangeAt(0);
       if (e.key === 'ArrowDown' && isAtEndOfNode(range, code)){
         e.preventDefault();
+        e.stopPropagation();
         const next = pre.nextElementSibling;
         if (next && next.parentElement === body){ placeCaretIn(next, true); }
         else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
+        updateFloatingUi();
       }
       if (e.key === 'ArrowUp' && isAtStartOfNode(range, code)){
         e.preventDefault();
+        e.stopPropagation();
         const prev = pre.previousElementSibling;
         if (prev && prev.parentElement === body){ placeCaretIn(prev, false); }
         else { title.focus(); }
+        updateFloatingUi();
       }
     });
   }
@@ -2789,6 +2794,18 @@
     }
     if (e.target === body) {
       deselectBlocks();
+      const last = body.lastElementChild;
+      if (last) {
+        const t = last.tagName.toLowerCase();
+        if (['p','div','h1','h2','h3','h4','h5','h6','blockquote'].includes(t)) {
+          placeCaretIn(last, false);
+        } else {
+          const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true);
+        }
+      } else {
+        const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true);
+      }
+      updateFloatingUi();
       return;
     }
   });

@@ -346,7 +346,7 @@
       padding: 6px 8px !important;
       font: 600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; }
+    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; flex-direction: row-reverse; }
     .draft-plus-toggle { width:25px; height:25px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(0,0,0,.08); }
     .draft-plus-toggle:hover { background:#f5fffe; }
     .draft-plus-toggle svg { width:14px; height:14px; fill: currentColor; transition: transform .15s ease; }
@@ -1109,6 +1109,7 @@ This is your first blog post with Alchemist. Edit this file to get started.
         const next = block.nextElementSibling;
         if (next && next.parentElement === body){ placeCaretIn(next, true); }
         else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
+        updateFloatingUi();
       }
     } else {
       const code = t === 'pre' ? block.querySelector('code') : null;
@@ -1755,15 +1756,19 @@ This is your first blog post with Alchemist. Edit this file to get started.
       const range = sel.getRangeAt(0);
       if (e.key === 'ArrowDown' && isAtEndOfNode(range, code)){
         e.preventDefault();
+        e.stopPropagation();
         const next = pre.nextElementSibling;
         if (next && next.parentElement === body){ placeCaretIn(next, true); }
         else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
+        updateFloatingUi();
       }
       if (e.key === 'ArrowUp' && isAtStartOfNode(range, code)){
         e.preventDefault();
+        e.stopPropagation();
         const prev = pre.previousElementSibling;
         if (prev && prev.parentElement === body){ placeCaretIn(prev, false); }
         else { title.focus(); }
+        updateFloatingUi();
       }
     });
   }
@@ -2801,6 +2806,18 @@ This is your first blog post with Alchemist. Edit this file to get started.
     }
     if (e.target === body) {
       deselectBlocks();
+      const last = body.lastElementChild;
+      if (last) {
+        const t = last.tagName.toLowerCase();
+        if (['p','div','h1','h2','h3','h4','h5','h6','blockquote'].includes(t)) {
+          placeCaretIn(last, false);
+        } else {
+          const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true);
+        }
+      } else {
+        const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true);
+      }
+      updateFloatingUi();
       return;
     }
   });
