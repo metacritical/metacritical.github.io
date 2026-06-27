@@ -204,6 +204,18 @@
       background: #25232f !important;
       color: #f3f1f7;
     }
+    .draft-editable pre.code-block[data-bg="dark"] .token,
+    .draft-editable pre.code-block[data-bg="dark"] .token * {
+      text-shadow: none !important;
+      box-shadow: none !important;
+      background: none !important;
+      outline: none !important;
+    }
+    .draft-editable pre.code-block[data-bg="dark"] .token.entity,
+    .draft-editable pre.code-block[data-bg="dark"] .token.operator,
+    .draft-editable pre.code-block[data-bg="dark"] .token.url {
+      background: none !important;
+    }
     .draft-editable pre.code-block.syntax-theme-default,
     .draft-editable pre.code-block.syntax-theme-default code {
       background: transparent;

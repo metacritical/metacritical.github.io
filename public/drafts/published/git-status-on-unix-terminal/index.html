@@ -204,6 +204,18 @@
       background: #25232f !important;
       color: #f3f1f7;
     }
+    .draft-editable pre.code-block[data-bg="dark"] .token,
+    .draft-editable pre.code-block[data-bg="dark"] .token * {
+      text-shadow: none !important;
+      box-shadow: none !important;
+      background: none !important;
+      outline: none !important;
+    }
+    .draft-editable pre.code-block[data-bg="dark"] .token.entity,
+    .draft-editable pre.code-block[data-bg="dark"] .token.operator,
+    .draft-editable pre.code-block[data-bg="dark"] .token.url {
+      background: none !important;
+    }
     .draft-editable pre.code-block.syntax-theme-default,
     .draft-editable pre.code-block.syntax-theme-default code {
       background: transparent;
@@ -576,7 +588,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="orge64e6f6" class="figure">
+<div id="org0cd4f10" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -586,7 +598,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="orgd55f8e5" class="figure">
+<div id="org49dfab8" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>

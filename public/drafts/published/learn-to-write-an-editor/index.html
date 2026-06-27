@@ -204,6 +204,18 @@
       background: #25232f !important;
       color: #f3f1f7;
     }
+    .draft-editable pre.code-block[data-bg="dark"] .token,
+    .draft-editable pre.code-block[data-bg="dark"] .token * {
+      text-shadow: none !important;
+      box-shadow: none !important;
+      background: none !important;
+      outline: none !important;
+    }
+    .draft-editable pre.code-block[data-bg="dark"] .token.entity,
+    .draft-editable pre.code-block[data-bg="dark"] .token.operator,
+    .draft-editable pre.code-block[data-bg="dark"] .token.url {
+      background: none !important;
+    }
     .draft-editable pre.code-block.syntax-theme-default,
     .draft-editable pre.code-block.syntax-theme-default code {
       background: transparent;
@@ -478,7 +490,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="org7fb277d" class="figure">
+<div id="org5a4fb69" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -493,7 +505,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="orgdfb9fe4" class="figure">
+<div id="orgb8d3d32" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>

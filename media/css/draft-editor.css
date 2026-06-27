@@ -307,6 +307,19 @@
   background: #25232f !important;
   color: #f3f1f7;
 }
+/* Strip shadows, outlines, and backgrounds from tokens in dark mode code blocks */
+.de-body pre.code-block[data-bg="dark"] .token,
+.de-body pre.code-block[data-bg="dark"] .token * {
+  text-shadow: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  outline: none !important;
+}
+.de-body pre.code-block[data-bg="dark"] .token.entity,
+.de-body pre.code-block[data-bg="dark"] .token.operator,
+.de-body pre.code-block[data-bg="dark"] .token.url {
+  background: none !important;
+}
 
 .de-body figure.image-block,
 .de-body figure.embed-card,
