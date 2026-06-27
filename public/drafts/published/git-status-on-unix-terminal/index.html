@@ -592,7 +592,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="org71b441f" class="figure">
+<div id="orgb598f84" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -602,7 +602,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org9f923d4" class="figure">
+<div id="orgb2dfe34" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -1058,10 +1058,10 @@ Thats it folks! Happy hacking.
     const block = nearestBlock(range.startContainer);
     if (!block) { plus.style.display='none'; plus.classList.remove('open'); return; }
     const tag = block.tagName.toLowerCase();
-    const isTextBlock = tag === 'p' || tag === 'div' || tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'blockquote';
-    if (!isTextBlock) { plus.style.display='none'; plus.classList.remove('open'); return; }
-    if ((block.textContent || '').trim() !== '') { plus.style.display='none'; plus.classList.remove('open'); return; }
-    const blockRect = block ? block.getBoundingClientRect() : caretRect;
+    if (tag === 'pre') { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if (tag === 'figure') { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if (tag === 'div' && block.classList.contains('math')) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const blockRect = block.getBoundingClientRect();
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;
     const gapFromBody = 12;

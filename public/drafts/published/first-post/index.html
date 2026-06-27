@@ -924,10 +924,10 @@ This is your first blog post with Alchemist. Edit this file to get started.
     const block = nearestBlock(range.startContainer);
     if (!block) { plus.style.display='none'; plus.classList.remove('open'); return; }
     const tag = block.tagName.toLowerCase();
-    const isTextBlock = tag === 'p' || tag === 'div' || tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'blockquote';
-    if (!isTextBlock) { plus.style.display='none'; plus.classList.remove('open'); return; }
-    if ((block.textContent || '').trim() !== '') { plus.style.display='none'; plus.classList.remove('open'); return; }
-    const blockRect = block ? block.getBoundingClientRect() : caretRect;
+    if (tag === 'pre') { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if (tag === 'figure') { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if (tag === 'div' && block.classList.contains('math')) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const blockRect = block.getBoundingClientRect();
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;
     const gapFromBody = 12;

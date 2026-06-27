@@ -793,8 +793,9 @@ class DraftEditor {
   _positionBlockPlus(block) {
     if (!block) { this._hideBlockPlus(); return; }
     const type = this.getBlockType(block);
-    if (!this.isTextBlock(type)) { this._hideBlockPlus(); return; }
-    if ((block.textContent || '').trim() !== '') { this._hideBlockPlus(); return; }
+    if (this.isVoidBlock(type)) { this._hideBlockPlus(); return; }
+    if (type === 'pre' || type === 'figure') { this._hideBlockPlus(); return; }
+    if (type === 'div' && block.classList.contains('math')) { this._hideBlockPlus(); return; }
     this.activeBlockForPlus = block;
     const bodyRect = this.bodyEl.getBoundingClientRect();
     const blockRect = block.getBoundingClientRect();
