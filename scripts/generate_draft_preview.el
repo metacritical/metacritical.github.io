@@ -1272,7 +1272,7 @@
     const filterSelect = document.createElement('select');
     filterSelect.dataset.action = 'filter';
     filterSelect.title = 'Filter';
-    const filterOpts = [['', 'Filter'], ['none', 'None'], ['grayscale', 'Grayscale'], ['sepia', 'Sepia'], ['invert', 'Invert'], ['brightness', 'Brightness'], ['contrast', 'Contrast'], ['saturate', 'Saturate'], ['hue-90', 'Hue 90°'], ['hue-180', 'Hue 180°'], ['hue-270', 'Hue 270°'], ['blur', 'Blur'], ['opacity', 'Opacity'], ['drop-shadow', 'Drop shadow'], ['warm', 'Warm'], ['cool', 'Cool'], ['vintage', 'Vintage'], ['blackwhite', 'Black & white']];
+    const filterOpts = [['none', 'Filter'], ['none', 'None'], ['grayscale', 'Grayscale'], ['sepia', 'Sepia'], ['invert', 'Invert'], ['brightness', 'Brightness'], ['contrast', 'Contrast'], ['saturate', 'Saturate'], ['hue-90', 'Hue 90°'], ['hue-180', 'Hue 180°'], ['hue-270', 'Hue 270°'], ['blur', 'Blur'], ['opacity', 'Opacity'], ['drop-shadow', 'Drop shadow'], ['warm', 'Warm'], ['cool', 'Cool'], ['vintage', 'Vintage'], ['blackwhite', 'Black & white']];
     filterOpts.forEach(([val, label]) => {
       const opt = document.createElement('option');
       opt.value = val;
@@ -1285,13 +1285,15 @@
     sep3.className = 'sep';
     sep3.setAttribute('aria-hidden', 'true');
     tb.appendChild(sep3);
+    tb.appendChild(makeBtn('replace-url', 'Link', 'Replace image URL'));
+    tb.appendChild(makeBtn('replace-upload', 'Upload', 'Replace image by upload'));
     tb.appendChild(makeBtn('move-up', '↑', 'Move up'));
     tb.appendChild(makeBtn('move-down', '↓', 'Move down'));
     tb.appendChild(makeBtn('delete', '×', 'Delete'));
     document.body.appendChild(tb);
     tb.addEventListener('mousedown', (e)=> e.preventDefault());
     tb.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button, select');
+      const btn = e.target.closest('button');
       if (!btn) return;
       const action = btn.dataset.action;
       const fig = document.querySelector('.draft-editable figure.image-block.selected');
@@ -1301,25 +1303,6 @@
         fig.classList.add(action);
         fig.dataset.align = action.replace('align-', '');
         positionImageToolbar(fig);
-        markDirty();
-      } else if (action === 'fit'){
-        fig.classList.remove('fit-cover','fit-contain','fit-fill','fit-scale-down','fit-none');
-        fig.classList.add('fit-' + btn.value);
-        fig.dataset.fit = btn.value;
-        markDirty();
-      } else if (action === 'position'){
-        fig.classList.remove('pos-top','pos-top-right','pos-right','pos-bottom-right','pos-bottom','pos-bottom-left','pos-left','pos-top-left','pos-center');
-        fig.classList.add('pos-' + btn.value);
-        fig.dataset.position = btn.value;
-        markDirty();
-      } else if (action === 'filter'){
-        fig.classList.remove('filter-none','filter-grayscale','filter-sepia','filter-invert','filter-brightness','filter-contrast','filter-saturate','filter-hue-90','filter-hue-180','filter-hue-270','filter-blur','filter-opacity','filter-drop-shadow','filter-warm','filter-cool','filter-vintage','filter-blackwhite');
-        if (btn.value && btn.value !== 'none') {
-          fig.classList.add('filter-' + btn.value);
-          fig.dataset.filter = btn.value;
-        } else {
-          fig.dataset.filter = 'none';
-        }
         markDirty();
       } else if (action === 'move-up'){
         const prev = fig.previousElementSibling;
@@ -1332,9 +1315,74 @@
         markDirty();
       } else if (action === 'delete'){
         fig.remove(); hideImageToolbar(); markDirty();
+      } else if (action === 'replace-url'){
+        const current = fig.querySelector('img');
+        const url = prompt('Replace image URL', current ? (current.getAttribute('src') || '') : '');
+        if (url && current) {
+          current.setAttribute('src', url);
+          current.setAttribute('alt', url.split('/').pop().split('?')[0] || 'image');
+          markDirty();
+        }
+      } else if (action === 'replace-upload'){
+        replaceImageUpload(fig);
+      }
+    });
+    tb.addEventListener('change', (e)=>{
+      const sel = e.target.closest('select');
+      if (!sel) return;
+      const action = sel.dataset.action;
+      const fig = document.querySelector('.draft-editable figure.image-block.selected');
+      if (!fig) return;
+      if (action === 'fit'){
+        fig.classList.remove('fit-cover','fit-contain','fit-fill','fit-scale-down','fit-none');
+        fig.classList.add('fit-' + sel.value);
+        fig.dataset.fit = sel.value;
+        markDirty();
+      } else if (action === 'position'){
+        fig.classList.remove('pos-top','pos-top-right','pos-right','pos-bottom-right','pos-bottom','pos-bottom-left','pos-left','pos-top-left','pos-center');
+        fig.classList.add('pos-' + sel.value);
+        fig.dataset.position = sel.value;
+        markDirty();
+      } else if (action === 'filter'){
+        fig.classList.remove('filter-none','filter-grayscale','filter-sepia','filter-invert','filter-brightness','filter-contrast','filter-saturate','filter-hue-90','filter-hue-180','filter-hue-270','filter-blur','filter-opacity','filter-drop-shadow','filter-warm','filter-cool','filter-vintage','filter-blackwhite');
+        if (sel.value && sel.value !== 'none') {
+          fig.classList.add('filter-' + sel.value);
+          fig.dataset.filter = sel.value;
+        } else {
+          fig.dataset.filter = 'none';
+        }
+        markDirty();
       }
     });
     return tb;
+  }
+  function replaceImageUpload(fig){
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', async ()=>{
+      const file = input.files && input.files[0];
+      if (!file) { input.remove(); return; }
+      try {
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject)=>{ reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+        const r = await fetch('/editor/api/upload', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ filename: file.name, dataUrl }) });
+        const j = await r.json();
+        if (j && j.ok && j.url) {
+          const img = fig.querySelector('img');
+          if (img) {
+            img.setAttribute('src', j.url);
+            img.setAttribute('alt', file.name || 'image');
+            markDirty();
+          }
+        }
+      } catch (_) {}
+      input.value = '';
+      input.remove();
+    });
+    input.click();
   }
   function selectImageBlock(fig){
     deselectBlocks();

@@ -1218,12 +1218,15 @@ Bob --> Alice: Hi
     ], 'Object position'));
     tb.appendChild(sep());
     tb.appendChild(makeSelect('filter', [
-      ['none', 'None'], ['grayscale', 'Grayscale'], ['sepia', 'Sepia'], ['invert', 'Invert'],
+      ['none', 'Filter'], ['none', 'None'], ['grayscale', 'Grayscale'], ['sepia', 'Sepia'], ['invert', 'Invert'],
       ['brightness', 'Brightness'], ['contrast', 'Contrast'], ['saturate', 'Saturate'],
       ['hue-90', 'Hue 90°'], ['hue-180', 'Hue 180°'], ['hue-270', 'Hue 270°'],
       ['blur', 'Blur'], ['opacity', 'Opacity'], ['drop-shadow', 'Shadow'],
       ['warm', 'Warm'], ['cool', 'Cool'], ['vintage', 'Vintage'], ['blackwhite', 'B&W']
     ], 'Filter'));
+    tb.appendChild(sep());
+    tb.appendChild(makeBtn('replace-url', 'Link', 'Replace image URL'));
+    tb.appendChild(makeBtn('replace-upload', 'Upload', 'Replace image by upload'));
     document.body.appendChild(tb);
     tb.addEventListener('mousedown', (e) => e.preventDefault());
     tb.addEventListener('click', (e) => {
@@ -1231,7 +1234,23 @@ Bob --> Alice: Hi
       if (!btn) return;
       const fig = this.bodyEl.querySelector(':scope > .is-selected.image-block');
       if (!fig) return;
-      this._applyImageSetting(fig, 'align', btn.dataset.action.replace('align-', ''));
+      const action = btn.dataset.action;
+      if (action === 'replace-url') {
+        const img = fig.querySelector('img');
+        const current = img ? (img.getAttribute('src') || '') : '';
+        const url = window.prompt('Replace image URL', current);
+        if (url && img) {
+          img.setAttribute('src', url);
+          img.setAttribute('alt', url.split('/').pop().split('?')[0] || 'image');
+          this._markDirty();
+        }
+        return;
+      }
+      if (action === 'replace-upload') {
+        this._replaceImageUpload(fig);
+        return;
+      }
+      this._applyImageSetting(fig, 'align', action.replace('align-', ''));
     });
     tb.addEventListener('change', (e) => {
       const sel = e.target.closest('select');
@@ -1380,6 +1399,30 @@ Bob --> Alice: Hi
     this.imageToolbar.classList.add('open');
     this._syncImageToolbar(fig);
     this._positionImageToolbar(fig);
+  }
+
+  async _replaceImageUpload(fig) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.hidden = true;
+    this.bodyEl.parentElement.appendChild(input);
+    input.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      if (!file) { input.remove(); return; }
+      try {
+        const url = await this.uploadImage(file);
+        const img = fig.querySelector('img');
+        if (img) {
+          img.setAttribute('src', url);
+          img.setAttribute('alt', file.name || 'image');
+          this._markDirty();
+        }
+      } catch (_) {}
+      input.value = '';
+      input.remove();
+    });
+    input.click();
   }
 
   async promptImageUrl() {
