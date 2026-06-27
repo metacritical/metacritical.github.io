@@ -458,7 +458,7 @@
     </aside>
     <h1 class="title" id="draft-title" contenteditable="true">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
     <div class="post-author-row"><img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey"><div class="post-author-meta"><span class="post-author-name-row"><span class="post-author-name">Pankaj Doharey</span><span id="draft-tags-inline" class="draft-inline-tags"></span><button id="draft-add-tag" class="draft-tag-add" type="button">+ Tag</button></span><span class="post-author-date">2018-08-11 Sat · 1 min read</span><span id="draft-save-state" class="draft-save-state" aria-live="polite">Saved</span></div></div>
-    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="posts/writing-a-programmers-editor-part-2.org" data-tags="scheme,editor-data-structures,gap-buffer,data,structures,editor,gap,buffer"><p>
+    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="posts/writing-a-programmers-editor-part-2.org" data-tags="scheme,editor-data-structures,gap-buffer,data,structures,editor,gap,buffer" data-code-meta="{&quot;data-bg&quot;:&quot;light&quot;,&quot;data-syntax-theme&quot;:&quot;default&quot;}"><p>
 In my quest to write a programmable editor the first problem that i came across was
 which datastructure to hold the text in? What do other text editors use? For instance 
 emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
@@ -468,7 +468,7 @@ like.
 
 
 
-<div id="org0a2ab03" class="figure">
+<div id="org2af5336" class="figure">
 <p><img src="file:///assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 </div>
@@ -1720,6 +1720,7 @@ like.
       syntaxSelect.addEventListener('change', (e) => {
         e.stopPropagation();
         setCodeBlockSyntaxTheme(pre, e.target.value);
+        e.target.focus();
       });
     }
     if (bgToggle) {
@@ -1950,8 +1951,9 @@ like.
         const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'light').trim().toLowerCase();
-        const bg = oldTheme === 'light' ? 'light' : 'dark';
-        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
+        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         const pre = document.createElement('pre');
         pre.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         pre.setAttribute('data-lang', lang);
@@ -1969,8 +1971,9 @@ like.
         const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'light').trim().toLowerCase();
-        const bg = oldTheme === 'light' ? 'light' : 'dark';
-        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
+        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         el.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         el.setAttribute('data-lang', lang);
         el.setAttribute('data-bg', bg);

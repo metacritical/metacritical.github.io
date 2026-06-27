@@ -2481,7 +2481,7 @@ Bob --> Alice: Hi
         i++; continue;
       }
       if (/^#\+ATTR_HTML:\s*/i.test(trimmed)) {
-        pendingAttrHtml = {};
+        pendingAttrHtml = pendingAttrHtml || {};
         const rest = trimmed.replace(/^#\+ATTR_HTML:\s*/i, '').trim();
         const pairs = rest.matchAll(/:([a-zA-Z0-9_-]+)\s+([^:\s][^:]*?)(?=\s+:|\s*$)/g);
         for (const m of pairs) pendingAttrHtml[m[1]] = m[2].trim();

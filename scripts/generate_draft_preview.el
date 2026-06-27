@@ -130,6 +130,7 @@
   (condition-case nil
       (with-temp-buffer
         (insert-file-contents path)
+        (org-mode)
           (let ((org-export-with-toc nil)
                 (org-export-with-section-numbers nil)
                 (org-export-with-author nil)
@@ -195,6 +196,23 @@
               :html-body html-body
               :image image)))))
 
+(defcustom sds/code-block-attrs-re
+  (rx "#+ATTR_HTML: :" (or "data-bg" "data-syntax-theme")
+      " " (1+ (not space)))
+  "Regular expression matching #+ATTR_HTML lines for code block settings."
+  :type 'regexp)
+
+(defun sds/collect-code-block-attrs (body)
+  "Collect #+ATTR_HTML data-bg and data-syntax-theme values from BODY."
+  (let ((bg "light")
+        (st "default"))
+    (dolist (line (split-string (or body "") "\n"))
+      (cond ((string-match "^#\\+ATTR_HTML: :data-bg \\(\\S+\\)" line)
+             (setq bg (match-string 1 line)))
+            ((string-match "^#\\+ATTR_HTML: :data-syntax-theme \\(\\S+\\)" line)
+             (setq st (match-string 1 line)))))
+    `((:data-bg . ,bg) (:data-syntax-theme . ,st))))
+
 (defun sds/detail-page (item known-tags)
   (let* ((title (sds/html-escape (plist-get item :title)))
          (body-html (or (plist-get item :html-body) ""))
@@ -203,6 +221,12 @@
          (tags (or (plist-get item :tags) '()))
          (tags-csv (sds/html-escape (string-join tags ",")))
          (known-tags-json (json-encode (vconcat (delete-dups (append known-tags tags)))))
+         (code-attrs (sds/collect-code-block-attrs (plist-get item :body)))
+         (code-meta-json (sds/html-escape (json-encode
+                           (let ((obj (make-hash-table :test 'equal)))
+                             (dolist (pair code-attrs obj)
+                               (puthash (substring (symbol-name (car pair)) 1) (cdr pair) obj))
+                             obj))))
          (mins (number-to-string (or (plist-get item :read-mins) 1))))
     (format "<!doctype html>
 <html lang=\"en\" data-theme=\"medium\">
@@ -656,7 +680,7 @@
     </aside>
     <h1 class=\"title\" id=\"draft-title\" contenteditable=\"true\">%s</h1>
     <div class=\"post-author-row\"><img class=\"post-author-avatar\" src=\"/media/images/avatar.jpg\" alt=\"Pankaj Doharey\"><div class=\"post-author-meta\"><span class=\"post-author-name-row\"><span class=\"post-author-name\">Pankaj Doharey</span><span id=\"draft-tags-inline\" class=\"draft-inline-tags\"></span><button id=\"draft-add-tag\" class=\"draft-tag-add\" type=\"button\">+ Tag</button></span><span class=\"post-author-date\">%s · %s min read</span><span id=\"draft-save-state\" class=\"draft-save-state\" aria-live=\"polite\">Saved</span></div></div>
-    <div id=\"draft-body\" class=\"draft-editable\" contenteditable=\"true\" data-target-path=\"%s\" data-tags=\"%s\">%s</div>
+    <div id=\"draft-body\" class=\"draft-editable\" contenteditable=\"true\" data-target-path=\"%s\" data-tags=\"%s\" data-code-meta=\"%s\">%s</div>
   </div>
 </section>
 
@@ -2135,8 +2159,9 @@
         const m = klass.match(/\\bsrc-([a-z0-9-]+)\\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'light').trim().toLowerCase();
-        const bg = oldTheme === 'light' ? 'light' : 'dark';
-        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
+        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         const pre = document.createElement('pre');
         pre.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         pre.setAttribute('data-lang', lang);
@@ -2154,8 +2179,9 @@
         const m = klass.match(/\\bsrc-([a-z0-9-]+)\\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'light').trim().toLowerCase();
-        const bg = oldTheme === 'light' ? 'light' : 'dark';
-        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
+        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         el.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         el.setAttribute('data-lang', lang);
         el.setAttribute('data-bg', bg);
@@ -3019,7 +3045,7 @@
 </body>
 </html>\n"
             title title date mins
-            draft-path tags-csv body-html known-tags-json)))
+            draft-path tags-csv code-meta-json body-html known-tags-json)))
 
 (defun sds/card-html (item)
   (let* ((slug (sds/html-escape (plist-get item :slug)))
