@@ -1904,6 +1904,7 @@
       syntaxSelect.addEventListener('change', (e) => {
         e.stopPropagation();
         setCodeBlockSyntaxTheme(pre, e.target.value);
+        e.target.focus();
       });
     }
     if (bgToggle) {

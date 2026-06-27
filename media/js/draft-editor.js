@@ -854,6 +854,7 @@ class DraftEditor {
       syntaxSelect.addEventListener('change', (e) => {
         e.stopPropagation();
         this._setCodeBlockSyntaxTheme(pre, e.target.value);
+        e.target.focus();
       });
     }
     if (bgToggle) {

@@ -5,7 +5,7 @@
 #+FILETAGS: :test:
 
 #+ATTR_HTML: :data-bg dark
-#+ATTR_HTML: :data-syntax-theme one-dark
+#+ATTR_HTML: :data-syntax-theme monokai
 #+BEGIN_SRC ruby
 def hello
   puts "Hello World!"
