@@ -78,7 +78,7 @@ rm -rf "$BLOG_DIR/public"
 # AOG emits a large volume of benign link-validation warnings during
 # generation; filter them so real failures are visible in dev output.
 aog publish "$BLOG_DIR" "$BLOG_DIR/public" 2>&1 | \
-  rg -v '^(Mark set|Fontifing nil\.\.\.|Htmlizing nil\.\.\.|Setting up indent for shell type bash|Indentation variables are now local\.|Indentation setup for shell type bash|\[WARN\] File .* in hyper link does not exist|\(:title )'
+  rg -v '^(Mark set|Fontifing nil\.\.\.|Fontifing nil\.\.\.done|Htmlizing nil\.\.\.|Htmlizing nil\.\.\.done|Indenting region\.\.\.|Indenting region\.\.\.done|Setting up indent for shell type bash|Indentation variables are now local\.|Indentation setup for shell type bash|\[WARN\] File .* in hyper link does not exist|\(:title )'
 
 # AOG may leave the repository on its org source branch; switch back so
 # post-processing steps run against the expected working tree.
@@ -115,6 +115,10 @@ if [ -d "$BLOG_DIR/media" ]; then
   if [ -d "$BLOG_DIR/media/images" ]; then
     mkdir -p "$BLOG_DIR/public/media/images"
     cp -r "$BLOG_DIR/media/images/"* "$BLOG_DIR/public/media/images/" 2>/dev/null || true
+  fi
+  if [ -f "$BLOG_DIR/media/js/claps.js" ]; then
+    mkdir -p "$BLOG_DIR/public/media/js"
+    cp "$BLOG_DIR/media/js/claps.js" "$BLOG_DIR/public/media/js/claps.js"
   fi
 fi
 if [ -d "$BLOG_DIR/assets" ]; then
@@ -287,8 +291,34 @@ fi
 # Draft preview pages are local-dev only.
 if [ "$ENABLE_DRAFT_PREVIEW" = "1" ]; then
   "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_draft_preview.el" "$BLOG_DIR"
+
+  # Add an Edit button to published post pages that links to the editable clone.
+  while IFS= read -r -d '' html_file; do
+    # published posts live under public/blog/YYYY/MM/DD/<slug>/index.html
+    rel_path="${html_file#$BLOG_DIR/public/}"
+    slug="$(basename "$(dirname "$rel_path")")"
+    if [ -f "$BLOG_DIR/public/drafts/published/$slug/index.html" ]; then
+      edit_link="    <a class=\"draft-edit-action\" href=\"/drafts/published/$slug/\" aria-label=\"Edit\" title=\"Edit this post\">Edit</a>"
+      if ! rg -q "draft-edit-action" "$html_file"; then
+        perl -0777 -i -pe "s@(</nav>|</div>\\s*<button id=\"site-search-open\"|<button id=\"site-search-open\")@$edit_link\\n\$1@" "$html_file" 2>/dev/null || true
+      fi
+    fi
+  done < <(find "$BLOG_DIR/public/blog" -type f -name "index.html" -print0)
 else
   rm -rf "$BLOG_DIR/public/drafts"
+fi
+
+# Load the clap persistence script on every generated page.
+if [ -f "$BLOG_DIR/public/media/js/claps.js" ]; then
+  CLAPS_SCRIPT='<script src="/media/js/claps.js"></script>'
+  while IFS= read -r -d '' html_file; do
+    if ! rg -q '/media/js/claps\.js' "$html_file"; then
+      awk -v script="$CLAPS_SCRIPT" '
+        { print }
+        /<\/body>/ { print script }
+      ' "$html_file" > "$html_file.tmp" && mv "$html_file.tmp" "$html_file"
+    fi
+  done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
 fi
 
 # Optional cleanup step to keep commit diffs clean after each build.

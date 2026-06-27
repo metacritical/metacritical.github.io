@@ -10,14 +10,12 @@
 * Introduction
 :PROPERTIES:
 :DESCRIPTION: Getting started.
-:CUSTOM_ID: introduction
 :END:
 #+cindex: introduction
 
 ** Summary
 :PROPERTIES:
 :DESCRIPTION: Brief summary of what Org does.
-:CUSTOM_ID: summary
 :END:
 #+cindex: summary
 
@@ -86,7 +84,6 @@ book from the Network Theory Ltd. publishing company, closed in 2009.
 ** Installation
 :PROPERTIES:
 :DESCRIPTION: Installing Org.
-:CUSTOM_ID: installation
 :END:
 #+cindex: installation
 
@@ -110,7 +107,6 @@ with the latest stable versions of these third-party packages.
 *** Using Emacs packaging system
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: using-emacs-packaging-system
 :END:
 
 Recent Emacs distributions include a packaging system which lets you
@@ -138,7 +134,6 @@ arise.
 *** Using Org's git repository
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: using-org-s-git-repository
 :END:
 
 You can clone Org's repository and install Org like this:
@@ -171,7 +166,6 @@ Org Build System page on [[https://orgmode.org/worg/dev/org-build-system.html][W
 *** Installing Org's contributed packages
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: installing-org-s-contributed-packages
 :END:
 
 Org's repository used to contain =contrib/= directory for add-ons
@@ -186,7 +180,6 @@ exhaustive.
 ** Activation
 :PROPERTIES:
 :DESCRIPTION: How to activate Org for certain buffers.
-:CUSTOM_ID: activation
 :END:
 #+cindex: activation
 #+cindex: autoload
@@ -239,7 +232,6 @@ region by using the mouse to select a region, or pressing
 ** Feedback
 :PROPERTIES:
 :DESCRIPTION: Bug reports, ideas, patches, etc.
-:CUSTOM_ID: feedback
 :END:
 #+cindex: feedback
 #+cindex: contact
@@ -340,7 +332,6 @@ Thank you for helping to improve this program.
 *** How to create a useful backtrace
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: how-to-create-a-useful-backtrace
 :END:
 
 #+cindex: backtrace of an error
@@ -376,7 +367,6 @@ error occurred.  Here is how to produce a useful backtrace:
 *** How to profile Org performance
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: how-to-profile-org-performance
 :END:
 
 #+cindex: profiler
@@ -439,13 +429,11 @@ Emacs profiler, we recommend the following steps:
 :PROPERTIES:
 :DESCRIPTION: Typesetting conventions used in this manual.
 :ALT_TITLE: Conventions
-:CUSTOM_ID: typesetting-conventions-used-in-this-manual
 :END:
 
 *** TODO keywords, tags, properties, etc.
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: keywords-tags-properties-etc
 :END:
 
 Org uses various syntactical elements: TODO keywords, tags, property
@@ -477,7 +465,6 @@ conventions:
 *** Key bindings and commands
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: key-bindings-and-commands
 :END:
 
 The manual lists both the keys and the corresponding commands for
@@ -493,7 +480,6 @@ call ~org-table-move-column-right~.
 * Document Structure
 :PROPERTIES:
 :DESCRIPTION: A tree works like your brain.
-:CUSTOM_ID: document-structure
 :END:
 
 #+cindex: document structure
@@ -510,7 +496,6 @@ the entire show and hide functionalities into a single command,
 ** Headlines
 :PROPERTIES:
 :DESCRIPTION: How to typeset Org tree headlines.
-:CUSTOM_ID: headlines
 :END:
 #+cindex: headlines
 #+cindex: outline tree
@@ -554,7 +539,6 @@ subtree, in order to structure the collapsed view.  See the variable
 ** Visibility Cycling
 :PROPERTIES:
 :DESCRIPTION: Show and hide, much simplified.
-:CUSTOM_ID: visibility-cycling
 :END:
 #+cindex: cycling, visibility
 #+cindex: visibility cycling
@@ -565,7 +549,6 @@ subtree, in order to structure the collapsed view.  See the variable
 *** Global and local cycling
 :PROPERTIES:
 :DESCRIPTION: Cycling through various visibility states.
-:CUSTOM_ID: global-and-local-cycling
 :END:
 #+cindex: subtree visibility states
 #+cindex: subtree cycling
@@ -685,7 +668,6 @@ Org uses just two commands, bound to {{{kbd(TAB)}}} and
 *** Initial visibility
 :PROPERTIES:
 :DESCRIPTION: Setting the initial visibility state.
-:CUSTOM_ID: initial-visibility
 :END:
 
 #+vindex: org-startup-folded
@@ -725,7 +707,6 @@ for this property are =folded=, =children=, =content=, and =all=.
 *** Catching invisible edits
 :PROPERTIES:
 :DESCRIPTION: Preventing mistakes when editing invisible parts.
-:CUSTOM_ID: catching-invisible-edits
 :END:
 #+cindex: edits, catching invisible
 
@@ -745,7 +726,6 @@ catching invisible edits completely.
 ** Motion
 :PROPERTIES:
 :DESCRIPTION: Jumping to other headlines.
-:CUSTOM_ID: motion
 :END:
 #+cindex: motion, between headlines
 #+cindex: jumping, to headlines
@@ -815,7 +795,6 @@ The following commands jump to other headlines in the buffer.
 ** Structure Editing
 :PROPERTIES:
 :DESCRIPTION: Changing sequence and level of headlines.
-:CUSTOM_ID: structure-editing
 :END:
 #+cindex: structure editing
 #+cindex: headline, promotion and demotion
@@ -1043,7 +1022,6 @@ keys have different functionality.
 ** Sparse Trees
 :PROPERTIES:
 :DESCRIPTION: Matches embedded in context.
-:CUSTOM_ID: sparse-trees
 :END:
 #+cindex: sparse trees
 #+cindex: trees, sparse
@@ -1134,7 +1112,6 @@ file.
 ** Plain Lists
 :PROPERTIES:
 :DESCRIPTION: Additional structure within an entry.
-:CUSTOM_ID: plain-lists
 :END:
 #+cindex: plain lists
 #+cindex: lists, plain
@@ -1354,7 +1331,6 @@ to disable them individually.
 ** Drawers
 :PROPERTIES:
 :DESCRIPTION: Tucking stuff away.
-:CUSTOM_ID: drawers
 :END:
 #+cindex: drawers
 #+cindex: visibility cycling, drawers
@@ -1405,7 +1381,6 @@ similarly to state changes, use
 ** Blocks
 :PROPERTIES:
 :DESCRIPTION: Folding blocks.
-:CUSTOM_ID: blocks
 :END:
 #+vindex: org-hide-block-startup
 #+cindex: blocks, folding
@@ -1426,7 +1401,6 @@ the variable ~org-hide-block-startup~ or on a per-file basis by using
 * Tables
 :PROPERTIES:
 :DESCRIPTION: Pure magic for quick formatting.
-:CUSTOM_ID: tables
 :END:
 #+cindex: tables
 #+cindex: editing tables
@@ -1438,7 +1412,6 @@ Calculator Manual]]).
 ** Built-in Table Editor
 :PROPERTIES:
 :DESCRIPTION: Simple tables.
-:CUSTOM_ID: built-in-table-editor
 :END:
 #+cindex: table editor, built-in
 
@@ -1491,7 +1464,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Creation and conversion
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: creation-and-conversion
 :END:
 
 - {{{kbd(C-c |)}}} (~org-table-create-or-convert-from-region~) ::
@@ -1516,7 +1488,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Re-aligning and field motion
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: re-aligning-and-field-motion
 :END:
 
 - {{{kbd(C-c C-c)}}} (~org-table-align~) ::
@@ -1567,7 +1538,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Column and row editing
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: column-and-row-editing
 :END:
 
 - {{{kbd(M-LEFT)}}} (~org-table-move-column-left~) ::
@@ -1677,7 +1647,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Regions
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: regions
 :END:
 
 - {{{kbd(C-c C-x M-w)}}} (~org-table-copy-region~) ::
@@ -1720,7 +1689,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Calculations
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: calculations
 :END:
 
 #+cindex: formula, in tables
@@ -1754,7 +1722,6 @@ you, configure the option ~org-table-auto-blank-field~.
 *** Miscellaneous
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: miscellaneous
 :END:
 
 - {{{kbd(C-c `)}}} (~org-table-edit-field~) ::
@@ -1820,7 +1787,6 @@ you, configure the option ~org-table-auto-blank-field~.
 ** Column Width and Alignment
 :PROPERTIES:
 :DESCRIPTION: Overrule the automatic settings.
-:CUSTOM_ID: column-width-and-alignment
 :END:
 #+cindex: narrow columns in tables
 #+cindex: alignment in tables
@@ -1920,7 +1886,6 @@ automatically upon exporting the document.
 ** Column Groups
 :PROPERTIES:
 :DESCRIPTION: Grouping to trigger vertical lines.
-:CUSTOM_ID: column-groups
 :END:
 #+cindex: grouping columns in tables
 
@@ -1959,7 +1924,6 @@ every vertical line you would like to have:
 :PROPERTIES:
 :DESCRIPTION: The table editor as minor mode.
 :ALT_TITLE: Orgtbl Mode
-:CUSTOM_ID: the-orgtbl-minor-mode
 :END:
 #+cindex: Orgtbl mode
 #+cindex: minor mode for tables
@@ -1984,7 +1948,6 @@ of Orgtbl mode, including spreadsheet capabilities.  For details, see
 ** The Spreadsheet
 :PROPERTIES:
 :DESCRIPTION: The table editor has spreadsheet capabilities.
-:CUSTOM_ID: the-spreadsheet
 :END:
 #+cindex: calculations, in tables
 #+cindex: spreadsheet capabilities
@@ -2004,7 +1967,6 @@ references by arrow keys.
 *** References
 :PROPERTIES:
 :DESCRIPTION: How to refer to another field or range.
-:CUSTOM_ID: references
 :END:
 #+cindex: references
 
@@ -2017,7 +1979,6 @@ that field, or press {{{kbd(C-c })}}} to toggle the display of a grid.
 **** Field references
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: field-references
 :END:
 
 #+cindex: field references
@@ -2072,7 +2033,6 @@ Here are a few examples:
 **** Range references
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: range-references
 :END:
 
 #+cindex: range references
@@ -2103,7 +2063,6 @@ Calc]].
 **** Field coordinates in formulas
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: field-coordinates-in-formulas
 :END:
 
 #+cindex: field coordinates
@@ -2142,7 +2101,6 @@ number of rows.
 **** Named references
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: named-references
 :END:
 #+cindex: named references
 #+cindex: references, named
@@ -2174,7 +2132,6 @@ of letters and numbers.
 **** Remote references
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: remote-references
 :END:
 
 #+cindex: remote references
@@ -2206,7 +2163,6 @@ table name or ID.
 *** Formula syntax for Calc
 :PROPERTIES:
 :DESCRIPTION: Using Calc to compute stuff.
-:CUSTOM_ID: formula-syntax-for-calc
 :END:
 #+cindex: formula syntax, Calc
 #+cindex: syntax, of formulas
@@ -2347,7 +2303,6 @@ You can add your own Calc functions defined in Emacs Lisp with
 :PROPERTIES:
 :DESCRIPTION: Writing formulas in Emacs Lisp.
 :ALT_TITLE: Formula syntax for Lisp
-:CUSTOM_ID: emacs-lisp-forms-as-formulas
 :END:
 #+cindex: Lisp forms, as table formulas
 
@@ -2418,7 +2373,6 @@ instances of =;= belong to the formula itself:
 *** Durations and time values
 :PROPERTIES:
 :DESCRIPTION: How to compute durations and time values.
-:CUSTOM_ID: durations-and-time-values
 :END:
 #+cindex: duration, computing
 #+cindex: time, computing
@@ -2454,7 +2408,6 @@ considered as seconds in addition and subtraction.
 *** Field and range formulas
 :PROPERTIES:
 :DESCRIPTION: Formula for specific (ranges of) fields.
-:CUSTOM_ID: field-and-range-formulas
 :END:
 #+cindex: field formula
 #+cindex: range formula
@@ -2520,7 +2473,6 @@ the =TBLFM= keyword directly.
 *** Column formulas
 :PROPERTIES:
 :DESCRIPTION: Formulas valid for an entire column.
-:CUSTOM_ID: column-formulas
 :END:
 #+cindex: column formula
 #+cindex: formula, for table column
@@ -2565,7 +2517,6 @@ following command:
 *** Lookup functions
 :PROPERTIES:
 :DESCRIPTION: Lookup functions for searching tables.
-:CUSTOM_ID: lookup-functions
 :END:
 #+cindex: lookup functions in tables
 #+cindex: table lookup functions
@@ -2619,7 +2570,6 @@ examples see [[https://orgmode.org/worg/org-tutorials/org-lookups.html][this tut
 *** Editing and debugging formulas
 :PROPERTIES:
 :DESCRIPTION: Fixing formulas.
-:CUSTOM_ID: editing-and-debugging-formulas
 :END:
 #+cindex: formula editing
 #+cindex: editing, of table formulas
@@ -2777,7 +2727,6 @@ recalculation commands in the table.
 **** Using multiple =TBLFM= lines
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: using-multiple-tblfm-lines
 :END:
 #+cindex: multiple formula lines
 #+cindex: @samp{TBLFM} keywords, multiple
@@ -2827,7 +2776,6 @@ keyword.
 **** Debugging formulas
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: debugging-formulas
 :END:
 #+cindex: formula debugging
 #+cindex: debugging, of table formulas
@@ -2842,7 +2790,6 @@ Detailed information are displayed.
 *** Updating the table
 :PROPERTIES:
 :DESCRIPTION: Recomputing all dependent fields.
-:CUSTOM_ID: updating-the-table
 :END:
 #+cindex: recomputing table fields
 #+cindex: updating, table
@@ -2893,7 +2840,6 @@ following commands:
 *** Advanced features
 :PROPERTIES:
 :DESCRIPTION: Field and column names, automatic recalculation...
-:CUSTOM_ID: advanced-features
 :END:
 
 If you want the recalculation of fields to happen automatically, or if
@@ -3006,7 +2952,6 @@ series of degree n at location x for a couple of functions.
 ** Org Plot
 :PROPERTIES:
 :DESCRIPTION: Plotting from Org tables.
-:CUSTOM_ID: org-plot
 :END:
 #+cindex: graph, in tables
 #+cindex: plot tables using Gnuplot
@@ -3017,7 +2962,6 @@ either graphically or in ASCII art.
 *** Graphical plots using Gnuplot
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: graphical-plots-using-gnuplot
 :END:
 
 #+cindex: @samp{PLOT}, keyword
@@ -3060,7 +3004,6 @@ For more information and examples see the [[https://orgmode.org/worg/org-tutoria
 **** Plot options
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: plot-options
 :END:
 
 - =set= ::
@@ -3160,7 +3103,6 @@ For more information and examples see the [[https://orgmode.org/worg/org-tutoria
 *** ASCII bar plots
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-bar-plots
 :END:
 
 While point is on a column, typing {{{kbd(C-c " a)}}} or {{{kbd(M-x
@@ -3200,7 +3142,6 @@ defaults to =12=.
 * Hyperlinks
 :PROPERTIES:
 :DESCRIPTION: Notes in context.
-:CUSTOM_ID: hyperlinks
 :END:
 #+cindex: hyperlinks
 
@@ -3210,7 +3151,6 @@ links to other files, Usenet articles, emails, and much more.
 ** Link Format
 :PROPERTIES:
 :DESCRIPTION: How links in Org are formatted.
-:CUSTOM_ID: link-format
 :END:
 #+cindex: link format
 #+cindex: format, of links
@@ -3274,7 +3214,6 @@ Hyperlinks \rarr Literal links, customize ~org-link-descriptive~, or use
 ** Internal Links
 :PROPERTIES:
 :DESCRIPTION: Links to other places in the current file.
-:CUSTOM_ID: internal-links
 :END:
 #+cindex: internal links
 #+cindex: links, internal
@@ -3347,7 +3286,6 @@ recorded earlier.
 ** Radio Targets
 :PROPERTIES:
 :DESCRIPTION: Make targets trigger links in plain text.
-:CUSTOM_ID: radio-targets
 :END:
 #+cindex: radio targets
 #+cindex: targets, radio
@@ -3366,7 +3304,6 @@ point on or at a target.
 ** External Links
 :PROPERTIES:
 :DESCRIPTION: URL-like links to the world.
-:CUSTOM_ID: external-links
 :END:
 #+cindex: links, external
 #+cindex: external links
@@ -3556,7 +3493,6 @@ end of the link, enclose the link in square or angular brackets.
 ** Handling Links
 :PROPERTIES:
 :DESCRIPTION: Creating, inserting and following.
-:CUSTOM_ID: handling-links
 :END:
 #+cindex: links, handling
 
@@ -3810,7 +3746,6 @@ generally, act on links.
 ** Using Links Outside Org
 :PROPERTIES:
 :DESCRIPTION: Linking from my C source code?
-:CUSTOM_ID: using-links-outside-org
 :END:
 
 #+findex: org-insert-link-global
@@ -3825,7 +3760,6 @@ You might want to bind them to globally available keys.  See
 ** Link Abbreviations
 :PROPERTIES:
 :DESCRIPTION: Shortcuts for writing complex links.
-:CUSTOM_ID: link-abbreviations
 :END:
 #+cindex: link abbreviations
 #+cindex: abbreviation, links
@@ -3900,7 +3834,6 @@ the link completion function like this:
 :PROPERTIES:
 :DESCRIPTION: Linking to a specific location.
 :ALT_TITLE: Search Options
-:CUSTOM_ID: search-options-in-file-links
 :END:
 #+cindex: search option in file links
 #+cindex: search option in id links
@@ -3967,7 +3900,6 @@ would.
 ** Custom Searches
 :PROPERTIES:
 :DESCRIPTION: When the default search is not enough.
-:CUSTOM_ID: custom-searches
 :END:
 #+cindex: custom search strings
 #+cindex: search strings, custom
@@ -3993,7 +3925,6 @@ implementation example.  See the file =ol-bibtex.el=.
 * TODO Items
 :PROPERTIES:
 :DESCRIPTION: Every tree branch can be a TODO item.
-:CUSTOM_ID: items
 :END:
 #+cindex: TODO items
 
@@ -4014,7 +3945,6 @@ have to do.
 :PROPERTIES:
 :DESCRIPTION: Marking and displaying TODO entries.
 :ALT_TITLE: TODO Basics
-:CUSTOM_ID: basic-todo-functionality
 :END:
 
 Any headline becomes a TODO item when it starts with the word =TODO=,
@@ -4096,7 +4026,6 @@ of the option ~org-todo-state-tags-triggers~ for details.
 :PROPERTIES:
 :DESCRIPTION: Workflow and assignments.
 :ALT_TITLE: TODO Extensions
-:CUSTOM_ID: extended-use-of-todo-keywords
 :END:
 #+cindex: extended TODO keywords
 
@@ -4114,7 +4043,6 @@ TODO items in particular (see [[*Tags]]).
 :PROPERTIES:
 :DESCRIPTION: From TODO to DONE in steps.
 :ALT_TITLE: Workflow states
-:CUSTOM_ID: keywords-as-workflow-states
 :END:
 #+cindex: TODO workflow
 #+cindex: workflow states as TODO keywords
@@ -4151,7 +4079,6 @@ TODO state changes]], for more information.
 :PROPERTIES:
 :DESCRIPTION: I do this, Fred does the rest.
 :ALT_TITLE: TODO types
-:CUSTOM_ID: keywords-as-types
 :END:
 #+cindex: TODO types
 #+cindex: names as TODO keywords
@@ -4193,7 +4120,6 @@ TODO list: {{{kbd(C-3 M-x org-agenda t)}}}.
 :PROPERTIES:
 :DESCRIPTION: Mixing it all, still finding your way.
 :ALT_TITLE: Multiple sets in one file
-:CUSTOM_ID: multiple-keyword-sets-in-one-file
 :END:
 #+cindex: TODO keyword sets
 
@@ -4244,7 +4170,6 @@ correct sequence.  In addition to typing a keyword or using completion
 *** Fast access to TODO states
 :PROPERTIES:
 :DESCRIPTION: Single letter selection of state.
-:CUSTOM_ID: fast-access-to-todo-states
 :END:
 
 If you would like to quickly change an entry to an arbitrary TODO
@@ -4269,7 +4194,6 @@ remove any TODO keyword from an entry.
 :PROPERTIES:
 :DESCRIPTION: Different files, different requirements.
 :ALT_TITLE: Per-file keywords
-:CUSTOM_ID: setting-up-keywords-for-individual-files
 :END:
 #+cindex: keyword options
 #+cindex: per-file keywords
@@ -4317,7 +4241,6 @@ the current buffer.].
 *** Faces for TODO keywords
 :PROPERTIES:
 :DESCRIPTION: Highlighting states.
-:CUSTOM_ID: faces-for-todo-keywords
 :END:
 #+cindex: faces, for TODO keywords
 
@@ -4348,7 +4271,6 @@ a background color.
 *** TODO dependencies
 :PROPERTIES:
 :DESCRIPTION: When one task needs to wait for others.
-:CUSTOM_ID: dependencies
 :END:
 #+cindex: TODO dependencies
 #+cindex: dependencies, of TODO states
@@ -4430,7 +4352,6 @@ the module =org-depend.el= in the =org-contrib= repository.
 ** Progress Logging
 :PROPERTIES:
 :DESCRIPTION: Dates and notes for progress.
-:CUSTOM_ID: progress-logging
 :END:
 #+cindex: progress logging
 #+cindex: logging, of progress
@@ -4455,7 +4376,6 @@ clock working time for a task, see [[*Clocking Work Time]].
 *** Closing items
 :PROPERTIES:
 :DESCRIPTION: When was this entry marked as done?
-:CUSTOM_ID: closing-items
 :END:
 
 The most basic automatic logging is to keep track of /when/ a certain
@@ -4489,7 +4409,6 @@ entry with a =Closing Note= heading.
 *** Tracking TODO state changes
 :PROPERTIES:
 :DESCRIPTION: When did the status change?
-:CUSTOM_ID: tracking-todo-state-changes
 :END:
 #+cindex: drawer, for state change recording
 
@@ -4569,7 +4488,6 @@ specific settings like =TODO(!)=.  For example:
 *** Tracking your habits
 :PROPERTIES:
 :DESCRIPTION: How consistent have you been?
-:CUSTOM_ID: tracking-your-habits
 :END:
 #+cindex: habits
 #+cindex: @samp{STYLE}, property
@@ -4683,7 +4601,6 @@ example.
 ** Priorities
 :PROPERTIES:
 :DESCRIPTION: Some things are more important than others.
-:CUSTOM_ID: priorities
 :END:
 #+cindex: priorities
 #+cindex: priority cookie
@@ -4760,7 +4677,6 @@ Or, using numeric values:
 :PROPERTIES:
 :DESCRIPTION: Splitting a task into manageable pieces.
 :ALT_TITLE: Breaking Down Tasks
-:CUSTOM_ID: breaking-down-tasks-into-subtasks
 :END:
 #+cindex: tasks, breaking down
 #+cindex: statistics, for TODO items
@@ -4822,7 +4738,6 @@ of) subtasks (see [[*Checkboxes]]).
 ** Checkboxes
 :PROPERTIES:
 :DESCRIPTION: Tick-off lists.
-:CUSTOM_ID: checkboxes
 :END:
 #+cindex: checkboxes
 
@@ -4988,7 +4903,6 @@ The following commands work with checkboxes:
 * Tags
 :PROPERTIES:
 :DESCRIPTION: Tagging headlines and matching sets of tags.
-:CUSTOM_ID: tags
 :END:
 #+cindex: tags
 #+cindex: headline tagging
@@ -5012,7 +4926,6 @@ may specify special faces for specific tags using the variable
 ** Tag Inheritance
 :PROPERTIES:
 :DESCRIPTION: Tags use the tree structure of an outline.
-:CUSTOM_ID: tag-inheritance
 :END:
 #+cindex: tag inheritance
 #+cindex: inheritance, of tags
@@ -5059,7 +4972,6 @@ up agenda generation.
 ** Setting Tags
 :PROPERTIES:
 :DESCRIPTION: How to assign tags to a headline.
-:CUSTOM_ID: setting-tags
 :END:
 #+cindex: setting tags
 #+cindex: tags, setting
@@ -5264,7 +5176,6 @@ of keyboard keys.  You can customize this variable.
 ** Tag Hierarchy
 :PROPERTIES:
 :DESCRIPTION: Create a hierarchy of tags.
-:CUSTOM_ID: tag-hierarchy
 :END:
 #+cindex: group tags
 #+cindex: tags, groups
@@ -5369,7 +5280,6 @@ If you want to disable tag groups completely, set ~org-group-tags~ to
 ** Tag Searches
 :PROPERTIES:
 :DESCRIPTION: Searching for combinations of tags.
-:CUSTOM_ID: tag-searches
 :END:
 #+cindex: tag searches
 #+cindex: searching for tags
@@ -5410,7 +5320,6 @@ with many examples, see [[*Matching tags and properties]].
 * Properties and Columns
 :PROPERTIES:
 :DESCRIPTION: Storing information about an entry.
-:CUSTOM_ID: properties-and-columns
 :END:
 #+cindex: properties
 
@@ -5435,7 +5344,6 @@ Properties can be conveniently edited and viewed in column view (see
 ** Property Syntax
 :PROPERTIES:
 :DESCRIPTION: How properties are spelled out.
-:CUSTOM_ID: property-syntax
 :END:
 #+cindex: property syntax
 #+cindex: drawer, for properties
@@ -5595,7 +5503,6 @@ The following commands help to work with properties:
 ** Special Properties
 :PROPERTIES:
 :DESCRIPTION: Access to other Org mode features.
-:CUSTOM_ID: special-properties
 :END:
 #+cindex: properties, special
 
@@ -5642,7 +5549,6 @@ not be used as keys in the properties drawer:
 ** Property Searches
 :PROPERTIES:
 :DESCRIPTION: Matching property values.
-:CUSTOM_ID: property-searches
 :END:
 #+cindex: properties, searching
 #+cindex: searching, of properties
@@ -5691,7 +5597,6 @@ single property:
 ** Property Inheritance
 :PROPERTIES:
 :DESCRIPTION: Passing values down a tree.
-:CUSTOM_ID: property-inheritance
 :END:
 #+cindex: properties, inheritance
 #+cindex: inheritance, of properties
@@ -5744,7 +5649,6 @@ least for the special applications for which they are used:
 ** Column View
 :PROPERTIES:
 :DESCRIPTION: Tabular viewing and editing.
-:CUSTOM_ID: column-view
 :END:
 
 A great way to view and edit properties in an outline tree is /column
@@ -5765,7 +5669,6 @@ from a number of files.
 *** Defining columns
 :PROPERTIES:
 :DESCRIPTION: The COLUMNS format property.
-:CUSTOM_ID: defining-columns
 :END:
 #+cindex: column view, for properties
 #+cindex: properties, column view
@@ -5776,7 +5679,6 @@ done by defining a column format line.
 **** Scope of column definitions
 :PROPERTIES:
 :DESCRIPTION: Where defined, where valid?
-:CUSTOM_ID: scope-of-column-definitions
 :END:
 
 To specify a format that only applies to a specific tree, add
@@ -5806,7 +5708,6 @@ edit a deeper part of the tree.
 **** Column attributes
 :PROPERTIES:
 :DESCRIPTION: Appearance and content of a column.
-:CUSTOM_ID: column-attributes
 :END:
 
 A column definition sets the attributes of a column.  The general
@@ -5930,9 +5831,6 @@ summary type that ignores property values in parent headings, all the
 parent headings.
 
 ***** Summaries in deeply nested hierarchy
-:PROPERTIES:
-:CUSTOM_ID: summaries-in-deeply-nested-hierarchy
-:END:
 
 When computing summaries of deeply nested headings, the summaries are
 computed recursively, from the deepest level to the shallowest.  Here
@@ -5976,13 +5874,11 @@ is an example:
 *** Using column view
 :PROPERTIES:
 :DESCRIPTION: How to create and use column view.
-:CUSTOM_ID: using-column-view
 :END:
 
 **** Turning column view on or off
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: turning-column-view-on-or-off
 :END:
 
 - {{{kbd(C-c C-x C-c)}}} (~org-columns~) ::
@@ -6019,7 +5915,6 @@ is an example:
 **** Editing values
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: editing-values
 :END:
 
 #+attr_texinfo: :sep and
@@ -6079,7 +5974,6 @@ is an example:
 **** Modifying column view on-the-fly
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: modifying-column-view-on-the-fly
 :END:
 
 #+attr_texinfo: :sep and
@@ -6130,7 +6024,6 @@ is an example:
 *** Capturing column view
 :PROPERTIES:
 :DESCRIPTION: A dynamic block for column view.
-:CUSTOM_ID: capturing-column-view
 :END:
 
 Since column view is just an overlay over a buffer, it cannot be
@@ -6271,7 +6164,6 @@ or a dynamic block.
 * Dates and Times
 :PROPERTIES:
 :DESCRIPTION: Making items useful for planning.
-:CUSTOM_ID: dates-and-times
 :END:
 #+cindex: dates
 #+cindex: times
@@ -6293,7 +6185,6 @@ use cases dealing with time and time intervals.
 ** Timestamps
 :PROPERTIES:
 :DESCRIPTION: Assigning a time to a tree entry.
-:CUSTOM_ID: timestamps
 :END:
 #+cindex: timestamps
 #+cindex: ranges, time
@@ -6405,7 +6296,6 @@ the agenda (see [[*Weekly/daily agenda]]).  We distinguish:
 ** Creating Timestamps
 :PROPERTIES:
 :DESCRIPTION: Commands to insert timestamps.
-:CUSTOM_ID: creating-timestamps
 :END:
 
 For Org mode to recognize timestamps, they need to be in the specific
@@ -6507,7 +6397,6 @@ format.
 *** The date/time prompt
 :PROPERTIES:
 :DESCRIPTION: How Org mode helps you enter dates and times.
-:CUSTOM_ID: the-date-time-prompt
 :END:
 #+cindex: date, reading in minibuffer
 #+cindex: time, reading in minibuffer
@@ -6638,7 +6527,6 @@ turn off the display with ~org-read-date-display-live~.].
 *** Custom time format
 :PROPERTIES:
 :DESCRIPTION: Making dates look different.
-:CUSTOM_ID: custom-time-format
 :END:
 #+cindex: custom date/time format
 #+cindex: time format, custom
@@ -6689,7 +6577,6 @@ following consequences:
 ** Deadlines and Scheduling
 :PROPERTIES:
 :DESCRIPTION: Planning your work.
-:CUSTOM_ID: deadlines-and-scheduling
 :END:
 
 A timestamp may be preceded by special keywords to facilitate
@@ -6778,7 +6665,6 @@ expression entry matches.
 :PROPERTIES:
 :DESCRIPTION: Planning items.
 :ALT_TITLE: Inserting deadline/schedule
-:CUSTOM_ID: inserting-deadlines-or-schedules
 :END:
 
 The following commands allow you to quickly insert a deadline or to
@@ -6842,7 +6728,6 @@ any current timestamp.
 *** Repeated tasks
 :PROPERTIES:
 :DESCRIPTION: Items that show up again and again.
-:CUSTOM_ID: repeated-tasks
 :END:
 #+cindex: tasks, repeated
 #+cindex: repeated tasks
@@ -6957,7 +6842,6 @@ a task subtree, with dates shifted in each copy.  The command
 ** Clocking Work Time
 :PROPERTIES:
 :DESCRIPTION: Tracking how long you spend on a task.
-:CUSTOM_ID: clocking-work-time
 :END:
 #+cindex: clocking time
 #+cindex: time clocking
@@ -6988,7 +6872,6 @@ about what to do with it.
 *** Clocking commands
 :PROPERTIES:
 :DESCRIPTION: Starting and stopping a clock.
-:CUSTOM_ID: clocking-commands
 :END:
 
 #+attr_texinfo: :sep ,
@@ -7146,7 +7029,6 @@ can have a global key binding and do not modify the window disposition.
 *** The clock table
 :PROPERTIES:
 :DESCRIPTION: Detailed reports.
-:CUSTOM_ID: the-clock-table
 :END:
 #+cindex: clocktable, dynamic block
 #+cindex: report, of clocked time
@@ -7430,13 +7312,11 @@ last week would be
 :PROPERTIES:
 :DESCRIPTION: Resolving time when you've been idle.
 :ALT_TITLE: Resolving idle time
-:CUSTOM_ID: resolving-idle-time-and-continuous-clocking
 :END:
 
 **** Resolving idle time
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: resolving-idle-time
 :END:
 
 #+cindex: resolve idle time
@@ -7524,7 +7404,6 @@ RET)}}} (or {{{kbd(C-c C-x C-z)}}}).
 **** Continuous clocking
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: continuous-clocking
 :END:
 #+cindex: continuous clocking
 
@@ -7542,7 +7421,6 @@ arguments with ~org-clock-in~ and two {{{kbd(C-u C-u)}}} with
 **** Clocking out automatically after some idle time
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: clocking-out-automatically-after-some-idle-time
 :END:
 #+cindex: auto clocking out after idle time
 
@@ -7561,7 +7439,6 @@ on or off.
 ** Effort Estimates
 :PROPERTIES:
 :DESCRIPTION: Planning work effort in advance.
-:CUSTOM_ID: effort-estimates
 :END:
 #+cindex: effort estimates
 #+cindex: @samp{EFFORT}, property
@@ -7642,7 +7519,6 @@ an available time slot.
 :PROPERTIES:
 :DESCRIPTION: Notes with a running timer.
 :ALT_TITLE: Timers
-:CUSTOM_ID: taking-notes-with-a-relative-timer
 :END:
 #+cindex: relative timer
 #+cindex: countdown timer
@@ -7717,7 +7593,6 @@ same commands.
 * Refiling and Archiving
 :PROPERTIES:
 :DESCRIPTION: Moving and copying information with ease.
-:CUSTOM_ID: refiling-and-archiving
 :END:
 #+cindex: refiling notes
 #+cindex: copying notes
@@ -7731,7 +7606,6 @@ the system compact and fast.
 ** Refile and Copy
 :PROPERTIES:
 :DESCRIPTION: Moving/copying a tree from one place to another.
-:CUSTOM_ID: refile-and-copy
 :END:
 #+cindex: refiling notes
 #+cindex: copying notes
@@ -7825,7 +7699,6 @@ special command:
 ** Archiving
 :PROPERTIES:
 :DESCRIPTION: What to do with finished products.
-:CUSTOM_ID: archiving
 :END:
 #+cindex: archiving
 
@@ -7846,7 +7719,6 @@ global searches like the construction of agenda views fast.
 :PROPERTIES:
 :DESCRIPTION: Moving a tree to an archive file.
 :ALT_TITLE: Moving subtrees
-:CUSTOM_ID: moving-a-tree-to-an-archive-file
 :END:
 #+cindex: external archiving
 
@@ -7912,7 +7784,6 @@ archive buffer.
 *** Internal archiving
 :PROPERTIES:
 :DESCRIPTION: Switch off a tree but keep it in the file.
-:CUSTOM_ID: internal-archiving
 :END:
 
 #+cindex: @samp{ARCHIVE}, tag
@@ -7993,7 +7864,6 @@ The following commands help manage the =ARCHIVE= tag:
 * Capture and Attachments
 :PROPERTIES:
 :DESCRIPTION: Dealing with external data.
-:CUSTOM_ID: capture-and-attachments
 :END:
 #+cindex: capture
 #+cindex: attachments
@@ -8012,7 +7882,6 @@ material, see [[*Protocols for External Access]].
 ** Capture
 :PROPERTIES:
 :DESCRIPTION: Capturing new stuff.
-:CUSTOM_ID: capture
 :END:
 #+cindex: capture
 
@@ -8023,7 +7892,6 @@ by John Wiegley's excellent Remember package.
 *** Setting up capture
 :PROPERTIES:
 :DESCRIPTION: Where notes will be stored.
-:CUSTOM_ID: setting-up-capture
 :END:
 
 The following customization sets a default target file for notes.
@@ -8039,7 +7907,6 @@ You may also define a global key for capturing new material (see
 *** Using capture
 :PROPERTIES:
 :DESCRIPTION: Commands to invoke and terminate capture.
-:CUSTOM_ID: using-capture
 :END:
 
 - {{{kbd(M-x org-capture)}}} (~org-capture~) ::
@@ -8108,7 +7975,6 @@ with a {{{kbd(C-0)}}} prefix argument.
 *** Capture templates
 :PROPERTIES:
 :DESCRIPTION: Define the outline of different note types.
-:CUSTOM_ID: capture-templates
 :END:
 #+cindex: templates, for Capture
 
@@ -8164,7 +8030,6 @@ key binding like this:
 **** Template elements
 :PROPERTIES:
 :DESCRIPTION: What is needed for a complete template entry.
-:CUSTOM_ID: template-elements
 :END:
 
 Now lets look at the elements of a template definition.  Each entry in
@@ -8432,7 +8297,6 @@ Now lets look at the elements of a template definition.  Each entry in
 **** Template expansion
 :PROPERTIES:
 :DESCRIPTION: Filling in information about time and context.
-:CUSTOM_ID: template-expansion
 :END:
 
 In the template itself, special "%-escapes"[fn:: If you need one of
@@ -8605,7 +8469,6 @@ capture templates in a similar way.]:
 **** Templates in contexts
 :PROPERTIES:
 :DESCRIPTION: Only show a template in a specific context.
-:CUSTOM_ID: templates-in-contexts
 :END:
 
 #+vindex: org-capture-templates-contexts
@@ -8633,7 +8496,6 @@ See the docstring of the variable for more information.
 ** Attachments
 :PROPERTIES:
 :DESCRIPTION: Attach files to outlines.
-:CUSTOM_ID: attachments
 :END:
 #+cindex: attachments
 
@@ -8651,7 +8513,6 @@ named by =ID= property of a heading, or by a =DIR= property.
 *** Attachment defaults and dispatcher
 :PROPERTIES:
 :DESCRIPTION: How to access attachment commands
-:CUSTOM_ID: attachment-defaults-and-dispatcher
 :END:
 
 By default, Org attach uses =ID= properties when adding attachments to
@@ -8775,7 +8636,6 @@ The following commands deal with attachments:
 *** Attachment options
 :PROPERTIES:
 :DESCRIPTION: Configuring the attachment system
-:CUSTOM_ID: attachment-options
 :END:
 
 There are a couple of options for attachments that are worth
@@ -8881,7 +8741,6 @@ default settings.
 *** Attachment links
 :PROPERTIES:
 :DESCRIPTION: Hyperlink access to attachments
-:CUSTOM_ID: attachment-links
 :END:
 
 Attached files and folders can be referenced using attachment links.
@@ -8901,7 +8760,6 @@ See [[*External Links]] for more information about these links.
 *** Automatic version-control with Git
 :PROPERTIES:
 :DESCRIPTION: Everything safely stored away
-:CUSTOM_ID: automatic-version-control-with-git
 :END:
 
 If the directory attached to a heading is a Git repository, Org
@@ -8918,7 +8776,6 @@ the following to your Emacs config:
 *** Attach from Dired
 :PROPERTIES:
 :DESCRIPTION: Using dired to select an attachment
-:CUSTOM_ID: attach-from-dired
 :END:
 #+cindex: attach from Dired
 #+findex: org-attach-dired-to-subtree
@@ -8959,7 +8816,6 @@ a specific attachment method.
 ** RSS Feeds
 :PROPERTIES:
 :DESCRIPTION: Getting input from RSS feeds.
-:CUSTOM_ID: rss-feeds
 :END:
 #+cindex: RSS feeds
 #+cindex: Atom feeds
@@ -9004,7 +8860,6 @@ For more information, including how to read atom feeds, see
 * Agenda Views
 :PROPERTIES:
 :DESCRIPTION: Collecting information into views.
-:CUSTOM_ID: agenda-views
 :END:
 #+cindex: agenda views
 
@@ -9057,7 +8912,6 @@ the window configuration is restored when the agenda exits:
 ** Agenda Files
 :PROPERTIES:
 :DESCRIPTION: Files being searched for agenda information.
-:CUSTOM_ID: agenda-files
 :END:
 #+cindex: agenda files
 #+cindex: files for agenda
@@ -9159,7 +9013,6 @@ Speedbar frame:
 :PROPERTIES:
 :DESCRIPTION: Keyboard access to agenda views.
 :ALT_TITLE: Agenda Dispatcher
-:CUSTOM_ID: the-agenda-dispatcher
 :END:
 #+cindex: agenda dispatcher
 #+cindex: dispatching agenda commands
@@ -9251,7 +9104,6 @@ and a number of special tags matches.  See [[*Custom Agenda Views]].
 :PROPERTIES:
 :DESCRIPTION: What is available out of the box?
 :ALT_TITLE: Built-in Agenda Views
-:CUSTOM_ID: the-built-in-agenda-views
 :END:
 
 In this section we describe the built-in views.
@@ -9259,7 +9111,6 @@ In this section we describe the built-in views.
 *** Weekly/daily agenda
 :PROPERTIES:
 :DESCRIPTION: The calendar page with current tasks.
-:CUSTOM_ID: weekly-daily-agenda
 :END:
 #+cindex: agenda
 #+cindex: weekly agenda
@@ -9300,7 +9151,6 @@ the Agenda Buffer]].
 **** Calendar/Diary integration
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: calendar-diary-integration
 :END:
 #+cindex: calendar integration
 #+cindex: diary integration
@@ -9360,7 +9210,6 @@ and therefore independent of the value of ~calendar-date-style~.]
 **** Anniversaries from BBDB
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: anniversaries-from-bbdb
 :END:
 #+cindex: BBDB, anniversaries
 #+cindex: anniversaries, from BBDB
@@ -9420,7 +9269,6 @@ defaults to 7.
 **** Appointment reminders
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: appointment-reminders
 :END:
 #+cindex: @file{appt.el}
 #+cindex: appointment reminders
@@ -9441,7 +9289,6 @@ for details.
 :PROPERTIES:
 :DESCRIPTION: All unfinished action items.
 :ALT_TITLE: Global TODO list
-:CUSTOM_ID: the-global-todo-list
 :END:
 #+cindex: global TODO list
 #+cindex: TODO list, global
@@ -9517,7 +9364,6 @@ it more compact:
 *** Matching tags and properties
 :PROPERTIES:
 :DESCRIPTION: Structured information with fine-tuned search.
-:CUSTOM_ID: matching-tags-and-properties
 :END:
 #+cindex: matching, of tags
 #+cindex: matching, of properties
@@ -9721,7 +9567,6 @@ TODO keywords in a DONE state.  Examples:
 *** Search view
 :PROPERTIES:
 :DESCRIPTION: Find entries by searching for text.
-:CUSTOM_ID: search-view
 :END:
 #+cindex: search view
 #+cindex: text search
@@ -9767,7 +9612,6 @@ the files listed in ~org-agenda-text-search-extra-files~.
 *** Stuck projects
 :PROPERTIES:
 :DESCRIPTION: Find projects you need to review.
-:CUSTOM_ID: stuck-projects
 :END:
 #+pindex: GTD, Getting Things Done
 
@@ -9821,7 +9665,6 @@ entry is searched for stuck projects.
 ** Presentation and Sorting
 :PROPERTIES:
 :DESCRIPTION: How agenda items are prepared for display.
-:CUSTOM_ID: presentation-and-sorting
 :END:
 #+cindex: presentation, of agenda items
 
@@ -9839,7 +9682,6 @@ version of the outline headline associated with the item.
 *** Categories
 :PROPERTIES:
 :DESCRIPTION: Not all tasks are equal.
-:CUSTOM_ID: categories
 :END:
 #+cindex: category
 #+cindex: @samp{CATEGORY}, keyword
@@ -9864,7 +9706,6 @@ customizing the ~org-agenda-category-icon-alist~ variable.
 *** Time-of-day specifications
 :PROPERTIES:
 :DESCRIPTION: How the agenda knows the time.
-:CUSTOM_ID: time-of-day-specifications
 :END:
 #+cindex: time-of-day specification
 
@@ -9926,7 +9767,6 @@ The time grid can be turned on and off with the variable
 *** Sorting of agenda items
 :PROPERTIES:
 :DESCRIPTION: The order of things.
-:CUSTOM_ID: sorting-of-agenda-items
 :END:
 #+cindex: sorting, of agenda items
 #+cindex: priorities, of agenda items
@@ -9963,7 +9803,6 @@ the estimated effort of an entry (see [[*Effort Estimates]]).
 *** Filtering/limiting agenda items
 :PROPERTIES:
 :DESCRIPTION: Dynamically narrow the agenda.
-:CUSTOM_ID: filtering-limiting-agenda-items
 :END:
 
 #+vindex: org-agenda-category-filter-preset
@@ -9984,7 +9823,6 @@ agenda commands.
 **** Filtering in the agenda
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: filtering-in-the-agenda
 :END:
 #+cindex: agenda filtering
 #+cindex: filtering entries, in agenda
@@ -10090,7 +9928,6 @@ filter elements are accumulated.
 **** Computed tag filtering
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: computed-tag-filtering
 :END:
 
 #+vindex: org-agenda-auto-exclude-function
@@ -10126,7 +9963,6 @@ or by pressing {{{kbd(RET)}}} in ~org-agenda-filter-by-tag~.
 **** Setting limits for the agenda
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: setting-limits-for-the-agenda
 :END:
 #+cindex: limits, in agenda
 
@@ -10184,7 +10020,6 @@ rebuilding the agenda:
 :PROPERTIES:
 :DESCRIPTION: Remote editing of Org trees.
 :ALT_TITLE: Agenda Commands
-:CUSTOM_ID: commands-in-the-agenda-buffer
 :END:
 #+cindex: commands, in agenda buffer
 
@@ -10201,7 +10036,6 @@ the other commands, point needs to be in the desired line.
 *** Motion
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: motion-2
 :END:
 #+cindex: motion commands in agenda
 
@@ -10220,7 +10054,6 @@ the other commands, point needs to be in the desired line.
 *** View/Go to Org file
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: view-go-to-org-file
 :END:
 #+cindex: view file commands in agenda
 
@@ -10282,7 +10115,6 @@ the other commands, point needs to be in the desired line.
 *** Change display
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: change-display
 :END:
 #+cindex: change agenda display
 #+cindex: display changing, in agenda
@@ -10549,7 +10381,6 @@ the other commands, point needs to be in the desired line.
 *** Remote editing
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: remote-editing
 :END:
 #+cindex: remote editing, from agenda
 
@@ -10781,7 +10612,6 @@ the other commands, point needs to be in the desired line.
 *** Bulk remote editing selected entries
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: bulk-remote-editing-selected-entries
 :END:
 #+cindex: remote editing, bulk, from agenda
 #+vindex: org-agenda-bulk-custom-functions
@@ -10913,7 +10743,6 @@ the other commands, point needs to be in the desired line.
 *** Calendar commands
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: calendar-commands
 :END:
 #+cindex: calendar commands, from agenda
 
@@ -10985,7 +10814,6 @@ the other commands, point needs to be in the desired line.
 *** Quit and exit
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: quit-and-exit
 :END:
 
 - {{{kbd(q)}}} (~org-agenda-quit~) ::
@@ -11006,7 +10834,6 @@ the other commands, point needs to be in the desired line.
 ** Custom Agenda Views
 :PROPERTIES:
 :DESCRIPTION: Defining special searches and views.
-:CUSTOM_ID: custom-agenda-views
 :END:
 #+cindex: custom agenda views
 #+cindex: agenda views, custom
@@ -11020,7 +10847,6 @@ default commands.
 *** Storing searches
 :PROPERTIES:
 :DESCRIPTION: Type once, use often.
-:CUSTOM_ID: storing-searches
 :END:
 
 The first application of custom searches is the definition of keyboard
@@ -11123,7 +10949,6 @@ as they operate on the current buffer only.
 *** Block agenda
 :PROPERTIES:
 :DESCRIPTION: All the stuff you need in a single buffer.
-:CUSTOM_ID: block-agenda
 :END:
 #+cindex: block agenda
 #+cindex: agenda, with block views
@@ -11161,7 +10986,6 @@ and also all lines tagged with =garden=.  Finally, the command
 :PROPERTIES:
 :DESCRIPTION: Changing the rules.
 :ALT_TITLE: Setting options
-:CUSTOM_ID: setting-options-for-custom-commands
 :END:
 #+cindex: options, for custom agenda views
 
@@ -11253,7 +11077,6 @@ See the docstring of the variable for more information.
 ** Exporting Agenda Views
 :PROPERTIES:
 :DESCRIPTION: Writing a view to a file.
-:CUSTOM_ID: exporting-agenda-views
 :END:
 #+cindex: agenda views, exporting
 
@@ -11392,7 +11215,6 @@ more information.
 :PROPERTIES:
 :DESCRIPTION: Using column view for collected entries.
 :ALT_TITLE: Agenda Column View
-:CUSTOM_ID: using-column-view-in-the-agenda
 :END:
 #+cindex: column view, in agenda
 #+cindex: agenda, column view
@@ -11466,7 +11288,6 @@ environment.  This causes the following issues:
 * Markup for Rich Contents
 :PROPERTIES:
 :DESCRIPTION: Compose beautiful documents.
-:CUSTOM_ID: markup-for-rich-contents
 :END:
 
 Org is primarily about organizing and searching through your
@@ -11481,7 +11302,6 @@ manual you are currently reading.
 ** Paragraphs
 :PROPERTIES:
 :DESCRIPTION: The basic unit of text.
-:CUSTOM_ID: paragraphs
 :END:
 
 #+cindex: paragraphs, markup rules
@@ -11533,7 +11353,6 @@ but not any simpler
 ** Emphasis and Monospace
 :PROPERTIES:
 :DESCRIPTION: Bold, italic, etc.
-:CUSTOM_ID: emphasis-and-monospace
 :END:
 #+cindex: underlined text, markup rules
 #+cindex: bold text, markup rules
@@ -11583,7 +11402,6 @@ See [[*Escape Character]] for more details.
 ** Subscripts and Superscripts
 :PROPERTIES:
 :DESCRIPTION: Simple syntax for raising/lowering text.
-:CUSTOM_ID: subscripts-and-superscripts
 :END:
 #+cindex: subscript
 #+cindex: superscript
@@ -11633,7 +11451,6 @@ option ~org-use-sub-superscripts~.
 ** Special Symbols
 :PROPERTIES:
 :DESCRIPTION: Greek letters and other symbols.
-:CUSTOM_ID: special-symbols
 :END:
 #+cindex: math symbols
 #+cindex: special symbols
@@ -11690,7 +11507,6 @@ converted into dashes, and =...= becomes a compact set of dots.
 ** Embedded LaTeX
 :PROPERTIES:
 :DESCRIPTION: LaTeX can be freely used inside Org documents.
-:CUSTOM_ID: embedded-latex
 :END:
 #+cindex: @TeX{} interpretation
 #+cindex: @LaTeX{} interpretation
@@ -11706,7 +11522,6 @@ pretty output for a number of export backends.
 *** LaTeX fragments
 :PROPERTIES:
 :DESCRIPTION: Complex formulas made easy.
-:CUSTOM_ID: latex-fragments
 :END:
 #+cindex: @LaTeX{} fragments
 
@@ -11764,7 +11579,6 @@ lines:
 *** Previewing LaTeX fragments
 :PROPERTIES:
 :DESCRIPTION: What will this snippet look like?
-:CUSTOM_ID: previewing-latex-fragments
 :END:
 #+cindex: @LaTeX{} fragments, preview
 
@@ -11809,7 +11623,6 @@ To disable it, simply use
 :PROPERTIES:
 :DESCRIPTION: Speed up entering of formulas.
 :ALT_TITLE: CDLaTeX mode
-:CUSTOM_ID: using-cdlatex-to-enter-math
 :END:
 #+cindex: CD@LaTeX{}
 
@@ -11886,7 +11699,6 @@ more details see the documentation of CDLaTeX mode):
 ** Literal Examples
 :PROPERTIES:
 :DESCRIPTION: Source code examples with special formatting.
-:CUSTOM_ID: literal-examples
 :END:
 #+cindex: literal examples, markup rules
 #+cindex: code line references, markup rules
@@ -12041,7 +11853,6 @@ the end of the current line.  Then the label is stored as a link
 ** Images and link previews
 :PROPERTIES:
 :DESCRIPTION: Preview links in the buffer
-:CUSTOM_ID: images-and-link-previews
 :END:
 
 Org mode can display previews of hyperlinks (see [[*Hyperlinks]])
@@ -12112,7 +11923,6 @@ displayed automatically.
 *** Images
 :PROPERTIES:
 :DESCRIPTION: Display an image.
-:CUSTOM_ID: images
 :END:
 
 #+cindex: inlining images
@@ -12209,7 +12019,6 @@ LaTeX and Beamer.)
 ** Captions
 :PROPERTIES:
 :DESCRIPTION: Describe tables, images...
-:CUSTOM_ID: captions
 :END:
 #+cindex: captions, markup rules
 #+cindex: @samp{CAPTION}, keyword
@@ -12235,7 +12044,6 @@ export backend, those may or may not be handled.
 ** Horizontal Rules
 :PROPERTIES:
 :DESCRIPTION: Make a line.
-:CUSTOM_ID: horizontal-rules
 :END:
 
 #+cindex: horizontal rules, markup rules
@@ -12245,7 +12053,6 @@ as a horizontal line.
 ** Creating Footnotes
 :PROPERTIES:
 :DESCRIPTION: Edit and read footnotes.
-:CUSTOM_ID: creating-footnotes
 :END:
 #+cindex: footnotes
 
@@ -12340,7 +12147,6 @@ The following command handles footnotes:
 * Exporting
 :PROPERTIES:
 :DESCRIPTION: Sharing and publishing notes.
-:CUSTOM_ID: exporting
 :END:
 #+cindex: exporting
 
@@ -12387,7 +12193,6 @@ example, to load the Markdown backend, add this to your Emacs config:
 ** The Export Dispatcher
 :PROPERTIES:
 :DESCRIPTION: The main interface.
-:CUSTOM_ID: the-export-dispatcher
 :END:
 #+cindex: dispatcher, for export commands
 #+cindex: export, dispatcher
@@ -12490,7 +12295,6 @@ further alter what is exported, and how.
 ** Export Settings
 :PROPERTIES:
 :DESCRIPTION: Common export settings.
-:CUSTOM_ID: export-settings
 :END:
 #+cindex: options, for export
 #+cindex: Export, settings
@@ -12829,7 +12633,6 @@ in-buffer settings that cannot be changed using keywords.
 ** Table of Contents
 :PROPERTIES:
 :DESCRIPTION: The if and where of the table of contents.
-:CUSTOM_ID: table-of-contents
 :END:
 #+cindex: table of contents
 #+cindex: list of tables
@@ -12923,7 +12726,6 @@ the table of contents.
 ** Include Files
 :PROPERTIES:
 :DESCRIPTION: Include additional files into a document.
-:CUSTOM_ID: include-files
 :END:
 #+cindex: include files, during export
 #+cindex: export, include files
@@ -12999,7 +12801,6 @@ The following command allows navigating to the included document:
 ** Macro Replacement
 :PROPERTIES:
 :DESCRIPTION: Use macros to create templates.
-:CUSTOM_ID: macro-replacement
 :END:
 #+cindex: macro replacement, during export
 #+cindex: @samp{MACRO}, keyword
@@ -13116,7 +12917,6 @@ Org expands macros at the very beginning of the export process.
 ** Comment Lines
 :PROPERTIES:
 :DESCRIPTION: What will not be exported.
-:CUSTOM_ID: comment-lines
 :END:
 #+cindex: exporting, not
 
@@ -13147,7 +12947,6 @@ helps to change the comment status of a headline.
 ** ASCII/Latin-1/UTF-8 export
 :PROPERTIES:
 :DESCRIPTION: Exporting to flat files with encoding.
-:CUSTOM_ID: ascii-latin-1-utf-8-export
 :END:
 #+cindex: ASCII export
 #+cindex: Latin-1 export
@@ -13172,7 +12971,6 @@ See the variable ~org-ascii-links-to-notes~ for details.
 *** ASCII export commands
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-export-commands
 :END:
 
 #+attr_texinfo: :sep ,
@@ -13198,7 +12996,6 @@ See the variable ~org-ascii-links-to-notes~ for details.
 *** ASCII specific export settings
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-specific-export-settings
 :END:
 
 The ASCII export backend has one extra keyword for customizing ASCII
@@ -13215,7 +13012,6 @@ output.  Setting this keyword works similar to the general options
 *** Header and sectioning structure
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: header-and-sectioning-structure
 :END:
 
 Org converts the first three outline levels into headlines for ASCII
@@ -13225,7 +13021,6 @@ cut-off point where levels become lists, see [[*Export Settings]].
 *** Quoting ASCII text
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: quoting-ascii-text
 :END:
 
 To insert text within the Org file by the ASCII backend, use one the
@@ -13246,7 +13041,6 @@ Org exports text in this block only when using ASCII backend.
 *** ASCII specific attributes
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-specific-attributes
 :END:
 #+cindex: @samp{ATTR_ASCII}, keyword
 #+cindex: horizontal rules, in ASCII export
@@ -13263,7 +13057,6 @@ keyword and syntax for specifying widths is:
 *** ASCII special blocks
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-special-blocks
 :END:
 #+cindex: special blocks, in ASCII export
 #+cindex: @samp{BEGIN_JUSTIFYLEFT}
@@ -13285,7 +13078,6 @@ It's just a jump to the left...
 ** Beamer Export
 :PROPERTIES:
 :DESCRIPTION: Producing presentations and slides.
-:CUSTOM_ID: beamer-export
 :END:
 #+cindex: Beamer export
 
@@ -13301,7 +13093,6 @@ before reading the rest of this chapter.  See
 *** Beamer export commands
 :PROPERTIES:
 :DESCRIPTION: For creating Beamer documents.
-:CUSTOM_ID: beamer-export-commands
 :END:
 
 - {{{kbd(C-c C-e l b)}}} (~org-beamer-export-to-latex~) ::
@@ -13332,7 +13123,6 @@ before reading the rest of this chapter.  See
 *** Beamer specific export settings
 :PROPERTIES:
 :DESCRIPTION: For customizing Beamer export.
-:CUSTOM_ID: beamer-specific-export-settings
 :END:
 
 Beamer export backend has several additional keywords for customizing
@@ -13399,7 +13189,6 @@ settings (see [[*Export Settings]]).
 *** Frames and Blocks in Beamer
 :PROPERTIES:
 :DESCRIPTION: For composing Beamer slides.
-:CUSTOM_ID: frames-and-blocks-in-beamer
 :END:
 
 Org transforms heading levels into Beamer's sectioning elements,
@@ -13474,7 +13263,6 @@ should in principle be exportable as a Beamer presentation.
 *** Beamer specific syntax
 :PROPERTIES:
 :DESCRIPTION: For using in Org documents.
-:CUSTOM_ID: beamer-specific-syntax
 :END:
 
 Since Org's Beamer export backend is an extension of the LaTeX
@@ -13539,7 +13327,6 @@ a subgroup of $G$.  Then the order of $H$ divides the order of $G$.
 *** Editing support
 :PROPERTIES:
 :DESCRIPTION: Editing support.
-:CUSTOM_ID: editing-support
 :END:
 
 Org Beamer mode is a special minor mode for faster editing of Beamer
@@ -13557,7 +13344,6 @@ documents.
 *** A Beamer example
 :PROPERTIES:
 :DESCRIPTION: A complete presentation.
-:CUSTOM_ID: a-beamer-example
 :END:
 
 Here is an example of an Org document ready for Beamer export.
@@ -13600,7 +13386,6 @@ Here is an example of an Org document ready for Beamer export.
 ** HTML Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to HTML.
-:CUSTOM_ID: html-export
 :END:
 #+cindex: HTML export
 
@@ -13610,7 +13395,6 @@ compatible with XHTML 1.0 strict standard.
 *** HTML export commands
 :PROPERTIES:
 :DESCRIPTION: Invoking HTML export.
-:CUSTOM_ID: html-export-commands
 :END:
 
 - {{{kbd(C-c C-e h h)}}} (~org-html-export-to-html~) ::
@@ -13631,7 +13415,6 @@ compatible with XHTML 1.0 strict standard.
 *** HTML specific export settings
 :PROPERTIES:
 :DESCRIPTION: Settings for HTML export.
-:CUSTOM_ID: html-specific-export-settings
 :END:
 
 HTML export has a number of keywords, similar to the general options
@@ -13721,7 +13504,6 @@ sections of the manual.
 *** HTML doctypes
 :PROPERTIES:
 :DESCRIPTION: Exporting various (X)HTML flavors.
-:CUSTOM_ID: html-doctypes
 :END:
 
 Org can export to various (X)HTML flavors.
@@ -13808,7 +13590,6 @@ the =HTML_CONTAINER= property for the headline.
 *** HTML preamble and postamble
 :PROPERTIES:
 :DESCRIPTION: Inserting preamble and postamble.
-:CUSTOM_ID: html-preamble-and-postamble
 :END:
 #+vindex: org-html-preamble
 #+vindex: org-html-postamble
@@ -13840,7 +13621,6 @@ name, and date.
 :PROPERTIES:
 :DESCRIPTION: Exporting HTML without CSS, JavaScript, etc.
 :ALT_TITLE: Bare HTML
-:CUSTOM_ID: exporting-to-minimal-html
 :END:
 
 If you want to output a minimal HTML file, with no CSS, no JavaScript,
@@ -13866,7 +13646,6 @@ no preamble or postamble, here are the variable you would need to set:
 *** Quoting HTML tags
 :PROPERTIES:
 :DESCRIPTION: Using direct HTML in Org files.
-:CUSTOM_ID: quoting-html-tags
 :END:
 
 The HTML export backend transforms =<= and =>= to =&lt;= and =&gt;=.
@@ -13891,7 +13670,6 @@ For larger raw HTML code blocks, use these HTML export code blocks:
 *** Headlines in HTML export
 :PROPERTIES:
 :DESCRIPTION: Formatting headlines.
-:CUSTOM_ID: headlines-in-html-export
 :END:
 #+cindex: headlines, in HTML export
 
@@ -13915,7 +13693,6 @@ themselves.
 *** Links in HTML export
 :PROPERTIES:
 :DESCRIPTION: Inserting and formatting links.
-:CUSTOM_ID: links-in-html-export
 :END:
 #+cindex: links, in HTML export
 #+cindex: internal links, in HTML export
@@ -13952,7 +13729,6 @@ changing the link's title and style:
 *** Tables in HTML export
 :PROPERTIES:
 :DESCRIPTION: How to modify the formatting of tables.
-:CUSTOM_ID: tables-in-html-export
 :END:
 #+cindex: tables, in HTML
 #+vindex: org-export-html-table-tag
@@ -14013,7 +13789,6 @@ Additional options for customizing tables for HTML export.
 *** Images in HTML export
 :PROPERTIES:
 :DESCRIPTION: How to insert figures into HTML output.
-:CUSTOM_ID: images-in-html-export
 :END:
 #+cindex: images, inline in HTML
 #+cindex: inlining images in HTML
@@ -14055,7 +13830,6 @@ as-is.
 *** Math formatting in HTML export
 :PROPERTIES:
 :DESCRIPTION: Beautiful math also on the web.
-:CUSTOM_ID: math-formatting-in-html-export
 :END:
 #+cindex: MathJax
 #+cindex: dvipng
@@ -14111,7 +13885,6 @@ or
 *** Text areas in HTML export
 :PROPERTIES:
 :DESCRIPTION: An alternate way to show an example.
-:CUSTOM_ID: text-areas-in-html-export
 :END:
 
 #+cindex: text areas, in HTML
@@ -14142,7 +13915,6 @@ line.
 *** CSS support
 :PROPERTIES:
 :DESCRIPTION: Changing the appearance of the output.
-:CUSTOM_ID: css-support
 :END:
 #+cindex: CSS, for HTML export
 #+cindex: HTML export, CSS
@@ -14233,7 +14005,6 @@ simpler ways of customizing as described above.
 :PROPERTIES:
 :DESCRIPTION: Info and folding in a web browser.
 :ALT_TITLE: JavaScript support
-:CUSTOM_ID: javascript-supported-display-of-web-pages
 :END:
 
 Sebastian Rose has written a JavaScript program especially designed to
@@ -14319,7 +14090,6 @@ to your pages, configure the variable ~org-export-html-use-infojs~.
 ** LaTeX Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to @LaTeX{} and processing to PDF.
-:CUSTOM_ID: latex-export
 :END:
 #+cindex: @LaTeX{} export
 #+cindex: PDF export
@@ -14350,7 +14120,6 @@ from https://mirrors.ctan.org/info/latex-doc-ptr/latex-doc-ptr.pdf]
 *** LaTeX/PDF export commands
 :PROPERTIES:
 :DESCRIPTION: For producing @LaTeX{} and PDF documents.
-:CUSTOM_ID: latex-pdf-export-commands
 :END:
 
 - {{{kbd(C-c C-e l l)}}} (~org-latex-export-to-latex~) ::
@@ -14404,7 +14173,6 @@ bibliography compiler[fn:48].
 *** LaTeX specific export settings
 :PROPERTIES:
 :DESCRIPTION: Unique to this @LaTeX{} backend.
-:CUSTOM_ID: latex-specific-export-settings
 :END:
 
 The LaTeX export backend has several additional keywords for
@@ -14514,7 +14282,6 @@ The following sections have further details.
 :PROPERTIES:
 :DESCRIPTION: Setting up the export file structure.
 :ALT_TITLE: LaTeX header and sectioning
-:CUSTOM_ID: latex-header-and-sectioning-structure
 :END:
 #+cindex: @LaTeX{} class
 #+cindex: @LaTeX{} sectioning structure
@@ -14627,7 +14394,6 @@ This would produce in LaTeX (with the actual =polyglossia= syntax):
 *** Quoting LaTeX code
 :PROPERTIES:
 :DESCRIPTION: Incorporating literal @LaTeX{} code.
-:CUSTOM_ID: quoting-latex-code
 :END:
 
 When the available LaTeX export customizations are not sufficient to
@@ -14658,7 +14424,6 @@ exports any code between begin and end markers:
 *** Tables in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Options for exporting tables to @LaTeX{}.
-:CUSTOM_ID: tables-in-latex-export
 :END:
 #+cindex: tables, in @LaTeX{} export
 
@@ -14787,7 +14552,6 @@ Set the caption with the LaTeX command
 *** Images in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: How to insert figures into @LaTeX{} output.
-:CUSTOM_ID: images-in-latex-export
 :END:
 #+cindex: images, inline in LaTeX
 #+cindex: inlining images in LaTeX
@@ -14875,7 +14639,6 @@ export backend to comment out the =\includegraphics= macro.
 *** Plain lists in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to lists.
-:CUSTOM_ID: plain-lists-in-latex-export
 :END:
 
 #+cindex: plain lists, in @LaTeX{} export
@@ -14912,7 +14675,6 @@ four:
 *** Source blocks in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to source code blocks.
-:CUSTOM_ID: source-blocks-in-latex-export
 :END:
 #+cindex: source blocks, in @LaTeX{} export
 #+cindex: @samp{ATTR_LATEX}, keyword
@@ -14979,7 +14741,6 @@ variables.
 *** Example blocks in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to example blocks.
-:CUSTOM_ID: example-blocks-in-latex-export
 :END:
 #+cindex: example blocks, in @LaTeX{} export
 #+cindex: verbatim blocks, in @LaTeX{} export
@@ -15002,7 +14763,6 @@ to specify a custom environment.
 *** Special blocks in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to special blocks.
-:CUSTOM_ID: special-blocks-in-latex-export
 :END:
 
 #+cindex: special blocks, in @LaTeX{} export
@@ -15055,7 +14815,6 @@ example:
 *** Horizontal rules in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to horizontal rules.
-:CUSTOM_ID: horizontal-rules-in-latex-export
 :END:
 #+cindex: horizontal rules, in @LaTeX{} export
 #+cindex: @samp{ATTR_LATEX}, keyword
@@ -15071,7 +14830,6 @@ The LaTeX export backend converts horizontal rules by the specified
 *** Verse blocks in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to special blocks.
-:CUSTOM_ID: verse-blocks-in-latex-export
 :END:
 
 #+cindex: verse blocks, in @LaTeX{} export
@@ -15129,7 +14887,6 @@ To eat the world’s due, by the grave and thee.
 *** Quote blocks in LaTeX export
 :PROPERTIES:
 :DESCRIPTION: Attributes specific to quote blocks.
-:CUSTOM_ID: quote-blocks-in-latex-export
 :END:
 
 #+cindex: quote blocks, in @LaTeX{} export
@@ -15170,9 +14927,6 @@ some text in German...
 #+end_example
 
 *** Controlling the way the table of contents is generated
-:PROPERTIES:
-:CUSTOM_ID: controlling-the-way-the-table-of-contents-is-generated
-:END:
 #+cindex: LaTeX ToC export
 
 When exporting your document to LaTeX, only numbered sections will be
@@ -15211,7 +14965,6 @@ contents, unless you set the =UNNUMBERED= property to =notoc=:
 ** Markdown Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to Markdown.
-:CUSTOM_ID: markdown-export
 :END:
 #+cindex: Markdown export
 
@@ -15231,7 +14984,6 @@ https://en.wikipedia.org/wiki/Markdown for more details.
 *** Markdown export commands
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: markdown-export-commands
 :END:
 
 - {{{kbd(C-c C-e m m)}}} (~org-md-export-to-markdown~) ::
@@ -15255,7 +15007,6 @@ https://en.wikipedia.org/wiki/Markdown for more details.
 *** Header and sectioning structure
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: header-and-sectioning-structure-2
 :END:
 
 #+vindex: org-md-headline-style
@@ -15270,7 +15021,6 @@ limit to a level before the absolute limit (see [[*Export Settings]]).
 ** OpenDocument Text Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to OpenDocument Text.
-:CUSTOM_ID: opendocument-text-export
 :END:
 #+cindex: ODT
 #+cindex: OpenDocument
@@ -15287,7 +15037,6 @@ and are compatible with LibreOffice 3.4.
 *** Pre-requisites for ODT export
 :PROPERTIES:
 :DESCRIPTION: Required packages.
-:CUSTOM_ID: pre-requisites-for-odt-export
 :END:
 #+cindex: zip
 
@@ -15298,7 +15047,6 @@ executable.  Without it, export cannot finish.
 *** ODT export commands
 :PROPERTIES:
 :DESCRIPTION: Invoking export.
-:CUSTOM_ID: odt-export-commands
 :END:
 
 - {{{kbd(C-c C-e o o)}}} (~org-odt-export-to-odt~) ::
@@ -15336,7 +15084,6 @@ executable.  Without it, export cannot finish.
 *** ODT specific export settings
 :PROPERTIES:
 :DESCRIPTION: Configuration options.
-:CUSTOM_ID: odt-specific-export-settings
 :END:
 
 The ODT export backend has several additional keywords for
@@ -15373,7 +15120,6 @@ general options (see [[*Export Settings]]).
 *** Extending ODT export
 :PROPERTIES:
 :DESCRIPTION: Producing DOC, PDF files.
-:CUSTOM_ID: extending-odt-export
 :END:
 
 The ODT export backend can produce documents in other formats besides
@@ -15393,7 +15139,6 @@ a document converter]].
 **** Automatically exporting to other formats
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: automatically-exporting-to-other-formats
 :END:
 
 #+vindex: org-odt-preferred-output-format
@@ -15406,7 +15151,6 @@ way to extend (see [[*ODT export commands]]).
 **** Converting between document formats
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: converting-between-document-formats
 :END:
 
 The Org export backend is made to be interoperable with a wide range
@@ -15424,7 +15168,6 @@ installed.  Here are some generic commands:
 *** Applying custom styles
 :PROPERTIES:
 :DESCRIPTION: Styling the output.
-:CUSTOM_ID: applying-custom-styles
 :END:
 #+cindex: styles, custom
 #+cindex: template, custom
@@ -15438,7 +15181,6 @@ The example here shows creating a style using LibreOffice.
 **** Applying custom styles: the easy way
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: applying-custom-styles-the-easy-way
 :END:
 
 1. Create a sample =example.org= file with settings as shown below,
@@ -15471,7 +15213,6 @@ The example here shows creating a style using LibreOffice.
 **** Using third-party styles and templates
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: using-third-party-styles-and-templates
 :END:
 
 The ODT export backend relies on many templates and style names.
@@ -15482,7 +15223,6 @@ fewer problems.
 *** Links in ODT export
 :PROPERTIES:
 :DESCRIPTION: Handling and formatting links.
-:CUSTOM_ID: links-in-odt-export
 :END:
 #+cindex: links, in ODT export
 
@@ -15500,7 +15240,6 @@ with a cross-reference and sequence number of the labeled entity.  See
 *** Tables in ODT export
 :PROPERTIES:
 :DESCRIPTION: Org tables conversions.
-:CUSTOM_ID: tables-in-odt-export
 :END:
 
 #+cindex: tables, in ODT export
@@ -15549,7 +15288,6 @@ tables in ODT export]].
 *** Images in ODT export
 :PROPERTIES:
 :DESCRIPTION: Inserting images.
-:CUSTOM_ID: images-in-odt-export
 :END:
 #+cindex: images, embedding in ODT
 #+cindex: embedding images in ODT
@@ -15557,7 +15295,6 @@ tables in ODT export]].
 **** Embedding images
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: embedding-images
 :END:
 
 The ODT export backend processes image links in Org files that do not
@@ -15572,7 +15309,6 @@ examples works:
 **** Embedding clickable images
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: embedding-clickable-images
 :END:
 
 For clickable images, provide a link whose description is another link
@@ -15585,7 +15321,6 @@ website, do the following
 **** Sizing and scaling of embedded images
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: sizing-and-scaling-of-embedded-images
 :END:
 
 #+cindex: @samp{ATTR_ODT}, keyword
@@ -15649,7 +15384,6 @@ image scaling operations:
 **** Anchoring of images
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: anchoring-of-images
 :END:
 
 #+cindex: @samp{ATTR_ODT}, keyword
@@ -15667,7 +15401,6 @@ To create an image that is anchored to a page:
 *** Math formatting in ODT export
 :PROPERTIES:
 :DESCRIPTION: Formatting @LaTeX{} fragments.
-:CUSTOM_ID: math-formatting-in-odt-export
 :END:
 
 The ODT exporter has special support for handling math.
@@ -15675,7 +15408,6 @@ The ODT exporter has special support for handling math.
 **** LaTeX math snippets
 :PROPERTIES:
 :DESCRIPTION: Embedding in @LaTeX{} format.
-:CUSTOM_ID: latex-math-snippets
 :END:
 
 LaTeX math snippets (see [[*LaTeX fragments]]) can be embedded in the ODT
@@ -15760,7 +15492,6 @@ document in one of the following ways:
 **** MathML and OpenDocument formula files
 :PROPERTIES:
 :DESCRIPTION: Embedding in native format.
-:CUSTOM_ID: mathml-and-opendocument-formula-files
 :END:
 
 When embedding LaTeX math snippets in ODT documents is not reliable,
@@ -15778,7 +15509,6 @@ or
 *** Labels and captions in ODT export
 :PROPERTIES:
 :DESCRIPTION: Rendering objects.
-:CUSTOM_ID: labels-and-captions-in-odt-export
 :END:
 
 ODT format handles labeling and captioning of objects based on their
@@ -15816,7 +15546,6 @@ With the above modification, the previous example changes to:
 *** Literal examples in ODT export
 :PROPERTIES:
 :DESCRIPTION: For source code and example blocks.
-:CUSTOM_ID: literal-examples-in-odt-export
 :END:
 
 The ODT export backend supports literal examples (see [[*Literal
@@ -15837,7 +15566,6 @@ To turn off fontification of literal examples, customize the
 *** Advanced topics in ODT export
 :PROPERTIES:
 :DESCRIPTION: For power users.
-:CUSTOM_ID: advanced-topics-in-odt-export
 :END:
 
 The ODT export backend has extensive features useful for power users
@@ -15847,7 +15575,6 @@ and frequent uses of ODT formats.
 :PROPERTIES:
 :DESCRIPTION: Registering a document converter.
 :UNNUMBERED: notoc
-:CUSTOM_ID: configuring-a-document-converter
 :END:
 #+cindex: convert
 #+cindex: doc, docx, rtf
@@ -15882,7 +15609,6 @@ for unsupported converters or tweaking existing defaults.
 :PROPERTIES:
 :DESCRIPTION: Exploring internals.
 :UNNUMBERED: notoc
-:CUSTOM_ID: working-with-opendocument-style-files
 :END:
 #+cindex: styles, custom
 #+cindex: template, custom
@@ -15963,7 +15689,6 @@ factory styles used by the exporter.
 :PROPERTIES:
 :DESCRIPTION: Customizing styles, highlighting...
 :UNNUMBERED: notoc
-:CUSTOM_ID: creating-one-off-styles
 :END:
 
 The ODT export backend can read embedded raw OpenDocument XML from
@@ -16031,7 +15756,6 @@ the Org file.  Such direct formatting is useful for one-off instances.
 :PROPERTIES:
 :DESCRIPTION: Defining table templates.
 :UNNUMBERED: notoc
-:CUSTOM_ID: customizing-tables-in-odt-export
 :END:
 #+cindex: tables, in ODT export
 #+cindex: @samp{ATTR_ODT}, keyword
@@ -16164,7 +15888,6 @@ To use this feature proceed as follows:
 :PROPERTIES:
 :DESCRIPTION: Debugging corrupted OpenDocument files.
 :UNNUMBERED: notoc
-:CUSTOM_ID: validating-opendocument-xml
 :END:
 
 Sometimes ODT format files may not open due to =.odt= file corruption.
@@ -16184,7 +15907,6 @@ export backend takes care of updating the
 ** Org Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to Org.
-:CUSTOM_ID: org-export
 :END:
 
 #+cindex: Org export
@@ -16195,7 +15917,6 @@ Code Blocks]]) and removes content specific to other backends.
 *** Org export commands
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: org-export-commands
 :END:
 
 - {{{kbd(C-c C-e O o)}}} (~org-org-export-to-org~) ::
@@ -16213,13 +15934,11 @@ Code Blocks]]) and removes content specific to other backends.
 ** Texinfo Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to Texinfo.
-:CUSTOM_ID: texinfo-export
 :END:
 
 *** Texinfo export commands
 :PROPERTIES:
 :DESCRIPTION: Invoking commands.
-:CUSTOM_ID: texinfo-export-commands
 :END:
 
 - {{{kbd(C-c C-e i t)}}} (~org-texinfo-export-to-texinfo~) ::
@@ -16241,7 +15960,6 @@ Code Blocks]]) and removes content specific to other backends.
 *** Texinfo specific export settings
 :PROPERTIES:
 :DESCRIPTION: Setting the environment.
-:CUSTOM_ID: texinfo-specific-export-settings
 :END:
 
 The Texinfo export backend has several additional keywords for
@@ -16312,7 +16030,6 @@ the general options (see [[*Export Settings]]).
 *** Texinfo file header
 :PROPERTIES:
 :DESCRIPTION: Generating the header.
-:CUSTOM_ID: texinfo-file-header
 :END:
 
 #+cindex: @samp{TEXINFO_FILENAME}, keyword
@@ -16339,7 +16056,6 @@ document by setting the =TEXINFO_CLASS= keyword to that class.
 *** Texinfo title and copyright page
 :PROPERTIES:
 :DESCRIPTION: Creating preamble pages.
-:CUSTOM_ID: texinfo-title-and-copyright-page
 :END:
 
 #+cindex: @samp{TEXINFO_PRINTED_TITLE}, keyword
@@ -16381,7 +16097,6 @@ Copyright information is printed on the back of the title page.
 *** Info directory file
 :PROPERTIES:
 :DESCRIPTION: Installing a manual in Info file hierarchy.
-:CUSTOM_ID: info-directory-file
 :END:
 
 #+cindex: @samp{dir} file, in Texinfo export
@@ -16408,7 +16123,6 @@ Here is an example that writes to the Info directory file:
 *** Headings and sectioning structure
 :PROPERTIES:
 :DESCRIPTION: Building document structure.
-:CUSTOM_ID: headings-and-sectioning-structure
 :END:
 
 #+vindex: org-texinfo-classes
@@ -16460,7 +16174,6 @@ file.  See [[info:texinfo::The Top Node]], for more information.
 *** Indices
 :PROPERTIES:
 :DESCRIPTION: Creating indices.
-:CUSTOM_ID: indices
 :END:
 
 #+cindex: @samp{CINDEX}, keyword
@@ -16501,7 +16214,6 @@ then inserts the index after its contents.
 *** Quoting Texinfo code
 :PROPERTIES:
 :DESCRIPTION: Incorporating literal Texinfo code.
-:CUSTOM_ID: quoting-texinfo-code
 :END:
 
 Use any of the following three methods to insert or escape raw Texinfo
@@ -16524,7 +16236,6 @@ This paragraph is preceded by...
 *** Plain lists in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: List attributes.
-:CUSTOM_ID: plain-lists-in-texinfo-export
 :END:
 
 #+cindex: lettered lists, in Texinfo export
@@ -16671,7 +16382,6 @@ Command in parentheses, as done above, is optional.
 *** Tables in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: Table attributes.
-:CUSTOM_ID: tables-in-texinfo-export
 :END:
 
 #+cindex: @samp{ATTR_TEXINFO}, keyword
@@ -16688,7 +16398,6 @@ below.
 *** Images in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: Image attributes.
-:CUSTOM_ID: images-in-texinfo-export
 :END:
 
 #+cindex: @samp{ATTR_TEXINFO}, keyword
@@ -16706,7 +16415,6 @@ and specify the text using Texinfo code, as shown in the example:
 *** Quotations in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: Quote block attributes.
-:CUSTOM_ID: quotations-in-texinfo-export
 :END:
 
 #+cindex: @samp{ATTR_TEXINFO}, keyword
@@ -16736,7 +16444,6 @@ your king.
 *** Key bindings in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: @@kbd Texinfo command.
-:CUSTOM_ID: key-bindings-in-texinfo-export
 :END:
 
 Org does not provide any markup for key bindings that corresponds to
@@ -16764,7 +16471,6 @@ Type @kbd{C-c @key{SPC}}.
 *** Special blocks in Texinfo export
 :PROPERTIES:
 :DESCRIPTION: Special block attributes.
-:CUSTOM_ID: special-blocks-in-texinfo-export
 :END:
 
 The Texinfo export backend supports two approaches to writing Texinfo
@@ -16796,7 +16502,6 @@ becomes
 *** A Texinfo example
 :PROPERTIES:
 :DESCRIPTION: Processing Org to Texinfo.
-:CUSTOM_ID: a-texinfo-example
 :END:
 
 Here is a more detailed example Org file.  See
@@ -16871,7 +16576,6 @@ This manual is for GNU Sample (version {{{version}}},
 ** iCalendar Export
 :PROPERTIES:
 :DESCRIPTION: Exporting to iCalendar.
-:CUSTOM_ID: icalendar-export
 :END:
 #+cindex: iCalendar export
 
@@ -17020,7 +16724,6 @@ applications.
 ** Other Built-in Backends
 :PROPERTIES:
 :DESCRIPTION: Exporting to a man page.
-:CUSTOM_ID: other-built-in-backends
 :END:
 
 Other export backends included with Org are:
@@ -17038,13 +16741,11 @@ for usage and configuration details.
 ** Advanced Export Configuration
 :PROPERTIES:
 :DESCRIPTION: Fine-tuning the export output.
-:CUSTOM_ID: advanced-export-configuration
 :END:
 
 *** Export hooks
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: export-hooks
 :END:
 
 #+vindex: org-export-before-processing-hook
@@ -17081,7 +16782,6 @@ BACKEND is the export backend being used, as a symbol."
 *** Filters
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: filters
 :END:
 
 #+cindex: Filters, exporting
@@ -17139,7 +16839,6 @@ backend or any other backend, such as /beamer/, derived from
 *** Defining filters for individual files
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: defining-filters-for-individual-files
 :END:
 
 The Org export can filter not just for backends, but also for
@@ -17162,7 +16861,6 @@ debugging.
 *** Summary of the export process
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: summary-of-the-export-process
 :END:
 
 #+findex: org-export-as
@@ -17317,7 +17015,6 @@ Post-process the exported text:
 *** Extending an existing backend
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: extending-an-existing-backend
 :END:
 
 Some parts of the conversion process can be extended for certain
@@ -17378,7 +17075,6 @@ details.
 ** Export Region
 :PROPERTIES:
 :DESCRIPTION: Author tables and lists in Org syntax.
-:CUSTOM_ID: export-region
 :END:
 
 Some export backends include commands to convert a region of Org
@@ -17429,7 +17125,6 @@ write a list in Org syntax, select it, and convert it to HTML with
 * Publishing
 :PROPERTIES:
 :DESCRIPTION: Create a web site of linked Org files.
-:CUSTOM_ID: publishing
 :END:
 #+cindex: publishing
 
@@ -17448,7 +17143,6 @@ Publishing has been contributed to Org by David O'Toole.
 ** Configuration
 :PROPERTIES:
 :DESCRIPTION: Defining projects.
-:CUSTOM_ID: configuration
 :END:
 Publishing needs significant configuration to specify files,
 destination and many other properties of a project.
@@ -17457,7 +17151,6 @@ destination and many other properties of a project.
 :PROPERTIES:
 :DESCRIPTION: The central configuration variable.
 :ALT_TITLE: Project alist
-:CUSTOM_ID: the-variable-org-publish-project-alist
 :END:
 #+cindex: projects, for publishing
 
@@ -17492,7 +17185,6 @@ published, in the sequence given.
 :PROPERTIES:
 :DESCRIPTION: From here to there.
 :ALT_TITLE: Sources and destinations
-:CUSTOM_ID: sources-and-destinations-for-files
 :END:
 #+cindex: directories, for publishing
 
@@ -17528,7 +17220,6 @@ where to put published files.
 *** Selecting files
 :PROPERTIES:
 :DESCRIPTION: What files are part of the project?
-:CUSTOM_ID: selecting-files
 :END:
 #+cindex: files, selecting for publishing
 
@@ -17560,7 +17251,6 @@ following properties
 *** Publishing action
 :PROPERTIES:
 :DESCRIPTION: Setting the function doing the publishing.
-:CUSTOM_ID: publishing-action
 :END:
 #+cindex: action, for publishing
 
@@ -17605,7 +17295,6 @@ folder.
 :PROPERTIES:
 :DESCRIPTION: Tweaking HTML/@LaTeX{} export.
 :ALT_TITLE: Publishing options
-:CUSTOM_ID: options-for-the-exporters
 :END:
 #+cindex: options, for publishing
 #+cindex: publishing options
@@ -17625,7 +17314,6 @@ Settings]]), however, override everything.
 **** Generic properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: generic-properties
 :END:
 
 #+NAME: org-manual-get-export-props-customizations
@@ -17649,7 +17337,6 @@ Settings]]), however, override everything.
 **** ASCII specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: ascii-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17662,7 +17349,6 @@ Settings]]), however, override everything.
 **** Beamer specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: beamer-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17675,7 +17361,6 @@ Settings]]), however, override everything.
 **** HTML specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: html-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17688,7 +17373,6 @@ Settings]]), however, override everything.
 **** LaTeX specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: latex-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17701,7 +17385,6 @@ Settings]]), however, override everything.
 **** Markdown specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: markdown-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17714,7 +17397,6 @@ Settings]]), however, override everything.
 **** ODT specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: odt-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17727,7 +17409,6 @@ Settings]]), however, override everything.
 **** Texinfo specific properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: texinfo-specific-properties
 :END:
 
 #+begin_src emacs-lisp :exports results :results table :eval yes :noweb yes
@@ -17740,7 +17421,6 @@ Settings]]), however, override everything.
 *** Publishing links
 :PROPERTIES:
 :DESCRIPTION: Which links keep working after publishing?
-:CUSTOM_ID: publishing-links
 :END:
 #+cindex: links, publishing
 
@@ -17778,7 +17458,6 @@ to HTML, the following links all point to a dedicated anchor in
 :PROPERTIES:
 :DESCRIPTION: Generating a list of all pages.
 :ALT_TITLE: Site map
-:CUSTOM_ID: generating-a-sitemap
 :END:
 #+cindex: sitemap, of published pages
 
@@ -17854,7 +17533,6 @@ a map of files for a given project.
 *** Generating an index
 :PROPERTIES:
 :DESCRIPTION: An index that reaches across pages.
-:CUSTOM_ID: generating-an-index
 :END:
 #+cindex: index, in a publishing project
 
@@ -17883,7 +17561,6 @@ contains an exclamation mark creates a sub item.
 ** Uploading Files
 :PROPERTIES:
 :DESCRIPTION: How to get files up on the server.
-:CUSTOM_ID: uploading-files
 :END:
 #+cindex: rsync
 #+cindex: unison
@@ -17921,7 +17598,6 @@ been modified.
 ** Sample Configuration
 :PROPERTIES:
 :DESCRIPTION: Example projects.
-:CUSTOM_ID: sample-configuration
 :END:
 
 Below we provide two example configurations.  The first one is
@@ -17932,7 +17608,6 @@ example is more complex, with a multi-component project.
 :PROPERTIES:
 :DESCRIPTION: One-component publishing.
 :ALT_TITLE: Simple example
-:CUSTOM_ID: example-simple-publishing-configuration
 :END:
 
 This example publishes a set of Org files to the =public_html=
@@ -17955,7 +17630,6 @@ directory on the local machine.
 :PROPERTIES:
 :DESCRIPTION: A multi-component publishing example.
 :ALT_TITLE: Complex example
-:CUSTOM_ID: example-complex-publishing-configuration
 :END:
 
 This more complicated example publishes an entire website, including
@@ -18006,7 +17680,6 @@ place on the web server, and publishing images to it.
 ** Triggering Publication
 :PROPERTIES:
 :DESCRIPTION: Publication commands.
-:CUSTOM_ID: triggering-publication
 :END:
 
 Once properly configured, Org can publish with the following commands:
@@ -18048,7 +17721,6 @@ keywords.
 * Citation handling
 :PROPERTIES:
 :DESCRIPTION: create, follow and export citations.
-:CUSTOM_ID: citation-handling
 :END:
 #+cindex: citation
 #+cindex: citation processor
@@ -18117,9 +17789,6 @@ select which processor to use for every citation capability:
 - export :: Via different libraries for different target formats.
 
 ** Citations
-:PROPERTIES:
-:CUSTOM_ID: citations
-:END:
 
 #+cindex: bibliography
 
@@ -18192,9 +17861,6 @@ The only mandatory elements are:
 - The brackets surrounding the citation(s) (group).
 
 ** Citation export processors
-:PROPERTIES:
-:CUSTOM_ID: citation-export-processors
-:END:
 
 Org currently includes the following export processors:
 
@@ -18273,9 +17939,6 @@ uses this format.  It will only export to PDF, since it relies on the
 ~biblatex~ processor of your LaTeX installation.
 
 ** Bibliography printing
-:PROPERTIES:
-:CUSTOM_ID: bibliography-printing
-:END:
 
 #+cindex: @samp{PRINT_BIBLIOGRAPHY}, keyword
 The =PRINT_BIBLIOGRAPHY= keyword specifies where the bibliography
@@ -18299,9 +17962,6 @@ the different citation export processors.  Some export processors do
 not support passing options.
 
 *** Bibliography options in the =biblatex= and =csl= export processors
-:PROPERTIES:
-:CUSTOM_ID: bibliography-options-in-the-biblatex-and-csl-export-processors
-:END:
 
 The =biblatex= and =csl= export processors support bibliography
 options through a property list attached to the =PRINT_BIBLIOGRAPHY=
@@ -18349,7 +18009,6 @@ The =csl= processor accepts the following options:
 * Working with Source Code
 :PROPERTIES:
 :DESCRIPTION: Export, evaluate, and tangle code blocks.
-:CUSTOM_ID: working-with-source-code
 :END:
 #+cindex: source code, working with
 
@@ -18384,7 +18043,6 @@ in the following sections.
 ** Features Overview
 :PROPERTIES:
 :DESCRIPTION: Enjoy the versatility of source blocks.
-:CUSTOM_ID: features-overview
 :END:
 
 Org can manage the source code in the block delimited by =#+BEGIN_SRC=
@@ -18437,7 +18095,6 @@ internal and external links in a single Org document.
 ** Structure of Code Blocks
 :PROPERTIES:
 :DESCRIPTION: Code block syntax described.
-:CUSTOM_ID: structure-of-code-blocks
 :END:
 #+cindex: code block, structure
 #+cindex: source code, block structure
@@ -18528,7 +18185,6 @@ or
 ** Using Header Arguments
 :PROPERTIES:
 :DESCRIPTION: Different ways to set header arguments.
-:CUSTOM_ID: using-header-arguments
 :END:
 
 Org comes with many header arguments common to all languages.  New
@@ -18545,7 +18201,6 @@ override header values from global defaults.
 *** System-wide header arguments
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: system-wide-header-arguments
 :END:
 #+vindex: org-babel-default-header-args
 
@@ -18605,7 +18260,6 @@ https://orgmode.org/worg/org-contrib/babel/.
 *** Header arguments in Org mode properties
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: header-arguments-in-org-mode-properties
 :END:
 
 For header arguments applicable to the buffer, use =PROPERTY= keyword
@@ -18670,7 +18324,6 @@ would force separate sessions for Clojure blocks in =Heading= and
 *** Code block specific header arguments
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: code-block-specific-header-arguments
 :END:
 
 Header arguments are most commonly set at the source code block level,
@@ -18728,7 +18381,6 @@ Multi-line header arguments on a named code block:
 *** Header arguments in function calls
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: header-arguments-in-function-calls
 :END:
 
 Header arguments in function calls are the most specific and override
@@ -18749,13 +18401,11 @@ evaluation of =factorial= code block.
 ** Environment of a Code Block
 :PROPERTIES:
 :DESCRIPTION: Arguments, sessions, working directory...
-:CUSTOM_ID: environment-of-a-code-block
 :END:
 
 *** Passing arguments
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: passing-arguments
 :END:
 
 #+cindex: passing arguments to code blocks
@@ -19075,7 +18725,6 @@ evaluated as Emacs Lisp code, as illustrated in the following example.
 *** Using sessions
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: using-sessions
 :END:
 
 #+cindex: using sessions in code blocks
@@ -19112,7 +18761,6 @@ for those code blocks running in a session.
 *** Choosing a working directory
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: choosing-a-working-directory
 :END:
 
 #+cindex: working directory, in a code block
@@ -19172,7 +18820,6 @@ portability issues.
 *** Inserting headers and footers
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: inserting-headers-and-footers
 :END:
 
 #+cindex: headers, in code blocks
@@ -19196,7 +18843,6 @@ to the end of the code block for execution.
 ** Evaluating Code Blocks
 :PROPERTIES:
 :DESCRIPTION: Place results of evaluation in the Org buffer.
-:CUSTOM_ID: evaluating-code-blocks
 :END:
 #+cindex: code block, evaluating
 #+cindex: source code, evaluating
@@ -19210,7 +18856,6 @@ see [[*Code Evaluation and Security Issues]].
 *** How to evaluate source code
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: how-to-evaluate-source-code
 :END:
 
 Org captures the results of the code block evaluation and inserts them
@@ -19297,7 +18942,6 @@ variable ~org-babel-inline-result-wrap~, which by default is set to
 *** Limit code block evaluation
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: limit-code-block-evaluation
 :END:
 
 #+cindex: @samp{eval}, header argument
@@ -19336,7 +18980,6 @@ variable (see [[*Code Evaluation and Security Issues]]).
 *** Cache results of evaluation
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: cache-results-of-evaluation
 :END:
 
 #+cindex: @samp{cache}, header argument
@@ -19407,7 +19050,6 @@ the result from =random= has changed since the last run.
 ** Results of Evaluation
 :PROPERTIES:
 :DESCRIPTION: Choosing a results type, post-processing...
-:CUSTOM_ID: results-of-evaluation
 :END:
 #+cindex: code block, results of evaluation
 #+cindex: source code, results of evaluation
@@ -19438,7 +19080,6 @@ Each code block can take only one option per class:
 *** Collection
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: collection
 :END:
 
 Collection options specify the results.  Choose one of the options;
@@ -19474,7 +19115,6 @@ they are mutually exclusive.
 *** Type
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: type
 :END:
 
 Type tells what result types to expect from the execution of the code
@@ -19607,7 +19247,6 @@ described in the documentation for individual languages.  See
 *** Format
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: format
 :END:
 
 Format pertains to the type of the result returned by the code block.
@@ -19696,7 +19335,6 @@ value listed above.  E.g.,
 *** Handling
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: handling
 :END:
 
 Handling options after collecting the results.  Choose one of the
@@ -19742,7 +19380,6 @@ options; they are mutually exclusive.
 *** Post-processing
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: post-processing
 :END:
 
 #+cindex: @samp{post}, header argument
@@ -19810,7 +19447,6 @@ to pass data between code blocks.
 ** Exporting Code Blocks
 :PROPERTIES:
 :DESCRIPTION: Export contents and/or results.
-:CUSTOM_ID: exporting-code-blocks
 :END:
 #+cindex: code block, exporting
 #+cindex: source code, exporting
@@ -19901,7 +19537,6 @@ blocks in subtrees excluded from export (see [[*Export Settings]]).
 ** Extracting Source Code
 :PROPERTIES:
 :DESCRIPTION: Create pure source code files.
-:CUSTOM_ID: extracting-source-code
 :END:
 #+cindex: tangling
 #+cindex: source code, extracting
@@ -19925,7 +19560,6 @@ references (see [[*Noweb Reference Syntax]]).
 *** Header arguments
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: header-arguments
 :END:
 
 #+cindex: @samp{tangle}, header argument
@@ -20044,7 +19678,6 @@ expanded anyway.
 *** Functions
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: functions
 :END:
 
 - ~org-babel-tangle~ ::
@@ -20064,7 +19697,6 @@ expanded anyway.
 *** Tangle hooks
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: tangle-hooks
 :END:
 
 - ~org-babel-pre-tangle-hook~ ::
@@ -20095,7 +19727,6 @@ expanded anyway.
 *** Jumping between code and Org
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: jumping-between-code-and-org
 :END:
 
 #+findex: org-babel-tangle-jump-to-org
@@ -20112,7 +19743,6 @@ code block header arguments:
 ** Languages
 :PROPERTIES:
 :DESCRIPTION: List of supported code block languages.
-:CUSTOM_ID: languages
 :END:
 #+cindex: babel, languages
 #+cindex: source code, languages
@@ -20148,7 +19778,6 @@ the following enables execution of Clojure code blocks:
 ** Editing Source Code
 :PROPERTIES:
 :DESCRIPTION: Language major-mode editing.
-:CUSTOM_ID: editing-source-code
 :END:
 #+cindex: code block, editing
 #+cindex: source code, editing
@@ -20232,7 +19861,6 @@ for Python and Emacs Lisp languages.
 ** Noweb Reference Syntax
 :PROPERTIES:
 :DESCRIPTION: Literate programming in Org mode.
-:CUSTOM_ID: noweb-reference-syntax
 :END:
 #+cindex: code block, noweb reference
 #+cindex: syntax, noweb
@@ -20519,7 +20147,6 @@ can preview the results with the following command:
 ** Library of Babel
 :PROPERTIES:
 :DESCRIPTION: Use and contribute to a library of useful code blocks.
-:CUSTOM_ID: library-of-babel
 :END:
 #+cindex: babel, library of
 #+cindex: source code, library
@@ -20539,7 +20166,6 @@ regular code blocks of an Org file, and then load the Org file with
 ** Key bindings and Useful Functions
 :PROPERTIES:
 :DESCRIPTION: Work quickly with code blocks.
-:CUSTOM_ID: key-bindings-and-useful-functions
 :END:
 #+cindex: code block, key bindings
 
@@ -20661,7 +20287,6 @@ Active key bindings in Org mode buffer:
 ** Batch Execution
 :PROPERTIES:
 :DESCRIPTION: Call functions from the command line.
-:CUSTOM_ID: batch-execution
 :END:
 #+cindex: code block, batch execution
 #+cindex: source code, batch execution
@@ -20690,13 +20315,11 @@ emacs -Q --batch --eval "
 * Miscellaneous
 :PROPERTIES:
 :DESCRIPTION: All the rest which did not fit elsewhere.
-:CUSTOM_ID: miscellaneous-2
 :END:
 
 ** Completion
 :PROPERTIES:
 :DESCRIPTION: @kbd{M-@key{TAB}} guesses completions.
-:CUSTOM_ID: completion
 :END:
 #+cindex: completion, of @TeX{} symbols
 #+cindex: completion, of TODO keywords
@@ -20757,7 +20380,6 @@ shortcuts.
 ** Structure Templates
 :PROPERTIES:
 :DESCRIPTION: Quick insertion of structural elements.
-:CUSTOM_ID: structure-templates
 :END:
 #+cindex: template insertion
 #+cindex: insertion, of templates
@@ -20807,7 +20429,6 @@ section in =org-tempo.el=.].
 ** Speed Keys
 :PROPERTIES:
 :DESCRIPTION: Electric commands at the beginning of a headline.
-:CUSTOM_ID: speed-keys
 :END:
 #+cindex: speed keys
 
@@ -20838,7 +20459,6 @@ including the user-defined ones.
 :PROPERTIES:
 :DESCRIPTION: Getting rid of leading stars in the outline.
 :ALT_TITLE: Clean View
-:CUSTOM_ID: a-cleaner-outline-view
 :END:
 #+cindex: hiding leading stars
 #+cindex: dynamic indentation
@@ -20866,9 +20486,6 @@ this way without changing it, or (2) by actually indenting every line
 in the desired amount with hard spaces and hiding leading stars.
 
 *** Org Indent Mode
-:PROPERTIES:
-:CUSTOM_ID: org-indent-mode
-:END:
 
 #+cindex: Indent mode
 #+findex: org-indent-mode
@@ -20900,9 +20517,6 @@ use =STARTUP= keyword as follows:
 : #+STARTUP: noindent
 
 *** Hard indentation
-:PROPERTIES:
-:CUSTOM_ID: hard-indentation
-:END:
 
 It is possible to use hard spaces to achieve the indentation instead,
 if the bare ASCII file should have the indented look also outside
@@ -20956,7 +20570,6 @@ case only data lines below the headline will be indented.]:
 ** Execute commands in the active region
 :PROPERTIES:
 :DESCRIPTION: Execute commands on multiple items in Org or agenda view.
-:CUSTOM_ID: execute-commands-in-the-active-region
 :END:
 
 #+vindex: org-loop-over-headlines-in-active-region
@@ -20979,7 +20592,6 @@ options for more details.
 ** Dynamic Headline Numbering
 :PROPERTIES:
 :DESCRIPTION: Display and update outline numbering.
-:CUSTOM_ID: dynamic-headline-numbering
 :END:
 
 #+cindex: Org Num mode
@@ -21015,7 +20627,6 @@ option ~org-startup-numerated~ to =t=, or locally on a file by using
 ** The Very Busy {{{kbd(C-c C-c)}}} Key
 :PROPERTIES:
 :DESCRIPTION: When in doubt, press @kbd{C-c C-c}.
-:CUSTOM_ID: the-very-busy-kbd-c-c-c-c-key
 :END:
 #+kindex: C-c C-c
 #+cindex: @kbd{C-c C-c}, overview
@@ -21070,7 +20681,6 @@ manual, but here is a consolidated list for easy reference.
 :PROPERTIES:
 :DESCRIPTION: Overview of keywords.
 :ALT_TITLE: In-buffer Settings
-:CUSTOM_ID: summary-of-in-buffer-settings
 :END:
 #+cindex: in-buffer settings
 #+cindex: special keywords
@@ -21348,7 +20958,6 @@ changes.
 ** Regular Expressions
 :PROPERTIES:
 :DESCRIPTION: Elisp regular expressions.
-:CUSTOM_ID: regular-expressions
 :END:
 #+cindex: regular expressions syntax
 #+cindex: regular expressions, in searches
@@ -21365,7 +20974,6 @@ For more information, see [[info:emacs::Regexps][Regular Expressions in Emacs]].
 ** Org Syntax
 :PROPERTIES:
 :DESCRIPTION: Formal description of Org's syntax.
-:CUSTOM_ID: org-syntax
 :END:
 
 A reference document providing a formal description of Org's syntax is
@@ -21412,7 +21020,6 @@ can operate on the reports with the following keys:
 :PROPERTIES:
 :DESCRIPTION: Read documentation about current syntax.
 :ALT_TITLE: Documentation Access
-:CUSTOM_ID: context-dependent-documentation
 :END:
 #+cindex: documentation
 #+cindex: Info
@@ -21428,7 +21035,6 @@ using it on a headline displays "Document Structure" section.
 ** Escape Character
 :PROPERTIES:
 :DESCRIPTION: Prevent Org from interpreting your writing.
-:CUSTOM_ID: escape-character
 :END:
 
 #+cindex: escape character
@@ -21455,7 +21061,6 @@ where =X= denotes the zero width space character.
 :PROPERTIES:
 :DESCRIPTION: Org files evaluate in-line code.
 :ALT_TITLE: Code Evaluation Security
-:CUSTOM_ID: code-evaluation-and-security-issues
 :END:
 
 Unlike plain text, running code comes with risk.  Each source code
@@ -21526,7 +21131,6 @@ Org evaluates code in the following circumstances:
 :PROPERTIES:
 :DESCRIPTION: With other Emacs packages.
 :ALT_TITLE: Interaction
-:CUSTOM_ID: interaction-with-other-packages
 :END:
 #+cindex: packages, interaction with other
 
@@ -21537,7 +21141,6 @@ packages are documented here.
 :PROPERTIES:
 :DESCRIPTION: Packages Org cooperates with.
 :ALT_TITLE: Cooperation
-:CUSTOM_ID: packages-that-org-cooperates-with
 :END:
 
 - =calc.el= by Dave Gillespie ::
@@ -21627,7 +21230,6 @@ packages are documented here.
 :PROPERTIES:
 :DESCRIPTION: Packages that lead to conflicts.
 :ALT_TITLE: Conflicts
-:CUSTOM_ID: packages-that-conflict-with-org-mode
 :END:
 
 #+cindex: shift-selection
@@ -21755,7 +21357,6 @@ moves across a special context.
 :PROPERTIES:
 :DESCRIPTION: Using Org on a tty.
 :ALT_TITLE: TTY Keys
-:CUSTOM_ID: using-org-on-a-tty
 :END:
 #+cindex: tty key bindings
 
@@ -21794,7 +21395,6 @@ further based on their usage needs.  For example, the normal
 :PROPERTIES:
 :DESCRIPTION: External access to Emacs and Org.
 :ALT_TITLE: Protocols
-:CUSTOM_ID: protocols-for-external-access
 :END:
 #+cindex: protocols, for external access
 
@@ -21830,7 +21430,6 @@ your own.
 *** The ~store-link~ protocol
 :PROPERTIES:
 :DESCRIPTION: Store a link, push URL to kill-ring.
-:CUSTOM_ID: the-store-link-protocol
 :END:
 #+cindex: store-link protocol
 #+cindex: protocol, store-link
@@ -21870,7 +21469,6 @@ The latter form is compatible with older Org versions from 9.0 to 9.4.
 *** The ~capture~ protocol
 :PROPERTIES:
 :DESCRIPTION: Fill a buffer with external information.
-:CUSTOM_ID: the-capture-protocol
 :END:
 #+cindex: capture protocol
 #+cindex: protocol, capture
@@ -21920,7 +21518,6 @@ placeholders are available:
 *** The ~open-source~ protocol
 :PROPERTIES:
 :DESCRIPTION: Edit published contents.
-:CUSTOM_ID: the-open-source-protocol
 :END:
 #+cindex: open-source protocol
 #+cindex: protocol, open-source
@@ -22008,7 +21605,6 @@ an Org file that is part of a publishing project.
 ** Org Crypt
 :PROPERTIES:
 :DESCRIPTION: Encrypting Org files.
-:CUSTOM_ID: org-crypt
 :END:
 
 Org Crypt encrypts the text of an entry, but not the headline, or
@@ -22062,7 +21658,6 @@ text from being encrypted again.
 ** Org Mobile
 :PROPERTIES:
 :DESCRIPTION: Viewing and capture on a mobile device.
-:CUSTOM_ID: org-mobile
 :END:
 #+cindex: smartphone
 
@@ -22088,7 +21683,6 @@ Tags]]) only for those set in these variables.
 *** Setting up the staging area
 :PROPERTIES:
 :DESCRIPTION: For the mobile device.
-:CUSTOM_ID: setting-up-the-staging-area
 :END:
 
 #+vindex: org-mobile-directory
@@ -22124,7 +21718,6 @@ the local computer, the server, and the mobile device.
 *** Pushing to the mobile application
 :PROPERTIES:
 :DESCRIPTION: Uploading Org files and agendas.
-:CUSTOM_ID: pushing-to-the-mobile-application
 :END:
 
 #+findex: org-mobile-push
@@ -22150,7 +21743,6 @@ changed.
 *** Pulling from the mobile application
 :PROPERTIES:
 :DESCRIPTION: Integrating captured and flagged items.
-:CUSTOM_ID: pulling-from-the-mobile-application
 :END:
 
 #+findex: org-mobile-pull
@@ -22203,7 +21795,6 @@ pull, pull again.
 ** Drag and Drop & ~yank-media~
 :PROPERTIES:
 :DESCRIPTION: Dropping and pasting files and images
-:CUSTOM_ID: drag-and-drop-yank-media
 :END:
 
 #+cindex: dropping files
@@ -22254,7 +21845,6 @@ tables.
 ** Repeating commands
 :PROPERTIES:
 :DESCRIPTION: Repeating navigation commands
-:CUSTOM_ID: repeating-commands
 :END:
 
 #+cindex: repeat-mode, org-mode
@@ -22299,7 +21889,6 @@ keymaps.
 :PROPERTIES:
 :DESCRIPTION: How to hack your way around.
 :APPENDIX: t
-:CUSTOM_ID: hacking
 :END:
 #+cindex: hacking
 
@@ -22309,7 +21898,6 @@ of Org.
 ** Hooks
 :PROPERTIES:
 :DESCRIPTION: How to reach into Org's internals.
-:CUSTOM_ID: hooks
 :END:
 #+cindex: hooks
 
@@ -22320,7 +21908,6 @@ project at https://orgmode.org/worg/doc.html#hooks.
 ** Add-on Packages
 :PROPERTIES:
 :DESCRIPTION: Available extensions.
-:CUSTOM_ID: add-on-packages
 :END:
 #+cindex: add-on packages
 
@@ -22333,7 +21920,6 @@ information is at: https://orgmode.org/worg/org-contrib/.
 ** Adding Hyperlink Types
 :PROPERTIES:
 :DESCRIPTION: New custom link types.
-:CUSTOM_ID: adding-hyperlink-types
 :END:
 #+cindex: hyperlinks, adding new types
 
@@ -22438,7 +22024,6 @@ A review of =ol-man.el=:
 ** Adding Hyperlink preview
 :PROPERTIES:
 :DESCRIPTION: Preview behavior for new hyperlink types.
-:CUSTOM_ID: adding-hyperlink-preview
 :END:
 #+cindex: hyperlinks, adding preview behavior
 
@@ -22500,7 +22085,6 @@ _ELEM is the syntax node of the link element."
 ** Adding Export Backends
 :PROPERTIES:
 :DESCRIPTION: How to write new export backends.
-:CUSTOM_ID: adding-export-backends
 :END:
 #+cindex: Export, writing backends
 
@@ -22531,7 +22115,6 @@ For complete documentation, see [[https://orgmode.org/worg/dev/org-export-refere
 ** Tables in Arbitrary Syntax
 :PROPERTIES:
 :DESCRIPTION: Orgtbl for LaTeX and other programs.
-:CUSTOM_ID: tables-in-arbitrary-syntax
 :END:
 #+cindex: tables, in other modes
 #+cindex: lists, in other modes
@@ -22556,7 +22139,6 @@ best.
 *** Radio tables
 :PROPERTIES:
 :DESCRIPTION: Sending and receiving radio tables.
-:CUSTOM_ID: radio-tables
 :END:
 #+cindex: radio tables
 
@@ -22618,7 +22200,6 @@ of these strategies:
 :PROPERTIES:
 :DESCRIPTION: Step by step, almost a tutorial.
 :ALT_TITLE: A LaTeX example
-:CUSTOM_ID: a-latex-example-of-radio-tables
 :END:
 #+cindex: @LaTeX{}, and Orgtbl mode
 
@@ -22720,7 +22301,6 @@ control output, see [[*Translator functions]]:
 *** Translator functions
 :PROPERTIES:
 :DESCRIPTION: Copy and modify.
-:CUSTOM_ID: translator-functions
 :END:
 #+cindex: HTML, and Orgtbl mode
 #+cindex: translator function
@@ -22780,7 +22360,6 @@ users mailing list, at mailto:emacs-orgmode@gnu.org.
 ** Dynamic Blocks
 :PROPERTIES:
 :DESCRIPTION: Automatically filled blocks.
-:CUSTOM_ID: dynamic-blocks
 :END:
 #+cindex: dynamic blocks
 
@@ -22857,7 +22436,6 @@ Dynamic blocks, like any other block, can be narrowed with
 ** Special Agenda Views
 :PROPERTIES:
 :DESCRIPTION: Customized views.
-:CUSTOM_ID: special-agenda-views
 :END:
 #+cindex: agenda views, user-defined
 
@@ -22973,7 +22551,6 @@ special function:
 ** Speeding Up Your Agendas
 :PROPERTIES:
 :DESCRIPTION: Tips on how to speed up your agendas.
-:CUSTOM_ID: speeding-up-your-agendas
 :END:
 #+cindex: agenda views, optimization
 
@@ -23026,7 +22603,6 @@ optimization.
 ** Extracting Agenda Information
 :PROPERTIES:
 :DESCRIPTION: Post-processing agenda information.
-:CUSTOM_ID: extracting-agenda-information
 :END:
 #+cindex: agenda, pipe
 #+cindex: scripts, for agenda processing
@@ -23132,7 +22708,6 @@ foreach $line (split(/\n/,$agenda)) {
 ** Using the Property API
 :PROPERTIES:
 :DESCRIPTION: Writing programs that use entry properties.
-:CUSTOM_ID: using-the-property-api
 :END:
 #+cindex: API, for properties
 #+cindex: properties, API
@@ -23236,7 +22811,6 @@ responsible for this property.
 ** Using the Mapping API
 :PROPERTIES:
 :DESCRIPTION: Mapping over all or selected entries.
-:CUSTOM_ID: using-the-mapping-api
 :END:
 #+cindex: API, for mapping
 #+cindex: mapping entries, API
@@ -23379,13 +22953,11 @@ The following example counts the number of entries with TODO keyword
 :PROPERTIES:
 :DESCRIPTION: How Org came into being.
 :APPENDIX: t
-:CUSTOM_ID: history-and-acknowledgments
 :END:
 
 ** From Carsten
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: from-carsten
 :END:
 
 Org was born in 2003, out of frustration over the user interface of
@@ -23456,7 +23028,6 @@ know what I am missing here!
 ** From Bastien
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: from-bastien
 :END:
 
 I started maintaining Org in January 2011 and officially stepped down
@@ -23521,7 +23092,6 @@ community and the code.
 ** List of Contributions
 :PROPERTIES:
 :UNNUMBERED: notoc
-:CUSTOM_ID: list-of-contributions
 :END:
 
 - Russell Adams came up with the idea for drawers.
@@ -23765,7 +23335,6 @@ community and the code.
 :PROPERTIES:
 :APPENDIX: t
 :DESCRIPTION: The license for this documentation.
-:CUSTOM_ID: gnu-free-documentation-license
 :END:
 
 #+include: fdl.org
@@ -23774,28 +23343,24 @@ community and the code.
 :PROPERTIES:
 :INDEX:    cp
 :DESCRIPTION: An index of Org's concepts and features.
-:CUSTOM_ID: main-index
 :END:
 
 * Key Index
 :PROPERTIES:
 :DESCRIPTION: Key bindings and where they are described.
 :INDEX:    ky
-:CUSTOM_ID: key-index
 :END:
 
 * Command and Function Index
 :PROPERTIES:
 :DESCRIPTION: Command names and some internal functions.
 :INDEX:    fn
-:CUSTOM_ID: command-and-function-index
 :END:
 
 * Variable Index
 :PROPERTIES:
 :DESCRIPTION: Variables mentioned in the manual.
 :INDEX:    vr
-:CUSTOM_ID: variable-index
 :END:
 
 This is not a complete index of variables and faces, only the ones
@@ -23805,7 +23370,6 @@ that are mentioned in the manual.  For a more complete list, use
 * Copying
 :PROPERTIES:
 :copying:  t
-:CUSTOM_ID: copying
 :END:
 
 This manual is for Org version {{{version}}}.
@@ -23825,9 +23389,6 @@ modify this GNU manual."
 #+end_quote
 
 * Export Setup                                                          :noexport:
-:PROPERTIES:
-:CUSTOM_ID: export-setup
-:END:
 
 #+setupfile: doc-setup.org
 
@@ -23838,9 +23399,6 @@ modify this GNU manual."
 #+texinfo_dir_desc: Outline-based notes management and organizer
 
 * Footnotes
-:PROPERTIES:
-:CUSTOM_ID: footnotes
-:END:
 
 [fn:1] See the variables ~org-special-ctrl-a/e~, ~org-special-ctrl-k~,
 and ~org-ctrl-k-protect-subtree~ to configure special behavior of

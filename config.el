@@ -9,3 +9,7 @@
       alchemist-toc-enabled t
       alchemist-search-enabled t
       alchemist-tags-enabled t)
+
+;; Keep reference docs out of publish input.
+(defvar aog/category-ignore-list nil)
+(add-to-list 'aog/category-ignore-list "docs")

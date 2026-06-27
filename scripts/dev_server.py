@@ -21,7 +21,7 @@ import re
 import socketserver
 import sys
 from pathlib import Path
-from urllib.parse import parse_qs, unquote, urljoin, urlparse
+from urllib.parse import parse_qs, quote, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 
 
@@ -281,6 +281,19 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         title = draft_file.stem.replace("-", " ").strip().title()
         body_lines: list[str] = []
         tags: list[str] = []
+        # File-level keywords that should be stripped from the body. Block
+        # markers (#+BEGIN_SRC, #+END_EXPORT, ...) and block attributes
+        # (#+CAPTION:, #+ATTR_HTML:, ...) are preserved so the editor can
+        # round-trip them accurately.
+        header_keywords = {
+            "TITLE", "AUTHOR", "DATE", "EMAIL", "FILETAGS", "KEYWORDS",
+            "OPTIONS", "DESCRIPTION", "LANGUAGE", "HTML_HEAD", "HTML_HEAD_EXTRA",
+            "LATEX_HEADER", "LATEX_HEADER_EXTRA", "SETUPFILE", "SELECT_TAGS",
+            "EXCLUDE_TAGS", "EXPORT_SELECT_TAGS", "EXPORT_EXCLUDE_TAGS",
+            "INFOJS_OPT", "BIND",
+        }
+        header_re = re.compile(r"^#\+(" + "|".join(header_keywords) + r"):\s*(.*)$", re.IGNORECASE)
+        in_block = False
         for line in draft_file.read_text(encoding="utf-8").splitlines():
             if line.startswith("#+TITLE:"):
                 title = line[len("#+TITLE:") :].strip() or title
@@ -292,8 +305,12 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
                 else:
                     tags.extend([t.strip().lower() for t in re.split(r"[, ]+", raw) if t.strip()])
                 continue
-            if line.startswith("#+"):
+            if not in_block and header_re.match(line):
                 continue
+            if re.match(r"^#\+BEGIN_\w+", line, re.IGNORECASE):
+                in_block = True
+            elif re.match(r"^#\+END_\w+", line, re.IGNORECASE):
+                in_block = False
             body_lines.append(line)
         body = "\n".join(body_lines).strip()
         uniq_tags: list[str] = []
@@ -458,6 +475,43 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             },
         )
 
+    def _claps_file(self) -> Path:
+        data_dir = self.blog_dir / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+        return data_dir / "claps.json"
+
+    def _read_claps(self) -> dict:
+        f = self._claps_file()
+        if not f.exists():
+            return {}
+        try:
+            return json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+
+    def _write_claps(self, claps: dict) -> None:
+        f = self._claps_file()
+        f.write_text(json.dumps(claps, indent=2), encoding="utf-8")
+
+    def _get_clap(self, query: str) -> None:
+        params = parse_qs(query, keep_blank_values=False)
+        slug = (params.get("slug", [""])[0]).strip()
+        if not slug:
+            self._json(400, {"ok": False, "error": "slug is required"})
+            return
+        claps = self._read_claps()
+        self._json(200, {"ok": True, "slug": slug, "count": claps.get(slug, 0)})
+
+    def _post_clap(self, data: dict) -> None:
+        slug = str(data.get("slug", "")).strip()
+        if not slug:
+            self._json(400, {"ok": False, "error": "slug is required"})
+            return
+        claps = self._read_claps()
+        claps[slug] = claps.get(slug, 0) + 1
+        self._write_claps(claps)
+        self._json(200, {"ok": True, "slug": slug, "count": claps[slug]})
+
     def _dev_edit_injection(self) -> str:
         return """
 <script>
@@ -554,7 +608,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
       injected.remove();
     }
   } else if (isPublishedStory) {
-    var editHref = "/drafts/published/" + encodeURIComponent(postSlug) + "/";
+    var editHref = "/editor?post=" + encodeURIComponent(postSlug);
     ensureInlineEditLink(editHref);
     if (existingAction) {
       existingAction.href = editHref;
@@ -651,17 +705,31 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             return
 
+        draft_detail_match = re.fullmatch(r"/drafts/([^/]+)/?", path)
+        if draft_detail_match and draft_detail_match.group(1) != "published":
+            requested_slug = slugify(draft_detail_match.group(1))
+            # Serve the inline editable draft preview page if it exists.
+            candidate = self.public_dir / "drafts" / requested_slug / "index.html"
+            if candidate.exists():
+                if self._try_serve_injected_html(str(candidate.relative_to(self.public_dir))):
+                    return
+            self.send_response(302)
+            self.send_header("Location", f"/editor?draft={quote(requested_slug, safe='')}")
+            self.end_headers()
+            return
+
         published_edit_match = re.fullmatch(r"/drafts/published/([^/]+)/?", path)
-        rewritten_path = path
         if published_edit_match:
             requested_slug = slugify(published_edit_match.group(1))
-            resolved = self._resolve_post_file(requested_slug)
-            if resolved is not None:
-                canonical_slug = slugify(resolved.stem)
-                if canonical_slug:
-                    # Serve canonical generated page while keeping original URL,
-                    # so legacy slug context remains available to client-side path resolution.
-                    rewritten_path = f"/drafts/published/{canonical_slug}/"
+            # Serve the inline editable published preview page if it exists.
+            candidate = self.public_dir / "drafts" / "published" / requested_slug / "index.html"
+            if candidate.exists():
+                if self._try_serve_injected_html(str(candidate.relative_to(self.public_dir))):
+                    return
+            self.send_response(302)
+            self.send_header("Location", f"/editor?post={quote(requested_slug, safe='')}")
+            self.end_headers()
+            return
 
         # Local-dev fallback: serve live source assets even before publish sync into public/.
         if path.startswith("/assets/"):
@@ -683,13 +751,11 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self._load_draft(parsed.query)
             return
 
-        if path in {"/editor", "/editor/"}:
-            self.send_response(302)
-            self.send_header("Location", "/drafts/new/")
-            self.end_headers()
+        if path == "/api/clap":
+            self._get_clap(parsed.query)
             return
 
-        if path in {"/__editor", "/__editor/"}:
+        if path in {"/editor", "/editor/", "/__editor", "/__editor/"}:
             editor_html = self.editor_dir / "index.html"
             if not editor_html.exists():
                 self.send_error(404, "Editor not found")
@@ -702,7 +768,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
 
-        if self._try_serve_injected_html(rewritten_path):
+        if self._try_serve_injected_html(path):
             return
 
         super().do_GET()
@@ -717,6 +783,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             "/editor/api/fetch-meta",
             "/editor/api/load-draft",
             "/__editor/api/load-draft",
+            "/api/clap",
         }:
             self.send_error(404, "Not Found")
             return
@@ -732,6 +799,10 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
 
         if path in {"/editor/api/save", "/__editor/api/save"}:
             self._save_post(data)
+            return
+
+        if path == "/api/clap":
+            self._post_clap(data)
             return
 
         if path == "/editor/api/upload":

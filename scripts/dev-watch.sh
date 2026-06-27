@@ -42,7 +42,7 @@ trap cleanup_lock EXIT
 hash_state() {
   {
     find "$BLOG_DIR" \
-      \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" \) -prune -o \
+      \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" -o -path "$BLOG_DIR/docs" -o -path "$BLOG_DIR/editor" \) -prune -o \
       -type f \( \
         -name "*.org" -o \
         -name "*.el" -o \
@@ -76,7 +76,8 @@ while true; do
   if [ "$NEXT_HASH" != "$LAST_HASH" ]; then
     echo "[watch] Change detected. Rebuilding..."
     if LOCAL_DEV=1 "$BLOG_DIR/publish.sh"; then
-      LAST_HASH="$NEXT_HASH"
+      # Recompute after publish because publish steps can touch watched source files.
+      LAST_HASH="$(hash_state)"
       echo "[watch] Rebuild complete."
     else
       echo "[watch] Rebuild failed. Will retry on next change."

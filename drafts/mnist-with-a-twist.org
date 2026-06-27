@@ -1,13 +1,14 @@
 #+TITLE: MNIST with a TWIST
-#+DATE: 2026-02-12
+#+DATE: 2026-06-27
 #+OPTIONS: toc:nil
 #+DESCRIPTION: Draft post
 #+FILETAGS: :machine-learning:
 
-[[/assets/uploads/2026/02/placeholder-000833.png][placeholder.png]]
+MNIST with regression.
 
-#+BEGIN_SRC ruby
-def hello
-  puts "HI"
-end
-#+END_SRC
+#+BEGIN_EXPORT html
+<figure class="image-block align-left pos-center fit-cover" style="width: 725px; max-width: 100%; height: 613px;" data-fit="cover" data-position="center" data-filter="none" data-align="left" data-resize-observed="1" data-width="725" data-height="613"><img src="/assets/uploads/2026/06/placeholder-233721-140249-140703.png" alt=""></figure>
+#+END_EXPORT
+
+#+ATTR_HTML: :style text-align:left
+ssss

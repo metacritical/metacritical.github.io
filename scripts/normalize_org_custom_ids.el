@@ -31,5 +31,6 @@
 
 (let ((target (or (car command-line-args-left) default-directory)))
   (dolist (file (directory-files-recursively target "\\.org\\'"))
-    (unless (string-match-p "/\\(public\\|themes\\)/" file)
+    (unless (or (string-match-p "/\\(public\\|themes\\)/" file)
+                (string-match-p "/docs/org-manual\\.org\\'" file))
       (sds/normalize-custom-ids-in-file file))))
