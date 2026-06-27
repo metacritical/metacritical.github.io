@@ -494,7 +494,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="org98423f6" class="figure">
+<div id="org43f3e71" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -509,7 +509,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="orgb37f067" class="figure">
+<div id="org5a6c979" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
@@ -686,6 +686,9 @@ Watchout for the next part of the assay till then.
   const plusToggle = document.getElementById('draft-plus-toggle');
   const plusIcon = document.getElementById('draft-plus-icon');
   const plusMenu = document.getElementById('draft-plus-menu');
+  let _plusTimed = false;
+  function _markPlusReady() { if (!_plusTimed) { _plusTimed = true; console.timeEnd('plus-ready'); } }
+  console.time('plus-ready');
   const tagsInline = document.getElementById('draft-tags-inline');
   const addTagBtn = document.getElementById('draft-add-tag');
   const tagPop = document.getElementById('draft-tag-pop');
@@ -1036,6 +1039,7 @@ Watchout for the next part of the assay till then.
     left = Math.min(left, window.innerWidth - toggleSize - gapFromBody);
     let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
     plus.style.display='inline-flex';
+    _markPlusReady();
     plus.style.left = Math.round(left) + 'px';
     plus.style.right = 'auto';
     plus.style.top = Math.round(top) + 'px';

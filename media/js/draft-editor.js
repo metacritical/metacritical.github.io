@@ -150,6 +150,8 @@ class DraftHistory {
 
 class DraftEditor {
   constructor(opts) {
+    console.time('plus-ready');
+    this._plusTimed = false;
     this.opts = Object.assign({
       titleEl: null,
       bodyEl: null,
@@ -810,6 +812,7 @@ class DraftEditor {
     this.blockPlus.style.left = `${Math.round(left)}px`;
     this.blockPlus.style.right = 'auto';
     this.blockPlus.classList.add('visible');
+    if (!this._plusTimed) { this._plusTimed = true; console.timeEnd('plus-ready'); }
   }
 
   _hideBlockPlus() {

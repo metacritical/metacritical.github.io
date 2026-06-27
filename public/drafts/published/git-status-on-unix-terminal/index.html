@@ -592,7 +592,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="org4785ea0" class="figure">
+<div id="org6c997c2" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -602,7 +602,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org00aad7e" class="figure">
+<div id="org23e0749" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -719,6 +719,9 @@ Thats it folks! Happy hacking.
   const plusToggle = document.getElementById('draft-plus-toggle');
   const plusIcon = document.getElementById('draft-plus-icon');
   const plusMenu = document.getElementById('draft-plus-menu');
+  let _plusTimed = false;
+  function _markPlusReady() { if (!_plusTimed) { _plusTimed = true; console.timeEnd('plus-ready'); } }
+  console.time('plus-ready');
   const tagsInline = document.getElementById('draft-tags-inline');
   const addTagBtn = document.getElementById('draft-add-tag');
   const tagPop = document.getElementById('draft-tag-pop');
@@ -1069,6 +1072,7 @@ Thats it folks! Happy hacking.
     left = Math.min(left, window.innerWidth - toggleSize - gapFromBody);
     let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
     plus.style.display='inline-flex';
+    _markPlusReady();
     plus.style.left = Math.round(left) + 'px';
     plus.style.right = 'auto';
     plus.style.top = Math.round(top) + 'px';

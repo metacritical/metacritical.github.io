@@ -798,6 +798,9 @@
   const plusToggle = document.getElementById('draft-plus-toggle');
   const plusIcon = document.getElementById('draft-plus-icon');
   const plusMenu = document.getElementById('draft-plus-menu');
+  let _plusTimed = false;
+  function _markPlusReady() { if (!_plusTimed) { _plusTimed = true; console.timeEnd('plus-ready'); } }
+  console.time('plus-ready');
   const tagsInline = document.getElementById('draft-tags-inline');
   const addTagBtn = document.getElementById('draft-add-tag');
   const tagPop = document.getElementById('draft-tag-pop');
@@ -1148,6 +1151,7 @@
     left = Math.min(left, window.innerWidth - toggleSize - gapFromBody);
     let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
     plus.style.display='inline-flex';
+    _markPlusReady();
     plus.style.left = Math.round(left) + 'px';
     plus.style.right = 'auto';
     plus.style.top = Math.round(top) + 'px';
