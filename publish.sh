@@ -120,6 +120,24 @@ if [ -d "$BLOG_DIR/media" ]; then
     mkdir -p "$BLOG_DIR/public/media/js"
     cp "$BLOG_DIR/media/js/claps.js" "$BLOG_DIR/public/media/js/claps.js"
   fi
+  # Copy draft-editor assets used by /editor and inline draft previews.
+  if [ -f "$BLOG_DIR/media/js/draft-editor.js" ]; then
+    mkdir -p "$BLOG_DIR/public/media/js"
+    cp "$BLOG_DIR/media/js/draft-editor.js" "$BLOG_DIR/public/media/js/draft-editor.js"
+  fi
+  if [ -f "$BLOG_DIR/media/css/draft-editor.css" ]; then
+    mkdir -p "$BLOG_DIR/public/media/css"
+    cp "$BLOG_DIR/media/css/draft-editor.css" "$BLOG_DIR/public/media/css/draft-editor.css"
+  fi
+  if [ -f "$BLOG_DIR/media/css/prism-themes-scoped.css" ]; then
+    mkdir -p "$BLOG_DIR/public/media/css"
+    cp "$BLOG_DIR/media/css/prism-themes-scoped.css" "$BLOG_DIR/public/media/css/prism-themes-scoped.css"
+  fi
+  # Copy Prism syntax highlighting assets used by code blocks.
+  if [ -d "$BLOG_DIR/media/vendor/prism" ]; then
+    mkdir -p "$BLOG_DIR/public/media/vendor/prism"
+    cp -r "$BLOG_DIR/media/vendor/prism/"* "$BLOG_DIR/public/media/vendor/prism/" 2>/dev/null || true
+  fi
 fi
 if [ -d "$BLOG_DIR/assets" ]; then
   mkdir -p "$BLOG_DIR/public/assets"

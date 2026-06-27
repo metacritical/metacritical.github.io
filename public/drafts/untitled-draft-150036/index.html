@@ -7,9 +7,7 @@
   <link rel="icon" href="/media/images/logo.png" type="image/png">
   <link rel="stylesheet" href="/media/css/style.css" type="text/css">
   <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
-  <link rel="stylesheet" href="/media/vendor/prism/prism.min.css" type="text/css">
-  <link rel="stylesheet" href="/media/vendor/prism/prism-dark.min.css" type="text/css">
-  <link rel="stylesheet" href="/media/vendor/prism/prism-monokai.min.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prism-themes-scoped.css" type="text/css">
   <script src="/media/vendor/prism/prism.min.js" data-manual></script>
   <script src="/media/vendor/prism/prism-autoloader.min.js"></script>
   <script>
@@ -196,6 +194,16 @@
       color: #f3f1f7;
       border-color: transparent;
     }
+    .draft-editable pre.code-block[class*="syntax-theme-"][data-bg="light"],
+    .draft-editable pre.code-block[class*="syntax-theme-"][data-bg="light"] code[class*="language-"] {
+      background: #f5f2f0 !important;
+      color: #27231f;
+    }
+    .draft-editable pre.code-block[class*="syntax-theme-"][data-bg="dark"],
+    .draft-editable pre.code-block[class*="syntax-theme-"][data-bg="dark"] code[class*="language-"] {
+      background: #25232f !important;
+      color: #f3f1f7;
+    }
     .draft-editable pre.code-block.syntax-theme-default,
     .draft-editable pre.code-block.syntax-theme-default code {
       background: transparent;
@@ -243,86 +251,6 @@
       color: #5c5750;
     }
     .image-resize-handle { position:absolute; right:2px; bottom:2px; width:14px; height:14px; cursor:nwse-resize; background:linear-gradient(135deg, transparent 50%, rgba(54,201,199,.85) 50%); border-radius:0 0 5px 0; pointer-events:auto; }
-    .draft-editable pre.code-block.syntax-theme-default .token.comment { color:#708090; }
-    .draft-editable pre.code-block.syntax-theme-default .token.punctuation { color:#999; }
-    .draft-editable pre.code-block.syntax-theme-default .token.property,
-    .draft-editable pre.code-block.syntax-theme-default .token.tag,
-    .draft-editable pre.code-block.syntax-theme-default .token.boolean,
-    .draft-editable pre.code-block.syntax-theme-default .token.number,
-    .draft-editable pre.code-block.syntax-theme-default .token.constant,
-    .draft-editable pre.code-block.syntax-theme-default .token.symbol { color:#905; }
-    .draft-editable pre.code-block.syntax-theme-default .token.selector,
-    .draft-editable pre.code-block.syntax-theme-default .token.attr-name,
-    .draft-editable pre.code-block.syntax-theme-default .token.string,
-    .draft-editable pre.code-block.syntax-theme-default .token.char,
-    .draft-editable pre.code-block.syntax-theme-default .token.builtin,
-    .draft-editable pre.code-block.syntax-theme-default .token.inserted { color:#690; }
-    .draft-editable pre.code-block.syntax-theme-default .token.operator,
-    .draft-editable pre.code-block.syntax-theme-default .token.entity,
-    .draft-editable pre.code-block.syntax-theme-default .token.url,
-    .draft-editable pre.code-block.syntax-theme-default .language-css .token.string,
-    .draft-editable pre.code-block.syntax-theme-default .style .token.string { color:#9a6e3a; background:hsla(0,0%,100%,.5); }
-    .draft-editable pre.code-block.syntax-theme-default .token.atrule,
-    .draft-editable pre.code-block.syntax-theme-default .token.attr-value,
-    .draft-editable pre.code-block.syntax-theme-default .token.keyword { color:#07a; }
-    .draft-editable pre.code-block.syntax-theme-default .token.function,
-    .draft-editable pre.code-block.syntax-theme-default .token.class-name { color:#dd4a68; }
-    .draft-editable pre.code-block.syntax-theme-default .token.regex,
-    .draft-editable pre.code-block.syntax-theme-default .token.important,
-    .draft-editable pre.code-block.syntax-theme-default .token.variable { color:#e90; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.comment { color:#997f66; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.punctuation { opacity:.7; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.property,
-    .draft-editable pre.code-block.syntax-theme-dark .token.tag,
-    .draft-editable pre.code-block.syntax-theme-dark .token.boolean,
-    .draft-editable pre.code-block.syntax-theme-dark .token.number,
-    .draft-editable pre.code-block.syntax-theme-dark .token.constant,
-    .draft-editable pre.code-block.syntax-theme-dark .token.symbol { color:#d1939e; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.selector,
-    .draft-editable pre.code-block.syntax-theme-dark .token.attr-name,
-    .draft-editable pre.code-block.syntax-theme-dark .token.string,
-    .draft-editable pre.code-block.syntax-theme-dark .token.char,
-    .draft-editable pre.code-block.syntax-theme-dark .token.builtin,
-    .draft-editable pre.code-block.syntax-theme-dark .token.inserted { color:#bce051; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.operator,
-    .draft-editable pre.code-block.syntax-theme-dark .token.entity,
-    .draft-editable pre.code-block.syntax-theme-dark .token.url,
-    .draft-editable pre.code-block.syntax-theme-dark .language-css .token.string,
-    .draft-editable pre.code-block.syntax-theme-dark .style .token.string,
-    .draft-editable pre.code-block.syntax-theme-dark .token.variable { color:#f4b73d; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.atrule,
-    .draft-editable pre.code-block.syntax-theme-dark .token.attr-value,
-    .draft-editable pre.code-block.syntax-theme-dark .token.keyword { color:#d1939e; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.function { color:#fff; }
-    .draft-editable pre.code-block.syntax-theme-dark .token.regex,
-    .draft-editable pre.code-block.syntax-theme-dark .token.important { color:#e90; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.comment { color:#75715e; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.punctuation { color:#f8f8f2; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.property,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.tag,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.constant,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.symbol,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.deleted { color:#f92672; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.boolean,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.number { color:#ae81ff; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.selector,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.attr-name,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.string,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.char,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.builtin,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.inserted { color:#a6e22e; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.operator,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.entity,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.url,
-    .draft-editable pre.code-block.syntax-theme-monokai .language-css .token.string,
-    .draft-editable pre.code-block.syntax-theme-monokai .style .token.string,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.variable { color:#f8f8f2; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.atrule,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.attr-value,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.keyword { color:#f92672; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.function { color:#e6db74; }
-    .draft-editable pre.code-block.syntax-theme-monokai .token.regex,
-    .draft-editable pre.code-block.syntax-theme-monokai .token.important { color:#fd971f; }
     .draft-editable figure.table-block { margin: 12px 0 20px; overflow-x: auto; }
     .draft-editable figure.table-block.selected { border: 2px dashed #36c9c7; box-shadow: 0 0 0 3px rgba(54, 201, 199, 0.12); outline: none; border-radius: 8px; }
     .draft-editable figure.table-block table { width: 100%; border-collapse: collapse; font: 500 17px/1.4 ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
@@ -1725,7 +1653,7 @@ Write your draft here.
     ['rust', 'Rust'], ['scheme', 'Scheme'], ['sql', 'SQL'], ['typescript', 'TypeScript'],
     ['yaml', 'YAML'], ['__other__', 'Other...']
   ];
-  const CODE_SYNTAX_THEMES = [['default', 'Default'], ['dark', 'Dark'], ['monokai', 'Monokai']];
+  const CODE_SYNTAX_THEMES = [['default', 'Default'], ['dark', 'Dark'], ['monokai', 'Monokai'], ['one-dark', 'One Dark'], ['atom-dark', 'Atom Dark'], ['dracula', 'Dracula'], ['okaidia', 'Okaidia'], ['tomorrow', 'Tomorrow Night']];
 
   function codeBlockToolbarHtml(){
     const langOpts = CODE_LANGUAGES.map(([value, label]) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(label) + '</option>').join('');
@@ -1782,6 +1710,29 @@ Write your draft here.
     }
   }
 
+  function bindCodeBlockInput(pre){
+    const code = pre.querySelector('code');
+    if (!code) return;
+    code.addEventListener('keydown', (e)=>{
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if (e.key === 'ArrowDown' && isAtEndOfNode(range, code)){
+        e.preventDefault();
+        const next = pre.nextElementSibling;
+        if (next && next.parentElement === body){ placeCaretIn(next, true); }
+        else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
+      }
+      if (e.key === 'ArrowUp' && isAtStartOfNode(range, code)){
+        e.preventDefault();
+        const prev = pre.previousElementSibling;
+        if (prev && prev.parentElement === body){ placeCaretIn(prev, false); }
+        else { title.focus(); }
+      }
+    });
+  }
+
   function highlightCodeBlock(pre){
     const code = pre.querySelector('code');
     if (!code || !window.Prism) return;
@@ -1795,12 +1746,24 @@ Write your draft here.
       offset = r.toString().length;
     }
     const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
+    const raw = pre.dataset.raw || '\n';
     code.className = 'language-' + escapeHtml(lang);
-    code.textContent = pre.dataset.raw || '\n';
-    Prism.highlightElement(code);
-    if (active) {
-      restoreTextOffset(code, offset);
-      code.focus();
+
+    const doHighlight = () => {
+      const grammar = Prism.languages[lang] || Prism.languages.text || {};
+      code.innerHTML = Prism.highlight(raw, grammar, lang);
+      if (active) {
+        restoreTextOffset(code, offset);
+        code.focus();
+      }
+    };
+
+    if (lang === 'text' || Prism.languages[lang]) {
+      doHighlight();
+    } else if (Prism.plugins && Prism.plugins.autoloader && Prism.plugins.autoloader.loadLanguages) {
+      Prism.plugins.autoloader.loadLanguages(lang, doHighlight);
+    } else {
+      doHighlight();
     }
   }
 
@@ -1850,6 +1813,7 @@ Write your draft here.
     pre.classList.add('syntax-theme-' + syntaxTheme, 'language-' + lang);
     pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + escapeHtml(lang) + '" contenteditable="true">' + escapeHtml(raw || '\n') + '</code>';
     bindCodeBlockToolbar(pre);
+    bindCodeBlockInput(pre);
     syncCodeBlockToolbar(pre);
     highlightCodeBlock(pre);
   }
