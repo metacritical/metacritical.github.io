@@ -592,7 +592,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="org163d413" class="figure">
+<div id="org71b441f" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -602,7 +602,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org14125d8" class="figure">
+<div id="org9f923d4" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -1056,6 +1056,11 @@ Thats it folks! Happy hacking.
     const caretRect = caretRectForRange(range);
     if (!caretRect) { plus.style.display='none'; plus.classList.remove('open'); return; }
     const block = nearestBlock(range.startContainer);
+    if (!block) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const tag = block.tagName.toLowerCase();
+    const isTextBlock = tag === 'p' || tag === 'div' || tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'blockquote';
+    if (!isTextBlock) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if ((block.textContent || '').trim() !== '') { plus.style.display='none'; plus.classList.remove('open'); return; }
     const blockRect = block ? block.getBoundingClientRect() : caretRect;
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;

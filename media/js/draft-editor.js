@@ -320,7 +320,7 @@ class DraftEditor {
     return tag;
   }
 
-  isTextBlock(type) { return ['p', 'h1', 'h2', 'h3', 'blockquote'].includes(type); }
+  isTextBlock(type) { return ['p', 'div', 'h1', 'h2', 'h3', 'blockquote'].includes(type); }
   isVoidBlock(type) { return ['hr', 'image', 'video', 'embed'].includes(type); }
   isContinuous(type) { return this.CONTINUOUS_BLOCKS.includes(type); }
 
@@ -791,10 +791,10 @@ class DraftEditor {
   }
 
   _positionBlockPlus(block) {
-    if (!block || this.isVoidBlock(this.getBlockType(block))) {
-      this._hideBlockPlus();
-      return;
-    }
+    if (!block) { this._hideBlockPlus(); return; }
+    const type = this.getBlockType(block);
+    if (!this.isTextBlock(type)) { this._hideBlockPlus(); return; }
+    if ((block.textContent || '').trim() !== '') { this._hideBlockPlus(); return; }
     this.activeBlockForPlus = block;
     const bodyRect = this.bodyEl.getBoundingClientRect();
     const blockRect = block.getBoundingClientRect();

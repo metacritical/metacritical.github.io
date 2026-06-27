@@ -913,6 +913,11 @@ ssss
     const caretRect = caretRectForRange(range);
     if (!caretRect) { plus.style.display='none'; plus.classList.remove('open'); return; }
     const block = nearestBlock(range.startContainer);
+    if (!block) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const tag = block.tagName.toLowerCase();
+    const isTextBlock = tag === 'p' || tag === 'div' || tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'blockquote';
+    if (!isTextBlock) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if ((block.textContent || '').trim() !== '') { plus.style.display='none'; plus.classList.remove('open'); return; }
     const blockRect = block ? block.getBoundingClientRect() : caretRect;
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;

@@ -468,7 +468,7 @@ like.
 
 
 
-<div id="org6f5a4c9" class="figure">
+<div id="org4c24a52" class="figure">
 <p><img src="file:///assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 </div>
@@ -918,6 +918,11 @@ like.
     const caretRect = caretRectForRange(range);
     if (!caretRect) { plus.style.display='none'; plus.classList.remove('open'); return; }
     const block = nearestBlock(range.startContainer);
+    if (!block) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    const tag = block.tagName.toLowerCase();
+    const isTextBlock = tag === 'p' || tag === 'div' || tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'blockquote';
+    if (!isTextBlock) { plus.style.display='none'; plus.classList.remove('open'); return; }
+    if ((block.textContent || '').trim() !== '') { plus.style.display='none'; plus.classList.remove('open'); return; }
     const blockRect = block ? block.getBoundingClientRect() : caretRect;
     const bodyRect = body.getBoundingClientRect();
     const toggleSize = plusToggle ? plusToggle.offsetWidth || 25 : 25;
