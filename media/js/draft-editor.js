@@ -1848,6 +1848,8 @@ Bob --> Alice: Hi
       if (text === '' && this.getBlocks().length > 1) {
         e.preventDefault();
         this.removeBlock(block);
+      } else if (text === '') {
+        e.preventDefault();
       } else if (text !== '' && block.previousElementSibling) {
         e.preventDefault();
         this.mergeWithPrevious(block);

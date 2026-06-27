@@ -534,22 +534,22 @@ This is your first blog post with Alchemist. Edit this file to get started.
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 6 12l3 5"></path><path d="M15 7l3 5-3 5"></path><path d="M13.5 5.5 10.5 18.5"></path></svg>
     </button>
     <button type="button" data-action="source" title="Source block" aria-label="Source block">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='600'>SRC</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='400'>SRC</text></svg>
     </button>
     <button type="button" data-action="ditaa" title="Ditaa diagram" aria-label="Ditaa diagram">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='600'>DIA</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='400'>DIA</text></svg>
     </button>
     <button type="button" data-action="plantuml" title="PlantUML diagram" aria-label="PlantUML diagram">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='600'>UML</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='400'>UML</text></svg>
     </button>
     <button type="button" data-action="ascii" title="ASCII diagram" aria-label="ASCII diagram">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='600'>ASC</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='16' text-anchor='middle' font-size='11' fill='currentColor' font-weight='400'>ASC</text></svg>
     </button>
     <button type="button" data-action="table" title="Table" aria-label="Table">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='17' text-anchor='middle' font-size='17' fill='currentColor' font-weight='600'>▦</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='17' text-anchor='middle' font-size='17' fill='currentColor' font-weight='400'>▦</text></svg>
     </button>
     <button type="button" data-action="equation" title="Equation" aria-label="Equation">
-      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='17' text-anchor='middle' font-size='17' fill='currentColor' font-weight='600'>∑</text></svg>
+      <svg viewBox='0 0 24 24' aria-hidden='true'><text x='12' y='17' text-anchor='middle' font-size='17' fill='currentColor' font-weight='400'>∑</text></svg>
     </button>
   </div>
   <button class="draft-plus-toggle" id="draft-plus-toggle" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part"><svg viewBox="0 0 25 25" aria-hidden="true"><path id="draft-plus-icon" d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg></button>
@@ -1126,6 +1126,19 @@ This is your first blog post with Alchemist. Edit this file to get started.
       }
     }
   }
+  function onBackspaceKey(e){
+    if (e.key !== 'Backspace') return;
+    const block = currentBodyBlock();
+    if (!block) return;
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const isAtStart = range.startOffset === 0 && (!range.startContainer.previousSibling || range.startContainer.previousSibling.nodeType === Node.ELEMENT_NODE);
+    const isEmpty = (block.textContent || '').trim() === '';
+    if (isEmpty && isAtStart) {
+      e.preventDefault();
+    }
+  }
   function onTitleArrowKey(e){
     if (e.key !== 'ArrowDown') return;
     e.preventDefault();
@@ -1388,6 +1401,7 @@ This is your first blog post with Alchemist. Edit this file to get started.
     hideImageToolbar();
     hideMultiToolbar();
     deselectBlocks();
+    tools.style.display='none';
     block.classList.add('selected');
     if (!blockToolbar) blockToolbar = createBlockToolbar();
     blockToolbar.classList.add('open');
@@ -2771,6 +2785,7 @@ This is your first blog post with Alchemist. Edit this file to get started.
   body.addEventListener('keydown', onImageKeyDelete);
   body.addEventListener('keydown', onBlockKeyDelete);
   body.addEventListener('keydown', onTableKey);
+  body.addEventListener('keydown', onBackspaceKey);
   body.addEventListener('click', (e)=>{
     const fig = e.target.closest && e.target.closest('figure.image-block');
     if (fig && !(e.target.closest && e.target.closest('figcaption'))) {
