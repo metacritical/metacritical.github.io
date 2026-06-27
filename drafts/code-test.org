@@ -4,4 +4,13 @@
 #+DESCRIPTION: Draft post
 #+FILETAGS: :test:
 
+#+BEGIN_SRC ruby
 
+#+END_SRC
+
+#+ATTR_HTML: :data-theme light
+#+BEGIN_SRC ruby
+def hello
+  puts "Hello World!"
+end
+#+END_SRC

@@ -48,3 +48,12 @@
 - [x] 7.6 Provide light, dark, and Monokai themes
 - [x] 7.7 Ensure Org export/import preserves language and theme
 - [x] 7.8 Verify all build checks and commit
+
+## 8. Code block UX fixes
+- [x] 8.1 Make syntax highlighting actually work (Prism classes/tokens render colored)
+- [x] 8.2 Replace theme dropdown with half-moon light/dark background toggle
+- [x] 8.3 Replace Edit button with syntax-highlight theme dropdown (Monokai, etc.)
+- [x] 8.4 Fix dropdowns closing immediately (stop event propagation / mousedown)
+- [x] 8.5 Allow ArrowDown/ArrowUp to move caret out of code block to adjacent block
+- [x] 8.6 Ensure plus menu appears correctly when navigating outside code block
+- [x] 8.7 Verify build checks and commit

@@ -211,7 +211,7 @@ class DraftEditor {
       ['rust', 'Rust'], ['scheme', 'Scheme'], ['sql', 'SQL'], ['typescript', 'TypeScript'],
       ['yaml', 'YAML'], ['__other__', 'Other...']
     ];
-    this.CODE_THEMES = [['dark', 'Dark'], ['light', 'Light'], ['monokai', 'Monokai']];
+    this.CODE_SYNTAX_THEMES = [['default', 'Default'], ['dark', 'Dark'], ['monokai', 'Monokai']];
 
     this._injectUi();
     this._bindEvents();
@@ -816,35 +816,30 @@ class DraftEditor {
   // ---------- Code blocks (Prism.js) ----------
   _codeBlockToolbarHtml() {
     const langOpts = this.CODE_LANGUAGES.map(([value, label]) => `<option value="${DraftEditor.escHtml(value)}">${DraftEditor.escHtml(label)}</option>`).join('');
-    const themeOpts = this.CODE_THEMES.map(([value, label]) => `<option value="${DraftEditor.escHtml(value)}">${DraftEditor.escHtml(label)}</option>`).join('');
-    return `<div class="de-code-block-actions" contenteditable="false"><select class="de-code-theme-select" title="Theme">${themeOpts}</select><select class="de-code-lang-select" title="Language">${langOpts}</select><button class="de-code-mode-toggle" type="button" title="Toggle preview">Preview</button></div>`;
+    const syntaxOpts = this.CODE_SYNTAX_THEMES.map(([value, label]) => `<option value="${DraftEditor.escHtml(value)}">${DraftEditor.escHtml(label)}</option>`).join('');
+    return `<div class="de-code-block-actions" contenteditable="false"><select class="de-code-lang-select" title="Language">${langOpts}</select><select class="de-code-syntax-theme-select" title="Syntax theme">${syntaxOpts}</select><button class="de-code-bg-toggle" type="button" title="Toggle background">◐</button></div>`;
   }
 
   _syncCodeBlockToolbar(pre) {
-    const theme = pre.getAttribute('data-theme') || 'dark';
     const lang = pre.getAttribute('data-lang') || 'text';
-    const mode = pre.getAttribute('data-mode') || 'plain';
-    const themeSelect = pre.querySelector('.de-code-theme-select');
+    const syntaxTheme = pre.getAttribute('data-syntax-theme') || 'default';
+    const bg = pre.getAttribute('data-bg') || 'light';
     const langSelect = pre.querySelector('.de-code-lang-select');
-    const modeToggle = pre.querySelector('.de-code-mode-toggle');
-    if (themeSelect) themeSelect.value = theme;
+    const syntaxSelect = pre.querySelector('.de-code-syntax-theme-select');
+    const bgToggle = pre.querySelector('.de-code-bg-toggle');
     if (langSelect) {
       const known = this.CODE_LANGUAGES.some(([v]) => v === lang);
       langSelect.value = known ? lang : '__other__';
     }
-    if (modeToggle) modeToggle.textContent = mode === 'plain' ? 'Preview' : 'Edit';
+    if (syntaxSelect) syntaxSelect.value = syntaxTheme;
+    if (bgToggle) bgToggle.textContent = bg === 'dark' ? '◑' : '◐';
   }
 
   _bindCodeBlockToolbar(pre) {
-    const themeSelect = pre.querySelector('.de-code-theme-select');
     const langSelect = pre.querySelector('.de-code-lang-select');
-    const modeToggle = pre.querySelector('.de-code-mode-toggle');
-    if (themeSelect) {
-      themeSelect.addEventListener('change', (e) => {
-        e.stopPropagation();
-        this._setCodeBlockTheme(pre, e.target.value);
-      });
-    }
+    const syntaxSelect = pre.querySelector('.de-code-syntax-theme-select');
+    const bgToggle = pre.querySelector('.de-code-bg-toggle');
+    const actions = pre.querySelector('.de-code-block-actions');
     if (langSelect) {
       langSelect.addEventListener('change', (e) => {
         e.stopPropagation();
@@ -855,12 +850,21 @@ class DraftEditor {
         this._setCodeBlockLang(pre, (lang || 'text').trim().toLowerCase());
       });
     }
-    if (modeToggle) {
-      modeToggle.addEventListener('click', (e) => {
+    if (syntaxSelect) {
+      syntaxSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        this._setCodeBlockSyntaxTheme(pre, e.target.value);
+      });
+    }
+    if (bgToggle) {
+      bgToggle.addEventListener('click', (e) => {
         e.preventDefault(); e.stopPropagation();
-        const mode = pre.getAttribute('data-mode') || 'plain';
-        if (mode === 'plain') this._toCodePreviewMode(pre);
-        else this._toCodePlainMode(pre);
+        this._toggleCodeBlockBg(pre);
+      });
+    }
+    if (actions) {
+      actions.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
       });
     }
   }
@@ -874,52 +878,73 @@ class DraftEditor {
       this._markDirty();
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        if (pre.getAttribute('data-mode') === 'preview') this._toCodePreviewMode(pre);
-      }, 600);
-    });
-    pre.addEventListener('focusin', (e) => {
-      if (e.target.closest('.de-code-block-actions')) return;
-      this._toCodePlainMode(pre);
-    });
-    pre.addEventListener('focusout', (e) => {
-      if (pre.contains(e.relatedTarget)) return;
-      setTimeout(() => {
-        if (!pre.contains(document.activeElement)) this._toCodePreviewMode(pre);
-      }, 80);
+        this._highlightCodeBlock(pre);
+      }, 400);
     });
   }
 
-  _toCodePlainMode(pre) {
+  _highlightCodeBlock(pre) {
     const code = pre.querySelector('code');
-    if (!code) return;
-    pre.setAttribute('data-mode', 'plain');
-    code.setAttribute('contenteditable', 'true');
-    code.className = 'language-' + DraftEditor.escHtml(pre.getAttribute('data-lang') || 'text');
-    code.textContent = pre.dataset.raw || '\n';
-    this._syncCodeBlockToolbar(pre);
-  }
-
-  _toCodePreviewMode(pre) {
-    const code = pre.querySelector('code');
-    if (!code) return;
-    pre.setAttribute('data-mode', 'preview');
-    code.removeAttribute('contenteditable');
+    if (!code || !window.Prism) return;
+    const sel = window.getSelection();
+    const active = document.activeElement === code;
+    let offset = 0;
+    if (active && sel.rangeCount) {
+      const r = document.createRange();
+      r.selectNodeContents(code);
+      r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+      offset = r.toString().length;
+    }
     const lang = pre.getAttribute('data-lang') || 'text';
     code.className = 'language-' + DraftEditor.escHtml(lang);
     code.textContent = pre.dataset.raw || '\n';
-    if (window.Prism) Prism.highlightElement(code);
-    this._syncCodeBlockToolbar(pre);
+    Prism.highlightElement(code);
+    if (active) {
+      this._restoreTextOffset(code, offset);
+      code.focus();
+    }
   }
 
-  _setCodeBlockTheme(pre, theme) {
-    const oldTheme = pre.getAttribute('data-theme') || 'dark';
-    pre.classList.remove('theme-' + oldTheme);
-    theme = (theme || 'dark').trim().toLowerCase();
-    if (!this.CODE_THEMES.some(([v]) => v === theme)) theme = 'dark';
-    pre.setAttribute('data-theme', theme);
-    pre.classList.add('theme-' + theme);
+  _restoreTextOffset(root, targetOffset) {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    let remaining = targetOffset;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const len = node.textContent.length;
+      if (remaining <= len) {
+        range.setStart(node, Math.min(remaining, len));
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        return;
+      }
+      remaining -= len;
+    }
+    range.selectNodeContents(root);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  _setCodeBlockSyntaxTheme(pre, syntaxTheme) {
+    const oldSyntaxTheme = pre.getAttribute('data-syntax-theme') || 'default';
+    pre.classList.remove('syntax-theme-' + oldSyntaxTheme);
+    syntaxTheme = (syntaxTheme || 'default').trim().toLowerCase();
+    if (!this.CODE_SYNTAX_THEMES.some(([v]) => v === syntaxTheme)) syntaxTheme = 'default';
+    pre.setAttribute('data-syntax-theme', syntaxTheme);
+    pre.classList.add('syntax-theme-' + syntaxTheme);
     this._syncCodeBlockToolbar(pre);
-    if (pre.getAttribute('data-mode') === 'preview') this._toCodePreviewMode(pre);
+    this._highlightCodeBlock(pre);
+    this._markDirty();
+  }
+
+  _toggleCodeBlockBg(pre) {
+    const current = pre.getAttribute('data-bg') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    pre.setAttribute('data-bg', next);
+    this._syncCodeBlockToolbar(pre);
     this._markDirty();
   }
 
@@ -932,20 +957,21 @@ class DraftEditor {
     const code = pre.querySelector('code');
     if (code) code.className = 'language-' + DraftEditor.escHtml(lang);
     this._syncCodeBlockToolbar(pre);
-    if (pre.getAttribute('data-mode') === 'preview') this._toCodePreviewMode(pre);
+    this._highlightCodeBlock(pre);
     this._markDirty();
   }
 
-  insertCodeBlockAfter(reference, language = 'text', code = '', theme = 'dark') {
+  insertCodeBlockAfter(reference, language = 'text', code = '', bg = 'light', syntaxTheme = 'default') {
     const pre = document.createElement('pre');
     pre.className = 'code-block';
     const lang = (language || 'text').trim().toLowerCase();
-    const t = (theme || 'dark').trim().toLowerCase();
+    const b = (bg || 'light').trim().toLowerCase();
+    const st = (syntaxTheme || 'default').trim().toLowerCase();
     pre.setAttribute('data-lang', lang);
-    pre.setAttribute('data-theme', t);
-    pre.setAttribute('data-mode', 'plain');
+    pre.setAttribute('data-bg', b);
+    pre.setAttribute('data-syntax-theme', st);
     pre.dataset.raw = code;
-    pre.classList.add('theme-' + t, 'language-' + lang);
+    pre.classList.add('syntax-theme-' + st, 'language-' + lang);
     pre.setAttribute('spellcheck', 'false');
     pre.innerHTML = this._codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + DraftEditor.escHtml(lang) + '" contenteditable="true">' + DraftEditor.escHtml(code || '\n') + '</code>';
     this._bindCodeBlockToolbar(pre);
@@ -953,6 +979,7 @@ class DraftEditor {
     this.addNewBlockAt(reference, pre, false);
     const p = this.createParagraph();
     this.addNewBlockAt(pre, p, true);
+    this._highlightCodeBlock(pre);
   }
 
   _ensureCodeBlockActions(pre) {
@@ -964,32 +991,36 @@ class DraftEditor {
       raw = raw.replace(/\u200b/g, '');
     }
     const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
-    const theme = (pre.getAttribute('data-theme') || 'dark').trim().toLowerCase();
+    let bg = pre.getAttribute('data-bg');
+    let syntaxTheme = pre.getAttribute('data-syntax-theme');
+    if (!bg || !syntaxTheme) {
+      const oldTheme = (pre.getAttribute('data-theme') || 'light').trim().toLowerCase();
+      if (!bg) bg = oldTheme === 'light' ? 'light' : 'dark';
+      if (!syntaxTheme) syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+    }
     pre.setAttribute('data-lang', lang);
-    pre.setAttribute('data-theme', theme);
-    pre.setAttribute('data-mode', 'plain');
+    pre.setAttribute('data-bg', bg);
+    pre.setAttribute('data-syntax-theme', syntaxTheme);
+    pre.removeAttribute('data-mode');
     pre.dataset.raw = raw;
-    pre.classList.add('theme-' + theme, 'language-' + lang);
+    pre.classList.add('syntax-theme-' + syntaxTheme, 'language-' + lang);
     pre.setAttribute('spellcheck', 'false');
     pre.innerHTML = this._codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + DraftEditor.escHtml(lang) + '" contenteditable="true">' + DraftEditor.escHtml(raw || '\n') + '</code>';
     this._bindCodeBlockToolbar(pre);
     this._bindCodeBlockInput(pre);
+    this._highlightCodeBlock(pre);
   }
 
   insertCodeBlockPrompt() {
     this.askInput({ title: 'Code Language', label: 'Language', placeholder: 'python, sh, js', value: 'text', okText: 'Insert' })
       .then((lang) => {
         lang = (lang || 'text').trim() || 'text';
-        return this.askInput({ title: 'Code Theme', label: 'Choose theme', placeholder: 'light or dark', value: 'light', okText: 'Apply' }).then((theme) => ({ lang, theme }));
-      })
-      .then(({ lang, theme }) => {
-        const t = (theme || 'dark').trim().toLowerCase();
         const block = this.getCurrentBlock();
         if (block && this.isTextBlock(this.getBlockType(block))) {
           block.innerHTML = '<br>';
-          this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, t);
+          this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, 'light', 'default');
         } else {
-          this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, t);
+          this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, 'light', 'default');
         }
       });
   }
@@ -1008,7 +1039,7 @@ class DraftEditor {
         lang = (lang || 'text').trim() || 'text';
         const block = this.getCurrentBlock();
         if (block && this.isTextBlock(this.getBlockType(block))) block.innerHTML = '<br>';
-        this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, 'dark');
+        this.insertCodeBlockAfter(block, lang, `# write ${lang} code here`, 'light', 'default');
       });
   }
 
@@ -1018,7 +1049,7 @@ class DraftEditor {
 +--------+   +--------+`;
     const block = this.getCurrentBlock();
     if (block && this.isTextBlock(this.getBlockType(block))) block.innerHTML = '<br>';
-    this.insertCodeBlockAfter(block, 'ditaa', code, 'dark');
+    this.insertCodeBlockAfter(block, 'ditaa', code, 'light', 'default');
   }
 
   insertPlantumlDiagram() {
@@ -1028,7 +1059,7 @@ Bob --> Alice: Hi
 @enduml`;
     const block = this.getCurrentBlock();
     if (block && this.isTextBlock(this.getBlockType(block))) block.innerHTML = '<br>';
-    this.insertCodeBlockAfter(block, 'plantuml', code, 'dark');
+    this.insertCodeBlockAfter(block, 'plantuml', code, 'light', 'default');
   }
 
   insertAsciiDiagram() {
@@ -1039,7 +1070,7 @@ Bob --> Alice: Hi
 /________\\`;
     const block = this.getCurrentBlock();
     if (block && this.isTextBlock(this.getBlockType(block))) block.innerHTML = '<br>';
-    this.insertCodeBlockAfter(block, 'text', code, 'dark');
+    this.insertCodeBlockAfter(block, 'text', code, 'light', 'default');
   }
 
   insertTable() {
@@ -1658,7 +1689,7 @@ Bob --> Alice: Hi
     if (codeMatch) {
       const lang = codeMatch[1].trim() || 'text';
       block.innerHTML = '<br>';
-      this.insertCodeBlockAfter(block, lang, lang === 'text' ? '# write code here' : `# write ${lang} code here`, 'dark');
+      this.insertCodeBlockAfter(block, lang, lang === 'text' ? '# write code here' : `# write ${lang} code here`, 'light', 'default');
     }
   }
 
@@ -1684,6 +1715,20 @@ Bob --> Alice: Hi
     }
     if (node === block) return range.endOffset >= (block.childNodes.length || 0);
     return false;
+  }
+
+  _isAtStartOfNode(root, range) {
+    const r = document.createRange();
+    r.selectNodeContents(root);
+    r.setEnd(range.startContainer, range.startOffset);
+    return r.toString().length === 0;
+  }
+
+  _isAtEndOfNode(root, range) {
+    const r = document.createRange();
+    r.selectNodeContents(root);
+    r.setStart(range.endContainer, range.endOffset);
+    return r.toString().length === 0;
   }
 
   _handleReturnKey(e) {
@@ -1770,6 +1815,22 @@ Bob --> Alice: Hi
 
     if (e.key === 'ArrowDown') {
       const next = block.nextElementSibling;
+      if (type === 'pre') {
+        const code = block.querySelector('code');
+        if (code && this._isAtEndOfNode(code, range)) {
+          e.preventDefault();
+          if (next && this.isBlock(next)) {
+            this.placeCaretAtStart(next);
+            this._positionBlockPlus(next);
+          } else {
+            const p = this.createParagraph();
+            this.bodyEl.appendChild(p);
+            this.placeCaretAtEnd(p);
+            this._positionBlockPlus(p);
+          }
+        }
+        return;
+      }
       if (this.isVoidBlock(type)) {
         e.preventDefault();
         if (next && this.isBlock(next)) {
@@ -1797,6 +1858,22 @@ Bob --> Alice: Hi
       }
     } else if (e.key === 'ArrowUp') {
       const prev = block.previousElementSibling;
+      if (type === 'pre') {
+        const code = block.querySelector('code');
+        if (code && this._isAtStartOfNode(code, range)) {
+          e.preventDefault();
+          if (prev && this.isBlock(prev)) {
+            this.placeCaretAtEnd(prev);
+            this._positionBlockPlus(prev);
+          } else {
+            const p = this.createParagraph();
+            this.bodyEl.insertBefore(p, block);
+            this.placeCaretAtEnd(p);
+            this._positionBlockPlus(p);
+          }
+        }
+        return;
+      }
       if (this.isVoidBlock(type)) {
         e.preventDefault();
         if (prev && this.isBlock(prev)) {
@@ -2097,7 +2174,8 @@ Bob --> Alice: Hi
 
     if (tag === 'pre') {
       const lang = (node.getAttribute('data-lang') || 'text').trim();
-      const theme = (node.getAttribute('data-theme') || 'dark').trim();
+      const bg = (node.getAttribute('data-bg') || 'light').trim();
+      const syntaxTheme = (node.getAttribute('data-syntax-theme') || 'default').trim();
       const collect = (n) => {
         let out = '';
         Array.from(n.childNodes).forEach(c => {
@@ -2110,7 +2188,8 @@ Bob --> Alice: Hi
       };
       const raw = (node.dataset.raw || collect(node)).replace(/\u200b/g, '').trimEnd();
       let out = '';
-      if (theme && theme !== 'dark') out += '#+ATTR_HTML: :data-theme ' + theme + '\n';
+      if (bg && bg !== 'light') out += '#+ATTR_HTML: :data-bg ' + bg + '\n';
+      if (syntaxTheme && syntaxTheme !== 'default') out += '#+ATTR_HTML: :data-syntax-theme ' + syntaxTheme + '\n';
       out += '#+BEGIN_SRC ' + lang + '\n' + raw + '\n#+END_SRC\n\n';
       return out;
     }
@@ -2382,8 +2461,9 @@ Bob --> Alice: Hi
         }
         if (i < lines.length) i++;
         const code = srcLines.join('\n').replace(/\u200b/g, '').trimEnd();
-        const theme = (attrHtml && attrHtml['data-theme']) || 'dark';
-        out.push(`<pre class="code-block theme-${DraftEditor.escHtml(theme)} language-${DraftEditor.escHtml(lang)}" data-lang="${DraftEditor.escHtml(lang)}" data-theme="${DraftEditor.escHtml(theme)}"><code>${DraftEditor.escHtml(code)}</code></pre>`);
+        const bg = (attrHtml && attrHtml['data-bg']) || 'light';
+        const syntaxTheme = (attrHtml && attrHtml['data-syntax-theme']) || 'default';
+        out.push(`<pre class="code-block syntax-theme-${DraftEditor.escHtml(syntaxTheme)} language-${DraftEditor.escHtml(lang)}" data-lang="${DraftEditor.escHtml(lang)}" data-bg="${DraftEditor.escHtml(bg)}" data-syntax-theme="${DraftEditor.escHtml(syntaxTheme)}"><code>${DraftEditor.escHtml(code)}</code></pre>`);
         continue;
       }
 
@@ -2471,7 +2551,7 @@ Bob --> Alice: Hi
         }
         if (i < lines.length) i++;
         const code = exLines.join('\n').trimEnd();
-        out.push(`<pre class="code-block theme-dark language-text" data-lang="text" data-theme="dark"><code>${DraftEditor.escHtml(code)}</code></pre>`);
+        out.push(`<pre class="code-block syntax-theme-default language-text" data-lang="text" data-bg="light" data-syntax-theme="default"><code>${DraftEditor.escHtml(code)}</code></pre>`);
         continue;
       }
 
@@ -2646,7 +2726,7 @@ Bob --> Alice: Hi
       if (this.titleEl) this.titleEl.innerText = data.title || '';
       this.bodyEl.innerHTML = this.renderOrgToHtml(data.body || '');
       this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => this._ensureCodeBlockActions(pre));
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { if (window.Prism) this._toCodePreviewMode(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { if (window.Prism) this._highlightCodeBlock(pre); });
       this._refreshImageBlocks();
       this.activeDraftTargetPath = data.targetPath || '';
       this.activeSourceMode = data.mode || (kind === 'post' ? 'publish' : 'draft');

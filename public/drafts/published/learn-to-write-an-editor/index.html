@@ -178,8 +178,6 @@
       padding: 34px 20px 18px;
       border: 1px solid #d9d1c3;
       border-radius: 14px;
-      background: #2d2a2e;
-      color: #fcfcfa;
       font: 500 18px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       white-space: pre;
       overflow-x: auto;
@@ -188,10 +186,28 @@
       outline: none;
       spellcheck: false;
     }
-    .draft-editable pre.code-block.theme-light,
-    .draft-editable pre.code-block.theme-light code { background:#f5f2f0; color:#000; text-shadow:0 1px #fff; }
-    .draft-editable pre.code-block.theme-monokai,
-    .draft-editable pre.code-block.theme-monokai code { background:#272822; color:#f8f8f2; text-shadow:0 1px rgba(0,0,0,0.3); }
+    .draft-editable pre.code-block[data-bg="light"] {
+      background: #f5f2f0;
+      color: #27231f;
+      border-color: #d9d1c3;
+    }
+    .draft-editable pre.code-block[data-bg="dark"] {
+      background: #25232f;
+      color: #f3f1f7;
+      border-color: transparent;
+    }
+    .draft-editable pre.code-block.syntax-theme-default,
+    .draft-editable pre.code-block.syntax-theme-default code {
+      background: transparent;
+      color: inherit;
+      text-shadow: 0 1px #fff;
+    }
+    .draft-editable pre.code-block.syntax-theme-monokai,
+    .draft-editable pre.code-block.syntax-theme-monokai code {
+      background: transparent;
+      color: inherit;
+      text-shadow: 0 1px rgba(0,0,0,0.3);
+    }
     .draft-code-block-actions {
       position: absolute;
       top: 6px;
@@ -202,9 +218,9 @@
       opacity: 0;
       transition: opacity 0.15s ease;
       z-index: 5;
+      pointer-events: auto;
     }
     .draft-editable pre.code-block:hover .draft-code-block-actions,
-    .draft-editable pre.code-block[data-mode="preview"] .draft-code-block-actions,
     .draft-code-block-actions:focus-within { opacity: 1; }
     .draft-code-block-actions select,
     .draft-code-block-actions button {
@@ -219,100 +235,94 @@
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     .draft-code-block-actions select { min-width: 90px; appearance: auto; }
-    .draft-code-block-actions .draft-code-mode-toggle { margin-left: auto; min-width: 56px; }
-    .draft-editable pre.code-block.theme-light .draft-code-block-actions select,
-    .draft-editable pre.code-block.theme-light .draft-code-block-actions button {
+    .draft-code-block-actions .draft-code-bg-toggle { margin-left: auto; min-width: 28px; padding: 0 4px; font-size: 14px; line-height: 1; }
+    .draft-editable pre.code-block[data-bg="light"] .draft-code-block-actions select,
+    .draft-editable pre.code-block[data-bg="light"] .draft-code-block-actions button {
       border-color: #d9d2c5;
       background: #fff;
       color: #5c5750;
     }
-    .draft-editable pre.code-block.theme-monokai .draft-code-block-actions select,
-    .draft-editable pre.code-block.theme-monokai .draft-code-block-actions button {
-      border-color: #4a455a;
-      background: #2a2738;
-      color: #c9c3db;
-    }
     .image-resize-handle { position:absolute; right:2px; bottom:2px; width:14px; height:14px; cursor:nwse-resize; background:linear-gradient(135deg, transparent 50%, rgba(54,201,199,.85) 50%); border-radius:0 0 5px 0; pointer-events:auto; }
-    .draft-editable pre.code-block.theme-light .token.comment { color:#708090; }
-    .draft-editable pre.code-block.theme-light .token.punctuation { color:#999; }
-    .draft-editable pre.code-block.theme-light .token.property,
-    .draft-editable pre.code-block.theme-light .token.tag,
-    .draft-editable pre.code-block.theme-light .token.boolean,
-    .draft-editable pre.code-block.theme-light .token.number,
-    .draft-editable pre.code-block.theme-light .token.constant,
-    .draft-editable pre.code-block.theme-light .token.symbol { color:#905; }
-    .draft-editable pre.code-block.theme-light .token.selector,
-    .draft-editable pre.code-block.theme-light .token.attr-name,
-    .draft-editable pre.code-block.theme-light .token.string,
-    .draft-editable pre.code-block.theme-light .token.char,
-    .draft-editable pre.code-block.theme-light .token.builtin,
-    .draft-editable pre.code-block.theme-light .token.inserted { color:#690; }
-    .draft-editable pre.code-block.theme-light .token.operator,
-    .draft-editable pre.code-block.theme-light .token.entity,
-    .draft-editable pre.code-block.theme-light .token.url,
-    .draft-editable pre.code-block.theme-light .language-css .token.string,
-    .draft-editable pre.code-block.theme-light .style .token.string { color:#9a6e3a; background:hsla(0,0%,100%,.5); }
-    .draft-editable pre.code-block.theme-light .token.atrule,
-    .draft-editable pre.code-block.theme-light .token.attr-value,
-    .draft-editable pre.code-block.theme-light .token.keyword { color:#07a; }
-    .draft-editable pre.code-block.theme-light .token.function,
-    .draft-editable pre.code-block.theme-light .token.class-name { color:#dd4a68; }
-    .draft-editable pre.code-block.theme-light .token.regex,
-    .draft-editable pre.code-block.theme-light .token.important,
-    .draft-editable pre.code-block.theme-light .token.variable { color:#e90; }
-    .draft-editable pre.code-block.theme-dark .token.comment { color:#997f66; }
-    .draft-editable pre.code-block.theme-dark .token.punctuation { opacity:.7; }
-    .draft-editable pre.code-block.theme-dark .token.property,
-    .draft-editable pre.code-block.theme-dark .token.tag,
-    .draft-editable pre.code-block.theme-dark .token.boolean,
-    .draft-editable pre.code-block.theme-dark .token.number,
-    .draft-editable pre.code-block.theme-dark .token.constant,
-    .draft-editable pre.code-block.theme-dark .token.symbol { color:#d1939e; }
-    .draft-editable pre.code-block.theme-dark .token.selector,
-    .draft-editable pre.code-block.theme-dark .token.attr-name,
-    .draft-editable pre.code-block.theme-dark .token.string,
-    .draft-editable pre.code-block.theme-dark .token.char,
-    .draft-editable pre.code-block.theme-dark .token.builtin,
-    .draft-editable pre.code-block.theme-dark .token.inserted { color:#bce051; }
-    .draft-editable pre.code-block.theme-dark .token.operator,
-    .draft-editable pre.code-block.theme-dark .token.entity,
-    .draft-editable pre.code-block.theme-dark .token.url,
-    .draft-editable pre.code-block.theme-dark .language-css .token.string,
-    .draft-editable pre.code-block.theme-dark .style .token.string,
-    .draft-editable pre.code-block.theme-dark .token.variable { color:#f4b73d; }
-    .draft-editable pre.code-block.theme-dark .token.atrule,
-    .draft-editable pre.code-block.theme-dark .token.attr-value,
-    .draft-editable pre.code-block.theme-dark .token.keyword { color:#d1939e; }
-    .draft-editable pre.code-block.theme-dark .token.function { color:#fff; }
-    .draft-editable pre.code-block.theme-dark .token.regex,
-    .draft-editable pre.code-block.theme-dark .token.important { color:#e90; }
-    .draft-editable pre.code-block.theme-monokai .token.comment { color:#75715e; }
-    .draft-editable pre.code-block.theme-monokai .token.punctuation { color:#f8f8f2; }
-    .draft-editable pre.code-block.theme-monokai .token.property,
-    .draft-editable pre.code-block.theme-monokai .token.tag,
-    .draft-editable pre.code-block.theme-monokai .token.constant,
-    .draft-editable pre.code-block.theme-monokai .token.symbol,
-    .draft-editable pre.code-block.theme-monokai .token.deleted { color:#f92672; }
-    .draft-editable pre.code-block.theme-monokai .token.boolean,
-    .draft-editable pre.code-block.theme-monokai .token.number { color:#ae81ff; }
-    .draft-editable pre.code-block.theme-monokai .token.selector,
-    .draft-editable pre.code-block.theme-monokai .token.attr-name,
-    .draft-editable pre.code-block.theme-monokai .token.string,
-    .draft-editable pre.code-block.theme-monokai .token.char,
-    .draft-editable pre.code-block.theme-monokai .token.builtin,
-    .draft-editable pre.code-block.theme-monokai .token.inserted { color:#a6e22e; }
-    .draft-editable pre.code-block.theme-monokai .token.operator,
-    .draft-editable pre.code-block.theme-monokai .token.entity,
-    .draft-editable pre.code-block.theme-monokai .token.url,
-    .draft-editable pre.code-block.theme-monokai .language-css .token.string,
-    .draft-editable pre.code-block.theme-monokai .style .token.string,
-    .draft-editable pre.code-block.theme-monokai .token.variable { color:#f8f8f2; }
-    .draft-editable pre.code-block.theme-monokai .token.atrule,
-    .draft-editable pre.code-block.theme-monokai .token.attr-value,
-    .draft-editable pre.code-block.theme-monokai .token.keyword { color:#f92672; }
-    .draft-editable pre.code-block.theme-monokai .token.function { color:#e6db74; }
-    .draft-editable pre.code-block.theme-monokai .token.regex,
-    .draft-editable pre.code-block.theme-monokai .token.important { color:#fd971f; }
+    .draft-editable pre.code-block.syntax-theme-default .token.comment { color:#708090; }
+    .draft-editable pre.code-block.syntax-theme-default .token.punctuation { color:#999; }
+    .draft-editable pre.code-block.syntax-theme-default .token.property,
+    .draft-editable pre.code-block.syntax-theme-default .token.tag,
+    .draft-editable pre.code-block.syntax-theme-default .token.boolean,
+    .draft-editable pre.code-block.syntax-theme-default .token.number,
+    .draft-editable pre.code-block.syntax-theme-default .token.constant,
+    .draft-editable pre.code-block.syntax-theme-default .token.symbol { color:#905; }
+    .draft-editable pre.code-block.syntax-theme-default .token.selector,
+    .draft-editable pre.code-block.syntax-theme-default .token.attr-name,
+    .draft-editable pre.code-block.syntax-theme-default .token.string,
+    .draft-editable pre.code-block.syntax-theme-default .token.char,
+    .draft-editable pre.code-block.syntax-theme-default .token.builtin,
+    .draft-editable pre.code-block.syntax-theme-default .token.inserted { color:#690; }
+    .draft-editable pre.code-block.syntax-theme-default .token.operator,
+    .draft-editable pre.code-block.syntax-theme-default .token.entity,
+    .draft-editable pre.code-block.syntax-theme-default .token.url,
+    .draft-editable pre.code-block.syntax-theme-default .language-css .token.string,
+    .draft-editable pre.code-block.syntax-theme-default .style .token.string { color:#9a6e3a; background:hsla(0,0%,100%,.5); }
+    .draft-editable pre.code-block.syntax-theme-default .token.atrule,
+    .draft-editable pre.code-block.syntax-theme-default .token.attr-value,
+    .draft-editable pre.code-block.syntax-theme-default .token.keyword { color:#07a; }
+    .draft-editable pre.code-block.syntax-theme-default .token.function,
+    .draft-editable pre.code-block.syntax-theme-default .token.class-name { color:#dd4a68; }
+    .draft-editable pre.code-block.syntax-theme-default .token.regex,
+    .draft-editable pre.code-block.syntax-theme-default .token.important,
+    .draft-editable pre.code-block.syntax-theme-default .token.variable { color:#e90; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.comment { color:#997f66; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.punctuation { opacity:.7; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.property,
+    .draft-editable pre.code-block.syntax-theme-dark .token.tag,
+    .draft-editable pre.code-block.syntax-theme-dark .token.boolean,
+    .draft-editable pre.code-block.syntax-theme-dark .token.number,
+    .draft-editable pre.code-block.syntax-theme-dark .token.constant,
+    .draft-editable pre.code-block.syntax-theme-dark .token.symbol { color:#d1939e; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.selector,
+    .draft-editable pre.code-block.syntax-theme-dark .token.attr-name,
+    .draft-editable pre.code-block.syntax-theme-dark .token.string,
+    .draft-editable pre.code-block.syntax-theme-dark .token.char,
+    .draft-editable pre.code-block.syntax-theme-dark .token.builtin,
+    .draft-editable pre.code-block.syntax-theme-dark .token.inserted { color:#bce051; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.operator,
+    .draft-editable pre.code-block.syntax-theme-dark .token.entity,
+    .draft-editable pre.code-block.syntax-theme-dark .token.url,
+    .draft-editable pre.code-block.syntax-theme-dark .language-css .token.string,
+    .draft-editable pre.code-block.syntax-theme-dark .style .token.string,
+    .draft-editable pre.code-block.syntax-theme-dark .token.variable { color:#f4b73d; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.atrule,
+    .draft-editable pre.code-block.syntax-theme-dark .token.attr-value,
+    .draft-editable pre.code-block.syntax-theme-dark .token.keyword { color:#d1939e; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.function { color:#fff; }
+    .draft-editable pre.code-block.syntax-theme-dark .token.regex,
+    .draft-editable pre.code-block.syntax-theme-dark .token.important { color:#e90; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.comment { color:#75715e; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.punctuation { color:#f8f8f2; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.property,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.tag,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.constant,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.symbol,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.deleted { color:#f92672; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.boolean,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.number { color:#ae81ff; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.selector,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.attr-name,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.string,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.char,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.builtin,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.inserted { color:#a6e22e; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.operator,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.entity,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.url,
+    .draft-editable pre.code-block.syntax-theme-monokai .language-css .token.string,
+    .draft-editable pre.code-block.syntax-theme-monokai .style .token.string,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.variable { color:#f8f8f2; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.atrule,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.attr-value,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.keyword { color:#f92672; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.function { color:#e6db74; }
+    .draft-editable pre.code-block.syntax-theme-monokai .token.regex,
+    .draft-editable pre.code-block.syntax-theme-monokai .token.important { color:#fd971f; }
     .draft-editable figure.table-block { margin: 12px 0 20px; overflow-x: auto; }
     .draft-editable figure.table-block.selected { border: 2px dashed #36c9c7; box-shadow: 0 0 0 3px rgba(54, 201, 199, 0.12); outline: none; border-radius: 8px; }
     .draft-editable figure.table-block table { width: 100%; border-collapse: collapse; font: 500 17px/1.4 ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
@@ -542,7 +552,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="org46c9bc8" class="figure">
+<div id="org9b03105" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -557,7 +567,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="org903b244" class="figure">
+<div id="org9990137" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
@@ -822,7 +832,7 @@ Watchout for the next part of the assay till then.
       this.bodyEl.innerHTML = state.bodyHtml;
       if (this.titleEl) this.titleEl.innerText = state.titleText;
       // Re-attach dynamic helpers that get lost on innerHTML swap.
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); toCodeHighlightMode(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
       refreshImageBlocks();
       normalizeMediaUrls();
       if (state.selection) {
@@ -1204,6 +1214,18 @@ Watchout for the next part of the assay till then.
     if (node === block) return range.endOffset >= (block.childNodes.length || 0);
     return false;
   }
+  function isAtStartOfNode(range, root){
+    const r = document.createRange();
+    r.selectNodeContents(root);
+    r.setEnd(range.startContainer, range.startOffset);
+    return r.toString().length === 0;
+  }
+  function isAtEndOfNode(range, root){
+    const r = document.createRange();
+    r.selectNodeContents(root);
+    r.setStart(range.endContainer, range.endOffset);
+    return r.toString().length === 0;
+  }
   function appendParagraphIfNeeded(){
     const blocks = bodyBlocks();
     if (!blocks.length){ const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); return p; }
@@ -1232,15 +1254,20 @@ Watchout for the next part of the assay till then.
     const sel = window.getSelection();
     if (!sel.rangeCount) return;
     const range = sel.getRangeAt(0);
+    const t = block.tagName.toLowerCase();
     if (e.key === 'ArrowDown'){
-      if (isVoidElement(block) || isAtEndOfBlock(range, block)){
+      const code = t === 'pre' ? block.querySelector('code') : null;
+      if (code && !isAtEndOfNode(range, code)) return;
+      if (isVoidElement(block) || isAtEndOfBlock(range, block) || code){
         e.preventDefault();
         const next = block.nextElementSibling;
         if (next && next.parentElement === body){ placeCaretIn(next, true); }
         else { const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); placeCaretIn(p, true); }
       }
     } else {
-      if (isVoidElement(block) || isAtStartOfBlock(range, block)){
+      const code = t === 'pre' ? block.querySelector('code') : null;
+      if (code && !isAtStartOfNode(range, code)) return;
+      if (isVoidElement(block) || isAtStartOfBlock(range, block) || code){
         e.preventDefault();
         const prev = block.previousElementSibling;
         if (prev && prev.parentElement === body){ placeCaretIn(prev, false); }
@@ -1689,7 +1716,7 @@ Watchout for the next part of the assay till then.
     const blockStyleAttr = (n) => {
       return '';
     };
-    if (tag === 'br') return '\\\n';
+    if (tag === 'br') return '\n';
     if (tag === 'h1') return '\n' + blockStyleAttr(node) + '* ' + childrenToOrg().trim() + '\n';
     if (tag === 'h2') return '\n' + blockStyleAttr(node) + '** ' + childrenToOrg().trim() + '\n';
     if (tag === 'h3') return '\n' + blockStyleAttr(node) + '*** ' + childrenToOrg().trim() + '\n';
@@ -1699,7 +1726,8 @@ Watchout for the next part of the assay till then.
     if (tag === 'blockquote') return '\n' + blockStyleAttr(node) + '#+BEGIN_QUOTE\n' + childrenToOrg().trim() + '\n#+END_QUOTE\n';
     if (tag === 'pre') {
       const lang = (node.dataset.lang || node.getAttribute('data-lang') || '').trim() || 'text';
-      const theme = (node.getAttribute('data-theme') || 'dark').trim();
+      const bg = (node.getAttribute('data-bg') || 'light').trim();
+      const syntaxTheme = (node.getAttribute('data-syntax-theme') || 'default').trim();
       const collect = (n) => {
         let out = '';
         Array.from(n.childNodes).forEach(c => {
@@ -1712,7 +1740,8 @@ Watchout for the next part of the assay till then.
       };
       const code = (node.dataset.raw || collect(node)).replace(/\u200b/g, '').trimEnd();
       let out = '\n';
-      if (theme && theme !== 'dark') out += '#+ATTR_HTML: :data-theme ' + theme + '\n';
+      if (bg && bg !== 'light') out += '#+ATTR_HTML: :data-bg ' + bg + '\n';
+      if (syntaxTheme && syntaxTheme !== 'default') out += '#+ATTR_HTML: :data-syntax-theme ' + syntaxTheme + '\n';
       out += '#+BEGIN_SRC ' + lang + '\n' + code + '\n#+END_SRC\n';
       return out;
     }
@@ -1812,39 +1841,34 @@ Watchout for the next part of the assay till then.
     ['rust', 'Rust'], ['scheme', 'Scheme'], ['sql', 'SQL'], ['typescript', 'TypeScript'],
     ['yaml', 'YAML'], ['__other__', 'Other...']
   ];
-  const CODE_THEMES = [['dark', 'Dark'], ['light', 'Light'], ['monokai', 'Monokai']];
+  const CODE_SYNTAX_THEMES = [['default', 'Default'], ['dark', 'Dark'], ['monokai', 'Monokai']];
 
   function codeBlockToolbarHtml(){
     const langOpts = CODE_LANGUAGES.map(([value, label]) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(label) + '</option>').join('');
-    const themeOpts = CODE_THEMES.map(([value, label]) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(label) + '</option>').join('');
-    return '<div class="draft-code-block-actions" contenteditable="false"><select class="draft-code-theme-select" title="Theme">' + themeOpts + '</select><select class="draft-code-lang-select" title="Language">' + langOpts + '</select><button class="draft-code-mode-toggle" type="button" title="Toggle preview">Preview</button></div>';
+    const syntaxOpts = CODE_SYNTAX_THEMES.map(([value, label]) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(label) + '</option>').join('');
+    return '<div class="draft-code-block-actions" contenteditable="false"><select class="draft-code-lang-select" title="Language">' + langOpts + '</select><select class="draft-code-syntax-theme-select" title="Syntax theme">' + syntaxOpts + '</select><button class="draft-code-bg-toggle" type="button" title="Toggle background">◐</button></div>';
   }
 
   function syncCodeBlockToolbar(pre){
-    const theme = pre.getAttribute('data-theme') || 'dark';
     const lang = pre.getAttribute('data-lang') || 'text';
-    const mode = pre.getAttribute('data-mode') || 'plain';
-    const themeSelect = pre.querySelector('.draft-code-theme-select');
+    const syntaxTheme = pre.getAttribute('data-syntax-theme') || 'default';
+    const bg = pre.getAttribute('data-bg') || 'light';
     const langSelect = pre.querySelector('.draft-code-lang-select');
-    const modeToggle = pre.querySelector('.draft-code-mode-toggle');
-    if (themeSelect) themeSelect.value = theme;
+    const syntaxSelect = pre.querySelector('.draft-code-syntax-theme-select');
+    const bgToggle = pre.querySelector('.draft-code-bg-toggle');
     if (langSelect) {
       const known = CODE_LANGUAGES.some(([v]) => v === lang);
       langSelect.value = known ? lang : '__other__';
     }
-    if (modeToggle) modeToggle.textContent = mode === 'plain' ? 'Preview' : 'Edit';
+    if (syntaxSelect) syntaxSelect.value = syntaxTheme;
+    if (bgToggle) bgToggle.textContent = bg === 'dark' ? '◑' : '◐';
   }
 
   function bindCodeBlockToolbar(pre){
-    const themeSelect = pre.querySelector('.draft-code-theme-select');
     const langSelect = pre.querySelector('.draft-code-lang-select');
-    const modeToggle = pre.querySelector('.draft-code-mode-toggle');
-    if (themeSelect) {
-      themeSelect.addEventListener('change', (e) => {
-        e.stopPropagation();
-        setCodeBlockTheme(pre, e.target.value);
-      });
-    }
+    const syntaxSelect = pre.querySelector('.draft-code-syntax-theme-select');
+    const bgToggle = pre.querySelector('.draft-code-bg-toggle');
+    const actions = pre.querySelector('.draft-code-block-actions');
     if (langSelect) {
       langSelect.addEventListener('change', (e) => {
         e.stopPropagation();
@@ -1855,37 +1879,72 @@ Watchout for the next part of the assay till then.
         setCodeBlockLang(pre, (lang || 'text').trim().toLowerCase());
       });
     }
-    if (modeToggle) {
-      modeToggle.addEventListener('click', (e) => {
+    if (syntaxSelect) {
+      syntaxSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        setCodeBlockSyntaxTheme(pre, e.target.value);
+      });
+    }
+    if (bgToggle) {
+      bgToggle.addEventListener('click', (e) => {
         e.preventDefault(); e.stopPropagation();
-        const mode = pre.getAttribute('data-mode') || 'plain';
-        if (mode === 'plain') toCodeHighlightMode(pre);
-        else toCodePlainMode(pre);
+        toggleCodeBlockBg(pre);
+      });
+    }
+    if (actions) {
+      actions.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
       });
     }
   }
 
-  function toCodePlainMode(pre){
-    if (!pre) return;
-    const existingCode = pre.querySelector('code');
-    let raw = pre.dataset.raw;
-    if (raw === undefined) {
-      raw = existingCode ? existingCode.textContent : pre.textContent;
+  function highlightCodeBlock(pre){
+    const code = pre.querySelector('code');
+    if (!code || !window.Prism) return;
+    const sel = window.getSelection();
+    const active = document.activeElement === code;
+    let offset = 0;
+    if (active && sel.rangeCount) {
+      const r = document.createRange();
+      r.selectNodeContents(code);
+      r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+      offset = r.toString().length;
     }
-    raw = (raw || '').replace(/\u200b/g, '');
-    pre.dataset.raw = raw;
     const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
-    const theme = (pre.getAttribute('data-theme') || 'dark').trim().toLowerCase();
-    pre.setAttribute('data-mode', 'plain');
-    pre.classList.add('theme-' + theme, 'language-' + lang);
-    pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + escapeHtml(lang) + '" contenteditable="true">' + escapeHtml(raw || '\n') + '</code>';
-    bindCodeBlockToolbar(pre);
-    syncCodeBlockToolbar(pre);
+    code.className = 'language-' + escapeHtml(lang);
+    code.textContent = pre.dataset.raw || '\n';
+    Prism.highlightElement(code);
+    if (active) {
+      restoreTextOffset(code, offset);
+      code.focus();
+    }
+  }
+
+  function restoreTextOffset(root, targetOffset){
+    const sel = window.getSelection();
+    const range = document.createRange();
+    let remaining = targetOffset;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const len = node.textContent.length;
+      if (remaining <= len) {
+        range.setStart(node, Math.min(remaining, len));
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        return;
+      }
+      remaining -= len;
+    }
+    range.selectNodeContents(root);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
   function toCodeHighlightMode(pre){
     if (!pre) return;
-    if (document.activeElement === pre || pre.contains(document.activeElement)) return;
     const existingCode = pre.querySelector('code');
     let raw = pre.dataset.raw;
     if (raw === undefined) {
@@ -1894,28 +1953,40 @@ Watchout for the next part of the assay till then.
     raw = (raw || '').replace(/\u200b/g, '');
     pre.dataset.raw = raw;
     const lang = (pre.getAttribute('data-lang') || 'text').trim().toLowerCase();
-    const theme = (pre.getAttribute('data-theme') || 'dark').trim().toLowerCase();
-    pre.setAttribute('data-mode', 'preview');
-    pre.classList.add('theme-' + theme, 'language-' + lang);
-    pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + escapeHtml(lang) + '"></code>';
-    const code = pre.querySelector('code');
-    if (code) {
-      code.textContent = raw || '\n';
-      if (window.Prism) Prism.highlightElement(code);
+    let bg = pre.getAttribute('data-bg');
+    let syntaxTheme = pre.getAttribute('data-syntax-theme');
+    if (!bg || !syntaxTheme) {
+      const oldTheme = (pre.getAttribute('data-theme') || 'light').trim().toLowerCase();
+      if (!bg) bg = oldTheme === 'light' ? 'light' : 'dark';
+      if (!syntaxTheme) syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
     }
+    pre.removeAttribute('data-mode');
+    pre.setAttribute('data-bg', bg);
+    pre.setAttribute('data-syntax-theme', syntaxTheme);
+    pre.classList.add('syntax-theme-' + syntaxTheme, 'language-' + lang);
+    pre.innerHTML = codeBlockToolbarHtml() + '<code spellcheck="false" class="language-' + escapeHtml(lang) + '" contenteditable="true">' + escapeHtml(raw || '\n') + '</code>';
     bindCodeBlockToolbar(pre);
     syncCodeBlockToolbar(pre);
+    highlightCodeBlock(pre);
   }
 
-  function setCodeBlockTheme(pre, theme){
-    const oldTheme = pre.getAttribute('data-theme') || 'dark';
-    pre.classList.remove('theme-' + oldTheme);
-    theme = (theme || 'dark').trim().toLowerCase();
-    if (!CODE_THEMES.some(([v]) => v === theme)) theme = 'dark';
-    pre.setAttribute('data-theme', theme);
-    pre.classList.add('theme-' + theme);
+  function setCodeBlockSyntaxTheme(pre, syntaxTheme){
+    const oldSyntaxTheme = pre.getAttribute('data-syntax-theme') || 'default';
+    pre.classList.remove('syntax-theme-' + oldSyntaxTheme);
+    syntaxTheme = (syntaxTheme || 'default').trim().toLowerCase();
+    if (!CODE_SYNTAX_THEMES.some(([v]) => v === syntaxTheme)) syntaxTheme = 'default';
+    pre.setAttribute('data-syntax-theme', syntaxTheme);
+    pre.classList.add('syntax-theme-' + syntaxTheme);
     syncCodeBlockToolbar(pre);
-    if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
+    highlightCodeBlock(pre);
+    markDirty();
+  }
+
+  function toggleCodeBlockBg(pre){
+    const current = pre.getAttribute('data-bg') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    pre.setAttribute('data-bg', next);
+    syncCodeBlockToolbar(pre);
     markDirty();
   }
 
@@ -1928,13 +1999,13 @@ Watchout for the next part of the assay till then.
     const code = pre.querySelector('code');
     if (code) code.className = 'language-' + escapeHtml(lang);
     syncCodeBlockToolbar(pre);
-    if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
+    highlightCodeBlock(pre);
     markDirty();
   }
 
   function ensureCodeBlockToolbar(pre){
     if (!pre || pre.querySelector('.draft-code-block-actions')) return;
-    toCodePlainMode(pre);
+    toCodeHighlightMode(pre);
   }
 
   function isPlaceholderCaption(text, src){
@@ -2005,12 +2076,14 @@ Watchout for the next part of the assay till then.
         const klass = srcPre.className || '';
         const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
-        const theme = srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'dark';
+        const oldTheme = (srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'light').trim().toLowerCase();
+        const bg = oldTheme === 'light' ? 'light' : 'dark';
+        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
         const pre = document.createElement('pre');
-        pre.className = 'code-block theme-' + theme + ' language-' + lang;
+        pre.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         pre.setAttribute('data-lang', lang);
-        pre.setAttribute('data-theme', theme);
-        pre.setAttribute('data-mode', 'preview');
+        pre.setAttribute('data-bg', bg);
+        pre.setAttribute('data-syntax-theme', syntaxTheme);
         pre.setAttribute('spellcheck', 'false');
         pre.dataset.raw = (srcPre.textContent || '').replace(/\u200b/g, '');
         el.replaceWith(pre);
@@ -2022,11 +2095,13 @@ Watchout for the next part of the assay till then.
         const klass = el.className || '';
         const m = klass.match(/\bsrc-([a-z0-9-]+)\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
-        const theme = el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'dark';
-        el.className = 'code-block theme-' + theme + ' language-' + lang;
+        const oldTheme = (el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'light').trim().toLowerCase();
+        const bg = oldTheme === 'light' ? 'light' : 'dark';
+        const syntaxTheme = oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark');
+        el.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         el.setAttribute('data-lang', lang);
-        el.setAttribute('data-theme', theme);
-        el.setAttribute('data-mode', 'preview');
+        el.setAttribute('data-bg', bg);
+        el.setAttribute('data-syntax-theme', syntaxTheme);
         el.setAttribute('spellcheck', 'false');
         el.dataset.raw = (el.textContent || '').replace(/\u200b/g, '');
         toCodeHighlightMode(el);
@@ -2136,10 +2211,10 @@ Watchout for the next part of the assay till then.
 
     const codeLang = (lang || 'text').toLowerCase();
     const pre = document.createElement('pre');
-    pre.className = 'code-block theme-dark language-' + codeLang;
+    pre.className = 'code-block syntax-theme-default language-' + codeLang;
     pre.setAttribute('data-lang', codeLang);
-    pre.setAttribute('data-theme', 'dark');
-    pre.setAttribute('data-mode', 'plain');
+    pre.setAttribute('data-bg', 'light');
+    pre.setAttribute('data-syntax-theme', 'default');
     pre.setAttribute('spellcheck', 'false');
 
     const para = document.createElement('p');
@@ -2148,7 +2223,7 @@ Watchout for the next part of the assay till then.
     range.insertNode(para);
     range.insertNode(pre);
 
-    toCodePlainMode(pre);
+    toCodeHighlightMode(pre);
     const code = pre.querySelector('code');
     if (code) {
       const caret = document.createRange();
@@ -2681,19 +2756,19 @@ Watchout for the next part of the assay till then.
     if (action === 'ditaa') {
       insertCodeBlockAtCursor('ditaa');
       const pre = body.querySelector('pre.code-block[data-lang="ditaa"]:last-of-type');
-      if (pre) { pre.textContent = '+--------+   +--------+\n|  Node  |-->|  Node  |\n+--------+   +--------+'; pre.dataset.raw = pre.textContent; toCodeHighlightMode(pre); }
+      if (pre) { pre.dataset.raw = '+--------+   +--------+\n|  Node  |-->|  Node  |\n+--------+   +--------+'; highlightCodeBlock(pre); }
       return;
     }
     if (action === 'plantuml') {
       insertCodeBlockAtCursor('plantuml');
       const pre = body.querySelector('pre.code-block[data-lang="plantuml"]:last-of-type');
-      if (pre) { pre.textContent = '@startuml\nAlice -> Bob: Hello\nBob --> Alice: Hi\n@enduml'; pre.dataset.raw = pre.textContent; toCodeHighlightMode(pre); }
+      if (pre) { pre.dataset.raw = '@startuml\nAlice -> Bob: Hello\nBob --> Alice: Hi\n@enduml'; highlightCodeBlock(pre); }
       return;
     }
     if (action === 'ascii') {
       insertCodeBlockAtCursor('text');
       const pre = body.querySelector('pre.code-block[data-lang="text"]:last-of-type');
-      if (pre) { pre.textContent = '    /\\\n   /  \\\n  /----\\\n /      \\\n/________\\'; pre.dataset.raw = pre.textContent; toCodeHighlightMode(pre); }
+      if (pre) { pre.dataset.raw = '    /\\\n   /  \\\n  /----\\\n /      \\\n/________\\'; highlightCodeBlock(pre); }
       return;
     }
     if (action === 'table') {
@@ -2791,23 +2866,8 @@ Watchout for the next part of the assay till then.
     pre.dataset.raw = (code.textContent || '').replace(/\u200b/g, '');
     clearTimeout(pre._debounceHighlight);
     pre._debounceHighlight = setTimeout(()=>{
-      if (pre.getAttribute('data-mode') === 'preview') toCodeHighlightMode(pre);
-    }, 600);
-  });
-  body.addEventListener('focusin', (e)=>{
-    const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
-    if (!pre) return;
-    if (e.target.closest('.draft-code-block-actions')) return;
-    toCodePlainMode(pre);
-  });
-  body.addEventListener('focusout', (e)=>{
-    const pre = e.target && e.target.closest ? e.target.closest('pre.code-block') : null;
-    if (!pre) return;
-    if (pre.contains(e.relatedTarget)) return;
-    setTimeout(()=>{
-      if (pre.contains(document.activeElement)) return;
-      toCodeHighlightMode(pre);
-    }, 80);
+      highlightCodeBlock(pre);
+    }, 400);
   });
   body.addEventListener('input', normalizeMediaUrls);
   title.addEventListener('input', markDirty);
@@ -2888,7 +2948,7 @@ Watchout for the next part of the assay till then.
   syncPlusIcon();
   canonicalizeLegacyImageNodes();
   refreshImageBlocks();
-  body.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); toCodeHighlightMode(pre); });
+  body.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
   normalizeMediaUrls();
   history.push('load');
   setSaveState('is-saved', 'Saved');

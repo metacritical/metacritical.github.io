@@ -138,6 +138,7 @@
     function updatePreview() {
       previewTitle.textContent = document.getElementById('title').innerText;
       previewBody.innerHTML = editor.renderOrgToHtml(editor.getOrgBody());
+      if (window.Prism) Prism.highlightAll();
     }
 
     previewBtn.addEventListener('click', () => {
