@@ -334,7 +334,7 @@
       padding: 8px;
       box-shadow: 0 12px 22px rgba(0,0,0,.2);
       max-width: min(720px, calc(100vw - 24px));
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     .draft-image-tools.open { display: inline-flex; }
     .draft-image-tools button, .draft-image-tools select {
@@ -613,7 +613,9 @@
   <button id=\"draft-fg-control\" class=\"draft-color-control\" type=\"button\" data-action=\"open-fg\" title=\"Text color\" aria-label=\"Text color\">
     <span class=\"draft-color-label\">FG</span><span id=\"draft-fg-swatch\" class=\"draft-color-swatch\" style=\"background:#1d1b18\"></span>
   </button>
-  <button type=\"button\" data-action=\"link\" class=\"draft-link-btn\" aria-label=\"Link\" title=\"Link\">
+  <button type=\"button\" data-action=\"font-size-up\" title=\"Increase font size\"\u003eA+</button>
+  <button type=\"button\" data-action=\"font-size-down\" title=\"Decrease font size\"\u003eA-</button>
+  <button type=\"button\" data-action=\"link\" class=\"draft-link-btn\" aria-label=\"Link\" title=\"Link\"\u003e
     <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" width=\"22\" height=\"22\">
       <path d=\"M10.6 13.4a1 1 0 0 0 1.4 1.4l4.2-4.2a3 3 0 1 0-4.2-4.2l-1.5 1.5a1 1 0 1 0 1.4 1.4l1.5-1.5a1 1 0 1 1 1.4 1.4L10.6 13.4z\" fill=\"currentColor\"></path>
       <path d=\"M13.4 10.6a1 1 0 0 0-1.4-1.4l-4.2 4.2a3 3 0 0 0 4.2 4.2l1.5-1.5a1 1 0 0 0-1.4-1.4l-1.5 1.5a1 1 0 1 1-1.4-1.4l4.2-4.2z\" fill=\"currentColor\"></path>
@@ -1088,6 +1090,10 @@
     plus.style.display='none';
     plus.classList.remove('open');
     syncPlusIcon();
+    hideImageToolbar();
+    hideBlockToolbar();
+    hideMultiToolbar();
+    deselectTableBlocks();
     const block = nearestBlock(range.startContainer);
     if (block && (block.tagName.toLowerCase() === 'pre' || block.tagName.toLowerCase() === 'figure')) {
       tools.style.display='none';
@@ -1432,35 +1438,13 @@
       b.type = 'button'; b.dataset.action = action; b.title = title; b.textContent = label;
       return b;
     };
-    const makeSelect = (action, options, title) => {
-      const s = document.createElement('select');
-      s.dataset.action = action; s.title = title;
-      options.forEach(([val, label]) => {
-        const opt = document.createElement('option');
-        opt.value = val; opt.textContent = label;
-        s.appendChild(opt);
-      });
-      return s;
-    };
-    const sep = () => {
-      const s = document.createElement('span');
-      s.className = 'sep';
-      s.setAttribute('aria-hidden', 'true');
-      return s;
-    };
     tb.appendChild(makeBtn('move-up', '↑', 'Move up'));
     tb.appendChild(makeBtn('move-down', '↓', 'Move down'));
     tb.appendChild(makeBtn('delete', '×', 'Delete'));
-    tb.appendChild(sep());
-    tb.appendChild(makeBtn('align-left', 'L', 'Align left'));
-    tb.appendChild(makeBtn('align-center', 'C', 'Align center'));
-    tb.appendChild(makeBtn('align-right', 'R', 'Align right'));
-    tb.appendChild(sep());
-    tb.appendChild(makeSelect('font-size', [['', 'Default'], ['small', 'Small'], ['normal', 'Normal'], ['large', 'Large'], ['huge', 'Huge']], 'Font size'));
     document.body.appendChild(tb);
     tb.addEventListener('mousedown', (e)=> e.preventDefault());
     tb.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button, select');
+      const btn = e.target.closest('button');
       if (!btn) return;
       const action = btn.dataset.action;
       const block = document.querySelector('.draft-editable > .selected');
@@ -1478,49 +1462,17 @@
         block.remove(); hideBlockToolbar(); markDirty();
         if (adj) placeCaretIn(adj, true);
         else appendParagraphIfNeeded();
-      } else if (['align-left','align-center','align-right'].includes(action)){
-        applyBlockSetting(block, 'align', action.replace('align-', ''));
-      } else if (action === 'font-size'){
-        applyBlockSetting(block, 'font-size', btn.value);
       }
     });
     return tb;
   }
   function applyBlockSetting(block, type, value){
-    if (type === 'align'){
-      block.style.textAlign = value;
-      block.dataset.align = value;
-    } else if (type === 'font-size'){
-      if (!value || value === 'normal'){
-        block.style.fontSize = '';
-        delete block.dataset.fontSize;
-      } else {
-        const px = { small: '16px', normal: '21px', large: '28px', huge: '36px' }[value];
-        if (px){
-          block.style.fontSize = px;
-          block.dataset.fontSize = value;
-        }
-      }
-    }
     syncBlockToolbar(block);
     positionBlockToolbar(block);
     markDirty();
   }
   function syncBlockToolbar(block){
     if (!blockToolbar) return;
-    const align = block.dataset.align || (block.style.textAlign || 'left');
-    blockToolbar.querySelectorAll('button[data-action^=\"align-\"]').forEach(b => {
-      b.classList.toggle('active', b.dataset.action === 'align-' + align);
-    });
-    const sizeSelect = blockToolbar.querySelector('select[data-action=\"font-size\"]');
-    if (sizeSelect) {
-      let size = block.dataset.fontSize || '';
-      if (!size) {
-        const px = (block.style.fontSize || '').trim();
-        size = Object.entries({ small: '16px', normal: '21px', large: '28px', huge: '36px' }).find(([, v]) => v === px)?.[0] || '';
-      }
-      sizeSelect.value = size;
-    }
   }
   function selectBlock(block){
     hideImageToolbar();
@@ -1703,13 +1655,7 @@
       return out;
     };
     const blockStyleAttr = (n) => {
-      const align = (n.getAttribute('data-align') || '').trim();
-      const sizeKey = (n.getAttribute('data-font-size') || '').trim();
-      const size = { small: '16px', normal: '21px', large: '28px', huge: '36px' }[sizeKey];
-      const parts = [];
-      if (align) parts.push('text-align:' + align);
-      if (size) parts.push('font-size:' + size);
-      return parts.length ? '#+ATTR_HTML: :style ' + parts.join(';') + '\\n' : '';
+      return '';
     };
     if (tag === 'br') return '\\\\\\n';
     if (tag === 'h1') return '\\n' + blockStyleAttr(node) + '* ' + childrenToOrg().trim() + '\\n';
@@ -1782,8 +1728,10 @@
     if (tag === 'span') {
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
+      const fontSize = node.style.fontSize || '';
       const text = childrenToOrg().trim();
       if (!text) return '';
+      if (fontSize) return '@@html:<span style=\"font-size:' + fontSize + '\">' + text + '</span>@@';
       if (bg && bg !== 'transparent') return '@@html:<mark style=\"background-color:' + bg + '\">' + text + '</mark>@@';
       if (color) return '@@html:<span style=\"color:' + color + '\">' + text + '</span>@@';
       return text;
@@ -2483,6 +2431,25 @@
     updateFloatingUi();
   }
 
+  function getSelectionFontSizePx(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+    let node = sel.getRangeAt(0).commonAncestorContainer;
+    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+    if (!node) return null;
+    const computed = window.getComputedStyle(node);
+    const px = parseFloat(computed.fontSize);
+    return isNaN(px) ? null : px;
+  }
+
+  function changeFontSize(delta){
+    const current = getSelectionFontSizePx();
+    const base = current || 21;
+    let next = Math.round(base + delta);
+    next = Math.max(12, Math.min(72, next));
+    wrapSelectionWithStyle('font-size:' + next + 'px;');
+  }
+
   tools.addEventListener('mousedown', (e)=>{
     if (e.target.closest('button')) e.preventDefault();
   });
@@ -2506,6 +2473,8 @@
       return;
     }
     if (action === 'clear') { execWithSelection(() => document.execCommand('removeFormat', false, null)); }
+    if (action === 'font-size-up') { changeFontSize(2); }
+    if (action === 'font-size-down') { changeFontSize(-2); }
   });
 
   if (fontFamily) {
@@ -2595,6 +2564,29 @@
     if (!colorPop.classList.contains('open')) return;
     if (colorPop.contains(e.target) || (hlControl && hlControl.contains(e.target)) || (fgControl && fgControl.contains(e.target))) return;
     closeColorPopover();
+  });
+
+  document.addEventListener('mousedown', (e)=>{
+    const inEditor = body.contains(e.target) || title.contains(e.target);
+    const inToolbar = (tools && tools.contains(e.target)) ||
+                      (imageToolbar && imageToolbar.contains(e.target)) ||
+                      (blockToolbar && blockToolbar.contains(e.target)) ||
+                      (multiToolbar && multiToolbar.contains(e.target)) ||
+                      (tableToolbar && tableToolbar.contains(e.target)) ||
+                      (colorPop && colorPop.contains(e.target)) ||
+                      (plus && plus.contains(e.target));
+    if (!inEditor && !inToolbar) {
+      deselectBlocks();
+      tools.style.display = 'none';
+      closeColorPopover();
+      return;
+    }
+    if (inEditor && !inToolbar) {
+      const selectedImage = document.querySelector('.draft-editable figure.image-block.selected');
+      if (selectedImage && !selectedImage.contains(e.target)) deselectImageBlocks();
+      const selectedTable = document.querySelector('.draft-editable figure.table-block.selected');
+      if (selectedTable && !selectedTable.contains(e.target)) deselectTableBlocks();
+    }
   });
 
   plusMenu.addEventListener('click', async (e)=>{
@@ -2810,11 +2802,6 @@
       deselectBlocks();
       return;
     }
-    if (imageToolbar && !imageToolbar.contains(e.target)) deselectImageBlocks();
-    if (blockToolbar && !blockToolbar.contains(e.target)) hideBlockToolbar();
-    if (multiToolbar && !multiToolbar.contains(e.target)) hideMultiToolbar();
-    if (tableToolbar && !tableToolbar.contains(e.target)) deselectTableBlocks();
-    if (!e.target.closest('.draft-editable')) deselectBlocks();
   });
   window.addEventListener('scroll', ()=>{
     updateFloatingUi();

@@ -523,6 +523,8 @@ class DraftEditor {
       <button type="button" data-action="code">{ }</button>
       <button type="button" class="de-hl" data-action="highlight">HL</button>
       <button type="button" data-action="clear-hl">HL-</button>
+      <button type="button" data-action="font-size-up" title="Increase font size">A+</button>
+      <button type="button" data-action="font-size-down" title="Decrease font size">A-</button>
       <input class="de-inline-color" type="color" value="#ffea55" title="Highlight color">
       <input class="de-text-color" type="color" value="#1c1b19" title="Text color">
       <button type="button" data-action="clear-color">Clr</button>
@@ -564,6 +566,11 @@ class DraftEditor {
       this.bubble.style.display = 'none';
       return;
     }
+    this._deselectBlocks();
+    this._hideBlockToolbar();
+    this._hideImageToolbar();
+    this._hideMultiToolbar();
+    if (this.tableToolbar) this.tableToolbar.classList.remove('open');
     const rect = sel.getRangeAt(0).getBoundingClientRect();
     this.bubble.style.display = 'flex';
     this.bubble.style.top = `${Math.max(8, rect.top - 58)}px`;
@@ -586,6 +593,51 @@ class DraftEditor {
 
   clearTextColor() {
     this.exec('foreColor', '#1c1b19');
+  }
+
+  _wrapSelectionInline(styleText) {
+    if (!this.restoreSelection()) return;
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed || !this.isSelectionInBody()) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement('span');
+    span.setAttribute('style', styleText);
+    try {
+      range.surroundContents(span);
+      sel.removeAllRanges();
+      const r2 = document.createRange();
+      r2.selectNodeContents(span);
+      sel.addRange(r2);
+    } catch (_) {
+      const frag = range.extractContents();
+      span.appendChild(frag);
+      range.insertNode(span);
+      sel.removeAllRanges();
+      const r2 = document.createRange();
+      r2.selectNodeContents(span);
+      sel.addRange(r2);
+    }
+    this._markDirty();
+    this._showBubble();
+  }
+
+  _getSelectionFontSizePx() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+    let node = sel.getRangeAt(0).commonAncestorContainer;
+    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+    if (!node) return null;
+    const computed = window.getComputedStyle(node);
+    const px = parseFloat(computed.fontSize);
+    return isNaN(px) ? null : px;
+  }
+
+  _changeFontSize(delta) {
+    const current = this._getSelectionFontSizePx();
+    const base = current || 21;
+    let next = Math.round(base + delta);
+    next = Math.max(12, Math.min(72, next));
+    this._wrapSelectionInline(`font-size:${next}px;`);
   }
 
   askInput(opts = {}) {
@@ -1032,36 +1084,9 @@ Bob --> Alice: Hi
       b.type = 'button'; b.dataset.action = action; b.title = title; b.textContent = label;
       return b;
     };
-    const makeSelect = (name, options, title) => {
-      const s = document.createElement('select');
-      s.dataset.action = name; s.title = title;
-      options.forEach(([value, label]) => {
-        const opt = document.createElement('option');
-        opt.value = value; opt.textContent = label;
-        s.appendChild(opt);
-      });
-      return s;
-    };
-    const sep = () => {
-      const d = document.createElement('span');
-      d.className = 'de-sep';
-      return d;
-    };
     tb.appendChild(makeBtn('move-up', '↑', 'Move up'));
     tb.appendChild(makeBtn('move-down', '↓', 'Move down'));
     tb.appendChild(makeBtn('delete', '×', 'Delete'));
-    tb.appendChild(sep());
-    tb.appendChild(makeBtn('align-left', 'L', 'Align left'));
-    tb.appendChild(makeBtn('align-center', 'C', 'Align center'));
-    tb.appendChild(makeBtn('align-right', 'R', 'Align right'));
-    tb.appendChild(sep());
-    tb.appendChild(makeSelect('font-size', [
-      ['', 'Default'],
-      ['small', 'Small'],
-      ['normal', 'Normal'],
-      ['large', 'Large'],
-      ['huge', 'Huge']
-    ], 'Font size'));
     document.body.appendChild(tb);
     tb.addEventListener('mousedown', (e) => e.preventDefault());
     tb.addEventListener('click', (e) => {
@@ -1083,37 +1108,12 @@ Bob --> Alice: Hi
         block.remove(); this._hideBlockToolbar(); this._markDirty();
         if (adj) this.placeCaretAtEnd(adj);
         else this.ensureTrailingParagraph();
-      } else if (['align-left', 'align-center', 'align-right'].includes(action)) {
-        this._applyBlockSetting(block, 'align', action.replace('align-', ''));
       }
-    });
-    tb.addEventListener('change', (e) => {
-      const sel = e.target.closest('select');
-      if (!sel) return;
-      const block = this.bodyEl.querySelector(':scope > .is-selected');
-      if (!block) return;
-      const type = sel.dataset.action;
-      if (type === 'font-size') this._applyBlockSetting(block, 'font-size', sel.value);
     });
     return tb;
   }
 
   _applyBlockSetting(block, type, value) {
-    if (type === 'align') {
-      block.style.textAlign = value;
-      block.dataset.align = value;
-    } else if (type === 'font-size') {
-      if (!value || value === 'normal') {
-        block.style.fontSize = '';
-        delete block.dataset.fontSize;
-      } else {
-        const px = { small: '16px', normal: '21px', large: '28px', huge: '36px' }[value];
-        if (px) {
-          block.style.fontSize = px;
-          block.dataset.fontSize = value;
-        }
-      }
-    }
     this._markDirty();
     this._syncBlockToolbar(block);
     this._positionBlockToolbar(block);
@@ -1121,20 +1121,6 @@ Bob --> Alice: Hi
 
   _syncBlockToolbar(block) {
     if (!this.blockToolbar) return;
-    const align = block.dataset.align || (block.style.textAlign || 'left');
-    this.blockToolbar.querySelectorAll('button[data-action^="align-"]').forEach(b => {
-      b.classList.toggle('active', b.dataset.action === `align-${align}`);
-    });
-    const sizeSelect = this.blockToolbar.querySelector('select[data-action="font-size"]');
-    if (sizeSelect) {
-      let size = block.dataset.fontSize || '';
-      if (!size) {
-        const px = (block.style.fontSize || '').trim();
-        const found = Object.entries({ small: '16px', normal: '21px', large: '28px', huge: '36px' }).find(([, v]) => v === px);
-        size = found ? found[0] : '';
-      }
-      sizeSelect.value = size;
-    }
   }
 
   _selectBlock(block) {
@@ -1869,6 +1855,21 @@ Bob --> Alice: Hi
       if (!this.bubble.contains(evt.target)) this._showBubble();
       if (!this.slashMenu.contains(evt.target) && !this.bodyEl.contains(evt.target)) this._closeSlashMenu();
       if (!this.insertMenu.contains(evt.target)) this._closeInsertMenu();
+      const inEditor = this.bodyEl.contains(evt.target);
+      const inToolbar = (this.bubble && this.bubble.contains(evt.target)) ||
+                        (this.blockToolbar && this.blockToolbar.contains(evt.target)) ||
+                        (this.imageToolbar && this.imageToolbar.contains(evt.target)) ||
+                        (this.multiToolbar && this.multiToolbar.contains(evt.target)) ||
+                        (this.tableToolbar && this.tableToolbar.contains(evt.target));
+      if (!inEditor && !inToolbar) {
+        this._deselectBlocks();
+        this.bubble.style.display = 'none';
+      } else if (inEditor && !inToolbar) {
+        if (this.imageToolbar && !this.imageToolbar.contains(evt.target)) this._hideImageToolbar();
+        if (this.tableToolbar && !this.tableToolbar.contains(evt.target)) this.tableToolbar.classList.remove('open');
+        const selectedObject = this.bodyEl.querySelector(':scope > .is-selected.image-block, :scope > .is-selected.table-block');
+        if (selectedObject && !selectedObject.contains(evt.target)) selectedObject.classList.remove('is-selected');
+      }
     });
 
     this.bodyEl.addEventListener('paste', () => {
@@ -1917,6 +1918,8 @@ Bob --> Alice: Hi
       if (action === 'highlight') this.exec('hiliteColor', this.inlineColor.value);
       if (action === 'clear-hl') this.clearInlineHighlight();
       if (action === 'clear-color') this.clearTextColor();
+      if (action === 'font-size-up') this._changeFontSize(2);
+      if (action === 'font-size-down') this._changeFontSize(-2);
     });
 
     this.inlineColor.addEventListener('input', () => this.exec('hiliteColor', this.inlineColor.value));
@@ -1938,16 +1941,6 @@ Bob --> Alice: Hi
 
     const tag = node.tagName.toLowerCase();
     const inner = () => Array.from(node.childNodes).map(n => this.nodeToOrg(n)).join('');
-
-    const blockStyleAttr = (n) => {
-      const align = (n.getAttribute('data-align') || '').trim();
-      const sizeKey = (n.getAttribute('data-font-size') || '').trim();
-      const size = { small: '16px', normal: '21px', large: '28px', huge: '36px' }[sizeKey];
-      const parts = [];
-      if (align) parts.push('text-align:' + align);
-      if (size) parts.push('font-size:' + size);
-      return parts.length ? '#+ATTR_HTML: :style ' + parts.join(';') + '\n' : '';
-    };
 
     if (tag === 'br') return '\\\\\n';
     if (tag === 'strong' || tag === 'b') return `*${inner().trim()}*`;
@@ -2062,39 +2055,34 @@ Bob --> Alice: Hi
     if (tag === 'span') {
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
+      const fontSize = node.style.fontSize || '';
       const text = DraftEditor.pickNodeText(node).trim();
       if (!text) return '';
+      if (fontSize) return `@@html:<span style="font-size:${DraftEditor.escHtml(fontSize)}">${DraftEditor.escHtml(text)}</span>@@`;
       if (bg && bg !== 'transparent') return `@@html:<mark style="background-color:${DraftEditor.escHtml(bg)}">${DraftEditor.escHtml(text)}</mark>@@`;
       if (color) return `@@html:<span style="color:${DraftEditor.escHtml(color)}">${DraftEditor.escHtml(text)}</span>@@`;
       return inner();
     }
     if (tag === 'h1') {
-      const style = blockStyleAttr(node);
-      return `${style}* ${inner().trim()}\n\n`;
+      return `* ${inner().trim()}\n\n`;
     }
     if (tag === 'h2') {
-      const style = blockStyleAttr(node);
-      return `${style}** ${inner().trim()}\n\n`;
+      return `** ${inner().trim()}\n\n`;
     }
     if (tag === 'h3') {
-      const style = blockStyleAttr(node);
-      return `${style}*** ${inner().trim()}\n\n`;
+      return `*** ${inner().trim()}\n\n`;
     }
     if (tag === 'h4') {
-      const style = blockStyleAttr(node);
-      return `${style}**** ${inner().trim()}\n\n`;
+      return `**** ${inner().trim()}\n\n`;
     }
     if (tag === 'h5') {
-      const style = blockStyleAttr(node);
-      return `${style}***** ${inner().trim()}\n\n`;
+      return `***** ${inner().trim()}\n\n`;
     }
     if (tag === 'h6') {
-      const style = blockStyleAttr(node);
-      return `${style}****** ${inner().trim()}\n\n`;
+      return `****** ${inner().trim()}\n\n`;
     }
     if (tag === 'blockquote') {
-      const style = blockStyleAttr(node);
-      return `${style}#+BEGIN_QUOTE\n${inner().trim()}\n#+END_QUOTE\n\n`;
+      return `#+BEGIN_QUOTE\n${inner().trim()}\n#+END_QUOTE\n\n`;
     }
     if (tag === 'hr') return '\n-----\n\n';
     if (tag === 'li') return `${inner().trim()}\n`;
@@ -2107,8 +2095,7 @@ Bob --> Alice: Hi
       return `${items}\n\n`;
     }
     if (tag === 'div' || tag === 'p') {
-      const style = blockStyleAttr(node);
-      return `${style}${inner().trimEnd()}\n\n`;
+      return `${inner().trimEnd()}\n\n`;
     }
     return inner();
   }
@@ -2213,25 +2200,7 @@ Bob --> Alice: Hi
     const isImageUrl = (url) => /\.(?:png|jpe?g|gif|webp|svg|bmp)(?:\?.*)?$/i.test(url);
 
     const blockStyleFromAttr = (attr) => {
-      if (!attr || !attr['style']) return { style: '', dataAttrs: '' };
-      const style = attr['style'];
-      const rules = {};
-      style.split(';').forEach((part) => {
-        const idx = part.indexOf(':');
-        if (idx === -1) return;
-        const key = part.slice(0, idx).trim().toLowerCase();
-        const value = part.slice(idx + 1).trim();
-        if (key && value) rules[key] = value;
-      });
-      const align = rules['text-align'] || '';
-      const fontSize = rules['font-size'] || '';
-      const sizeKey = Object.entries({ small: '16px', normal: '21px', large: '28px', huge: '36px' }).find(([, px]) => px === fontSize)?.[0] || '';
-      let inline = '';
-      let data = '';
-      if (align) { inline += `text-align:${DraftEditor.escHtml(align)};`; data += ` data-align="${DraftEditor.escHtml(align)}"`; }
-      if (fontSize) { inline += `font-size:${DraftEditor.escHtml(fontSize)};`; }
-      if (sizeKey) data += ` data-font-size="${DraftEditor.escHtml(sizeKey)}"`;
-      return { style: inline ? ` style="${inline}"` : '', dataAttrs: data };
+      return { style: '', dataAttrs: '' };
     };
 
     while (i < lines.length) {

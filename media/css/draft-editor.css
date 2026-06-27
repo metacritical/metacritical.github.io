@@ -436,8 +436,8 @@
   border-radius: 12px;
   padding: 8px;
   box-shadow: 0 12px 22px rgba(0,0,0,0.2);
-  flex-wrap: wrap;
-  max-width: 340px;
+  flex-wrap: nowrap;
+  max-width: 720px;
 }
 .de-image-tools.open { display: inline-flex; }
 .de-image-tools button,
