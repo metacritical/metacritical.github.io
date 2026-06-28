@@ -157,8 +157,9 @@
           (uri "")
           (tags '())
           (body-lines '())
-          (code-bg "light")
-          (code-syntax-theme "default"))
+          (code-attrs '())
+          (cur-bg "light")
+          (cur-st "default"))
       (goto-char (point-min))
       (while (not (eobp))
         (let ((line (buffer-substring-no-properties
@@ -180,9 +181,12 @@
            ((string-match-p "\\`#\\+KEYWORDS:" line)
             (setq tags (append tags (sds/parse-tag-list (substring line (length "#+KEYWORDS:"))))))
            ((string-match-p "\\`#\\+ATTR_HTML: :data-bg " line)
-            (setq code-bg (string-trim (substring line (length "#+ATTR_HTML: :data-bg ")))))
+            (setq cur-bg (string-trim (substring line (length "#+ATTR_HTML: :data-bg ")))))
            ((string-match-p "\\`#\\+ATTR_HTML: :data-syntax-theme " line)
-            (setq code-syntax-theme (string-trim (substring line (length "#+ATTR_HTML: :data-syntax-theme ")))))
+            (setq cur-st (string-trim (substring line (length "#+ATTR_HTML: :data-syntax-theme ")))))
+           ((string-match-p "\\`#\\+BEGIN_SRC" line)
+            (push (cons cur-bg cur-st) code-attrs)
+            (push line body-lines))
            ((string-match-p "\\`#\\+" line)
             nil)
            (t
@@ -201,8 +205,7 @@
               :body body
               :html-body html-body
               :image image
-              :code-bg code-bg
-              :code-syntax-theme code-syntax-theme)))))
+              :code-attrs (nreverse code-attrs)))))
 
 (defcustom sds/code-block-attrs-re
   (rx "#+ATTR_HTML: :" (or "data-bg" "data-syntax-theme")
@@ -228,14 +231,15 @@
          (date (sds/html-escape (or (plist-get item :date) "")))
          (tags (or (plist-get item :tags) '()))
          (tags-csv (sds/html-escape (string-join tags ",")))
-         (known-tags-json (json-encode (vconcat (delete-dups (append known-tags tags)))))
-         (code-bg (or (plist-get item :code-bg) "light"))
-         (code-syntax-theme (or (plist-get item :code-syntax-theme) "default"))
-         (code-meta-json (sds/html-escape (json-encode
-                           (let ((obj (make-hash-table :test 'equal)))
-                             (puthash "data-bg" code-bg obj)
-                             (puthash "data-syntax-theme" code-syntax-theme obj)
-                             obj))))
+          (known-tags-json (json-encode (vconcat (delete-dups (append known-tags tags)))))
+          (code-meta-json (sds/html-escape (json-encode
+                           (apply 'vector
+                             (mapcar (lambda (pair)
+                               (let ((obj (make-hash-table :test 'equal)))
+                                 (puthash "data-bg" (car pair) obj)
+                                 (puthash "data-syntax-theme" (cdr pair) obj)
+                                 obj))
+                               (or (plist-get item :code-attrs) '())))))))
          (mins (number-to-string (or (plist-get item :read-mins) 1))))
     (format "<!doctype html>
 <html lang=\"en\" data-theme=\"medium\">
@@ -2191,6 +2195,7 @@
   }
 
   function canonicalizeLegacyImageNodes(){
+    let _cbIdx = 0;
     const isImageUrl = (v) => /\\.(png|jpe?g|gif|webp|svg)(\\?.*)?$/i.test((v || '').trim());
     const cleanSrc = (src) => (src || '').replace(/^file:\\/\\//i, '');
     const toFigure = (src, caption) => {
@@ -2248,9 +2253,11 @@
         const m = klass.match(/\\bsrc-([a-z0-9-]+)\\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (srcPre.getAttribute('data-theme') || el.getAttribute('data-theme') || 'light').trim().toLowerCase();
-        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
-        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
-        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
+        const codeMetaArr = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return []}}()) : [];
+        const meta = codeMetaArr[_cbIdx] || {};
+        _cbIdx++;
+        const bg = meta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = meta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         const pre = document.createElement('pre');
         pre.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         pre.setAttribute('data-lang', lang);
@@ -2268,9 +2275,11 @@
         const m = klass.match(/\\bsrc-([a-z0-9-]+)\\b/i);
         const lang = m ? m[1].toLowerCase() : 'text';
         const oldTheme = (el.getAttribute('data-theme') || (el.parentElement && el.parentElement.getAttribute('data-theme')) || 'light').trim().toLowerCase();
-        const savedMeta = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return {}}}()) : {};
-        const bg = savedMeta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
-        const syntaxTheme = savedMeta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
+        const codeMetaArr = body.dataset.codeMeta ? (function(){try{return JSON.parse(body.dataset.codeMeta)}catch(e){return []}}()) : [];
+        const meta = codeMetaArr[_cbIdx] || {};
+        _cbIdx++;
+        const bg = meta['data-bg'] || (oldTheme === 'light' ? 'light' : 'dark');
+        const syntaxTheme = meta['data-syntax-theme'] || (oldTheme === 'monokai' ? 'monokai' : (oldTheme === 'light' ? 'default' : 'dark'));
         el.className = 'code-block syntax-theme-' + syntaxTheme + ' language-' + lang;
         el.setAttribute('data-lang', lang);
         el.setAttribute('data-bg', bg);
@@ -3357,8 +3366,7 @@
                             :excerpt excerpt
                             :read-mins read-mins
                             :image image
-                            :code-bg (plist-get parsed :code-bg)
-                            :code-syntax-theme (plist-get parsed :code-syntax-theme)))
+                            :code-attrs (plist-get parsed :code-attrs))
                (out-dir (expand-file-name slug public-drafts-dir))
                (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)
@@ -3406,8 +3414,7 @@
                             :excerpt excerpt
                             :read-mins read-mins
                             :image image
-                            :code-bg (plist-get parsed :code-bg)
-                            :code-syntax-theme (plist-get parsed :code-syntax-theme)))
+                            :code-attrs (plist-get parsed :code-attrs))
                 (out-dir (expand-file-name slug public-published-edit-dir))
                 (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)

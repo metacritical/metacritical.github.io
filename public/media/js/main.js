@@ -97,9 +97,9 @@
 
     var eUrl = encodeURIComponent(url);
     var eTitle = encodeURIComponent(title);
-    if (xLink) xLink.href = "https://twitter.com/intent/tweet?url=" + eUrl + "&text=" + eTitle;
-    if (fbLink) fbLink.href = "https://www.facebook.com/sharer/sharer.php?u=" + eUrl;
-    if (lnLink) lnLink.href = "https://www.linkedin.com/sharing/share-offsite/?url=" + eUrl;
+    xLink.href = "https://twitter.com/intent/tweet?url=" + eUrl + "&text=" + eTitle;
+    fbLink.href = "https://www.facebook.com/sharer/sharer.php?u=" + eUrl;
+    lnLink.href = "https://www.linkedin.com/sharing/share-offsite/?url=" + eUrl;
   }
 
   function isRetina() {
