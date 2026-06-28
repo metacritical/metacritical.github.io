@@ -880,7 +880,7 @@ class DraftEditor {
     }
     if (bgToggle) {
       bgToggle.addEventListener('click', (e) => {
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault();
         this._toggleCodeBlockBg(pre);
       });
     }

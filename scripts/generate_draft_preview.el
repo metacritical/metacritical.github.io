@@ -2014,7 +2014,7 @@
     }
     if (bgToggle) {
       bgToggle.addEventListener('click', (e) => {
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault();
         toggleCodeBlockBg(pre);
       });
     }
