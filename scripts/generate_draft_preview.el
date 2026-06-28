@@ -137,6 +137,8 @@
                 (org-export-with-date nil)
                 (org-export-with-title nil)
                 (org-export-with-tags nil)
+                (org-export-with-ditaa nil)
+                (org-export-with-plantuml nil)
                 (org-html-htmlize-output-type 'css)
                 (inhibit-message t))
             (org-export-string-as (buffer-string) 'html t
@@ -145,7 +147,9 @@
                                     :with-author nil
                                     :with-date nil
                                     :with-title nil
-                                    :with-tags nil))))
+                                    :with-tags nil
+                                    :with-ditaa nil
+                                    :with-plantuml nil))))
     (error "")))
 
 (defun sds/parse-org (path)
@@ -205,7 +209,7 @@
               :body body
               :html-body html-body
               :image image
-              :code-attrs (nreverse code-attrs)))))
+              :code-attrs (nreverse code-attrs))))))
 
 (defcustom sds/code-block-attrs-re
   (rx "#+ATTR_HTML: :" (or "data-bg" "data-syntax-theme")
@@ -239,7 +243,7 @@
                                  (puthash "data-bg" (car pair) obj)
                                  (puthash "data-syntax-theme" (cdr pair) obj)
                                  obj))
-                               (or (plist-get item :code-attrs) '())))))))
+                                (or (plist-get item :code-attrs) '()))))))
          (mins (number-to-string (or (plist-get item :read-mins) 1))))
     (format "<!doctype html>
 <html lang=\"en\" data-theme=\"medium\">
@@ -2329,12 +2333,38 @@
     });
   }
 
+  function pollBuild(seq, orgPath, pollTimeout){
+    const checkUrl = '/editor/api/check-build?path=' + encodeURIComponent(orgPath);
+    fetch(checkUrl).then(r => r.json()).then((resp) => {
+      if (seq !== saveSeq) return;
+      if (resp && resp.done) {
+        dirty = false;
+        setSaveState('is-saved', 'Saved');
+        isSaving = false;
+        if (window.__DEV__ && orgPath) {
+          setTimeout(function(){ location.reload(); }, 1000);
+        }
+      } else if (pollTimeout > 0) {
+        setTimeout(function(){ pollBuild(seq, orgPath, pollTimeout - 500); }, 500);
+      } else {
+        dirty = false;
+        setSaveState('is-saved', 'Saved');
+        isSaving = false;
+      }
+    }).catch(() => {
+      if (seq !== saveSeq) return;
+      dirty = false;
+      setSaveState('is-saved', 'Saved');
+      isSaving = false;
+    });
+  }
+
   function saveDraft(){
     const seq = ++saveSeq;
     const payload = htmlToOrg();
     if (!dirty || isSaving) return;
     const versionAtStart = changeVersion;
-    const saveMode = /^posts\\//.test((targetPath || '').trim()) ? 'publish' : 'draft';
+    const saveMode = (targetPath || '').trim().startsWith('posts/') ? 'publish' : 'draft';
     isSaving = true;
     setSaveState('is-saving', 'Saving...');
     fetch('/editor/api/save', {
@@ -2347,18 +2377,19 @@
         targetPath = resp.path;
         body.dataset.targetPath = resp.path;
         if (changeVersion === versionAtStart) {
-          dirty = false;
-          setSaveState('is-saved', 'Saved just now');
+          setSaveState('is-saving', 'Building...');
+          pollBuild(seq, resp.path, 30000);
         } else {
           setSaveState('is-dirty', 'Unsaved changes');
+          isSaving = false;
         }
       } else {
         setSaveState('is-error', 'Save failed');
+        isSaving = false;
       }
     }).catch(()=>{
       if (seq !== saveSeq) return;
       setSaveState('is-error', 'Save failed');
-    }).finally(()=>{
       isSaving = false;
     });
   }
@@ -3366,7 +3397,7 @@
                             :excerpt excerpt
                             :read-mins read-mins
                             :image image
-                            :code-attrs (plist-get parsed :code-attrs))
+                            :code-attrs (plist-get parsed :code-attrs)))
                (out-dir (expand-file-name slug public-drafts-dir))
                (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)
@@ -3414,7 +3445,7 @@
                             :excerpt excerpt
                             :read-mins read-mins
                             :image image
-                            :code-attrs (plist-get parsed :code-attrs))
+                            :code-attrs (plist-get parsed :code-attrs)))
                 (out-dir (expand-file-name slug public-published-edit-dir))
                 (out-file (expand-file-name "index.html" out-dir)))
           (make-directory out-dir t)

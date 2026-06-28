@@ -4,11 +4,10 @@
 #+DESCRIPTION: Draft post
 #+FILETAGS: :test:
 
-Code titles sesssion
+Code titles session
 
-#+ATTR_HTML: :data-bg dark
 #+ATTR_HTML: :data-syntax-theme monokai
-#+BEGIN_SRC python
+#+BEGIN_SRC ruby
 def hello
   puts "Hello World!"
 end
@@ -17,6 +16,7 @@ end
 - ~[x] Yellow~
 - ~[ ] Green~
 
+#+ATTR_HTML: :data-bg dark
 #+ATTR_HTML: :data-syntax-theme monokai
 #+BEGIN_SRC ditaa
 +--------+   +--------+
