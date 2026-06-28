@@ -188,14 +188,14 @@ class DraftEditor {
       { id: 'h3', label: 'Heading 3', desc: '###', icon: 'H3', action: () => this.transformCurrentBlock('h3') },
       { id: 'quote', label: 'Quote', desc: '>', icon: '"', action: () => this.transformCurrentBlock('blockquote') },
       { id: 'code', label: 'Code block', desc: '```', icon: '{ }', action: () => this.insertCodeBlockPrompt() },
-      { id: 'source', label: 'Source block', desc: '#+BEGIN_SRC', icon: 'SRC', action: () => this.insertSourceBlockPrompt() },
-      { id: 'ditaa', label: 'Ditaa diagram', desc: 'diagram', icon: 'DIA', action: () => this.insertDitaaDiagram() },
-      { id: 'plantuml', label: 'PlantUML diagram', desc: 'uml', icon: 'UML', action: () => this.insertPlantumlDiagram() },
-      { id: 'ascii', label: 'ASCII diagram', desc: 'ascii', icon: 'ASC', action: () => this.insertAsciiDiagram() },
+      { id: 'source', label: 'Source block', desc: '#+BEGIN_SRC', icon: 'SRC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 4h10l4 4v12H6z'/><path d='M6 8h4V4'/><path d='M9 11l3 3-3 3'/></svg>", action: () => this.insertSourceBlockPrompt() },
+      { id: 'ditaa', label: 'Ditaa diagram', desc: 'diagram', icon: 'DIA', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 5l7 7-7 7-7-7z'/></svg>", action: () => this.insertDitaaDiagram() },
+      { id: 'plantuml', label: 'PlantUML diagram', desc: 'uml', icon: 'UML', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M4 10h16'/><path d='M4 14h16'/></svg>", action: () => this.insertPlantumlDiagram() },
+      { id: 'ascii', label: 'ASCII diagram', desc: 'ascii', icon: 'ASC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9l3 3-3 3'/><path d='M14 15h3'/></svg>", action: () => this.insertAsciiDiagram() },
       { id: 'ul', label: 'Bulleted list', desc: '-', icon: '•', action: () => this.transformCurrentBlock('ul') },
       { id: 'ol', label: 'Numbered list', desc: '1.', icon: '1.', action: () => this.transformCurrentBlock('ol') },
-      { id: 'table', label: 'Table', desc: '|', icon: '▦', action: () => this.insertTable() },
-      { id: 'equation', label: 'Equation', desc: 'TeX', icon: '∑', action: () => this.insertEquation() },
+      { id: 'table', label: 'Table', desc: '|', icon: '▦', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M4 12h16'/><path d='M12 4v16'/></svg>", action: () => this.insertTable() },
+      { id: 'equation', label: 'Equation', desc: 'TeX', icon: '∑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>", action: () => this.insertEquation() },
       { id: 'image', label: 'Image', desc: 'URL/upload', icon: '🖼', action: () => this.promptImageUrl() },
       { id: 'upload', label: 'Upload image', desc: 'file', icon: '↑', action: () => this.uploadInput.click() },
       { id: 'video', label: 'Video', desc: 'YouTube/Vimeo', icon: '▶', action: () => this.insertVideo() },
@@ -700,7 +700,7 @@ class DraftEditor {
       const btn = document.createElement('button');
       btn.className = 'de-slash-item' + (idx === this.slashState.index ? ' active' : '');
       btn.type = 'button';
-      btn.innerHTML = `<span class="de-slash-icon">${DraftEditor.escHtml(it.icon)}</span><span class="de-slash-label">${DraftEditor.escHtml(it.label)}</span><span class="de-slash-desc">${DraftEditor.escHtml(it.desc)}</span>`;
+      btn.innerHTML = `<span class="de-slash-icon">${it.svg || DraftEditor.escHtml(it.icon)}</span><span class="de-slash-label">${DraftEditor.escHtml(it.label)}</span><span class="de-slash-desc">${DraftEditor.escHtml(it.desc)}</span>`;
       btn.addEventListener('click', (e) => {
         e.preventDefault(); e.stopPropagation();
         this._closeSlashMenu();
@@ -750,12 +750,12 @@ class DraftEditor {
       { id: 'h3', label: 'H3', icon: 'H3', action: () => this.addNewBlockAt(this.insertState.referenceBlock, document.createElement('h3')) },
       { id: 'quote', label: 'Quote', icon: '"', action: () => { const b = document.createElement('blockquote'); b.innerHTML = '<br>'; this.addNewBlockAt(this.insertState.referenceBlock, b); } },
       { id: 'code', label: 'Code', icon: '{ }', action: () => this.insertCodeBlockAfter(this.insertState.referenceBlock) },
-      { id: 'source', label: 'Source', icon: 'SRC', action: () => this.insertSourceBlockPrompt() },
-      { id: 'ditaa', label: 'Ditaa', icon: 'DIA', action: () => this.insertDitaaDiagram() },
-      { id: 'plantuml', label: 'PlantUML', icon: 'UML', action: () => this.insertPlantumlDiagram() },
-      { id: 'ascii', label: 'ASCII', icon: 'ASC', action: () => this.insertAsciiDiagram() },
-      { id: 'table', label: 'Table', icon: '▦', action: () => this.insertTable() },
-      { id: 'equation', label: 'Equation', icon: '∑', action: () => this.insertEquation() },
+      { id: 'source', label: 'Source', icon: 'SRC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 4h10l4 4v12H6z'/><path d='M6 8h4V4'/><path d='M9 11l3 3-3 3'/></svg>", action: () => this.insertSourceBlockPrompt() },
+      { id: 'ditaa', label: 'Ditaa', icon: 'DIA', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 5l7 7-7 7-7-7z'/></svg>", action: () => this.insertDitaaDiagram() },
+      { id: 'plantuml', label: 'PlantUML', icon: 'UML', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M4 10h16'/><path d='M4 14h16'/></svg>", action: () => this.insertPlantumlDiagram() },
+      { id: 'ascii', label: 'ASCII', icon: 'ASC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9l3 3-3 3'/><path d='M14 15h3'/></svg>", action: () => this.insertAsciiDiagram() },
+      { id: 'table', label: 'Table', icon: '▦', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M4 12h16'/><path d='M12 4v16'/></svg>", action: () => this.insertTable() },
+      { id: 'equation', label: 'Equation', icon: '∑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>", action: () => this.insertEquation() },
       { id: 'image', label: 'Image', icon: '🖼', action: () => { this._closeInsertMenu(); this.promptImageUrl().then(() => {}); } },
       { id: 'upload', label: 'Upload', icon: '↑', action: () => { this._closeInsertMenu(); this.uploadInput.click(); } },
       { id: 'video', label: 'Video', icon: '▶', action: () => { this._closeInsertMenu(); this.insertVideo(); } },
@@ -767,7 +767,7 @@ class DraftEditor {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.title = it.label;
-      btn.textContent = it.icon;
+      if (it.svg) { btn.innerHTML = it.svg; } else { btn.textContent = it.icon; }
       btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); it.action(); });
       this.insertMenu.appendChild(btn);
     });

@@ -157,6 +157,7 @@
   font-size: 16px;
   flex: 0 0 auto;
 }
+.de-slash-item .de-slash-icon svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .de-slash-item .de-slash-label { font-weight: 600; }
 .de-slash-item .de-slash-desc {
   font-size: 12px;
@@ -192,6 +193,7 @@
   font-size: 18px;
 }
 .de-insert-menu button:hover { background: rgba(255,255,255,0.2); }
+.de-insert-menu button svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle; }
 
 .de-bubble {
   position: fixed;
