@@ -270,6 +270,10 @@
     .draft-editable figure.table-block table { width: 100%; border-collapse: collapse; font: 500 17px/1.4 ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
     .draft-editable figure.table-block td, .draft-editable figure.table-block th { border: 1px solid #d9d1c3; padding: 8px 12px; min-width: 80px; background: #fff; outline: none; }
     .draft-editable figure.table-block td:focus { background: #faf8f3; }
+    .draft-editable > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
+    .draft-editable > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
+    .draft-editable > ul.checkbox { list-style: none; padding-left: 0; }
+    .draft-editable > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; }
     .draft-editable .math { font-style: italic; color: #4f4a3f; padding: 0 2px; }
     .draft-editable div.math { display: block; margin: 12px 0 20px; padding: 12px 16px; background: #f4f1e8; border-radius: 8px; text-align: center; }
     .draft-table-tools { position: fixed; z-index: 10012; display: none; gap: 6px; align-items: center; background: #1f1f1f; border-radius: 12px; padding: 8px; box-shadow: 0 12px 22px rgba(0,0,0,.2); }
@@ -346,14 +350,15 @@
       padding: 6px 8px !important;
       font: 600 12px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .draft-plus { position: fixed; z-index: 9998; display:none; align-items:center; gap:10px; pointer-events:auto; }
+    .draft-plus { position: fixed; z-index: 9998; display:none; flex-direction:column; align-items:flex-end; pointer-events:auto; }
     .draft-plus-toggle { width:25px; height:25px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(0,0,0,.08); }
     .draft-plus-toggle:hover { background:#f5fffe; }
     .draft-plus-toggle svg { width:14px; height:14px; fill: currentColor; transition: transform .15s ease; }
-    .draft-plus-menu { display:none; align-items:center; gap:8px; }
-    .draft-plus.open .draft-plus-menu { display:inline-flex; }
-    .draft-plus-menu button { width:44px; height:44px; border-radius:50%; border:1px solid #36c9c7; background:#fff; color:#36c9c7; display:inline-flex; align-items:center; justify-content:center; padding:0; font-size:14px; }
-    .draft-plus-menu button svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .draft-plus-menu { display:none; flex-wrap:wrap; gap:6px; max-width:310px; padding:8px; background:#1f1f1f; border-radius:12px; box-shadow:0 12px 22px rgba(0,0,0,.2); margin-bottom:8px; }
+    .draft-plus.open .draft-plus-menu { display:flex; }
+    .draft-plus-menu button { width:42px; height:42px; border-radius:8px; border:none; background:rgba(255,255,255,0.1); color:#fff; display:inline-flex; align-items:center; justify-content:center; padding:0; flex:0 0 auto; }
+    .draft-plus-menu button:hover { background:rgba(255,255,255,0.2); }
+    .draft-plus-menu button svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
     .draft-input-modal[hidden] { display:none; }
     .draft-input-modal {
       position: fixed;
@@ -541,6 +546,24 @@ ssss
     </button>
     <button type="button" data-action="equation" title="Equation" aria-label="Equation">
       <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>
+    </button>
+    <button type="button" data-action="blockquote" title="Blockquote" aria-label="Blockquote">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 5h2v14H6z' fill='currentColor'/><path d='M9 8h11'/><path d='M9 12h8'/><path d='M9 16h9'/></svg>
+    </button>
+    <button type="button" data-action="hr" title="Horizontal rule" aria-label="Horizontal rule">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 9h12'/><path d='M6 12h12'/><path d='M6 15h12'/></svg>
+    </button>
+    <button type="button" data-action="example" title="Example block" aria-label="Example block">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>
+    </button>
+    <button type="button" data-action="checkbox" title="Checkbox list" aria-label="Checkbox list">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>
+    </button>
+    <button type="button" data-action="verse" title="Verse block" aria-label="Verse block">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>
+    </button>
+    <button type="button" data-action="center" title="Center block" aria-label="Center block">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 6h10'/><path d='M5 10h14'/><path d='M5 14h14'/><path d='M7 18h10'/></svg>
     </button>
   </div>
   <button class="draft-plus-toggle" id="draft-plus-toggle" type="button" title="Add an image, video, embed, or new part" aria-label="Add an image, video, embed, or new part"><svg viewBox="0 0 25 25" aria-hidden="true"><path id="draft-plus-icon" d="M20 12h-7V5h-1v7H5v1h7v7h1v-7h7" fill-rule="evenodd"></path></svg></button>
@@ -928,7 +951,7 @@ ssss
     let right = window.innerWidth - bodyRect.right + gapFromBody;
     right = Math.min(right, window.innerWidth - toggleSize - gapFromBody);
     let top = Math.max(8, blockRect.top + Math.max(0, (blockRect.height - toggleSize) / 2));
-    plus.style.display='inline-flex';
+    plus.style.display='flex';
     _markPlusReady();
     plus.style.right = Math.round(right) + 'px';
     plus.style.left = 'auto';
@@ -1658,6 +1681,14 @@ ssss
       return '@@html:<mark style="background-color:' + color + '">' + childrenToOrg().trim() + '</mark>@@';
     }
     if (tag === 'li') return childrenToOrg().trim() + '\n';
+    if (tag === 'ul' && node.classList.contains('checkbox')) {
+      const items = Array.from(node.children).map(li => {
+        const cb = li.querySelector('input[type="checkbox"]');
+        const checked = cb && cb.checked;
+        return '- [' + (checked ? 'X' : ' ') + '] ' + htmlToOrgNode(li).trim();
+      }).join('\n');
+      return items + '\n\n';
+    }
     if (tag === 'ul') {
       const items = Array.from(node.children).map(li => '- ' + htmlToOrgNode(li).trim()).join('\n');
       return items + '\n\n';
@@ -1666,6 +1697,9 @@ ssss
       const items = Array.from(node.children).map((li, i) => (i + 1) + '. ' + htmlToOrgNode(li).trim()).join('\n');
       return items + '\n\n';
     }
+    if (tag === 'hr') return '\n-----\n\n';
+    if (tag === 'div' && node.classList.contains('verse')) return '\n#+BEGIN_VERSE\n' + childrenToOrg().trim() + '\n#+END_VERSE\n\n';
+    if (tag === 'div' && node.classList.contains('center')) return '\n#+BEGIN_CENTER\n' + childrenToOrg().trim() + '\n#+END_CENTER\n\n';
     if (tag === 'div' || tag === 'p') {
       const inner = childrenToOrg().trim();
       return (inner ? ('\n' + blockStyleAttr(node) + inner + '\n') : '\n');
@@ -2678,6 +2712,30 @@ ssss
       insertEquationAtCursor();
       return;
     }
+    if (action === 'blockquote') {
+      insertHtmlAtCursor('<blockquote><p><br></p></blockquote><p><br></p>');
+      return;
+    }
+    if (action === 'hr') {
+      insertHtmlAtCursor('<hr><p><br></p>');
+      return;
+    }
+    if (action === 'example') {
+      insertCodeBlockAtCursor('example');
+      return;
+    }
+    if (action === 'checkbox') {
+      insertHtmlAtCursor('<ul class="checkbox"><li><input type="checkbox" disabled> <br></li></ul><p><br></p>');
+      return;
+    }
+    if (action === 'verse') {
+      insertHtmlAtCursor('<div class="verse"><p><br></p></div><p><br></p>');
+      return;
+    }
+    if (action === 'center') {
+      insertHtmlAtCursor('<div class="center"><p><br></p></div><p><br></p>');
+      return;
+    }
   });
 
   upload.addEventListener('change', async ()=>{
@@ -2801,7 +2859,7 @@ ssss
     const block = e.target && e.target.closest && e.target.closest('.draft-editable > *');
     if (block && block.parentElement === body && !block.classList.contains('image-block') && !block.classList.contains('table-block')) {
       const t = block.tagName.toLowerCase();
-      if (['p','h1','h2','h3','h4','h5','h6','blockquote','pre','ul','ol','hr'].includes(t)) {
+      if (['p','div','h1','h2','h3','h4','h5','h6','blockquote','pre','ul','ol','hr'].includes(t)) {
         if (e.target === block) {
           if (e.shiftKey) {
             e.preventDefault();

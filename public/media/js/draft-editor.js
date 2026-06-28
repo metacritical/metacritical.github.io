@@ -196,6 +196,12 @@ class DraftEditor {
       { id: 'ol', label: 'Numbered list', desc: '1.', icon: '1.', action: () => this.transformCurrentBlock('ol') },
       { id: 'table', label: 'Table', desc: '|', icon: '▦', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M4 12h16'/><path d='M12 4v16'/></svg>", action: () => this.insertTable() },
       { id: 'equation', label: 'Equation', desc: 'TeX', icon: '∑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>", action: () => this.insertEquation() },
+      { id: 'blockquote', label: 'Blockquote', desc: '#+BEGIN_QUOTE', icon: '"', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 5h2v14H6z' fill='currentColor'/><path d='M9 8h11'/><path d='M9 12h8'/><path d='M9 16h9'/></svg>", action: () => this.insertBlockquote() },
+      { id: 'hr', label: 'Divider', desc: '---', icon: '—', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 9h12'/><path d='M6 12h12'/><path d='M6 15h12'/></svg>", action: () => this.insertDivider() },
+      { id: 'example', label: 'Example block', desc: '#+BEGIN_EXAMPLE', icon: 'EX', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>", action: () => this.insertExampleBlock() },
+      { id: 'checkbox', label: 'Checkbox list', desc: '- [ ]', icon: '☑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>", action: () => this.insertCheckboxList() },
+      { id: 'verse', label: 'Verse block', desc: '#+BEGIN_VERSE', icon: '¶', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>", action: () => this.insertVerseBlock() },
+      { id: 'center', label: 'Center block', desc: '#+BEGIN_CENTER', icon: '≡', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 6h10'/><path d='M5 10h14'/><path d='M5 14h14'/><path d='M7 18h10'/></svg>", action: () => this.insertCenterBlock() },
       { id: 'image', label: 'Image', desc: 'URL/upload', icon: '🖼', action: () => this.promptImageUrl() },
       { id: 'upload', label: 'Upload image', desc: 'file', icon: '↑', action: () => this.uploadInput.click() },
       { id: 'video', label: 'Video', desc: 'YouTube/Vimeo', icon: '▶', action: () => this.insertVideo() },
@@ -756,11 +762,16 @@ class DraftEditor {
       { id: 'ascii', label: 'ASCII', icon: 'ASC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9l3 3-3 3'/><path d='M14 15h3'/></svg>", action: () => this.insertAsciiDiagram() },
       { id: 'table', label: 'Table', icon: '▦', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M4 12h16'/><path d='M12 4v16'/></svg>", action: () => this.insertTable() },
       { id: 'equation', label: 'Equation', icon: '∑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>", action: () => this.insertEquation() },
+      { id: 'blockquote', label: 'Quote', icon: '"', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 5h2v14H6z' fill='currentColor'/><path d='M9 8h11'/><path d='M9 12h8'/><path d='M9 16h9'/></svg>", action: () => this.insertBlockquote() },
+      { id: 'hr', label: 'Line', icon: '—', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 9h12'/><path d='M6 12h12'/><path d='M6 15h12'/></svg>", action: () => this.addNewBlockAt(this.insertState.referenceBlock, document.createElement('hr'), false) },
+      { id: 'example', label: 'Example', icon: 'EX', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>", action: () => this.insertExampleBlock() },
+      { id: 'checkbox', label: 'Checkbox', icon: '☑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>", action: () => this.insertCheckboxList() },
+      { id: 'verse', label: 'Verse', icon: '¶', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>", action: () => this.insertVerseBlock() },
+      { id: 'center', label: 'Center', icon: '≡', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 6h10'/><path d='M5 10h14'/><path d='M5 14h14'/><path d='M7 18h10'/></svg>", action: () => this.insertCenterBlock() },
       { id: 'image', label: 'Image', icon: '🖼', action: () => { this._closeInsertMenu(); this.promptImageUrl().then(() => {}); } },
       { id: 'upload', label: 'Upload', icon: '↑', action: () => { this._closeInsertMenu(); this.uploadInput.click(); } },
       { id: 'video', label: 'Video', icon: '▶', action: () => { this._closeInsertMenu(); this.insertVideo(); } },
       { id: 'embed', label: 'Card', icon: '🔗', action: () => { this._closeInsertMenu(); this.insertLinkCard(); } },
-      { id: 'hr', label: 'Line', icon: '—', action: () => this.addNewBlockAt(this.insertState.referenceBlock, document.createElement('hr'), false) },
     ];
     this.insertMenu.innerHTML = '';
     items.forEach(it => {
@@ -1082,6 +1093,59 @@ class DraftEditor {
     this.addNewBlockAt(block, hr, false);
     const p = this.createParagraph();
     this.addNewBlockAt(hr, p, true);
+  }
+
+  insertBlockquote() {
+    const block = this.getCurrentBlock();
+    const bq = document.createElement('blockquote');
+    bq.innerHTML = '<br>';
+    this.addNewBlockAt(block, bq, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(bq, p, true);
+  }
+
+  insertExampleBlock() {
+    const block = this.getCurrentBlock();
+    if (block && this.isTextBlock(this.getBlockType(block))) block.innerHTML = '<br>';
+    this.insertCodeBlockAfter(block, 'example', '# example text', 'light', 'default');
+  }
+
+  insertCheckboxList() {
+    const block = this.getCurrentBlock();
+    const ul = document.createElement('ul');
+    ul.className = 'checkbox';
+    const li = document.createElement('li');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.disabled = true;
+    li.appendChild(cb);
+    li.appendChild(document.createTextNode(' '));
+    const br = document.createElement('br');
+    li.appendChild(br);
+    ul.appendChild(li);
+    this.addNewBlockAt(block, ul, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(ul, p, true);
+  }
+
+  insertVerseBlock() {
+    const block = this.getCurrentBlock();
+    const div = document.createElement('div');
+    div.className = 'verse';
+    div.innerHTML = '<br>';
+    this.addNewBlockAt(block, div, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(div, p, true);
+  }
+
+  insertCenterBlock() {
+    const block = this.getCurrentBlock();
+    const div = document.createElement('div');
+    div.className = 'center';
+    div.innerHTML = '<br>';
+    this.addNewBlockAt(block, div, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(div, p, true);
   }
 
   insertSourceBlockPrompt() {
@@ -2373,6 +2437,14 @@ Bob --> Alice: Hi
     }
     if (tag === 'hr') return '\n-----\n\n';
     if (tag === 'li') return `${inner().trim()}\n`;
+    if (tag === 'ul' && node.classList.contains('checkbox')) {
+      const items = Array.from(node.children).map(li => {
+        const cb = li.querySelector('input[type="checkbox"]');
+        const checked = cb && cb.checked;
+        return `- [${checked ? 'X' : ' '}] ${this.nodeToOrg(li).trim()}`;
+      }).join('\n');
+      return `${items}\n\n`;
+    }
     if (tag === 'ul') {
       const items = Array.from(node.children).map(li => `- ${this.nodeToOrg(li).trim()}`).join('\n');
       return `${items}\n\n`;
@@ -2381,6 +2453,8 @@ Bob --> Alice: Hi
       const items = Array.from(node.children).map((li, i) => `${i + 1}. ${this.nodeToOrg(li).trim()}`).join('\n');
       return `${items}\n\n`;
     }
+    if (tag === 'div' && node.classList.contains('verse')) return `#+BEGIN_VERSE\n${inner().trim()}\n#+END_VERSE\n\n`;
+    if (tag === 'div' && node.classList.contains('center')) return `#+BEGIN_CENTER\n${inner().trim()}\n#+END_CENTER\n\n`;
     if (tag === 'div' || tag === 'p') {
       return `${inner().trimEnd()}\n\n`;
     }
@@ -2625,6 +2699,34 @@ Bob --> Alice: Hi
         continue;
       }
 
+      // Verse blocks.
+      if (/^#\+BEGIN_VERSE\b/i.test(trimmed)) {
+        const verseLines = [];
+        i++;
+        while (i < lines.length && !/^#\+END_VERSE\b/i.test(lines[i].trim())) {
+          verseLines.push(lines[i]);
+          i++;
+        }
+        if (i < lines.length) i++;
+        const body = verseLines.map(l => `<p>${DraftEditor.parseInlineOrg(l)}</p>`).join('');
+        out.push(`<div class="verse">${body}</div>`);
+        continue;
+      }
+
+      // Center blocks.
+      if (/^#\+BEGIN_CENTER\b/i.test(trimmed)) {
+        const centerLines = [];
+        i++;
+        while (i < lines.length && !/^#\+END_CENTER\b/i.test(lines[i].trim())) {
+          centerLines.push(lines[i]);
+          i++;
+        }
+        if (i < lines.length) i++;
+        const body = centerLines.map(l => `<p>${DraftEditor.parseInlineOrg(l)}</p>`).join('');
+        out.push(`<div class="center">${body}</div>`);
+        continue;
+      }
+
       // Horizontal rule.
       if (/^-----+\s*$/.test(trimmed)) {
         out.push('<hr>');
@@ -2644,7 +2746,9 @@ Bob --> Alice: Hi
       const ulMatch = trimmed.match(/^[-*]\s+(.+)$/);
       if (ulMatch) {
         const items = [];
-        let current = [ulMatch[1]];
+        const rawLines = [trimmed];
+        let current = [trimmed];
+        let hasCheckbox = /^[-*]\s+\[[ X]\]/.test(trimmed);
         i++;
         while (i < lines.length) {
           const nextLine = lines[i];
@@ -2659,7 +2763,9 @@ Bob --> Alice: Hi
           const nextItem = nextLine.match(/^[-*]\s+(.+)$/);
           if (nextItem) {
             items.push(current);
-            current = [nextItem[1]];
+            rawLines.push(nextTrimmed);
+            current = [nextTrimmed];
+            if (/^[-*]\s+\[[ X]\]/.test(nextTrimmed)) hasCheckbox = true;
             i++;
             continue;
           }
@@ -2671,11 +2777,21 @@ Bob --> Alice: Hi
           break;
         }
         items.push(current);
-        const lis = items.map(item => {
-          const joined = item.join(' ').replace(/\\\\ /g, '__ORG_BR__').replace(/\\\\$/g, '__ORG_BR__');
-          return `<li>${DraftEditor.parseInlineOrg(joined).replace(/__ORG_BR__/g, '<br>')}</li>`;
+        const lis = items.map((item, idx) => {
+          let raw = rawLines[idx] || item[0];
+          let cbHtml = '';
+          let content = item.join(' ').replace(/\\\\ /g, '__ORG_BR__').replace(/\\\\$/g, '__ORG_BR__');
+          if (hasCheckbox) {
+            const cbMatch = raw.match(/^[-*]\s+\[([ X])\]\s*(.*)$/);
+            if (cbMatch) {
+              const checked = cbMatch[1] === 'X';
+              cbHtml = `<input type="checkbox" disabled${checked ? ' checked' : ''}> `;
+              content = cbMatch[2] + (item.length > 1 ? ' ' + item.slice(1).join(' ') : '');
+            }
+          }
+          return `<li>${cbHtml}${DraftEditor.parseInlineOrg(content).replace(/__ORG_BR__/g, '<br>')}</li>`;
         }).join('');
-        out.push(`<ul>${lis}</ul>`);
+        out.push(`<ul${hasCheckbox ? ' class="checkbox"' : ''}>${lis}</ul>`);
         continue;
       }
 
