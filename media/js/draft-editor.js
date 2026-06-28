@@ -211,8 +211,9 @@ class DraftEditor {
 
     this.CONTINUOUS_BLOCKS = ['p', 'blockquote', 'ul', 'ol', 'pre'];
 
-    this.CODE_LANGUAGES = [
+     this.CODE_LANGUAGES = [
       ['text', 'Plain text'], ['bash', 'Bash'], ['c', 'C'], ['cpp', 'C++'], ['css', 'CSS'],
+      ['ditaa', 'Ditaa'], ['plantuml', 'PlantUML'], ['ascii', 'ASCII'], ['example', 'Example'],
       ['elixir', 'Elixir'], ['go', 'Go'], ['graphql', 'GraphQL'], ['haskell', 'Haskell'],
       ['html', 'HTML'], ['java', 'Java'], ['javascript', 'JavaScript'], ['json', 'JSON'],
       ['latex', 'LaTeX'], ['markdown', 'Markdown'], ['python', 'Python'], ['ruby', 'Ruby'],

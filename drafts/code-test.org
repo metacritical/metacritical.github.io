@@ -15,3 +15,14 @@ end
 #+END_SRC
 
 Hello How are you
+
+- ~[x] Yellow~
+- ~[ ] Green~
+
+#+ATTR_HTML: :data-bg dark
+#+ATTR_HTML: :data-syntax-theme monokai
+#+BEGIN_SRC ditaa
++--------+   +--------+
+|  Node  |-->|  Node  |
++--------+   +--------+
+#+END_SRC

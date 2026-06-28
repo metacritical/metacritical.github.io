@@ -1145,9 +1145,16 @@
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
     const range = sel.getRangeAt(0);
-    const isAtStart = range.startOffset === 0 && (!range.startContainer.previousSibling || range.startContainer.previousSibling.nodeType === Node.ELEMENT_NODE);
     const isEmpty = (block.textContent || '').trim() === '';
-    if (isEmpty && isAtStart) {
+    const atStart = isAtStartOfBlock(range, block);
+    if (isEmpty) {
+      e.preventDefault();
+      const prev = block.previousElementSibling;
+      if (prev && prev.parentElement === body) { placeCaretIn(prev, false); block.remove(); }
+      updateFloatingUi();
+      return;
+    }
+    if (atStart) {
       e.preventDefault();
     }
   }
@@ -1721,8 +1728,9 @@
       .replace(/>/g, '&gt;');
   }
 
-  const CODE_LANGUAGES = [
+   const CODE_LANGUAGES = [
     ['text', 'Plain text'], ['bash', 'Bash'], ['c', 'C'], ['cpp', 'C++'], ['css', 'CSS'],
+    ['ditaa', 'Ditaa'], ['plantuml', 'PlantUML'], ['ascii', 'ASCII'], ['example', 'Example'],
     ['elixir', 'Elixir'], ['go', 'Go'], ['graphql', 'GraphQL'], ['haskell', 'Haskell'],
     ['html', 'HTML'], ['java', 'Java'], ['javascript', 'JavaScript'], ['json', 'JSON'],
     ['latex', 'LaTeX'], ['markdown', 'Markdown'], ['python', 'Python'], ['ruby', 'Ruby'],
