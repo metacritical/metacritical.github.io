@@ -23,6 +23,6 @@ Hello How are you
 #+ATTR_HTML: :data-syntax-theme monokai
 #+BEGIN_SRC ditaa
 +--------+   +--------+
-|  Node  |-->|  Node  |
+|  Node  |-->|  Node. |
 +--------+   +--------+
 #+END_SRC

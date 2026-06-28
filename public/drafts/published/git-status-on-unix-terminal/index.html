@@ -597,7 +597,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="orga2adbc0" class="figure">
+<div id="orge79e58d" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -607,7 +607,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="orgba6eb89" class="figure">
+<div id="orgb4766b7" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -622,6 +622,8 @@ Thats it folks! Happy hacking.
 <div class="draft-tools" id="draft-tools">
   <button type="button" data-cmd="bold"><b>B</b></button>
   <button type="button" data-cmd="italic"><span style="font-style:italic; font-family:Georgia,serif;">i</span></button>
+  <button type="button" data-cmd="subscript" title="Subscript" aria-label="Subscript">x<sub>2</sub></button>
+  <button type="button" data-cmd="superscript" title="Superscript" aria-label="Superscript">x<sup>2</sup></button>
   <span class="sep" aria-hidden="true"></span>
   <select id="draft-font-family" title="Font family" aria-label="Font family">
     <option value="">Font</option>
@@ -1204,12 +1206,10 @@ Thats it folks! Happy hacking.
     if (!block) return false;
     const t = block.tagName.toLowerCase();
     if (['hr','figure'].includes(t) || t === 'img') return true;
-    let node = range.startContainer;
-    if (node.nodeType === Node.TEXT_NODE){
-      return range.startOffset === 0 && (node === block.firstChild || node.parentElement === block);
-    }
-    if (node === block) return range.startOffset === 0;
-    return false;
+    const r = document.createRange();
+    r.selectNodeContents(block);
+    r.setEnd(range.startContainer, range.startOffset);
+    return r.toString().trim().length === 0;
   }
   function isAtEndOfBlock(range, block){
     if (!block) return false;
@@ -1817,6 +1817,8 @@ Thats it folks! Happy hacking.
     if (tag === 'u') return '_' + childrenToOrg().trim() + '_';
     if (tag === 'del' || tag === 's') return '+' + childrenToOrg().trim() + '+';
     if (tag === 'code') return '~' + (node.textContent || '').replace(/\u200b/g, '').trim() + '~';
+    if (tag === 'sub') return '_{' + childrenToOrg().trim() + '}';
+    if (tag === 'sup') return '^{' + childrenToOrg().trim() + '}';
     if (tag === 'span') {
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';

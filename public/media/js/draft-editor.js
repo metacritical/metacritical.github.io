@@ -533,10 +533,12 @@ class DraftEditor {
 
     this.bubble = document.createElement('div');
     this.bubble.className = 'de-bubble';
-    this.bubble.innerHTML = `
-      <button type="button" data-cmd="bold"><b>B</b></button>
-      <button type="button" data-cmd="italic"><i>I</i></button>
-      <button type="button" data-action="link">Link</button>
+     this.bubble.innerHTML = `
+       <button type="button" data-cmd="bold"><b>B</b></button>
+       <button type="button" data-cmd="italic"><i>I</i></button>
+       <button type="button" data-cmd="subscript" title="Subscript">x<sub>2</sub></button>
+       <button type="button" data-cmd="superscript" title="Superscript">x<sup>2</sup></button>
+       <button type="button" data-action="link">Link</button>
       <button type="button" class="de-soft" data-action="h2">H2</button>
       <button type="button" data-action="quote">Q</button>
       <button type="button" data-action="code">{ }</button>
@@ -2300,6 +2302,8 @@ Bob --> Alice: Hi
     if (tag === 'code' && (!node.parentElement || node.parentElement.tagName.toLowerCase() !== 'pre')) {
       return `~${DraftEditor.pickNodeText(node).trim()}~`;
     }
+    if (tag === 'sub') return `_{${inner().trim()}}`;
+    if (tag === 'sup') return `^{${inner().trim()}}`;
     if (tag === 'a' && node.classList.contains('de-embed-card-link')) return '';
     if (tag === 'a') {
       const href = node.getAttribute('href') || '';

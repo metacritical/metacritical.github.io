@@ -488,6 +488,8 @@ This is your first blog post with Alchemist. Edit this file to get started.
 <div class="draft-tools" id="draft-tools">
   <button type="button" data-cmd="bold"><b>B</b></button>
   <button type="button" data-cmd="italic"><span style="font-style:italic; font-family:Georgia,serif;">i</span></button>
+  <button type="button" data-cmd="subscript" title="Subscript" aria-label="Subscript">x<sub>2</sub></button>
+  <button type="button" data-cmd="superscript" title="Superscript" aria-label="Superscript">x<sup>2</sup></button>
   <span class="sep" aria-hidden="true"></span>
   <select id="draft-font-family" title="Font family" aria-label="Font family">
     <option value="">Font</option>
@@ -1070,12 +1072,10 @@ This is your first blog post with Alchemist. Edit this file to get started.
     if (!block) return false;
     const t = block.tagName.toLowerCase();
     if (['hr','figure'].includes(t) || t === 'img') return true;
-    let node = range.startContainer;
-    if (node.nodeType === Node.TEXT_NODE){
-      return range.startOffset === 0 && (node === block.firstChild || node.parentElement === block);
-    }
-    if (node === block) return range.startOffset === 0;
-    return false;
+    const r = document.createRange();
+    r.selectNodeContents(block);
+    r.setEnd(range.startContainer, range.startOffset);
+    return r.toString().trim().length === 0;
   }
   function isAtEndOfBlock(range, block){
     if (!block) return false;
@@ -1683,6 +1683,8 @@ This is your first blog post with Alchemist. Edit this file to get started.
     if (tag === 'u') return '_' + childrenToOrg().trim() + '_';
     if (tag === 'del' || tag === 's') return '+' + childrenToOrg().trim() + '+';
     if (tag === 'code') return '~' + (node.textContent || '').replace(/\u200b/g, '').trim() + '~';
+    if (tag === 'sub') return '_{' + childrenToOrg().trim() + '}';
+    if (tag === 'sup') return '^{' + childrenToOrg().trim() + '}';
     if (tag === 'span') {
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
