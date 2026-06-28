@@ -277,6 +277,56 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             },
         )
 
+    def _check_build(self, queries: dict) -> None:
+        raw_path = (queries.get("path") or [None])[0]
+        if not raw_path:
+            self._json(400, {"done": False, "error": "path query param required"})
+            return
+        rel = Path(raw_path)
+        if rel.is_absolute() or ".." in rel.parts or rel.suffix.lower() != ".org":
+            self._json(400, {"done": False, "error": "Invalid path"})
+            return
+        org_file = (self.blog_dir / rel).resolve()
+        if not org_file.exists():
+            self._json(200, {"done": False})
+            return
+        org_mtime = org_file.stat().st_mtime
+        slug = org_file.stem
+        parts = rel.parts
+        if len(parts) >= 1 and parts[0] == "drafts":
+            candidates = [
+                self.public_dir / "drafts" / slug / "index.html",
+                self.public_dir / "drafts" / "published" / slug / "index.html",
+            ]
+        elif len(parts) >= 1 and parts[0] == "posts":
+            candidates = [
+                self.public_dir / "drafts" / "published" / slug / "index.html",
+            ]
+            try:
+                for child in self.public_dir.iterdir():
+                    if child.is_dir() and child.name == slug:
+                        candidates.append(child / "index.html")
+                blog_dir = self.public_dir / "blog"
+                if blog_dir.is_dir():
+                    for y in blog_dir.iterdir():
+                        if y.is_dir() and y.name.isdigit():
+                            for m in y.iterdir():
+                                if m.is_dir() and m.name.isdigit():
+                                    for d in m.iterdir():
+                                        if d.is_dir() and d.name.isdigit():
+                                            for p in d.iterdir():
+                                                if p.is_dir() and p.name == slug:
+                                                    candidates.append(p / "index.html")
+            except OSError:
+                pass
+        else:
+            candidates = []
+        for html_file in candidates:
+            if html_file.exists() and html_file.stat().st_mtime >= org_mtime:
+                self._json(200, {"done": True})
+                return
+        self._json(200, {"done": False})
+
     def _parse_org_draft(self, draft_file: Path) -> tuple[str, str, list[str]]:
         title = draft_file.stem.replace("-", " ").strip().title()
         body_lines: list[str] = []
@@ -515,6 +565,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
     def _dev_edit_injection(self) -> str:
         return """
 <script>
+window.__DEV__ = true;
 (function () {
   if (location.pathname === "/editor" || location.pathname === "/editor/") return;
   var navRight = document.querySelector("nav.main-nav .nav-right");
@@ -753,6 +804,10 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
 
         if path == "/api/clap":
             self._get_clap(parsed.query)
+            return
+
+        if path in {"/editor/api/check-build", "/__editor/api/check-build"}:
+            self._check_build(parsed.query)
             return
 
         if path in {"/editor", "/editor/", "/__editor", "/__editor/"}:

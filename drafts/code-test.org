@@ -15,6 +15,8 @@ end
 
 - ~[x] Yellow~
 - ~[ ] Green~
+- ~[ ]~ Yehhok
+- [ ] Melkox
 
 #+ATTR_HTML: :data-bg dark
 #+ATTR_HTML: :data-syntax-theme monokai

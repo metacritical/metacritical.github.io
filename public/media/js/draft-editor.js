@@ -346,7 +346,14 @@ class DraftEditor {
     this.getBlocks().forEach(b => this.setEmptyState(b));
   }
 
+  _ensureImageBlock(fig) {
+    if (!fig) return;
+    this._addImageResizeHandle(fig);
+    this._observeImageSize(fig);
+  }
+
   _refreshImageBlocks() {
+    if (!this.bodyEl) return;
     this.bodyEl.querySelectorAll('figure.image-block').forEach(fig => this._ensureImageBlock(fig));
   }
 
