@@ -197,12 +197,14 @@ class DraftEditor {
       { id: 'ascii', label: 'ASCII diagram', desc: 'ascii', icon: 'ASC', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9l3 3-3 3'/><path d='M14 15h3'/></svg>", action: () => this.insertAsciiDiagram() },
       { id: 'ul', label: 'Bulleted list', desc: '-', icon: '•', action: () => this.transformCurrentBlock('ul') },
       { id: 'ol', label: 'Numbered list', desc: '1.', icon: '1.', action: () => this.transformCurrentBlock('ol') },
+      { id: 'dl', label: 'Description list', desc: 'term :: desc', icon: 'DL', action: () => this.insertDescriptionList() },
       { id: 'table', label: 'Table', desc: '|', icon: '▦', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M4 12h16'/><path d='M12 4v16'/></svg>", action: () => this.insertTable() },
       { id: 'equation', label: 'Equation', desc: 'TeX', icon: '∑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 5h11'/><path d='M7 5l5 7-5 7'/><path d='M18 19H7'/></svg>", action: () => this.insertEquation() },
       { id: 'blockquote', label: 'Blockquote', desc: '#+BEGIN_QUOTE', icon: '"', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 5h2v14H6z' fill='currentColor'/><path d='M9 8h11'/><path d='M9 12h8'/><path d='M9 16h9'/></svg>", action: () => this.insertBlockquote() },
       { id: 'hr', label: 'Divider', desc: '---', icon: '—', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 9h12'/><path d='M6 12h12'/><path d='M6 15h12'/></svg>", action: () => this.insertDivider() },
       { id: 'example', label: 'Example block', desc: '#+BEGIN_EXAMPLE', icon: 'EX', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>", action: () => this.insertExampleBlock() },
       { id: 'checkbox', label: 'Checkbox list', desc: '- [ ]', icon: '☑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>", action: () => this.insertCheckboxList() },
+      { id: 'todo', label: 'TODO checklist', desc: 'TODO', icon: 'TD', action: () => this.insertTodoChecklist() },
       { id: 'verse', label: 'Verse block', desc: '#+BEGIN_VERSE', icon: '¶', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>", action: () => this.insertVerseBlock() },
       { id: 'center', label: 'Center block', desc: '#+BEGIN_CENTER', icon: '≡', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 6h10'/><path d='M5 10h14'/><path d='M5 14h14'/><path d='M7 18h10'/></svg>", action: () => this.insertCenterBlock() },
       { id: 'image', label: 'Image', desc: 'URL/upload', icon: '🖼', action: () => this.promptImageUrl() },
@@ -784,7 +786,11 @@ class DraftEditor {
       { id: 'blockquote', label: 'Quote', icon: '"', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 5h2v14H6z' fill='currentColor'/><path d='M9 8h11'/><path d='M9 12h8'/><path d='M9 16h9'/></svg>", action: () => this.insertBlockquote() },
       { id: 'hr', label: 'Line', icon: '—', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 9h12'/><path d='M6 12h12'/><path d='M6 15h12'/></svg>", action: () => this.addNewBlockAt(this.insertState.referenceBlock, document.createElement('hr'), false) },
       { id: 'example', label: 'Example', icon: 'EX', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>", action: () => this.insertExampleBlock() },
+      { id: 'ul', label: 'Bulleted', icon: '•', action: () => this.insertList('ul') },
+      { id: 'ol', label: 'Numbered', icon: '1.', action: () => this.insertList('ol') },
+      { id: 'dl', label: 'Description', icon: 'DL', action: () => this.insertDescriptionList() },
       { id: 'checkbox', label: 'Checkbox', icon: '☑', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>", action: () => this.insertCheckboxList() },
+      { id: 'todo', label: 'TODO', icon: 'TD', action: () => this.insertTodoChecklist() },
       { id: 'verse', label: 'Verse', icon: '¶', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>", action: () => this.insertVerseBlock() },
       { id: 'center', label: 'Center', icon: '≡', svg: "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 6h10'/><path d='M5 10h14'/><path d='M5 14h14'/><path d='M7 18h10'/></svg>", action: () => this.insertCenterBlock() },
       { id: 'image', label: 'Image', icon: '🖼', action: () => { this._closeInsertMenu(); this.promptImageUrl().then(() => {}); } },
@@ -1135,10 +1141,11 @@ class DraftEditor {
     const ul = document.createElement('ul');
     ul.className = 'checkbox';
     const li = document.createElement('li');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.disabled = true;
-    li.appendChild(cb);
+    const marker = document.createElement('span');
+    marker.className = 'cb-marker';
+    marker.setAttribute('contenteditable', 'false');
+    marker.textContent = '[ ]';
+    li.appendChild(marker);
     li.appendChild(document.createTextNode(' '));
     const br = document.createElement('br');
     li.appendChild(br);
@@ -1146,6 +1153,112 @@ class DraftEditor {
     this.addNewBlockAt(block, ul, false);
     const p = this.createParagraph();
     this.addNewBlockAt(ul, p, true);
+  }
+
+  insertList(type) {
+    const block = this.getCurrentBlock();
+    const list = document.createElement(type);
+    const li = document.createElement('li');
+    li.innerHTML = '<br>';
+    list.appendChild(li);
+    this.addNewBlockAt(block, list, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(list, p, true);
+  }
+
+  insertDescriptionList() {
+    const block = this.getCurrentBlock();
+    const dl = document.createElement('dl');
+    const dt = document.createElement('dt');
+    dt.innerHTML = '<br>';
+    const dd = document.createElement('dd');
+    dd.innerHTML = '<br>';
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+    this.addNewBlockAt(block, dl, false);
+    const p = this.createParagraph();
+    this.addNewBlockAt(dl, p, true);
+  }
+
+  async insertTodoChecklist() {
+    const title = await this.askInput({ title: 'TODO Item', label: 'Title', placeholder: 'What needs to be done?', value: '', okText: 'Add' });
+    if (!title) return;
+    const block = this.getCurrentBlock();
+    const div = document.createElement('div');
+    div.className = 'todo-block';
+    const p = document.createElement('p');
+    p.className = 'todo-title';
+    p.textContent = 'TODO ' + title;
+    const ul = document.createElement('ul');
+    ul.className = 'checkbox';
+    const li = document.createElement('li');
+    const marker = document.createElement('span');
+    marker.className = 'cb-marker';
+    marker.setAttribute('contenteditable', 'false');
+    marker.textContent = '[ ]';
+    li.appendChild(marker);
+    li.appendChild(document.createTextNode(' '));
+    li.appendChild(document.createElement('br'));
+    ul.appendChild(li);
+    div.appendChild(p);
+    div.appendChild(ul);
+    this.addNewBlockAt(block, div, false);
+    const trailingP = this.createParagraph();
+    this.addNewBlockAt(div, trailingP, true);
+  }
+
+  // Checkbox list edit/preview toggle
+  _checkboxLiToEdit(li) {
+    const cb = li.querySelector('input[type="checkbox"]');
+    if (!cb) return;
+    const marker = document.createElement('span');
+    marker.className = 'cb-marker';
+    marker.setAttribute('contenteditable', 'false');
+    marker.textContent = cb.checked ? '[X]' : '[ ]';
+    cb.replaceWith(marker);
+  }
+  _checkboxLiToPreview(li) {
+    const marker = li.querySelector('.cb-marker');
+    if (!marker) return;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.disabled = true;
+    cb.checked = /\[X\]/i.test(marker.textContent || '');
+    marker.replaceWith(cb);
+  }
+  _checkboxListEnterEdit(ul) {
+    if (!ul || !ul.classList.contains('checkbox')) return;
+    Array.from(ul.children).forEach(li => this._checkboxLiToEdit(li));
+  }
+  _checkboxListLeaveEdit(ul) {
+    if (!ul || !ul.classList.contains('checkbox')) return;
+    Array.from(ul.children).forEach(li => this._checkboxLiToPreview(li));
+  }
+  _isInsideCheckboxList(node) {
+    while (node) {
+      if (node.tagName && node.tagName.toLowerCase() === 'ul' && node.classList.contains('checkbox')) return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  _canonicalizeCheckboxLists() {
+    this.bodyEl.querySelectorAll('ul, ol').forEach((list) => {
+      const items = Array.from(list.children);
+      const hasCheckbox = items.some(li => li.querySelector('input[type="checkbox"]'));
+      if (!hasCheckbox) return;
+      list.classList.add('checkbox');
+      list.classList.remove('org-ul', 'org-ol');
+      items.forEach((li) => {
+        const cb = li.querySelector('input[type="checkbox"]');
+        if (!cb) return;
+        const marker = document.createElement('span');
+        marker.className = 'cb-marker';
+        marker.setAttribute('contenteditable', 'false');
+        marker.textContent = cb.checked ? '[X]' : '[ ]';
+        cb.replaceWith(marker);
+      });
+    });
   }
 
   insertVerseBlock() {
@@ -1906,7 +2019,60 @@ Bob --> Alice: Hi
         }
         this.refreshBlockStates();
         this._markDirty();
+      } else if (li && li.tagName.toLowerCase() === 'li') {
+        e.preventDefault();
+        const newLi = document.createElement('li');
+        if (block.classList.contains('checkbox')) {
+          newLi.innerHTML = '<span class="cb-marker" contenteditable="false">[ ]</span> <br>';
+        } else {
+          newLi.innerHTML = '<br>';
+        }
+        li.after(newLi);
+        this.placeCaretAtStart(newLi);
+        if (block.classList.contains('checkbox')) {
+          const marker = newLi.querySelector('.cb-marker');
+          if (marker) {
+            const r = document.createRange();
+            r.setStartAfter(marker);
+            r.setEndAfter(marker);
+            sel.removeAllRanges();
+            sel.addRange(r);
+          }
+        }
+        this._markDirty();
       }
+      return;
+    }
+
+    if (type === 'dl') {
+      const sel = window.getSelection();
+      const term = sel.anchorNode && sel.anchorNode.nodeType === Node.TEXT_NODE ? sel.anchorNode.parentElement : sel.anchorNode;
+      if (!term || (term.tagName.toLowerCase() !== 'dt' && term.tagName.toLowerCase() !== 'dd')) return;
+      e.preventDefault();
+      if ((term.textContent || '').trim() === '') {
+        const p = this.createParagraph();
+        this.bodyEl.replaceChild(p, block);
+        this.placeCaretAtEnd(p);
+      } else if (term.tagName.toLowerCase() === 'dt') {
+        const dd = term.nextElementSibling;
+        if (dd && dd.tagName.toLowerCase() === 'dd') {
+          this.placeCaretAtStart(dd);
+        } else {
+          const newDd = document.createElement('dd');
+          newDd.innerHTML = '<br>';
+          term.after(newDd);
+          this.placeCaretAtStart(newDd);
+        }
+      } else {
+        const newDt = document.createElement('dt');
+        newDt.innerHTML = '<br>';
+        const newDd = document.createElement('dd');
+        newDd.innerHTML = '<br>';
+        term.after(newDd);
+        term.after(newDt);
+        this.placeCaretAtStart(newDt);
+      }
+      this._markDirty();
       return;
     }
 
@@ -1927,6 +2093,59 @@ Bob --> Alice: Hi
     const sel = window.getSelection();
     if (!sel.rangeCount) return;
     const range = sel.getRangeAt(0);
+    const type = this.getBlockType(block);
+
+    if ((type === 'ul' || type === 'ol') && block.parentElement === this.bodyEl) {
+      const li = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+      if (!li || li.tagName.toLowerCase() !== 'li') return;
+      const atStart = this._isAtStartOfBlock(block, range) || this._isAtStartOfBlock(li, range);
+      const isEmpty = (li.textContent || '').trim() === '';
+      if (isEmpty) {
+        e.preventDefault();
+        if (block.children.length === 1) {
+          const p = this.createParagraph();
+          block.replaceWith(p);
+          this.placeCaretAtStart(p);
+        } else {
+          const prevLi = li.previousElementSibling;
+          li.remove();
+          if (prevLi) this.placeCaretAtEnd(prevLi);
+          else this.placeCaretAtStart(block.firstElementChild);
+        }
+        this.refreshBlockStates();
+        this._markDirty();
+        return;
+      }
+      if (atStart) {
+        e.preventDefault();
+        return;
+      }
+      return;
+    }
+
+    if (type === 'dl' && block.parentElement === this.bodyEl) {
+      const term = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+      if (!term || (term.tagName.toLowerCase() !== 'dt' && term.tagName.toLowerCase() !== 'dd')) return;
+      const atStart = this._isAtStartOfBlock(term, range);
+      const isEmpty = (term.textContent || '').trim() === '';
+      if (isEmpty && atStart) {
+        e.preventDefault();
+        if (block.children.length <= 2) {
+          const p = this.createParagraph();
+          block.replaceWith(p);
+          this.placeCaretAtStart(p);
+        } else {
+          const prev = term.previousElementSibling;
+          term.remove();
+          if (prev) this.placeCaretAtEnd(prev);
+          else this.placeCaretAtStart(block.firstElementChild);
+        }
+        this._markDirty();
+        return;
+      }
+      return;
+    }
+
     if (range.startOffset === 0 && this._isAtStartOfBlock(block, range)) {
       const text = (block.textContent || '').trim();
       if (text === '' && this.getBlocks().length > 1) {
@@ -2043,13 +2262,24 @@ Bob --> Alice: Hi
   _bindEvents() {
     if (this.titleEl) this.titleEl.addEventListener('input', () => this._markDirty());
 
-    this.bodyEl.addEventListener('focusin', () => {
+    this.bodyEl.addEventListener('focusin', (e) => {
       this.getBlocks().forEach(b => b.classList.remove('is-focused'));
       const block = this.getCurrentBlock();
       if (block) {
         block.classList.add('is-focused');
         this._positionBlockPlus(block);
       }
+      const cbUl = this._isInsideCheckboxList(e.target);
+      if (cbUl) this._checkboxListEnterEdit(cbUl);
+    });
+
+    this.bodyEl.addEventListener('focusout', (e) => {
+      setTimeout(() => {
+        const cbUl = this._isInsideCheckboxList(e.target);
+        if (!cbUl) return;
+        const active = document.activeElement;
+        if (!cbUl.contains(active)) this._checkboxListLeaveEdit(cbUl);
+      }, 0);
     });
 
     this.bodyEl.addEventListener('focusout', () => {
@@ -2161,6 +2391,26 @@ Bob --> Alice: Hi
     });
 
     this.bodyEl.addEventListener('click', (evt) => {
+      const marker = evt.target.closest && evt.target.closest('.cb-marker');
+      if (marker) {
+        evt.preventDefault();
+        marker.textContent = /\[X\]/i.test(marker.textContent || '') ? '[ ]' : '[X]';
+        this._markDirty();
+        return;
+      }
+      const todoTitle = evt.target.closest && evt.target.closest('.todo-title');
+      if (todoTitle) {
+        evt.preventDefault();
+        const block = todoTitle.closest('.todo-block');
+        if (block) {
+          block.classList.toggle('done');
+          const isDone = block.classList.contains('done');
+          const text = (todoTitle.textContent || '').replace(/^TODO\s+|^DONE\s+/, '');
+          todoTitle.textContent = (isDone ? 'DONE ' : 'TODO ') + text;
+          this._markDirty();
+        }
+        return;
+      }
       const fig = evt.target.closest && evt.target.closest('figure.image-block');
       if (fig && !(evt.target.closest && evt.target.closest('figcaption'))) {
         if (evt.shiftKey) {
@@ -2461,8 +2711,11 @@ Bob --> Alice: Hi
     if (tag === 'li') return `${inner().trim()}\n`;
     if (tag === 'ul' && node.classList.contains('checkbox')) {
       const items = Array.from(node.children).map(li => {
-        const cb = li.querySelector('input[type="checkbox"]');
-        const checked = cb && cb.checked;
+        const cbInput = li.querySelector('input[type="checkbox"]');
+        const cbMarker = li.querySelector('.cb-marker');
+        let checked = false;
+        if (cbInput) checked = cbInput.checked;
+        else if (cbMarker) checked = /\[X\]/i.test(cbMarker.textContent || '');
         return `- [${checked ? 'X' : ' '}] ${this.nodeToOrg(li).trim()}`;
       }).join('\n');
       return `${items}\n\n`;
@@ -2474,6 +2727,20 @@ Bob --> Alice: Hi
     if (tag === 'ol') {
       const items = Array.from(node.children).map((li, i) => `${i + 1}. ${this.nodeToOrg(li).trim()}`).join('\n');
       return `${items}\n\n`;
+    }
+    if (tag === 'dl') {
+      const items = Array.from(node.children).map(ch => this.nodeToOrg(ch)).join('');
+      return `${items}\n`;
+    }
+    if (tag === 'dt') return `- ${inner().trim()} :: `;
+    if (tag === 'dd') return `${inner().trim()}\n`;
+    if (tag === 'hr') return '\n-----\n\n';
+    if (tag === 'div' && node.classList.contains('todo-block')) {
+      const titleEl = node.querySelector('.todo-title');
+      const titleText = titleEl ? (titleEl.textContent || '').trim() : '';
+      const state = node.classList.contains('done') ? 'DONE' : 'TODO';
+      const bodyOrg = inner().replace(titleText, '').trim();
+      return `\n* ${state} ${titleText.replace(/^TODO\s+|^DONE\s+/, '')}\n${bodyOrg}\n\n`;
     }
     if (tag === 'div' && node.classList.contains('verse')) return `#+BEGIN_VERSE\n${inner().trim()}\n#+END_VERSE\n\n`;
     if (tag === 'div' && node.classList.contains('center')) return `#+BEGIN_CENTER\n${inner().trim()}\n#+END_CENTER\n\n`;
@@ -2759,9 +3026,36 @@ Bob --> Alice: Hi
       const heading = trimmed.match(/^(\*{1,6})\s+(.+)$/);
       if (heading) {
         const level = heading[1].length;
-        const { style, dataAttrs } = blockStyleFromAttr(attrHtml);
-        out.push(`<h${level}${style}${dataAttrs}>${DraftEditor.parseInlineOrg(heading[2])}</h${level}>`);
-        i++; continue;
+        const text = heading[2];
+        const todoMatch = text.match(/^(TODO|DONE)\s+(.*)$/i);
+        if (todoMatch) {
+          const state = todoMatch[1].toUpperCase();
+          const rest = todoMatch[2];
+          const doneClass = state === 'DONE' ? ' done' : '';
+          out.push(`<div class="todo-block${doneClass}"><p class="todo-title">${state} ${DraftEditor.parseInlineOrg(rest)}</p>`);
+          // Collect nested list items until blank line.
+          i++;
+          const nestedLines = [];
+          while (i < lines.length) {
+            const nLine = lines[i];
+            const nTrimmed = nLine.trim();
+            if (!nTrimmed) break;
+            if (/^(?:\*{1,6}\s+|#\+)/.test(nTrimmed)) break;
+            nestedLines.push(nLine);
+            i++;
+          }
+          if (nestedLines.length > 0) {
+            // Recurse to render nested content (usually a checkbox list).
+            const nestedHtml = this.renderOrgToHtml(nestedLines.join('\n'));
+            out.push(nestedHtml);
+          }
+          out.push('</div>');
+        } else {
+          const { style, dataAttrs } = blockStyleFromAttr(attrHtml);
+          out.push(`<h${level}${style}${dataAttrs}>${DraftEditor.parseInlineOrg(text)}</h${level}>`);
+          i++; continue;
+        }
+        continue;
       }
 
       // Unordered lists.
@@ -2807,13 +3101,44 @@ Bob --> Alice: Hi
             const cbMatch = raw.match(/^[-*]\s+\[([ X])\]\s*(.*)$/);
             if (cbMatch) {
               const checked = cbMatch[1] === 'X';
-              cbHtml = `<input type="checkbox" disabled${checked ? ' checked' : ''}> `;
+              cbHtml = `<span class="cb-marker" contenteditable="false">[${checked ? 'X' : ' '}]</span> `;
               content = cbMatch[2] + (item.length > 1 ? ' ' + item.slice(1).join(' ') : '');
             }
           }
           return `<li>${cbHtml}${DraftEditor.parseInlineOrg(content).replace(/__ORG_BR__/g, '<br>')}</li>`;
         }).join('');
         out.push(`<ul${hasCheckbox ? ' class="checkbox"' : ''}>${lis}</ul>`);
+        continue;
+      }
+
+      // Description lists (term :: description).
+      const dlMatch = trimmed.match(/^[-*]\s+(.+?)\s+::\s+(.*)$/);
+      if (dlMatch) {
+        const dlLines = [];
+        dlLines.push({ dt: dlMatch[1], dd: dlMatch[2] });
+        i++;
+        while (i < lines.length) {
+          const nextLine = lines[i];
+          const nextTrimmed = nextLine.trim();
+          if (!nextTrimmed) break;
+          const nextDl = nextLine.match(/^[-*]\s+(.+?)\s+::\s+(.*)$/);
+          if (nextDl) {
+            dlLines.push({ dt: nextDl[1], dd: nextDl[2] });
+            i++;
+            continue;
+          }
+          if (/^\s+/.test(nextLine)) {
+            const last = dlLines[dlLines.length - 1];
+            last.dd += ' ' + nextTrimmed;
+            i++;
+            continue;
+          }
+          break;
+        }
+        const terms = dlLines.map(d => {
+          return `<dt>${DraftEditor.parseInlineOrg(d.dt)}</dt><dd>${DraftEditor.parseInlineOrg(d.dd)}</dd>`;
+        }).join('');
+        out.push(`<dl>${terms}</dl>`);
         continue;
       }
 
@@ -2933,6 +3258,7 @@ Bob --> Alice: Hi
       if (!res.ok || !data.ok) throw new Error(data.error || 'Unable to load draft');
       if (this.titleEl) this.titleEl.innerText = data.title || '';
       this.bodyEl.innerHTML = this.renderOrgToHtml(data.body || '');
+      this._canonicalizeCheckboxLists();
       this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => this._ensureCodeBlockActions(pre));
       this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { if (window.Prism) this._highlightCodeBlock(pre); });
       this._refreshImageBlocks();
@@ -3004,6 +3330,7 @@ Bob --> Alice: Hi
 
   setHtml(html) {
     this.bodyEl.innerHTML = html || '<p><br></p>';
+    this._canonicalizeCheckboxLists();
     this.ensureTrailingParagraph();
     this.refreshBlockStates();
     this._refreshImageBlocks();

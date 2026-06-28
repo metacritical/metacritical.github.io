@@ -273,7 +273,16 @@
     .draft-editable > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
     .draft-editable > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
     .draft-editable > ul.checkbox { list-style: none; padding-left: 0; }
-    .draft-editable > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; }
+    .draft-editable > ul.checkbox li { position: relative; }
+    .draft-editable > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; vertical-align: middle; }
+    .draft-editable > ul.checkbox li .cb-marker { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; margin-right: 6px; user-select: none; min-width: 1.5em; text-align: center; vertical-align: middle; }
+    .draft-editable > dl { margin: 8px 0; }
+    .draft-editable > dl dt { font-weight: 700; margin-top: 6px; }
+    .draft-editable > dl dd { margin-left: 20px; margin-bottom: 4px; }
+    .draft-editable .todo-block { border-left: 3px solid #c98b2f; padding-left: 12px; margin: 8px 0; }
+    .draft-editable .todo-block.done { border-left-color: #36c9c7; }
+    .draft-editable .todo-title { font-weight: 700; color: #c98b2f; }
+    .draft-editable .todo-block.done .todo-title { color: #36c9c7; text-decoration: line-through; }
     .draft-editable .math { font-style: italic; color: #4f4a3f; padding: 0 2px; }
     .draft-editable div.math { display: block; margin: 12px 0 20px; padding: 12px 16px; background: #f4f1e8; border-radius: 8px; text-align: center; }
     .draft-table-tools { position: fixed; z-index: 10012; display: none; gap: 6px; align-items: center; background: #1f1f1f; border-radius: 12px; padding: 8px; box-shadow: 0 12px 22px rgba(0,0,0,.2); }
@@ -622,8 +631,20 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     <button type="button" data-action="example" title="Example block" aria-label="Example block">
       <svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M7 9h10'/><path d='M7 12h7'/><path d='M7 15h4'/></svg>
     </button>
+    <button type="button" data-action="ul" title="Bulleted list" aria-label="Bulleted list">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M9 6h12'/><path d='M9 12h12'/><path d='M9 18h12'/><circle cx='5' cy='6' r='1.5'/><circle cx='5' cy='12' r='1.5'/><circle cx='5' cy='18' r='1.5'/></svg>
+    </button>
+    <button type="button" data-action="ol" title="Numbered list" aria-label="Numbered list">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M9 6h12'/><path d='M9 12h12'/><path d='M9 18h12'/><text x='2.5' y='7.5' font-size='6' font-weight='700' fill='currentColor'>1</text><text x='2.5' y='13.5' font-size='6' font-weight='700' fill='currentColor'>2</text><text x='2.5' y='19.5' font-size='6' font-weight='700' fill='currentColor'>3</text></svg>
+    </button>
+    <button type="button" data-action="dl" title="Description list" aria-label="Description list">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 6h5'/><path d='M6 12h5'/><path d='M6 18h5'/><path d='M14 6h4'/><path d='M14 12h4'/><path d='M14 18h4'/></svg>
+    </button>
     <button type="button" data-action="checkbox" title="Checkbox list" aria-label="Checkbox list">
       <svg viewBox='0 0 24 24' aria-hidden='true'><rect x='5' y='5' width='14' height='14' rx='3'/><path d='M8 12l3 3 5-5'/></svg>
+    </button>
+    <button type="button" data-action="todo" title="TODO checklist" aria-label="TODO checklist">
+      <svg viewBox='0 0 24 24' aria-hidden='true'><rect x='4' y='5' width='16' height='14' rx='2'/><path d='M4 10h16'/><text x='6.5' y='8.5' font-size='4' font-weight='700' fill='currentColor'>TODO</text></svg>
     </button>
     <button type="button" data-action="verse" title="Verse block" aria-label="Verse block">
       <svg viewBox='0 0 24 24' aria-hidden='true'><path d='M5 6h14'/><path d='M5 10h7'/><path d='M5 14h11'/><path d='M5 18h8'/></svg>
@@ -1160,7 +1181,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     const blocks = bodyBlocks();
     if (!blocks.length){ const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); return p; }
     const last = blocks[blocks.length - 1];
-    if (!isTextElement(last) && last.tagName.toLowerCase() !== 'ul' && last.tagName.toLowerCase() !== 'ol'){
+    if (!isTextElement(last) && last.tagName.toLowerCase() !== 'ul' && last.tagName.toLowerCase() !== 'ol' && last.tagName.toLowerCase() !== 'dl'){
       const p = document.createElement('p'); p.innerHTML = '<br>'; body.appendChild(p); return p;
     }
     return last;
@@ -1177,6 +1198,78 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     markDirty();
     updateFloatingUi();
   }
+
+  // Checkbox list edit/preview toggle
+  function checkboxLiToEdit(li){
+    if (!li || li.tagName.toLowerCase() !== 'li') return;
+        const cb = li.querySelector('input[type="checkbox"]');
+    if (!cb) return;
+    const marker = document.createElement('span');
+    marker.className = 'cb-marker';
+    marker.setAttribute('contenteditable', 'false');
+    marker.textContent = cb.checked ? '[X]' : '[ ]';
+    cb.replaceWith(marker);
+  }
+  function checkboxLiToPreview(li){
+    if (!li || li.tagName.toLowerCase() !== 'li') return;
+    const marker = li.querySelector('.cb-marker');
+    if (!marker) return;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.disabled = true;
+    cb.checked = /[X]/i.test(marker.textContent || '');
+    marker.replaceWith(cb);
+  }
+  function checkboxListEnterEdit(ul){
+    if (!ul || !ul.classList.contains('checkbox')) return;
+    Array.from(ul.children).forEach(li => checkboxLiToEdit(li));
+  }
+  function checkboxListLeaveEdit(ul){
+    if (!ul || !ul.classList.contains('checkbox')) return;
+    Array.from(ul.children).forEach(li => checkboxLiToPreview(li));
+  }
+  function isInsideCheckboxList(node){
+    while (node){
+      if (node.tagName && node.tagName.toLowerCase() === 'ul' && node.classList.contains('checkbox')) return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+  body.addEventListener('focusin', (e)=>{
+    const ul = isInsideCheckboxList(e.target);
+    if (ul) checkboxListEnterEdit(ul);
+  });
+  body.addEventListener('focusout', (e)=>{
+    const ul = isInsideCheckboxList(e.target);
+    if (!ul) return;
+    setTimeout(()=>{
+      const active = document.activeElement;
+      if (!ul.contains(active)) checkboxListLeaveEdit(ul);
+    }, 0);
+  });
+  body.addEventListener('click', (e)=>{
+    const marker = e.target.closest && e.target.closest('.cb-marker');
+    if (marker) {
+      e.preventDefault();
+      marker.textContent = /[X]/i.test(marker.textContent || '') ? '[ ]' : '[X]';
+      markDirty();
+      return;
+    }
+    const todoTitle = e.target.closest && e.target.closest('.todo-title');
+    if (todoTitle) {
+      e.preventDefault();
+      const block = todoTitle.closest('.todo-block');
+      if (block) {
+        block.classList.toggle('done');
+        const isDone = block.classList.contains('done');
+        const text = (todoTitle.textContent || '').replace(/^TODO +|^DONE +/, '');
+        todoTitle.textContent = (isDone ? 'DONE ' : 'TODO ') + text;
+        markDirty();
+      }
+      return;
+    }
+  });
+
   function onBodyArrowKey(e){
     if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
     const block = currentBodyBlock();
@@ -1213,6 +1306,62 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
     const range = sel.getRangeAt(0);
+    const t = block.tagName.toLowerCase();
+
+    // Inside a list item: handle empty items and marker protection.
+    if ((t === 'ul' || t === 'ol') && block.parentElement === body) {
+      const li = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+      if (!li || li.tagName.toLowerCase() !== 'li') return;
+      const atStart = isAtStartOfBlock(range, li);
+      const isEmpty = (li.textContent || '').trim() === '';
+      if (isEmpty) {
+        e.preventDefault();
+        if (block.children.length === 1) {
+          const p = document.createElement('p'); p.innerHTML = '<br>';
+          block.replaceWith(p);
+          placeCaretIn(p, true);
+        } else {
+          const prevLi = li.previousElementSibling;
+          li.remove();
+          if (prevLi) placeCaretIn(prevLi, false);
+          else placeCaretIn(block.firstElementChild, true);
+        }
+        markDirty();
+        updateFloatingUi();
+        return;
+      }
+      if (atStart) {
+        e.preventDefault();
+        return;
+      }
+      return;
+    }
+
+    // Description list backspace.
+    if (t === 'dl' && block.parentElement === body) {
+      const term = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+      if (!term || (term.tagName.toLowerCase() !== 'dt' && term.tagName.toLowerCase() !== 'dd')) return;
+      const atStart = isAtStartOfBlock(range, term);
+      const isEmpty = (term.textContent || '').trim() === '';
+      if (isEmpty && atStart) {
+        e.preventDefault();
+        if (block.children.length <= 2) {
+          const p = document.createElement('p'); p.innerHTML = '<br>';
+          block.replaceWith(p);
+          placeCaretIn(p, true);
+        } else {
+          const prev = term.previousElementSibling;
+          term.remove();
+          if (prev) placeCaretIn(prev, false);
+          else placeCaretIn(block.firstElementChild, true);
+        }
+        markDirty();
+        updateFloatingUi();
+        return;
+      }
+      return;
+    }
+
     const isEmpty = (block.textContent || '').trim() === '';
     const atStart = isAtStartOfBlock(range, block);
     if (isEmpty) {
@@ -1225,6 +1374,85 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     if (atStart) {
       e.preventDefault();
     }
+  }
+  function onListEnterKey(e){
+    if (e.key !== 'Enter') return;
+    const block = currentBodyBlock();
+    if (!block || block.parentElement !== body) return;
+    const t = block.tagName.toLowerCase();
+    if (t !== 'ul' && t !== 'ol' && t !== 'dl') return;
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    e.preventDefault();
+
+    if (t === 'dl') {
+      const term = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+      if (!term || (term.tagName.toLowerCase() !== 'dt' && term.tagName.toLowerCase() !== 'dd')) return;
+      const isEmpty = (term.textContent || '').trim() === '';
+      if (isEmpty) {
+        const p = document.createElement('p'); p.innerHTML = '<br>';
+        block.after(p);
+        block.remove();
+        placeCaretIn(p, true);
+      } else if (term.tagName.toLowerCase() === 'dt') {
+        const dd = term.nextElementSibling;
+        if (dd && dd.tagName.toLowerCase() === 'dd') placeCaretIn(dd, true);
+        else {
+          const newDd = document.createElement('dd'); newDd.innerHTML = '<br>';
+          term.after(newDd);
+          placeCaretIn(newDd, true);
+        }
+      } else {
+        const newDt = document.createElement('dt'); newDt.innerHTML = '<br>';
+        const newDd = document.createElement('dd'); newDd.innerHTML = '<br>';
+        term.after(newDd);
+        term.after(newDt);
+        placeCaretIn(newDt, true);
+      }
+      markDirty();
+      updateFloatingUi();
+      return;
+    }
+
+    const li = range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : range.startContainer;
+    if (!li || li.tagName.toLowerCase() !== 'li') return;
+    const isEmpty = (li.textContent || '').trim() === '';
+    if (isEmpty) {
+      if (block.children.length === 1) {
+        const p = document.createElement('p'); p.innerHTML = '<br>';
+        block.after(p);
+        block.remove();
+        placeCaretIn(p, true);
+      } else {
+        const newP = document.createElement('p'); newP.innerHTML = '<br>';
+        block.after(newP);
+        li.remove();
+        placeCaretIn(newP, true);
+      }
+    } else {
+      const newLi = document.createElement('li');
+      if (block.classList.contains('checkbox')) {
+        newLi.innerHTML = '<span class="cb-marker" contenteditable="false">[ ]</span> <br>';
+      } else {
+        newLi.innerHTML = '<br>';
+      }
+      li.after(newLi);
+      placeCaretIn(newLi, true);
+      // Move cursor after the marker for checkbox lists.
+      if (block.classList.contains('checkbox')) {
+        const marker = newLi.querySelector('.cb-marker');
+        if (marker) {
+          const r = document.createRange();
+          r.setStartAfter(marker);
+          r.setEndAfter(marker);
+          sel.removeAllRanges();
+          sel.addRange(r);
+        }
+      }
+    }
+    markDirty();
+    updateFloatingUi();
   }
   function onTitleArrowKey(e){
     if (e.key !== 'ArrowDown') return;
@@ -1760,8 +1988,11 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     if (tag === 'li') return childrenToOrg().trim() + '\n';
     if (tag === 'ul' && node.classList.contains('checkbox')) {
       const items = Array.from(node.children).map(li => {
-        const cb = li.querySelector('input[type="checkbox"]');
-        const checked = cb && cb.checked;
+        const cbInput = li.querySelector('input[type="checkbox"]');
+        const cbMarker = li.querySelector('.cb-marker');
+        let checked = false;
+        if (cbInput) checked = cbInput.checked;
+        else if (cbMarker) checked = /[X]/i.test(cbMarker.textContent || '');
         return '- [' + (checked ? 'X' : ' ') + '] ' + htmlToOrgNode(li).trim();
       }).join('\n');
       return items + '\n\n';
@@ -1774,7 +2005,20 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
       const items = Array.from(node.children).map((li, i) => (i + 1) + '. ' + htmlToOrgNode(li).trim()).join('\n');
       return items + '\n\n';
     }
+    if (tag === 'dl') {
+      const items = Array.from(node.children).map(ch => htmlToOrgNode(ch)).join('');
+      return items + '\n';
+    }
+    if (tag === 'dt') return '- ' + childrenToOrg().trim() + ' :: ';
+    if (tag === 'dd') return childrenToOrg().trim() + '\n';
     if (tag === 'hr') return '\n-----\n\n';
+    if (tag === 'div' && node.classList.contains('todo-block')) {
+      const titleEl = node.querySelector('.todo-title');
+      const titleText = titleEl ? (titleEl.textContent || '').trim() : '';
+      const state = node.classList.contains('done') ? 'DONE' : 'TODO';
+      const bodyOrg = childrenToOrg().replace(titleText, '').trim();
+      return '\n* ' + state + ' ' + titleText.replace(/^TODO\s+|^DONE\s+/, '') + '\n' + bodyOrg + '\n\n';
+    }
     if (tag === 'div' && node.classList.contains('verse')) return '\n#+BEGIN_VERSE\n' + childrenToOrg().trim() + '\n#+END_VERSE\n\n';
     if (tag === 'div' && node.classList.contains('center')) return '\n#+BEGIN_CENTER\n' + childrenToOrg().trim() + '\n#+END_CENTER\n\n';
     if (tag === 'div' || tag === 'p') {
@@ -2164,6 +2408,25 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
     // Ensure math blocks have data-latex.
     body.querySelectorAll('div.math, span.math').forEach((el) => {
       if (!el.getAttribute('data-latex')) el.setAttribute('data-latex', el.textContent || '');
+    });
+  }
+
+  function canonicalizeCheckboxLists(){
+    body.querySelectorAll('ul, ol').forEach((list) => {
+      const items = Array.from(list.children);
+      const hasCheckbox = items.some(li => li.querySelector('input[type="checkbox"]'));
+      if (!hasCheckbox) return;
+      list.classList.add('checkbox');
+      list.classList.remove('org-ul', 'org-ol');
+      items.forEach((li) => {
+    const cb = li.querySelector('input[type="checkbox"]');
+        if (!cb) return;
+        const marker = document.createElement('span');
+        marker.className = 'cb-marker';
+        marker.setAttribute('contenteditable', 'false');
+        marker.textContent = cb.checked ? '[X]' : '[ ]';
+        cb.replaceWith(marker);
+      });
     });
   }
 
@@ -2838,8 +3101,36 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
       insertCodeBlockAtCursor('example');
       return;
     }
+    if (action === 'ul') {
+      plus.classList.remove('open');
+      syncPlusIcon();
+      insertHtmlAtCursor('<ul><li><br></li></ul><p><br></p>');
+      return;
+    }
+    if (action === 'ol') {
+      plus.classList.remove('open');
+      syncPlusIcon();
+      insertHtmlAtCursor('<ol><li><br></li></ol><p><br></p>');
+      return;
+    }
+    if (action === 'dl') {
+      plus.classList.remove('open');
+      syncPlusIcon();
+      insertHtmlAtCursor('<dl><dt><br></dt><dd><br></dd></dl><p><br></p>');
+      return;
+    }
     if (action === 'checkbox') {
-      insertHtmlAtCursor('<ul class="checkbox"><li><input type="checkbox" disabled> <br></li></ul><p><br></p>');
+      plus.classList.remove('open');
+      syncPlusIcon();
+      insertHtmlAtCursor('<ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul><p><br></p>');
+      return;
+    }
+    if (action === 'todo') {
+      plus.classList.remove('open');
+      syncPlusIcon();
+      const title = ((await askInput({ title:'TODO Item', label:'Title', placeholder:'What needs to be done?', okText:'Add' })) || '').trim();
+      if (!title) return;
+      insertHtmlAtCursor('<div class="todo-block"><p class="todo-title">TODO ' + escapeHtml(title) + '</p><ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul></div><p><br></p>');
       return;
     }
     if (action === 'verse') {
@@ -2945,6 +3236,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
   title.addEventListener('keydown', onTitleArrowKey);
   body.addEventListener('keydown', onUndoRedoKey);
   body.addEventListener('keydown', onBodyArrowKey);
+  body.addEventListener('keydown', onListEnterKey);
   body.addEventListener('keydown', onImageKeyDelete);
   body.addEventListener('keydown', onBlockKeyDelete);
   body.addEventListener('keydown', onTableKey);
@@ -3031,6 +3323,7 @@ The Metacritical theme provides excellent syntax highlighting using Org-mode's n
   if (foregroundCustom) setColorSwatch('foreground', foregroundCustom.value || '#1d1b18');
   syncPlusIcon();
   canonicalizeLegacyImageNodes();
+  canonicalizeCheckboxLists();
   refreshImageBlocks();
   body.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
   normalizeMediaUrls();

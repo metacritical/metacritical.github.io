@@ -72,7 +72,16 @@
 .de-body > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
 .de-body > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
 .de-body > ul.checkbox { list-style: none; padding-left: 0; }
-.de-body > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; }
+.de-body > ul.checkbox li { position: relative; }
+.de-body > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; vertical-align: middle; }
+.de-body > ul.checkbox li .cb-marker { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; margin-right: 6px; user-select: none; min-width: 1.5em; text-align: center; vertical-align: middle; }
+.de-body > dl { margin: 8px 0; }
+.de-body > dl dt { font-weight: 700; margin-top: 6px; }
+.de-body > dl dd { margin-left: 20px; margin-bottom: 4px; }
+.de-body .todo-block { border-left: 3px solid #c98b2f; padding-left: 12px; margin: 8px 0; }
+.de-body .todo-block.done { border-left-color: #36c9c7; }
+.de-body .todo-title { font-weight: 700; color: #c98b2f; }
+.de-body .todo-block.done .todo-title { color: #36c9c7; text-decoration: line-through; }
 .de-body > blockquote {
   border-left: 3px solid #0d6a57;
   padding-left: 20px;
