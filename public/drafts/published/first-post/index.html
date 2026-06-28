@@ -1458,6 +1458,8 @@ This is your first blog post with Alchemist. Edit this file to get started.
     if (e.key !== 'Delete' && e.key !== 'Backspace') return;
     const block = document.querySelector('.draft-editable > .selected');
     if (!block) return;
+    const t = block.tagName.toLowerCase();
+    if (['p','div','h1','h2','h3','h4','h5','h6','blockquote','pre','ul','ol'].includes(t)) return;
     e.preventDefault();
     const adj = block.nextElementSibling || block.previousElementSibling;
     block.remove(); hideBlockToolbar(); markDirty();
@@ -1805,6 +1807,9 @@ This is your first blog post with Alchemist. Edit this file to get started.
     }
     if (actions) {
       actions.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      actions.addEventListener('click', (e) => {
         e.stopPropagation();
       });
     }

@@ -499,7 +499,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="orgd8c5bd8" class="figure">
+<div id="org5eb44d5" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -514,7 +514,7 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="org186d8b5" class="figure">
+<div id="org04bfe4c" class="figure">
 <p><img src="file:///assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
@@ -1559,6 +1559,8 @@ Watchout for the next part of the assay till then.
     if (e.key !== 'Delete' && e.key !== 'Backspace') return;
     const block = document.querySelector('.draft-editable > .selected');
     if (!block) return;
+    const t = block.tagName.toLowerCase();
+    if (['p','div','h1','h2','h3','h4','h5','h6','blockquote','pre','ul','ol'].includes(t)) return;
     e.preventDefault();
     const adj = block.nextElementSibling || block.previousElementSibling;
     block.remove(); hideBlockToolbar(); markDirty();
@@ -1906,6 +1908,9 @@ Watchout for the next part of the assay till then.
     }
     if (actions) {
       actions.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      actions.addEventListener('click', (e) => {
         e.stopPropagation();
       });
     }

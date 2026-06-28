@@ -473,7 +473,7 @@ like.
 
 
 
-<div id="orgc1c570e" class="figure">
+<div id="orgf048998" class="figure">
 <p><img src="file:///assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 </div>
@@ -1454,6 +1454,8 @@ like.
     if (e.key !== 'Delete' && e.key !== 'Backspace') return;
     const block = document.querySelector('.draft-editable > .selected');
     if (!block) return;
+    const t = block.tagName.toLowerCase();
+    if (['p','div','h1','h2','h3','h4','h5','h6','blockquote','pre','ul','ol'].includes(t)) return;
     e.preventDefault();
     const adj = block.nextElementSibling || block.previousElementSibling;
     block.remove(); hideBlockToolbar(); markDirty();
@@ -1801,6 +1803,9 @@ like.
     }
     if (actions) {
       actions.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      actions.addEventListener('click', (e) => {
         e.stopPropagation();
       });
     }

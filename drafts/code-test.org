@@ -14,8 +14,6 @@ def hello
 end
 #+END_SRC
 
-Hello How are you
-
 - ~[x] Yellow~
 - ~[ ] Green~
 
@@ -24,5 +22,5 @@ Hello How are you
 #+BEGIN_SRC ditaa
 +--------+   +--------+
 |  Node  |-->|  Node. |
-+--------+   +--------+
++--------+   +--------+def hello  "hello"end
 #+END_SRC
