@@ -482,7 +482,7 @@ Code titles session
 <div class="org-src-container">
 <pre class="src src-ditaa">+--------+   +--------+
 |  Node  |--&gt;|  Node. |
-+--------+   +--------+def hello  "hello"end
++--------+   +--------+
 </pre>
 </div>
 </div>
@@ -1871,7 +1871,8 @@ Code titles session
       }
     };
 
-    if (lang === 'text' || Prism.languages[lang]) {
+    const noAutoload = ['ditaa','plantuml','ascii','example'];
+    if (lang === 'text' || Prism.languages[lang] || noAutoload.includes(lang)) {
       doHighlight();
     } else if (Prism.plugins && Prism.plugins.autoloader && Prism.plugins.autoloader.loadLanguages) {
       Prism.plugins.autoloader.loadLanguages(lang, doHighlight);

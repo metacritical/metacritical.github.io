@@ -22,5 +22,5 @@ end
 #+BEGIN_SRC ditaa
 +--------+   +--------+
 |  Node  |-->|  Node. |
-+--------+   +--------+def hello  "hello"end
++--------+   +--------+
 #+END_SRC

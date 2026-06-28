@@ -339,6 +339,15 @@ if [ -f "$BLOG_DIR/public/media/js/claps.js" ]; then
   done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
 fi
 
+# Guard against null share-link elements in main.js (draft pages may lack them).
+if [ -f "$BLOG_DIR/public/media/js/main.js" ]; then
+  perl -i -pe '
+    s/xLink\.href\s*=/if (xLink) xLink.href =/g;
+    s/fbLink\.href\s*=/if (fbLink) fbLink.href =/g;
+    s/lnLink\.href\s*=/if (lnLink) lnLink.href =/g;
+  ' "$BLOG_DIR/public/media/js/main.js"
+fi
+
 # Optional cleanup step to keep commit diffs clean after each build.
 if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then
   cleanup_post_build_artifacts

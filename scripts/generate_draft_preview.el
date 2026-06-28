@@ -2080,7 +2080,8 @@
       }
     };
 
-    if (lang === 'text' || Prism.languages[lang]) {
+    const noAutoload = ['ditaa','plantuml','ascii','example'];
+    if (lang === 'text' || Prism.languages[lang] || noAutoload.includes(lang)) {
       doHighlight();
     } else if (Prism.plugins && Prism.plugins.autoloader && Prism.plugins.autoloader.loadLanguages) {
       Prism.plugins.autoloader.loadLanguages(lang, doHighlight);
