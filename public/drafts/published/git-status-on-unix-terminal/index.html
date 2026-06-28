@@ -597,7 +597,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="orgc5c1089" class="figure">
+<div id="orgbd87686" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -607,7 +607,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org30d5ee4" class="figure">
+<div id="orgb33f6f4" class="figure">
 <p><img src="file:///assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -835,7 +835,7 @@ Thats it folks! Happy hacking.
       this.bodyEl.innerHTML = state.bodyHtml;
       if (this.titleEl) this.titleEl.innerText = state.titleText;
       // Re-attach dynamic helpers that get lost on innerHTML swap.
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { toCodeHighlightMode(pre); });
       refreshImageBlocks();
       normalizeMediaUrls();
       if (state.selection) {

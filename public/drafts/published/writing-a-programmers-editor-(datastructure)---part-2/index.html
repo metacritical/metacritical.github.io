@@ -473,7 +473,7 @@ like.
 
 
 
-<div id="org6912cc3" class="figure">
+<div id="org3b661b5" class="figure">
 <p><img src="file:///assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 </div>
@@ -697,7 +697,7 @@ like.
       this.bodyEl.innerHTML = state.bodyHtml;
       if (this.titleEl) this.titleEl.innerText = state.titleText;
       // Re-attach dynamic helpers that get lost on innerHTML swap.
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { toCodeHighlightMode(pre); });
       refreshImageBlocks();
       normalizeMediaUrls();
       if (state.selection) {

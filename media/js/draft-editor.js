@@ -9,6 +9,7 @@ class DraftHistory {
     this.isApplying = false;
     this.debounceTimer = null;
     this.refreshImageBlocks = null;
+    this.rebindCodeBlocks = null;
   }
 
   getSelectionState() {
@@ -99,6 +100,7 @@ class DraftHistory {
     this.bodyEl.innerHTML = state.bodyHtml;
     if (this.titleEl) this.titleEl.innerText = state.titleText;
     this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => this._ensureCodeBlockActions(pre));
+    if (this.rebindCodeBlocks) this.rebindCodeBlocks();
     if (this.refreshImageBlocks) this.refreshImageBlocks();
     if (state.selection) {
       const range = this._deserializeRange(state.selection, this.bodyEl);
@@ -177,6 +179,7 @@ class DraftEditor {
     this.tags = [];
     this.history = new DraftHistory(this.bodyEl, this.titleEl);
     this.history.refreshImageBlocks = () => this._refreshImageBlocks();
+    this.history.rebindCodeBlocks = () => this._rebindAllCodeBlocks();
 
     this.slashState = { open: false, query: '', index: 0, triggerBlock: null };
     this.insertState = { open: false, referenceBlock: null };
@@ -344,10 +347,16 @@ class DraftEditor {
   }
 
   _refreshImageBlocks() {
-    if (!this.bodyEl) return;
-    this.bodyEl.querySelectorAll('figure.image-block').forEach(fig => {
-      this._addImageResizeHandle(fig);
-      this._observeImageSize(fig);
+    this.bodyEl.querySelectorAll('figure.image-block').forEach(fig => this._ensureImageBlock(fig));
+  }
+
+  _rebindAllCodeBlocks() {
+    this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => {
+      if (pre.querySelector('.de-code-block-actions')) {
+        this._bindCodeBlockToolbar(pre);
+        this._bindCodeBlockInput(pre);
+        this._highlightCodeBlock(pre);
+      }
     });
   }
 

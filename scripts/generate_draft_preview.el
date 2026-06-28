@@ -914,7 +914,7 @@
       this.bodyEl.innerHTML = state.bodyHtml;
       if (this.titleEl) this.titleEl.innerText = state.titleText;
       // Re-attach dynamic helpers that get lost on innerHTML swap.
-      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { ensureCodeBlockToolbar(pre); });
+      this.bodyEl.querySelectorAll('pre.code-block').forEach(pre => { toCodeHighlightMode(pre); });
       refreshImageBlocks();
       normalizeMediaUrls();
       if (state.selection) {
