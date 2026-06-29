@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782740203" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782775319" type="text/css">
 </head>
 
   <body class="container">
@@ -87,7 +87,7 @@ like.
 </p>
 
 
-<div id="org36af2c6" class="figure">
+<div id="org663b942" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
@@ -118,7 +118,7 @@ the gap, and edits happen at gap boundaries.
 </p>
 
 
-<div id="org69e288e" class="figure">
+<div id="orgf569a04" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Insertion — typing fills the gap from the left, shrinking it one cell at a time.</p>
@@ -149,7 +149,7 @@ single <code>memmove</code> — a blazingly fast operation on modern hardware.
 </p>
 
 
-<div id="org03abfdb" class="figure">
+<div id="orgada216e" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
 </p>
 <p><span class="figure-number">Figure 3: </span>Long cursor movement — the gap shifts right, dragging characters from right side to left side.</p>
@@ -174,7 +174,7 @@ space before the next resize. The amortized cost per insertion remains <code>O(1
 </p>
 
 
-<div id="org69e7694" class="figure">
+<div id="orgf62ac07" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
 </p>
 <p><span class="figure-number">Figure 4: </span>Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
@@ -272,17 +272,20 @@ Watchout for the next part of the assay, till then.
   </section>
   <section id="comments" class="comments">
     <h1>Responses</h1>
-    <div id="disqus_thread"></div>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
     <script type="text/javascript">
-      var disqus_identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
-      var disqus_url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
-      var disqus_shortname = "SelfDotSend";
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+        this.page.identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+      };
       (function() {
-        var dsq = document.createElement("script");
-        dsq.type = "text/javascript";
-        dsq.async = true;
-        dsq.src = "https://" + disqus_shortname + ".disqus.com/embed.js";
-        (document.head || document.body).appendChild(dsq);
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
       })();
     </script>
   </section>

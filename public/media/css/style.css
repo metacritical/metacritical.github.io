@@ -1030,6 +1030,24 @@ Post List
 	padding: 0 40px;
 }
 
+#disqus_thread {
+	min-height: 60px;
+	position: relative;
+}
+
+#disqus_thread:not(:has(iframe))::before {
+	content: "Loading comments…";
+	display: block;
+	text-align: center;
+	padding: 30px 0;
+	color: #999;
+	font-size: 14px;
+}
+
+#disqus_thread iframe {
+	min-height: 280px !important;
+}
+
 /* Post Page */
 #header {
 	border-bottom: 1px solid #eee;

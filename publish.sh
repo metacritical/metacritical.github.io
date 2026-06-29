@@ -74,35 +74,35 @@ write_ditaa_source() {
     insertion)
       cat > "/tmp/gapbuffer-insertion.ditaa" << 'DITAA'
 +----+----+---+---+---+---+
-|cGRE|cGRE| A | B | C | D |
+|cBF0|cBF0| A | B | C | D |
 +----+----+---+---+---+---+
    |
    +----+
         |
         v
 +---+----+---+---+---+---+
-| X |cGRE| A | B | C | D |
+| X |cBF0| A | B | C | D |
 +---+----+---+---+---+---+
    |
    +----+
         |
         v
 +---+---+----+---+---+---+
-| X | Y |cGRE| A | B | C |
+| X | Y |cBF0| A | B | C |
 +---+---+----+---+---+---+
 DITAA
       ;;
     move)
       cat > "/tmp/gapbuffer-move.ditaa" << 'DITAA'
 +----+----+---+---+---+---+---+
-|cGRE|cGRE| H | E | L | L | O |
+|cBF0|cBF0| H | E | L | L | O |
 +----+----+---+---+---+---+---+
    |
    +----+
         |
         v
 +---+---+---+----+----+---+---+
-| H | E | L |cGRE|cGRE| L | O |
+| H | E | L |cBF0|cBF0| L | O |
 +---+---+---+----+----+---+---+
 DITAA
       ;;
@@ -116,7 +116,7 @@ DITAA
         |
         v
 +---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
-| A | B | C | D |cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE| E | F | G | H |
+| A | B | C | D |cBF0|cBF0|cBF0|cBF0|cBF0|cBF0|cBF0|cBF0| E | F | G | H |
 +---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
 DITAA
       ;;
@@ -129,19 +129,16 @@ generate_labeled_diagram() {
 
   write_ditaa_source "$name"
 
-  # Render at 2x for anti-aliased smooth lines, then resize to 0.7x target.
-  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-2x.png" -E -s 2.0 2>/dev/null
-  raw_2x=$(identify "/tmp/${name}-2x.png" | awk '{print $3}' | cut -dx -f1)
-  target_w=$(( raw_2x * 425 / 1000 ))   # 2x → 0.85x = factor 0.425
-  magick "/tmp/${name}-2x.png" -resize "${target_w}x" -unsharp 0.5x0.5+0.5+0.008 "/tmp/${name}-smooth.png"
+  # Render at native 1x to match gapbuffer.png's crisp pixel-perfect style.
+  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-native.png" -E -S 2>/dev/null
 
-  core_w=$(identify "/tmp/${name}-smooth.png" | awk '{print $3}' | cut -dx -f1)
+  core_w=$(identify "/tmp/${name}-native.png" | awk '{print $3}' | cut -dx -f1)
   text_w=$(magick -font "$FONT_HELV" -pointsize 10 label:"$bot" -format "%w" info:)
   text_pad=$(( (text_w - core_w) / 2 + 10 ))
   [ $text_pad -lt 0 ] && text_pad=0
   hpad=$(( text_pad + EXTRA_HPAD ))
 
-  magick "/tmp/${name}-smooth.png" \
+  magick "/tmp/${name}-native.png" \
     -gravity west -splice "${hpad}x0" -gravity east -splice "${hpad}x0" \
     -gravity north -splice 0x40 \
     -font "$FONT_HELV" -pointsize 16 -fill black -annotate +0+15 "$top" \

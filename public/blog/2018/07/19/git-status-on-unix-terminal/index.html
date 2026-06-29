@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782740203" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782775319" type="text/css">
 </head>
 
   <body class="container">
@@ -212,7 +212,7 @@ This would yield a prompt like this:
 </p>
 
 
-<div id="orgb1a7e2b" class="figure">
+<div id="orgde7b090" class="figure">
 <p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
@@ -222,7 +222,7 @@ If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="org5f49f72" class="figure">
+<div id="org6b788ea" class="figure">
 <p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
@@ -243,17 +243,20 @@ Thats it folks! Happy hacking.
   </section>
   <section id="comments" class="comments">
     <h1>Responses</h1>
-    <div id="disqus_thread"></div>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
     <script type="text/javascript">
-      var disqus_identifier = "/blog/2018/07/19/git-status-on-unix-terminal";
-      var disqus_url = "https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal";
-      var disqus_shortname = "SelfDotSend";
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal";
+        this.page.identifier = "/blog/2018/07/19/git-status-on-unix-terminal";
+      };
       (function() {
-        var dsq = document.createElement("script");
-        dsq.type = "text/javascript";
-        dsq.async = true;
-        dsq.src = "https://" + disqus_shortname + ".disqus.com/embed.js";
-        (document.head || document.body).appendChild(dsq);
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
       })();
     </script>
   </section>
