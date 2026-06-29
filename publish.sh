@@ -66,6 +66,7 @@ fi
 # Generate labeled gapbuffer diagrams with L-shaped arrows and 1x scale.
 FONT_HELV="${FONT_HELV:-/System/Library/Fonts/Helvetica.ttc}"
 ASSET_DIR="$BLOG_DIR/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2"
+EXTRA_HPAD=60
 
 write_ditaa_source() {
   local name="$1"
@@ -136,8 +137,9 @@ generate_labeled_diagram() {
 
   core_w=$(identify "/tmp/${name}-smooth.png" | awk '{print $3}' | cut -dx -f1)
   text_w=$(magick -font "$FONT_HELV" -pointsize 10 label:"$bot" -format "%w" info:)
-  hpad=$(( (text_w - core_w) / 2 + 10 ))
-  [ $hpad -lt 10 ] && hpad=10
+  text_pad=$(( (text_w - core_w) / 2 + 10 ))
+  [ $text_pad -lt 0 ] && text_pad=0
+  hpad=$(( text_pad + EXTRA_HPAD ))
 
   magick "/tmp/${name}-smooth.png" \
     -gravity west -splice "${hpad}x0" -gravity east -splice "${hpad}x0" \
@@ -149,10 +151,6 @@ generate_labeled_diagram() {
     "$out"
   echo "Generated gapbuffer-$name.png ($(identify "$out" | awk '{print $3}'))"
 }
-
-generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
-generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
-generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
 
 generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
 generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
