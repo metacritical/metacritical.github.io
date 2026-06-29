@@ -127,19 +127,24 @@ generate_labeled_diagram() {
   local out="$ASSET_DIR/gapbuffer-$name.png"
 
   write_ditaa_source "$name"
-  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-raw.png" -E -s 0.7 2>/dev/null
 
-  core_w=$(identify "/tmp/${name}-raw.png" | awk '{print $3}' | cut -dx -f1)
-  text_w=$(magick -font "$FONT_HELV" -pointsize 12 label:"$bot" -format "%w" info:)
+  # Render at 2x for anti-aliased smooth lines, then resize to 0.7x target.
+  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-2x.png" -E -s 2.0 2>/dev/null
+  raw_2x=$(identify "/tmp/${name}-2x.png" | awk '{print $3}' | cut -dx -f1)
+  target_w=$(( raw_2x * 35 / 100 ))   # 2x → 0.7x = factor 0.35
+  magick "/tmp/${name}-2x.png" -resize "${target_w}x" -unsharp 0.5x0.5+0.5+0.008 "/tmp/${name}-smooth.png"
+
+  core_w=$(identify "/tmp/${name}-smooth.png" | awk '{print $3}' | cut -dx -f1)
+  text_w=$(magick -font "$FONT_HELV" -pointsize 10 label:"$bot" -format "%w" info:)
   hpad=$(( (text_w - core_w) / 2 + 10 ))
   [ $hpad -lt 10 ] && hpad=10
 
-  magick "/tmp/${name}-raw.png" \
+  magick "/tmp/${name}-smooth.png" \
     -gravity west -splice "${hpad}x0" -gravity east -splice "${hpad}x0" \
     -gravity north -splice 0x40 \
     -font "$FONT_HELV" -pointsize 16 -fill black -annotate +0+15 "$top" \
     -gravity south -splice 0x30 \
-    -font "$FONT_HELV" -pointsize 12 -fill '#666' -annotate +0+12 "$bot" \
+    -font "$FONT_HELV" -pointsize 10 -fill black -annotate +0+15 "$bot" \
     -alpha off -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' \
     "$out"
   echo "Generated gapbuffer-$name.png ($(identify "$out" | awk '{print $3}'))"
