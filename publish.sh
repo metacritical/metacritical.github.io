@@ -131,7 +131,7 @@ generate_labeled_diagram() {
   # Render at 2x for anti-aliased smooth lines, then resize to 0.7x target.
   java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-2x.png" -E -s 2.0 2>/dev/null
   raw_2x=$(identify "/tmp/${name}-2x.png" | awk '{print $3}' | cut -dx -f1)
-  target_w=$(( raw_2x * 35 / 100 ))   # 2x → 0.7x = factor 0.35
+  target_w=$(( raw_2x * 425 / 1000 ))   # 2x → 0.85x = factor 0.425
   magick "/tmp/${name}-2x.png" -resize "${target_w}x" -unsharp 0.5x0.5+0.5+0.008 "/tmp/${name}-smooth.png"
 
   core_w=$(identify "/tmp/${name}-smooth.png" | awk '{print $3}' | cut -dx -f1)
