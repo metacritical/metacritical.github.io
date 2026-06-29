@@ -63,6 +63,96 @@ if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
   done < <(find "$BLOG_DIR/posts" -name "*.org" -type f | sort)
 fi
 
+# Generate labeled gapbuffer diagrams with L-shaped arrows and 1x scale.
+FONT_HELV="${FONT_HELV:-/System/Library/Fonts/Helvetica.ttc}"
+ASSET_DIR="$BLOG_DIR/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2"
+
+write_ditaa_source() {
+  local name="$1"
+  case "$name" in
+    insertion)
+      cat > "/tmp/gapbuffer-insertion.ditaa" << 'DITAA'
++----+----+---+---+---+---+
+|cGRE|cGRE| A | B | C | D |
++----+----+---+---+---+---+
+   |
+   +----+
+        |
+        v
++---+----+---+---+---+---+
+| X |cGRE| A | B | C | D |
++---+----+---+---+---+---+
+   |
+   +----+
+        |
+        v
++---+---+----+---+---+---+
+| X | Y |cGRE| A | B | C |
++---+---+----+---+---+---+
+DITAA
+      ;;
+    move)
+      cat > "/tmp/gapbuffer-move.ditaa" << 'DITAA'
++----+----+---+---+---+---+---+
+|cGRE|cGRE| H | E | L | L | O |
++----+----+---+---+---+---+---+
+   |
+   +----+
+        |
+        v
++---+---+---+----+----+---+---+
+| H | E | L |cGRE|cGRE| L | O |
++---+---+---+----+----+---+---+
+DITAA
+      ;;
+    resize)
+      cat > "/tmp/gapbuffer-resize.ditaa" << 'DITAA'
++---+---+---+---+---+---+---+---+
+| A | B | C | D | E | F | G | H |
++---+---+---+---+---+---+---+---+
+   |
+   +----+
+        |
+        v
++---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
+| A | B | C | D |cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE| E | F | G | H |
++---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
+DITAA
+      ;;
+  esac
+}
+
+generate_labeled_diagram() {
+  local name="$1" top="$2" bot="$3"
+  local out="$ASSET_DIR/gapbuffer-$name.png"
+
+  write_ditaa_source "$name"
+  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-raw.png" -E -s 0.7 2>/dev/null
+
+  core_w=$(identify "/tmp/${name}-raw.png" | awk '{print $3}' | cut -dx -f1)
+  text_w=$(magick -font "$FONT_HELV" -pointsize 12 label:"$bot" -format "%w" info:)
+  hpad=$(( (text_w - core_w) / 2 + 10 ))
+  [ $hpad -lt 10 ] && hpad=10
+
+  magick "/tmp/${name}-raw.png" \
+    -gravity west -splice "${hpad}x0" -gravity east -splice "${hpad}x0" \
+    -gravity north -splice 0x40 \
+    -font "$FONT_HELV" -pointsize 16 -fill black -annotate +0+15 "$top" \
+    -gravity south -splice 0x30 \
+    -font "$FONT_HELV" -pointsize 12 -fill '#666' -annotate +0+12 "$bot" \
+    -alpha off -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' \
+    "$out"
+  echo "Generated gapbuffer-$name.png ($(identify "$out" | awk '{print $3}'))"
+}
+
+generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
+generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
+generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
+
+generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
+generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
+generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
+
 # Convert ditaa-rendered gap buffer diagrams from default green to #BBFF00.
 find "$BLOG_DIR/assets" -path "*/gapbuffer*.png" -not -name "gapbuffer1.png" \
   -exec magick {} -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' {} \; 2>/dev/null || true
