@@ -7,6 +7,7 @@
 
 (setq org-confirm-babel-evaluate nil)
 (setq large-file-warning-threshold nil)
+(setq create-lockfiles nil)
 (fset 'yes-or-no-p (lambda (&rest _) t))
 (fset 'y-or-n-p (lambda (&rest _) t))
 

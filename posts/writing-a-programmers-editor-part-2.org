@@ -15,18 +15,18 @@ emacs in which this blog is written uses a gap buffer. Gap buffer is a linear ar
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 
-#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png :exports none
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png :cmdline -r -E :exports none
 
                        Initial Gap Buffer
                              |
                              v
 +------+------+------+------+------+------+------+------+------+------+------+------+------+
-| cGRE | cGRE |  H   |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
+|cBF0  |cBF0  |  H   |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
 +------+------+------+------+------+------+------+------+------+------+------+------+------+
                              |
                              v
 +------+------+------+------+------+------+------+------+------+------+------+------+------+
-|  H   | cGRE | cGRE |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
+|  H   |cBF0  |cBF0  |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
 +------+------+------+------+------+------+------+------+------+------+------+------+------+
 
                 Gap Buffer representing cursor.
@@ -56,27 +56,27 @@ you type a character, it fills the empty gap space — no shifting of text requi
 When you press backspace, the gap simply grows by one. The cursor is always /inside/
 the gap, and edits happen at gap boundaries.
 
-#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png :exports none
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png :cmdline -r -E :exports none
 
                Start (gap at cursor)
                      |
                      v
 +------+------+------+------+------+------+
-| cGRE | cGRE |  A   |  B   |  C   |  D   |
+| cBF0 | cBF0 |  A   |  B   |  C   |  D   |
 +------+------+------+------+------+------+
                      |
                   Type X
                      |
                      v
 +------+------+------+------+------+------+
-|  X   | cGRE |  A   |  B   |  C   |  D   |
+|  X   | cBF0 |  A   |  B   |  C   |  D   |
 +------+------+------+------+------+------+
                      |
                   Type Y
                      |
                      v
 +------+------+------+------+------+------+
-|  X   |  Y   | cGRE |  A   |  B   |  C   |
+|  X   |  Y   | cBF0 |  A   |  B   |  C   |
 +------+------+------+------+------+------+
 #+END_SRC
 
@@ -102,20 +102,20 @@ right, up or down a line. The gap only shifts by a few positions. The worst case
 (=Ctrl+End= jumping to the end of a large file) does incur a cost, but it is a
 single =memmove= — a blazingly fast operation on modern hardware.
 
-#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png :exports none
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png :cmdline -r -E :exports none
 
                Cursor at leftmost
                      |
                      v
 +-----+-----+-----+-----+-----+-----+-----+
-| cGRE| cGRE|  H  |  E  |  L  |  L  |  O  |
+| cBF0| cBF0|  H  |  E  |  L  |  L  |  O  |
 +-----+-----+-----+-----+-----+-----+-----+
                      |
                Move right 3
                      |
                      v
 +-----+-----+-----+-----+-----+-----+-----+
-|  H  |  E  |  L  | cGRE| cGRE|  L  |  O  |
+|  H  |  E  |  L  | cBF0| cBF0|  L  |  O  |
 +-----+-----+-----+-----+-----+-----+-----+
 #+END_SRC
 
@@ -137,7 +137,7 @@ This involves allocating a larger array and copying the contents over — an =O(
 operation. Emacs handles this by doubling the buffer size, giving you ample gap
 space before the next resize. The amortized cost per insertion remains =O(1)=.
 
-#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png :exports none
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png :cmdline -r -E :exports none
 
                Gap exhausted
                      |
@@ -150,7 +150,7 @@ space before the next resize. The amortized cost per insertion remains =O(1)=.
                      |
                      v
 +------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+
-|  A   |  B   |  C   |  D   | cGRE | cGRE | cGRE | cGRE | cGRE | cGRE | cGRE | cGRE |  E   |  F   |  G   |  H   |
+|  A   |  B   |  C   |  D   | cBF0 | cBF0 | cBF0 | cBF0 | cBF0 | cBF0 | cBF0 | cBF0 |  E   |  F   |  G   |  H   |
 +------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+
 #+END_SRC
 
