@@ -173,20 +173,8 @@ if [ -n "${NANO_SOURCE}" ]; then
   cp "$NANO_SOURCE" "$BLOG_DIR/public/nano-chat/index.html"
 fi
 
-# Stable route aliases for archive page.
-ARCHIVE_SOURCE=""
-if [ -f "$BLOG_DIR/public/archiveorg/index.html" ]; then
-  ARCHIVE_SOURCE="$BLOG_DIR/public/archiveorg/index.html"
-else
-  ARCHIVE_SOURCE="$(find "$BLOG_DIR/public/blog" -type f -path "*/archive/index.html" 2>/dev/null | head -n 1 || true)"
-fi
-if [ -n "${ARCHIVE_SOURCE}" ]; then
-  mkdir -p "$BLOG_DIR/public/archive"
-  cp "$ARCHIVE_SOURCE" "$BLOG_DIR/public/archive/index.html"
-  # Ensure /blog/ resolves to styled archive page instead of raw directory listing.
-  mkdir -p "$BLOG_DIR/public/blog"
-  cp "$ARCHIVE_SOURCE" "$BLOG_DIR/public/blog/index.html"
-fi
+# Generate archive page from published posts (overrides AOG's auto-generated listing).
+python3 "$BLOG_DIR/scripts/generate_archive.py" "$BLOG_DIR"
 
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"

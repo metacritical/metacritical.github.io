@@ -71,7 +71,7 @@ h2 {
 
 .profile #wrapper {
 	/* padding: 100px 40px 0px; */
-	max-width: 800px;
+	max-width: 760px;
 	margin: 0 auto;
 	padding: 14px 40px 8px;
 }
@@ -114,17 +114,75 @@ nav.main-nav {
 	background: #faf9f5;
 	margin: 0 auto;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	align-items: center;
 	gap: 10px;
 	border-bottom: 1px solid #e6e1d5;
 	z-index: 100;
 }
 
+.nav-left.site-brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.brand-logo-link {
+	display: inline-flex;
+	align-items: center;
+}
+
+.brand-logo {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	flex: 0 0 50px;
+}
+
+.brand-copy {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 0;
+}
+
+nav.main-nav .nav-left.site-brand .brand-logo-link,
+nav.main-nav .nav-left.site-brand .brand-title {
+	padding: 0;
+}
+
+nav.main-nav .nav-left.site-brand .brand-title {
+	color: #1f1f1b;
+	font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+	font-size: 3.1em;
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: -0.02em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+nav.main-nav .nav-left.site-brand .brand-title .brand-o {
+	color: #36c9c7;
+}
+
+.brand-tagline {
+	font-size: clamp(11px, 1.05vw, 14px);
+	line-height: 1.2;
+	color: #7b7569;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .nav-right {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
 }
 
 nav.main-nav a {
@@ -134,8 +192,7 @@ nav.main-nav a {
 	font-weight: 500;
 }
 
-.theme-switch,
-.search-btn {
+.theme-switch {
 	border: 1px solid #d6d1c4;
 	border-radius: 999px;
 	background: transparent;
@@ -143,6 +200,30 @@ nav.main-nav a {
 	padding: 7px 12px;
 	font-size: 14px;
 	cursor: pointer;
+}
+
+.search-btn {
+	border: 0;
+	background: transparent;
+	color: #1f1f1b;
+	padding: 8px 6px;
+	font-size: 15px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.search-btn svg {
+	flex: 0 0 auto;
+}
+
+.search-btn kbd {
+	border: 1px solid #d6d1c4;
+	border-radius: 6px;
+	padding: 1px 6px;
+	background: #fff;
+	font: 600 11px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 nav.main-nav a.cta {
@@ -449,9 +530,13 @@ body.search-open {
 
 
 #wrapper {
-  max-width: 800px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 22px 40px 70px 40px;
+}
+
+#wrapper.post-page {
+  max-width: 788px;
 }
 
 #wrapper.home {
@@ -496,6 +581,11 @@ body.search-open {
 /* Homepage card feed should not inherit pink link styles */
 .medium-home {
 	margin-top: 4px;
+}
+
+.post:has(> .medium-home) > .story-rail,
+.post:has(> .medium-home) > .post-author-row {
+	display: none;
 }
 
 .medium-home .medium-post-card {
@@ -632,6 +722,97 @@ em, i {
 	margin-bottom:2 0px;
 	color: #222;
 	font: 300 32px/1.4em "Helvetica Neue", Helvetica,Arial,sans-serif;
+}
+
+.post-author-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 18px 0 34px;
+}
+
+.post-author-avatar {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid #ded8ca;
+}
+
+.post-author-name {
+	font: 600 18px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #2b2822;
+}
+
+.post-author-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.post-author-date {
+	font: 500 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #7b7569;
+}
+
+#wrapper.post-page .post > h1.title {
+	margin-bottom: 0;
+}
+
+#wrapper.post-page .post > p:first-of-type {
+	margin-top: 14px;
+}
+
+.post {
+	position: relative;
+}
+
+.story-rail {
+	position: absolute;
+	left: -88px;
+	top: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: 56px;
+}
+
+.story-clap-btn,
+.story-share-link {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 1px solid #d7d1c4;
+	background: #fff;
+	color: #595348;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	font: 600 24px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.story-clap-btn {
+	cursor: pointer;
+}
+
+.story-clap-btn img {
+	width: 30px;
+	height: 30px;
+	object-fit: contain;
+	display: block;
+	transform: translate(1px, -1px);
+}
+
+.story-clap-count,
+.story-share-label {
+	font: 500 12px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #7b7569;
+}
+
+.story-share-label {
+	margin-top: 2px;
 }
 
 .post h2 {

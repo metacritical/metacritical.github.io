@@ -7,39 +7,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Get git status on unix terminal (PS1)." />
   <meta name="keywords" content="git status, terminal" />
-  <link rel="icon" href="/media/img/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
   <link rel="stylesheet" href="/media/css/style.css" type="text/css">
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770693194" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770693194" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782725120" type="text/css">
 </head>
 
   <body class="container">
 <nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
   <div class="nav-right">
     <a href="/">Blog</a>
     <a href="/archive/">Archive</a>
     <a href="/tags/">Tag</a>
     <a href="/about/">About</a>
     <a href="/nano-chat/">Nano Chat</a>
-    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">Search</button>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
     <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
     <a class="cta" href="https://github.com/metacritical">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
     </a>
   </div>
 </nav>
-<div class="profile">
-  <section id="wrapper">
-    <header id="header">
-      <a href="/"><img id="avatar" class="2x" src="/media/images/logo.png"></a>
-      <h1>Self dot send (Computing Blog)</h1>
-      <h2>Message passing is just a procedure call.</h2>
-    </header>
-  </section>
-</div>
 <div id="site-search-overlay" class="site-search-overlay" hidden>
   <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
     <div class="site-search-top">
@@ -55,11 +61,28 @@
 <section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Git status on Unix terminal</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    </div>
+  </div>
   <p>
 It is often required to get git stats on terminal PS1, most solutions are based 
-around bash which can be slow sometimes or if you are like me who programmed 
-something in ruby also turned out to be slow. We can make things faster by 
-porting such scripts to golang. Here is one such solution :
+aound bash can be slow sometimes or if you are like me who programmed something 
+in ruby also turned out to be slow. We can make things faster by porting such 
+scripts to golang. one such solution can be this :
 </p>
 
 <div class="org-src-container">
@@ -157,7 +180,7 @@ porting such scripts to golang. Here is one such solution :
 </div>
 
 <p>
-You can download this by executing the following command on your terminal :
+You can download this by executing the following command on your terminal:
 </p>
 
 <div class="org-src-container">
@@ -170,13 +193,13 @@ And then compiling it with go.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">go gits.go -o gits
+<pre class="src src-bash">go build gits.go -o gits
 </pre>
 </div>
 
 <p>
-Once that is done you should put it somewhere and included in the PATH.
-Also the PS1 should be modified like so.
+Once that is done you should put it somewhere and include it in the PATH.
+Also the PS1 should be modified like this.
 </p>
 
 <div class="org-src-container">
@@ -185,22 +208,22 @@ Also the PS1 should be modified like so.
 </div>
 
 <p>
-This would yield a prompt like this :
+This would yield a prompt like this:
 </p>
 
 
-<div id="git no changes." class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" style="width:auto" />
+<div id="org155f4df" class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
 </p>
 </div>
 
 <p>
-If git files are unstaged on the current path then may be like this :
+If git files are unstaged on the current path then it may look like this:
 </p>
 
 
-<div id="git no changes." class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" style="width:auto" />
+<div id="org5882a57" class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
 </p>
 </div>
 

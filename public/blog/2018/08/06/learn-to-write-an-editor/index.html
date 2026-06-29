@@ -7,39 +7,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="A series of Assays on writing a programmers editor." />
   <meta name="keywords" content="editor, emacs, vim, scheme" />
-  <link rel="icon" href="/media/img/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
   <link rel="stylesheet" href="/media/css/style.css" type="text/css">
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770693194" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1770693194" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782725120" type="text/css">
 </head>
 
   <body class="container">
 <nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
   <div class="nav-right">
     <a href="/">Blog</a>
     <a href="/archive/">Archive</a>
     <a href="/tags/">Tag</a>
     <a href="/about/">About</a>
     <a href="/nano-chat/">Nano Chat</a>
-    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">Search</button>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
     <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
     <a class="cta" href="https://github.com/metacritical">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
     </a>
   </div>
 </nav>
-<div class="profile">
-  <section id="wrapper">
-    <header id="header">
-      <a href="/"><img id="avatar" class="2x" src="/media/images/logo.png"></a>
-      <h1>Self dot send (Computing Blog)</h1>
-      <h2>Message passing is just a procedure call.</h2>
-    </header>
-  </section>
-</div>
 <div id="site-search-overlay" class="site-search-overlay" hidden>
   <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
     <div class="site-search-top">
@@ -55,22 +61,39 @@
 <section id="wrapper" class="post-page">
   <div class="post">
   <h1 class="title">Writing a Programmers Editor - Part 1</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    </div>
+  </div>
   <p>
-Since the time i learnt emacs i have toyed with the idea of writing my own 
-programming text editor. Though emacs is a powerful tool it can be obtuse to 
-people with no lisp/scheme knowledge, one cannot be very effective in emacs 
+Since the time i learnt emacs i have toyed with the idea of writing my own
+programming text editor. Though emacs is a powerful tool it can be obtuse to
+people with no lisp/scheme knowledge, one cannot be very effective in emacs
 without learning elisp. When i floated the idea of writing my own text editor my
-fellow programmers often speculated that it is the most difficult endeavour one 
-can undertake as a programmer, the arguments that were made varied from <i>Emacs 
-and vim they have been in development for over 3 decades</i> to <i>it is a massive 
-untertaking for an individual</i> since companies like IntelliJ's entire business is
+fellow programmers often speculated that it is the most difficult endeavour one
+can undertake as a programmer, the arguments that were made varied from <i>Emacs
+and vim they have been in development for over 3 decades</i> to <i>it is a massive
+undertertaking for an individual</i> since companies like IntelliJ's entire business is
 around the development of text editors/IDE's.
 </p>
 
 <p>
-And perhaps they are right, despite these editors being touted as highly 
-configurable or programmable, programmers regularly dive into the <code>C</code> code to 
-upgrade them. It is infact a delicate exercise in the balance of power, between 
+And perhaps they are right, despite these editors being touted as highly
+configurable or programmable, programmers regularly dive into the <code>C</code> code to
+upgrade them. It is infact a delicate exercise in the balance of power, between
 the <i>C-Runtime</i> and the scripting language of the editor.
 </p>
 
@@ -91,7 +114,7 @@ enough power to <code>elisp</code> interpreter. Either way the user ends up with
 </p>
 
 
-<div id="fig:emacs-percentage" class="figure">
+<div id="orgfd97e47" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/emacs-percentage-repo.png" alt="emacs-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Emacs C/elisp percentage split.</p>
@@ -106,16 +129,15 @@ Documentation of emacs at <code>16.2%</code> is quite impressive irrespective of
 </p>
 
 
-<div id="fig:vim-percentage" class="figure">
+<div id="org56d4d14" class="figure">
 <p><img src="/assets/blog/2018/08/06/learn-to-write-an-editor/vim-percentage-repo.png" alt="vim-percentage-repo.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Vim C/vimscript percentage split.</p>
 </div>
 
-
 <p>
-<code>Vimscript</code> on the other hand may very well be suited for extending the editor 
-in but it surely is no match for a full fledged programming language like lisp, 
+<code>Vimscript</code> on the other hand may very well be suited for extending the editor
+in but it surely is no match for a full fledged programming language like lisp,
 but again the question is <i>How much power does one need in a programming editor ?</i>.
 </p>
 
@@ -123,20 +145,19 @@ but again the question is <i>How much power does one need in a programming edito
 <b>In other words where does the sweetspot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b>
 </p>
 
-<blockquote>
 <ul class="org-ul">
 <li><b>Are these languages equally powerful in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</b></li>
 <li><b>How do these existing Editors work?</b></li>
 <li><b>Is there an efficiency equation that we are unaware of?</b></li>
 <li><b>What if the Delicate balance in powers of the runtime and scripting exists</b></li>
 </ul>
+
 <p>
 <b>for a reason and has a penalty when disturbed?</b>
 </p>
-</blockquote>
 
 <p>
-Whenever i encounter subjective questions such as these, my approach is to find 
+Whenever i encounter subjective questions such as these, my approach is to find
 an objective reasoning for the thought. The approach draws its inspiration
 from a famous Feynman quote.
 </p>
@@ -152,15 +173,14 @@ lisp fits that bill being a lisp, though elisp has "borrowed power" and can move
 so much as the runtime itself allows it.
 </p>
 
-<blockquote>
 <ul class="org-ul">
 <li>What if emacs was written in <b>100%</b> <code>elisp</code>?</li>
 <li>What if we write an Editor in a lisp or scheme which gives us the power to</li>
 </ul>
+
 <p>
-extend the editor in the same language as the editor itself is written in ?
+extend the editor in the same language as the editor itself is written in?
 </p>
-</blockquote>
 
 <p>
 A thought worthy of exploration! In the next few assays we would explore this idea
