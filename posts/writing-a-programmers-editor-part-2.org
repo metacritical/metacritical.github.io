@@ -56,6 +56,41 @@ you type a character, it fills the empty gap space — no shifting of text requi
 When you press backspace, the gap simply grows by one. The cursor is always /inside/
 the gap, and edits happen at gap boundaries.
 
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png :exports none
+
+               Start (gap at cursor)
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+
+| cGRE| cGRE|  A  |  B  |  C  |  D  |
++-----+-----+-----+-----+-----+-----+
+                     |
+                  Type X
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+
+|  X  | cGRE|  A  |  B  |  C  |  D  |
++-----+-----+-----+-----+-----+-----+
+                     |
+                  Type Y
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+
+|  X  |  Y  | cGRE|  A  |  B  |  C  |
++-----+-----+-----+-----+-----+-----+
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png]]
+
+#+CAPTION: Insertion — typing fills the gap from the left, shrinking it one cell at a time.
+[[file:/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png]]
+
+Notice how each typed character occupies one green box, reducing the gap size by one.
+The gap shrinks from the /left edge/, meaning the new characters appear before the
+cursor. This is why insertion is =O(1)= — it is just a memory write at the gap boundary.
+No existing text needs to be shifted.
+
 - *Insertion:* =O(1)= — write into gap, shrink gap by one.
 - *Deletion:* =O(1)= — expand gap by one, no data movement.
 - *Cursor movement:* =O(n)= worst case — gap must travel, shifting characters across.
@@ -67,12 +102,69 @@ right, up or down a line. The gap only shifts by a few positions. The worst case
 (=Ctrl+End= jumping to the end of a large file) does incur a cost, but it is a
 single =memmove= — a blazingly fast operation on modern hardware.
 
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png :exports none
+
+               Cursor at leftmost
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+-----+
+| cGRE| cGRE|  H  |  E  |  L  |  L  |  O  |
++-----+-----+-----+-----+-----+-----+-----+
+                     |
+               Move right 3
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+-----+
+|  H  |  E  |  L  | cGRE| cGRE|  L  |  O  |
++-----+-----+-----+-----+-----+-----+-----+
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png]]
+
+#+CAPTION: Long cursor movement — the gap shifts right, dragging characters from right side to left side.
+[[file:/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png]]
+
+When moving the cursor right, characters on the left side of the gap are "peeled off"
+the right segment and appended to the left segment. A move of /N/ positions requires
+shifting /N/ characters across the gap boundary — hence =O(N)=. For small N this is
+negligible; the =memmove= call completes in nanoseconds.
+
 The real question is: *what happens when the gap runs out of space?*
 
 When you keep typing and the gap fills up completely, the buffer must be resized.
 This involves allocating a larger array and copying the contents over — an =O(n)=
 operation. Emacs handles this by doubling the buffer size, giving you ample gap
 space before the next resize. The amortized cost per insertion remains =O(1)=.
+
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png :exports none
+
+               Gap exhausted
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  A  |  B  |  C  |  D  |  E  |  F  |  G  |  H  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+                     |
+               Resize (2x)
+                     |
+                     v
++-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
+|  A  |  B  |  C  |  D  | cGRE| cGRE| cGRE| cGRE| cGRE| cGRE| cGRE| cGRE|  E  |  F  |  G  |  H  |
++-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png]]
+
+#+CAPTION: Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.
+[[file:/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png]]
+
+This is the only =O(N)= operation in the gap buffer's repertoire. But because the
+buffer size doubles each time — 8 → 16 → 32 → 64 — the resizes become progressively
+rarer. Type a single character and you get a fresh gap of 8 empty slots. Type 1000
+characters and you get a gap of 1024. The cost /amortizes/ to zero over the lifetime
+of the buffer.
 
 *What about other data structures?*
 
