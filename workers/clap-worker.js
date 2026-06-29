@@ -1,13 +1,13 @@
 /**
  * Cloudflare Worker for story claps using D1 (SQLite).
  *
- * Toggle-based: each visitor can clap once per page. Clicking again
- * removes their clap (decrements). Visitors are identified by a UUID
- * generated client-side and stored in localStorage.
+ * One-clap-per-visitor: each visitor can clap once per page. Clicking
+ * again does nothing. Visitors are identified by a UUID generated
+ * client-side and stored in localStorage.
  *
  * Anti-abuse layers:
- *   1. Visitor UUID (localStorage) — one clap toggle per browser per page
- *   2. IP rate limiting (CF-Connecting-IP) — max 20 toggle requests per IP per page
+ *   1. Visitor UUID (localStorage) — one clap per browser per page
+ *   2. IP rate limiting (CF-Connecting-IP) — max 20 requests per IP per page
  *
  * Endpoints:
  *   GET  /api/clap?slug=<slug>&visitor=<uuid>  -> { ok, slug, count, clapped }
@@ -28,7 +28,7 @@
  *   3. Bind as `DB` in wrangler.jsonc, then wrangler deploy.
  */
 
-const MAX_TOGGLES_PER_IP = 20;
+const MAX_REQUESTS_PER_IP = 20;
 
 export default {
   async fetch(request, env, ctx) {
@@ -77,11 +77,11 @@ export default {
 
         const ip = request.headers.get("CF-Connecting-IP") || "unknown";
         const ipToggles = await getIpToggleCount(db, ip, slug);
-        if (ipToggles >= MAX_TOGGLES_PER_IP) {
+        if (ipToggles >= MAX_REQUESTS_PER_IP) {
           return json({ ok: false, error: "Rate limit exceeded" }, 429, corsHeaders);
         }
 
-        const result = await toggleClap(db, slug, visitorId, ip);
+        const result = await addClap(db, slug, visitorId, ip);
         return json({ ok: true, slug, count: result.count, clapped: result.clapped }, 200, corsHeaders);
       }
 
@@ -137,21 +137,10 @@ async function getIpToggleCount(db, ip, slug) {
   return result ? result.count : 0;
 }
 
-async function toggleClap(db, slug, visitorId, ip) {
+async function addClap(db, slug, visitorId, ip) {
   const already = await hasClapped(db, visitorId, slug);
-
   if (already) {
-    await db.batch([
-      db.prepare("DELETE FROM visitor_claps WHERE visitor_id = ? AND slug = ?")
-        .bind(visitorId, slug),
-      db.prepare("UPDATE claps SET count = MAX(count - 1, 0) WHERE slug = ?")
-        .bind(slug),
-      db.prepare(
-        `INSERT INTO ip_toggle_log (ip, slug, count) VALUES (?, ?, 1)
-         ON CONFLICT(ip, slug) DO UPDATE SET count = count + 1`
-      ).bind(ip, slug),
-    ]);
-    return { count: await getCount(db, slug), clapped: false };
+    return { count: await getCount(db, slug), clapped: true };
   }
 
   await db.batch([

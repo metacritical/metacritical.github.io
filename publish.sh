@@ -204,6 +204,10 @@ if [ -d "$BLOG_DIR/media" ]; then
     mkdir -p "$BLOG_DIR/public/media/images"
     cp -r "$BLOG_DIR/media/images/"* "$BLOG_DIR/public/media/images/" 2>/dev/null || true
   fi
+  if [ -d "$BLOG_DIR/media/js" ]; then
+    mkdir -p "$BLOG_DIR/public/media/js"
+    cp -r "$BLOG_DIR/media/js/"* "$BLOG_DIR/public/media/js/" 2>/dev/null || true
+  fi
 fi
 if [ -d "$BLOG_DIR/assets" ]; then
   mkdir -p "$BLOG_DIR/public/assets"
@@ -219,6 +223,11 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
     -e 's|file:///blog/|/blog/|g' \
     -e 's|file:///assets/|/assets/|g' \
     -e 's|file:///media/|/media/|g'
+
+# Inject claps.js for backend-connected clap counts (one clap per visitor).
+find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
+  xargs -0 sed -i '' \
+    -e 's|</body>|<script src="/media/js/claps.js"></script>\n</body>|g'
 
 # Remove synthetic homepage title injected by generic post template.
 if [ -f "$BLOG_DIR/public/index.html" ]; then
