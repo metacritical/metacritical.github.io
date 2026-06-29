@@ -63,6 +63,10 @@ if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
   done < <(find "$BLOG_DIR/posts" -name "*.org" -type f | sort)
 fi
 
+# Convert ditaa-rendered gap buffer diagrams from default green to #BBFF00.
+find "$BLOG_DIR/assets" -path "*/gapbuffer*.png" -not -name "gapbuffer1.png" \
+  -exec magick {} -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' {} \; 2>/dev/null || true
+
 # Publish with AOG using native selfdotsend theme.
 echo "Publishing blog with AOG..."
 rm -rf "$BLOG_DIR/public"

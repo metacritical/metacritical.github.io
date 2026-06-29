@@ -15,23 +15,17 @@ emacs in which this blog is written uses a gap buffer. Gap buffer is a linear ar
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 
-#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png :cmdline -r -E :exports none
-                        Initial Gap Buffer
-                              |
-                              v
-  +----+----+---+---+---+---+---+---+---+---+---+---+---+
-  |cBF0|cBF0| H | E | L | L | O |   | W | O | R | L | D |
-  +----+----+---+---+---+---+---+---+---+---+---+---+---+
-       |
-       +---+
-       |
-       v
-  +---+----+----+---+---+---+---+---+---+---+---+---+---+
-  | H |cBF0|cBF0| E | L | L | O |   | W | O | R | L | D |
-  +---+----+----+---+---+---+---+---+---+---+---+---+---+
-                 Gap Buffer representing cursor.
-                              |
-                              ^
+#+BEGIN_SRC ditaa :cmdline -r -E :exports none
++----+----+---+---+---+---+---+---+---+---+---+---+---+
+|cGRE|cGRE| H | E | L | L | O |   | W | O | R | L | D |
++----+----+---+---+---+---+---+---+---+---+---+---+---+
+   |
+   +---+
+   |
+   v
++---+----+----+---+---+---+---+---+---+---+---+---+---+
+| H |cGRE|cGRE| E | L | L | O |   | W | O | R | L | D |
++---+----+----+---+---+---+---+---+---+---+---+---+---+
 #+END_SRC
 
 #+RESULTS:
@@ -57,26 +51,23 @@ When you press backspace, the gap simply grows by one. The cursor is always /ins
 the gap, and edits happen at gap boundaries.
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png :cmdline -r -E :exports none
-               Start (gap at cursor)
-                     |
-                     v
-  +----+----+---+---+---+---+
-  |cBF0|cBF0| A | B | C | D |
-  +----+----+---+---+---+---+
-       |
-       +----+
-       |
-       v
-  +---+----+---+---+---+---+
-  | X |cBF0| A | B | C | D |
-  +---+----+---+---+---+---+
-       |
-       +----+
-       |
-       v
-  +---+---+----+---+---+---+
-  | X | Y |cBF0| A | B | C |
-  +---+---+----+---+---+---+
++----+----+---+---+---+---+
+|cGRE|cGRE| A | B | C | D |
++----+----+---+---+---+---+
+   |
+   +----+
+   |
+   v
++---+----+---+---+---+---+
+| X |cGRE| A | B | C | D |
++---+----+---+---+---+---+
+   |
+   +----+
+   |
+   v
++---+---+----+---+---+---+
+| X | Y |cGRE| A | B | C |
++---+---+----+---+---+---+
 #+END_SRC
 
 #+RESULTS:
@@ -102,19 +93,16 @@ right, up or down a line. The gap only shifts by a few positions. The worst case
 single =memmove= — a blazingly fast operation on modern hardware.
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png :cmdline -r -E :exports none
-               Cursor at leftmost
-                     |
-                     v
-  +----+----+---+---+---+---+---+
-  |cBF0|cBF0| H | E | L | L | O |
-  +----+----+---+---+---+---+---+
-       |
-       +----+
-       |
-       v
-  +---+---+---+----+----+---+---+
-  | H | E | L |cBF0|cBF0| L | O |
-  +---+---+---+----+----+---+---+
++----+----+---+---+---+---+---+
+|cGRE|cGRE| H | E | L | L | O |
++----+----+---+---+---+---+---+
+   |
+   +----+
+   |
+   v
++---+---+---+----+----+---+---+
+| H | E | L |cGRE|cGRE| L | O |
++---+---+---+----+----+---+---+
 #+END_SRC
 
 #+RESULTS:
@@ -136,19 +124,16 @@ operation. Emacs handles this by doubling the buffer size, giving you ample gap
 space before the next resize. The amortized cost per insertion remains =O(1)=.
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png :cmdline -r -E :exports none
-               Gap exhausted
-                     |
-                     v
-  +---+---+---+---+---+---+---+---+
-  | A | B | C | D | E | F | G | H |
-  +---+---+---+---+---+---+---+---+
-       |
-       +----+
-       |
-       v
-  +---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
-  | A | B | C | D |cBF0|cBF0|cBF0|cBF0|cBF0|cBF0|cBF0|cBF0| E | F | G | H |
-  +---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
++---+---+---+---+---+---+---+---+
+| A | B | C | D | E | F | G | H |
++---+---+---+---+---+---+---+---+
+   |
+   +----+
+   |
+   v
++---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
+| A | B | C | D |cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE|cGRE| E | F | G | H |
++---+---+---+---+----+----+----+----+----+----+----+----+---+---+---+---+
 #+END_SRC
 
 #+RESULTS:
