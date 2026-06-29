@@ -7,13 +7,119 @@
 #+TAGS:        Data Structures, Editor, Gap Buffer
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: Exploration to find the right data structure for teh editor.
+#+DESCRIPTION: Exploration to find the right data structure for the editor.
 
 In my quest to write a programmable editor the first problem that i came across was
-which datastructure to hold the text in? What do other text editors use? For instance 
-emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
+which datastructure to hold the text in? What do other text editors use? For instance
+emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 
+#+BEGIN_SRC ditaa :file assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png :exports none
 
+                       Initial Gap Buffer
+                             |
+                             v
++------+------+------+------+------+------+------+------+------+------+------+------+------+
+| cGRE | cGRE |  H   |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
++------+------+------+------+------+------+------+------+------+------+------+------+------+
+                             |
+                             v
++------+------+------+------+------+------+------+------+------+------+------+------+------+
+|  H   | cGRE | cGRE |  E   |  L   |  L   |  O   |      |  W   |  O   |  R   |  L   |  D   |
++------+------+------+------+------+------+------+------+------+------+------+------+------+
+
+                Gap Buffer representing cursor.
+                             |
+                             ^
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png]]
+
+#+CAPTION: Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.
 [[file:/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png]]
+
+Notice the /green boxes/ in the diagram above. Those represent the gap — empty space
+in the array reserved for future insertions. The text ="HELLO WORLD"= sits in a
+single contiguous array, but the gap splits it into two segments: the text /before/
+the cursor and the text /after/ the cursor.
+
+When you move the cursor one position to the right (from before ="H"= to after
+="H"=), the gap /shifts/ with it. The ="H"= jumps from the right side of the gap to
+the left side. This is the fundamental mechanic of a gap buffer.
+
+*Why is this clever?*
+
+Because insertion and deletion at the cursor position becomes essentially free. When
+you type a character, it fills the empty gap space — no shifting of text required.
+When you press backspace, the gap simply grows by one. The cursor is always /inside/
+the gap, and edits happen at gap boundaries.
+
+- *Insertion:* =O(1)= — write into gap, shrink gap by one.
+- *Deletion:* =O(1)= — expand gap by one, no data movement.
+- *Cursor movement:* =O(n)= worst case — gap must travel, shifting characters across.
+
+*But wait, isn't cursor movement expensive?*
+
+In practice, no. Most cursor movements are short hops — a few characters left or
+right, up or down a line. The gap only shifts by a few positions. The worst case
+(=Ctrl+End= jumping to the end of a large file) does incur a cost, but it is a
+single =memmove= — a blazingly fast operation on modern hardware.
+
+The real question is: *what happens when the gap runs out of space?*
+
+When you keep typing and the gap fills up completely, the buffer must be resized.
+This involves allocating a larger array and copying the contents over — an =O(n)=
+operation. Emacs handles this by doubling the buffer size, giving you ample gap
+space before the next resize. The amortized cost per insertion remains =O(1)=.
+
+*What about other data structures?*
+
+The gap buffer is not the only option. Several alternatives exist, each with their
+own trade-offs:
+
+- *Rope:* A binary tree where each leaf holds a short string fragment. Insertion
+  and deletion are =O(log n)=. Excellent for very large documents. Used by
+  [[https://github.com/atom/xray][Xi-editor]] and [[https://github.com/zed-industries/zed][Zed]].
+
+- *Piece Table:* A table of /pieces/ — references into an original buffer and an
+  append-only change buffer. Never modifies the original. Used by [[https://code.visualstudio.com/blogs/2018/03/23/text-buffer-reimplementation][VS Code]] and
+  Microsoft Word.
+
+- *Linked List of Lines:* Each line is a separate string node. Simple but slow for
+  cross-line operations. Used by many naive editors and early versions of =notepad=.
+
+- *Array (Flat):* A single contiguous array with no gap. Every insertion requires
+  =O(n)= shifting. Simple but impractical for real-time editing.
+
+So why does emacs stick with the gap buffer? Because for the vast majority of
+editing scenarios — typing, deleting, small cursor movements — the gap buffer is
+hard to beat. It has excellent cache locality (everything is in one contiguous
+array), minimal allocation overhead, and is trivially simple to implement.
+
+*Which one should we pick for our editor?*
+
+Remember from the [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] — the goal is to write an editor in a lisp or scheme
+that gives =100%= power to the user. A gap buffer is simple enough to implement in
+scheme in an afternoon, and its performance characteristics are well understood.
+A rope or piece table would add complexity that may not pay off until the editor
+handles very large files.
+
+There is also a philosophical angle. The gap buffer embodies a principle that
+resonates with lisp: /simple primitives that compose well/. A gap buffer is just
+an array with a split point. You can build higher-level abstractions — undo
+history, multi-cursor, collaborative editing — on top of it without fighting the
+data structure.
+
+*But does simple mean good enough?*
+
+That is the question we will explore in the next part. We will implement a gap
+buffer in scheme, wire it up to a basic display routine, and measure its
+performance on real-world editing workloads. The question is not just /can we build
+an editor on a gap buffer?/ — emacs already proved that. The question is /can we
+build one that is entirely in scheme, with no C runtime, and still feel fast?/
+
+Watchout for the next part of the assay, till then.
+
+/Shorel'aran/
