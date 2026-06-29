@@ -154,6 +154,7 @@ class DraftEditor {
   constructor(opts) {
     console.time('plus-ready');
     this._plusTimed = false;
+    this._plusHideTimer = null;
     this.opts = Object.assign({
       titleEl: null,
       bodyEl: null,
@@ -1152,7 +1153,13 @@ class DraftEditor {
     ul.appendChild(li);
     this.addNewBlockAt(block, ul, false);
     const p = this.createParagraph();
-    this.addNewBlockAt(ul, p, true);
+    this.addNewBlockAt(ul, p, false);
+    const range = document.createRange();
+    range.setStartAfter(marker);
+    range.collapse(true);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
   insertList(type) {
@@ -1163,7 +1170,8 @@ class DraftEditor {
     list.appendChild(li);
     this.addNewBlockAt(block, list, false);
     const p = this.createParagraph();
-    this.addNewBlockAt(list, p, true);
+    this.addNewBlockAt(list, p, false);
+    this.placeCaretAtStart(li);
   }
 
   insertDescriptionList() {
@@ -1177,7 +1185,8 @@ class DraftEditor {
     dl.appendChild(dd);
     this.addNewBlockAt(block, dl, false);
     const p = this.createParagraph();
-    this.addNewBlockAt(dl, p, true);
+    this.addNewBlockAt(dl, p, false);
+    this.placeCaretAtStart(dt);
   }
 
   async insertTodoChecklist() {
@@ -1204,7 +1213,13 @@ class DraftEditor {
     div.appendChild(ul);
     this.addNewBlockAt(block, div, false);
     const trailingP = this.createParagraph();
-    this.addNewBlockAt(div, trailingP, true);
+    this.addNewBlockAt(div, trailingP, false);
+    const range = document.createRange();
+    range.setStartAfter(marker);
+    range.collapse(true);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
   // Checkbox list edit/preview toggle
@@ -2297,9 +2312,10 @@ Bob --> Alice: Hi
     this.bodyEl.addEventListener('mouseout', (e) => {
       const related = e.relatedTarget;
       if (related && (related === this.blockPlus || this.insertMenu.contains(related))) return;
-      setTimeout(() => {
+      clearTimeout(this._plusHideTimer);
+      this._plusHideTimer = setTimeout(() => {
         if (!this.bodyEl.matches(':hover') && !this.blockPlus.matches(':hover')) this._hideBlockPlus();
-      }, 50);
+      }, 300);
     });
 
     this.bodyEl.addEventListener('input', (e) => {
@@ -2505,7 +2521,15 @@ Bob --> Alice: Hi
     });
 
     this.blockPlus.addEventListener('mouseenter', () => {
+      clearTimeout(this._plusHideTimer);
       if (this.activeBlockForPlus) this._positionBlockPlus(this.activeBlockForPlus);
+    });
+
+    this.blockPlus.addEventListener('mouseleave', () => {
+      clearTimeout(this._plusHideTimer);
+      this._plusHideTimer = setTimeout(() => {
+        if (!this.bodyEl.matches(':hover')) this._hideBlockPlus();
+      }, 300);
     });
 
     this.uploadInput.addEventListener('change', async () => {
@@ -2676,6 +2700,7 @@ Bob --> Alice: Hi
       return text ? `@@html:<mark style="background-color:${DraftEditor.escHtml(color)}">${DraftEditor.escHtml(text)}</mark>@@` : '';
     }
     if (tag === 'span') {
+      if (node.classList.contains('cb-marker') || node.classList.contains('todo-title')) return '';
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
       const fontSize = node.style.fontSize || '';

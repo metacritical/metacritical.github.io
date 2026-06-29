@@ -1,5 +1,5 @@
 #+TITLE: Code Test
-#+DATE: 2026-06-28
+#+DATE: 2026-06-29
 #+OPTIONS: toc:nil
 #+DESCRIPTION: Draft post
 #+FILETAGS: :test:
@@ -15,8 +15,8 @@ end
 
 - ~[x] Yellow~
 - ~[ ] Green~
-- ~[ ]~ Yehhok
-- [ ] Melkox
+- ~[ ]~ Orang
+- - [ ] Meloik- [ ] Gleporialis
 
 #+ATTR_HTML: :data-bg dark
 #+ATTR_HTML: :data-syntax-theme monokai

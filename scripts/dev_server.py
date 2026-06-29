@@ -421,7 +421,8 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
         params = parse_qs(query, keep_blank_values=False)
         slug = (params.get("slug", [""])[0]).strip().lower()
         kind = (params.get("kind", ["draft"])[0]).strip().lower()
-        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug):
+        slug = re.sub(r"[^a-z0-9()_-]+", "-", slug).strip("-")
+        if not slug or not re.fullmatch(r"[a-z0-9()][a-z0-9()_-]*", slug):
             self._json(400, {"ok": False, "error": "Invalid draft slug"})
             return
         if kind == "post":

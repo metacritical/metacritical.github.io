@@ -21,7 +21,7 @@
     "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
     "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
     "date": "2018-08-11",
-    "excerpt": "In my quest to write a programmable editor the first problem that i came across was which datastructure to hold the text in? What do other text editors use? For instance emacs in which this blog is written uses gap bu..."
+    "excerpt": "In my quest to write a programmable editor the first problem that i came across was which datastructure to hold the text in? What do other text editors use? For instance emacs in which this blog is written uses a gap ..."
   },
   {
     "title": "Writing a Programmers Editor - Part 1",

@@ -1,23 +1,34 @@
 /**
- * Cloudflare Worker for persisting story claps in D1.
+ * Cloudflare Worker for story claps using D1 (SQLite).
+ *
+ * Toggle-based: each visitor can clap once per page. Clicking again
+ * removes their clap (decrements). Visitors are identified by a UUID
+ * generated client-side and stored in localStorage.
+ *
+ * Anti-abuse layers:
+ *   1. Visitor UUID (localStorage) — one clap toggle per browser per page
+ *   2. IP rate limiting (CF-Connecting-IP) — max 20 toggle requests per IP per page
  *
  * Endpoints:
- *   GET  /api/clap?slug=<page-slug>  -> { ok, slug, count }
- *   POST /api/clap                   -> { ok, slug, count }
- *        body: { slug: "page-slug" }
+ *   GET  /api/clap?slug=<slug>&visitor=<uuid>  -> { ok, slug, count, clapped }
+ *   POST /api/clap  { slug, visitor_id }       -> { ok, slug, count, clapped }
  *
  * Setup:
- *   1. Create a D1 database in the Cloudflare dashboard.
- *   2. Run the schema:
+ *   1. wrangler d1 create sds
+ *   2. wrangler d1 execute sds --command "
  *        CREATE TABLE IF NOT EXISTS claps (
  *          slug TEXT PRIMARY KEY,
  *          count INTEGER NOT NULL DEFAULT 0
  *        );
- *   3. Bind the database to this Worker as `DB`.
- *   4. Deploy this worker and set window.SELF_DOTSEND_CLAP_API to its URL
- *      in your site's JS, e.g.:
- *        window.SELF_DOTSEND_CLAP_API = "https://claps.selfdotsend.workers.dev/api/clap";
+ *        CREATE TABLE IF NOT EXISTS visitor_claps (
+ *          visitor_id TEXT,
+ *          slug TEXT,
+ *          PRIMARY KEY (visitor_id, slug)
+ *        );"
+ *   3. Bind as `DB` in wrangler.jsonc, then wrangler deploy.
  */
+
+const MAX_TOGGLES_PER_IP = 20;
 
 export default {
   async fetch(request, env, ctx) {
@@ -44,11 +55,13 @@ export default {
     try {
       if (request.method === "GET") {
         const slug = sanitizeSlug(url.searchParams.get("slug"));
+        const visitorId = sanitizeVisitor(url.searchParams.get("visitor"));
         if (!slug) {
           return json({ ok: false, error: "slug is required" }, 400, corsHeaders);
         }
         const count = await getCount(db, slug);
-        return json({ ok: true, slug, count }, 200, corsHeaders);
+        const clamped = visitorId ? await hasClapped(db, visitorId, slug) : false;
+        return json({ ok: true, slug, count, clapped }, 200, corsHeaders);
       }
 
       if (request.method === "POST") {
@@ -57,11 +70,19 @@ export default {
           body = await request.json();
         } catch (_) {}
         const slug = sanitizeSlug(body.slug);
-        if (!slug) {
-          return json({ ok: false, error: "slug is required" }, 400, corsHeaders);
+        const visitorId = sanitizeVisitor(body.visitor_id);
+        if (!slug || !visitorId) {
+          return json({ ok: false, error: "slug and visitor_id are required" }, 400, corsHeaders);
         }
-        const count = await incrementCount(db, slug);
-        return json({ ok: true, slug, count }, 200, corsHeaders);
+
+        const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+        const ipToggles = await getIpToggleCount(db, ip, slug);
+        if (ipToggles >= MAX_TOGGLES_PER_IP) {
+          return json({ ok: false, error: "Rate limit exceeded" }, 429, corsHeaders);
+        }
+
+        const result = await toggleClap(db, slug, visitorId, ip);
+        return json({ ok: true, slug, count: result.count, clapped: result.clapped }, 200, corsHeaders);
       }
 
       return json({ ok: false, error: "Method not allowed" }, 405, corsHeaders);
@@ -87,6 +108,11 @@ function sanitizeSlug(raw) {
     .replace(/^-|-$/g, "");
 }
 
+function sanitizeVisitor(raw) {
+  const v = String(raw || "").trim();
+  return /^[a-f0-9-]{30,}$/i.test(v) ? v : "";
+}
+
 async function getCount(db, slug) {
   const result = await db
     .prepare("SELECT count FROM claps WHERE slug = ?")
@@ -95,13 +121,50 @@ async function getCount(db, slug) {
   return result ? result.count : 0;
 }
 
-async function incrementCount(db, slug) {
-  await db
-    .prepare(
+async function hasClapped(db, visitorId, slug) {
+  const result = await db
+    .prepare("SELECT 1 FROM visitor_claps WHERE visitor_id = ? AND slug = ?")
+    .bind(visitorId, slug)
+    .first();
+  return !!result;
+}
+
+async function getIpToggleCount(db, ip, slug) {
+  const result = await db
+    .prepare("SELECT count FROM ip_toggle_log WHERE ip = ? AND slug = ?")
+    .bind(ip, slug)
+    .first();
+  return result ? result.count : 0;
+}
+
+async function toggleClap(db, slug, visitorId, ip) {
+  const already = await hasClapped(db, visitorId, slug);
+
+  if (already) {
+    await db.batch([
+      db.prepare("DELETE FROM visitor_claps WHERE visitor_id = ? AND slug = ?")
+        .bind(visitorId, slug),
+      db.prepare("UPDATE claps SET count = MAX(count - 1, 0) WHERE slug = ?")
+        .bind(slug),
+      db.prepare(
+        `INSERT INTO ip_toggle_log (ip, slug, count) VALUES (?, ?, 1)
+         ON CONFLICT(ip, slug) DO UPDATE SET count = count + 1`
+      ).bind(ip, slug),
+    ]);
+    return { count: await getCount(db, slug), clapped: false };
+  }
+
+  await db.batch([
+    db.prepare(
       `INSERT INTO claps (slug, count) VALUES (?, 1)
        ON CONFLICT(slug) DO UPDATE SET count = count + 1`
-    )
-    .bind(slug)
-    .run();
-  return getCount(db, slug);
+    ).bind(slug),
+    db.prepare("INSERT OR IGNORE INTO visitor_claps (visitor_id, slug) VALUES (?, ?)")
+      .bind(visitorId, slug),
+    db.prepare(
+      `INSERT INTO ip_toggle_log (ip, slug, count) VALUES (?, ?, 1)
+       ON CONFLICT(ip, slug) DO UPDATE SET count = count + 1`
+    ).bind(ip, slug),
+  ]);
+  return { count: await getCount(db, slug), clapped: true };
 }

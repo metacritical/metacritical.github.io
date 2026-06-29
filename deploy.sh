@@ -12,6 +12,12 @@ cd "$BLOG_DIR"
 # 1) Build site
 RENDER_DIAGRAMS="${RENDER_DIAGRAMS:-1}" ./publish.sh
 
+# 1b) Deploy Cloudflare Worker (claps backend)
+if [ -f "$BLOG_DIR/workers/wrangler.jsonc" ]; then
+  echo "Deploying clap-worker to Cloudflare..."
+  (cd "$BLOG_DIR/workers" && npx wrangler deploy) || echo "[WARN] Worker deploy skipped"
+fi
+
 # 2) Ensure pages repo exists and is current
 if [ ! -d "$PAGES_DIR/.git" ]; then
   git clone "$PAGES_REPO_URL" "$PAGES_DIR"

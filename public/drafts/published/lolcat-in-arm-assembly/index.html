@@ -273,9 +273,11 @@
     .draft-editable > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
     .draft-editable > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
     .draft-editable > ul.checkbox { list-style: none; padding-left: 0; }
-    .draft-editable > ul.checkbox li { position: relative; }
+    .draft-editable > ul.checkbox li { position: relative; font-weight: 500; }
     .draft-editable > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; vertical-align: middle; }
     .draft-editable > ul.checkbox li .cb-marker { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; margin-right: 6px; user-select: none; min-width: 1.5em; text-align: center; vertical-align: middle; }
+    .draft-editable > ul, .draft-editable > ol { padding-left: 28px; margin: 8px 0; }
+    .draft-editable > ul li, .draft-editable > ol li { padding: 3px 0; }
     .draft-editable > dl { margin: 8px 0; }
     .draft-editable > dl dt { font-weight: 700; margin-top: 6px; }
     .draft-editable > dl dd { margin-left: 20px; margin-bottom: 4px; }
@@ -1898,6 +1900,7 @@
     if (tag === 'sub') return '_{' + childrenToOrg().trim() + '}';
     if (tag === 'sup') return '^{' + childrenToOrg().trim() + '}';
     if (tag === 'span') {
+      if (node.classList.contains('cb-marker') || node.classList.contains('todo-title')) return '';
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
       const fontSize = node.style.fontSize || '';
@@ -2949,6 +2952,43 @@
     }
   });
 
+  function focusFirstListItem(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    let p = sel.anchorNode;
+    if (p && p.nodeType === Node.TEXT_NODE) p = p.parentElement;
+    while (p && p !== body && p.tagName !== 'P') p = p.parentElement;
+    if (!p || p === body) return;
+    const block = p.previousElementSibling;
+    if (!block) return;
+    const list = block.matches('ul, ol, dl') ? block : block.querySelector('ul, ol, dl');
+    if (!list) return;
+    if (list.tagName === 'DL') {
+      const dt = list.querySelector('dt');
+      if (dt) {
+        const range = document.createRange();
+        range.selectNodeContents(dt);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      return;
+    }
+    const li = list.querySelector('li');
+    if (!li) return;
+    const marker = li.querySelector('.cb-marker');
+    const range = document.createRange();
+    if (marker) {
+      range.setStartAfter(marker);
+      range.collapse(true);
+    } else {
+      range.selectNodeContents(li);
+      range.collapse(true);
+    }
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   plusMenu.addEventListener('click', async (e)=>{
     const btn = e.target.closest('button');
     if (!btn) return;
@@ -3032,24 +3072,28 @@
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ul><li><br></li></ul><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'ol') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ol><li><br></li></ol><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'dl') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<dl><dt><br></dt><dd><br></dd></dl><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'checkbox') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'todo') {
@@ -3058,6 +3102,7 @@
       const title = ((await askInput({ title:'TODO Item', label:'Title', placeholder:'What needs to be done?', okText:'Add' })) || '').trim();
       if (!title) return;
       insertHtmlAtCursor('<div class="todo-block"><p class="todo-title">TODO ' + escapeHtml(title) + '</p><ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul></div><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'verse') {

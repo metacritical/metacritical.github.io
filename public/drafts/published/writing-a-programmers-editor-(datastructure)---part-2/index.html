@@ -273,9 +273,11 @@
     .draft-editable > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
     .draft-editable > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
     .draft-editable > ul.checkbox { list-style: none; padding-left: 0; }
-    .draft-editable > ul.checkbox li { position: relative; }
+    .draft-editable > ul.checkbox li { position: relative; font-weight: 500; }
     .draft-editable > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; vertical-align: middle; }
     .draft-editable > ul.checkbox li .cb-marker { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; margin-right: 6px; user-select: none; min-width: 1.5em; text-align: center; vertical-align: middle; }
+    .draft-editable > ul, .draft-editable > ol { padding-left: 28px; margin: 8px 0; }
+    .draft-editable > ul li, .draft-editable > ol li { padding: 3px 0; }
     .draft-editable > dl { margin: 8px 0; }
     .draft-editable > dl dt { font-weight: 700; margin-top: 6px; }
     .draft-editable > dl dd { margin-left: 20px; margin-bottom: 4px; }
@@ -471,21 +473,145 @@
       <span class="story-clap-count">0</span>
     </aside>
     <h1 class="title" id="draft-title" contenteditable="true">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
-    <div class="post-author-row"><img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey"><div class="post-author-meta"><span class="post-author-name-row"><span class="post-author-name">Pankaj Doharey</span><span id="draft-tags-inline" class="draft-inline-tags"></span><button id="draft-add-tag" class="draft-tag-add" type="button">+ Tag</button></span><span class="post-author-date">2018-08-11 Sat · 1 min read</span><span id="draft-save-state" class="draft-save-state" aria-live="polite">Saved</span></div></div>
-    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="posts/writing-a-programmers-editor-part-2.org" data-tags="scheme,editor-data-structures,gap-buffer,data,structures,editor,gap,buffer" data-code-meta="[]"><p>
+    <div class="post-author-row"><img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey"><div class="post-author-meta"><span class="post-author-name-row"><span class="post-author-name">Pankaj Doharey</span><span id="draft-tags-inline" class="draft-inline-tags"></span><button id="draft-add-tag" class="draft-tag-add" type="button">+ Tag</button></span><span class="post-author-date">2018-08-11 Sat · 5 min read</span><span id="draft-save-state" class="draft-save-state" aria-live="polite">Saved</span></div></div>
+    <div id="draft-body" class="draft-editable" contenteditable="true" data-target-path="posts/writing-a-programmers-editor-part-2.org" data-tags="scheme,editor-data-structures,gap-buffer,data,structures,editor,gap,buffer" data-code-meta="[{&quot;data-bg&quot;:&quot;light&quot;,&quot;data-syntax-theme&quot;:&quot;default&quot;}]"><p>
 In my quest to write a programmable editor the first problem that i came across was
-which datastructure to hold the text in? What do other text editors use? For instance 
-emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
+which datastructure to hold the text in? What do other text editors use? For instance
+emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 </p>
 
 
-
-<div id="orgc064b6b" class="figure">
+<div id="org925d7cd" class="figure">
 <p><img src="file:///assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
+<p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
 </div>
+
+<p>
+Notice the <i>green boxes</i> in the diagram above. Those represent the gap — empty space
+in the array reserved for future insertions. The text <code>"HELLO WORLD"</code> sits in a
+single contiguous array, but the gap splits it into two segments: the text <i>before</i>
+the cursor and the text <i>after</i> the cursor.
+</p>
+
+<p>
+When you move the cursor one position to the right (from before <code>"H"</code> to after
+<code>"H"</code>), the gap <i>shifts</i> with it. The <code>"H"</code> jumps from the right side of the gap to
+the left side. This is the fundamental mechanic of a gap buffer.
+</p>
+
+<p>
+<b>Why is this clever?</b>
+</p>
+
+<p>
+Because insertion and deletion at the cursor position becomes essentially free. When
+you type a character, it fills the empty gap space — no shifting of text required.
+When you press backspace, the gap simply grows by one. The cursor is always <i>inside</i>
+the gap, and edits happen at gap boundaries.
+</p>
+
+<ul class="org-ul">
+<li><b>Insertion:</b> <code>O(1)</code> — write into gap, shrink gap by one.</li>
+<li><b>Deletion:</b> <code>O(1)</code> — expand gap by one, no data movement.</li>
+<li><b>Cursor movement:</b> <code>O(n)</code> worst case — gap must travel, shifting characters across.</li>
+</ul>
+
+<p>
+<b>But wait, isn't cursor movement expensive?</b>
+</p>
+
+<p>
+In practice, no. Most cursor movements are short hops — a few characters left or
+right, up or down a line. The gap only shifts by a few positions. The worst case
+(<code>Ctrl+End</code> jumping to the end of a large file) does incur a cost, but it is a
+single <code>memmove</code> — a blazingly fast operation on modern hardware.
+</p>
+
+<p>
+The real question is: <b>what happens when the gap runs out of space?</b>
+</p>
+
+<p>
+When you keep typing and the gap fills up completely, the buffer must be resized.
+This involves allocating a larger array and copying the contents over — an <code>O(n)</code>
+operation. Emacs handles this by doubling the buffer size, giving you ample gap
+space before the next resize. The amortized cost per insertion remains <code>O(1)</code>.
+</p>
+
+<p>
+<b>What about other data structures?</b>
+</p>
+
+<p>
+The gap buffer is not the only option. Several alternatives exist, each with their
+own trade-offs:
+</p>
+
+<ul class="org-ul">
+<li><b>Rope:</b> A binary tree where each leaf holds a short string fragment. Insertion
+and deletion are <code>O(log n)</code>. Excellent for very large documents. Used by
+<a href="https://github.com/atom/xray">Xi-editor</a> and <a href="https://github.com/zed-industries/zed">Zed</a>.</li>
+
+<li><b>Piece Table:</b> A table of <i>pieces</i> — references into an original buffer and an
+append-only change buffer. Never modifies the original. Used by <a href="https://code.visualstudio.com/blogs/2018/03/23/text-buffer-reimplementation">VS Code</a> and
+Microsoft Word.</li>
+
+<li><b>Linked List of Lines:</b> Each line is a separate string node. Simple but slow for
+cross-line operations. Used by many naive editors and early versions of <code>notepad</code>.</li>
+
+<li><b>Array (Flat):</b> A single contiguous array with no gap. Every insertion requires
+<code>O(n)</code> shifting. Simple but impractical for real-time editing.</li>
+</ul>
+
+<p>
+So why does emacs stick with the gap buffer? Because for the vast majority of
+editing scenarios — typing, deleting, small cursor movements — the gap buffer is
+hard to beat. It has excellent cache locality (everything is in one contiguous
+array), minimal allocation overhead, and is trivially simple to implement.
+</p>
+
+<p>
+<b>Which one should we pick for our editor?</b>
+</p>
+
+<p>
+Remember from the <a href="file:///blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is to write an editor in a lisp or scheme
+that gives <code>100%</code> power to the user. A gap buffer is simple enough to implement in
+scheme in an afternoon, and its performance characteristics are well understood.
+A rope or piece table would add complexity that may not pay off until the editor
+handles very large files.
+</p>
+
+<p>
+There is also a philosophical angle. The gap buffer embodies a principle that
+resonates with lisp: <i>simple primitives that compose well</i>. A gap buffer is just
+an array with a split point. You can build higher-level abstractions — undo
+history, multi-cursor, collaborative editing — on top of it without fighting the
+data structure.
+</p>
+
+<p>
+<b>But does simple mean good enough?</b>
+</p>
+
+<p>
+That is the question we will explore in the next part. We will implement a gap
+buffer in scheme, wire it up to a basic display routine, and measure its
+performance on real-world editing workloads. The question is not just <i>can we build
+an editor on a gap buffer?</i> — emacs already proved that. The question is <i>can we
+build one that is entirely in scheme, with no C runtime, and still feel fast?</i>
+</p>
+
+<p>
+Watchout for the next part of the assay, till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
+</p>
 </div>
   </div>
 </section>
@@ -1912,6 +2038,7 @@ like.
     if (tag === 'sub') return '_{' + childrenToOrg().trim() + '}';
     if (tag === 'sup') return '^{' + childrenToOrg().trim() + '}';
     if (tag === 'span') {
+      if (node.classList.contains('cb-marker') || node.classList.contains('todo-title')) return '';
       const color = node.style.color || '';
       const bg = node.style.backgroundColor || '';
       const fontSize = node.style.fontSize || '';
@@ -2963,6 +3090,43 @@ like.
     }
   });
 
+  function focusFirstListItem(){
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    let p = sel.anchorNode;
+    if (p && p.nodeType === Node.TEXT_NODE) p = p.parentElement;
+    while (p && p !== body && p.tagName !== 'P') p = p.parentElement;
+    if (!p || p === body) return;
+    const block = p.previousElementSibling;
+    if (!block) return;
+    const list = block.matches('ul, ol, dl') ? block : block.querySelector('ul, ol, dl');
+    if (!list) return;
+    if (list.tagName === 'DL') {
+      const dt = list.querySelector('dt');
+      if (dt) {
+        const range = document.createRange();
+        range.selectNodeContents(dt);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      return;
+    }
+    const li = list.querySelector('li');
+    if (!li) return;
+    const marker = li.querySelector('.cb-marker');
+    const range = document.createRange();
+    if (marker) {
+      range.setStartAfter(marker);
+      range.collapse(true);
+    } else {
+      range.selectNodeContents(li);
+      range.collapse(true);
+    }
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   plusMenu.addEventListener('click', async (e)=>{
     const btn = e.target.closest('button');
     if (!btn) return;
@@ -3046,24 +3210,28 @@ like.
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ul><li><br></li></ul><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'ol') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ol><li><br></li></ol><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'dl') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<dl><dt><br></dt><dd><br></dd></dl><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'checkbox') {
       plus.classList.remove('open');
       syncPlusIcon();
       insertHtmlAtCursor('<ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'todo') {
@@ -3072,6 +3240,7 @@ like.
       const title = ((await askInput({ title:'TODO Item', label:'Title', placeholder:'What needs to be done?', okText:'Add' })) || '').trim();
       if (!title) return;
       insertHtmlAtCursor('<div class="todo-block"><p class="todo-title">TODO ' + escapeHtml(title) + '</p><ul class="checkbox"><li><span class="cb-marker" contenteditable="false">[ ]</span> <br></li></ul></div><p><br></p>');
+      focusFirstListItem();
       return;
     }
     if (action === 'verse') {

@@ -72,7 +72,7 @@
 .de-body > .verse { font-style: oblique; border-left: 2px double #ccc; padding: 12px 16px; margin: 8px 0; }
 .de-body > .center { text-align: center; padding: 8px 0; margin: 8px 0; }
 .de-body > ul.checkbox { list-style: none; padding-left: 0; }
-.de-body > ul.checkbox li { position: relative; }
+.de-body > ul.checkbox li { position: relative; font-weight: 500; }
 .de-body > ul.checkbox li input[type="checkbox"] { margin-right: 6px; pointer-events: none; vertical-align: middle; }
 .de-body > ul.checkbox li .cb-marker { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; margin-right: 6px; user-select: none; min-width: 1.5em; text-align: center; vertical-align: middle; }
 .de-body > dl { margin: 8px 0; }
