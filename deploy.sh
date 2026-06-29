@@ -4,7 +4,7 @@ set -euo pipefail
 BLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PAGES_REPO_URL="${PAGES_REPO_URL:-git@github.com:metacritical/metacritical.github.io.git}"
 PAGES_DIR="${PAGES_DIR:-$HOME/Development/metacritical.github.io}"
-BRANCH="${PAGES_BRANCH:-main}"
+BRANCH="${PAGES_BRANCH:-master}"
 COMMIT_MSG="${COMMIT_MSG:-Deploy site $(date '+%Y-%m-%d %H:%M:%S')}"
 
 cd "$BLOG_DIR"
