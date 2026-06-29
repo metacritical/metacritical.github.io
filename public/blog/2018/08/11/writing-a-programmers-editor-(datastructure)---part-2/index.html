@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Exploration to find the right data structure for the editor." />
+  <meta name="description" content="Exploration to find the right data structure for teh editor." />
   <meta name="keywords" content="scheme, editor-data-structures, gap-buffer" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,7 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782732357" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
 </head>
 
   <body class="container">
@@ -80,185 +79,40 @@
   </div>
   <p>
 In my quest to write a programmable editor the first problem that i came across was
-which datastructure to hold the text in? What do other text editors use? For instance
-emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
+which datastructure to hold the text in? What do other text editors use? For instance 
+emacs in which this blog is written uses gap buffer. Gap buffer the a linear array 
 with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
 like.
 </p>
 
 
-<div id="orge0b47d6" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
-</p>
-<p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
+<div class="org-src-container">
+<pre class="src src-ditaa">
+Initial Gap Buffer
++----------------+
+       ^
+       |
+    +-----+
+    |     |
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+  |cBF0|cBF0| H | E | L | L | O |   | W | O | R | L | D |
+  +----+----+---+---+---+---+---+---+---+---+---+---+---+
+       |
+       +---+
+           |
+           v
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+  | H |cBF0|cBF0| E | L | L | O |   | W | O | R | L | D |
+  +---+----+----+---+---+---+---+---+---+---+---+---+---+
+        |     |
+        +-----+
+           |
+           v
++------------------------------+
+ Gap Buffer representing cursor.
+
+</pre>
 </div>
-
-<p>
-Notice the <i>green boxes</i> in the diagram above. Those represent the gap — empty space
-in the array reserved for future insertions. The text <code>"HELLO WORLD"</code> sits in a
-single contiguous array, but the gap splits it into two segments: the text <i>before</i>
-the cursor and the text <i>after</i> the cursor.
-</p>
-
-<p>
-When you move the cursor one position to the right (from before <code>"H"</code> to after
-<code>"H"</code>), the gap <i>shifts</i> with it. The <code>"H"</code> jumps from the right side of the gap to
-the left side. This is the fundamental mechanic of a gap buffer.
-</p>
-
-<p>
-<b>Why is this clever?</b>
-</p>
-
-<p>
-Because insertion and deletion at the cursor position becomes essentially free. When
-you type a character, it fills the empty gap space — no shifting of text required.
-When you press backspace, the gap simply grows by one. The cursor is always <i>inside</i>
-the gap, and edits happen at gap boundaries.
-</p>
-
-
-<div id="org6430801" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
-</p>
-<p><span class="figure-number">Figure 2: </span>Insertion — typing fills the gap from the left, shrinking it one cell at a time.</p>
-</div>
-
-<p>
-Notice how each typed character occupies one green box, reducing the gap size by one.
-The gap shrinks from the <i>left edge</i>, meaning the new characters appear before the
-cursor. This is why insertion is <code>O(1)</code> — it is just a memory write at the gap boundary.
-No existing text needs to be shifted.
-</p>
-
-<ul class="org-ul">
-<li><b>Insertion:</b> <code>O(1)</code> — write into gap, shrink gap by one.</li>
-<li><b>Deletion:</b> <code>O(1)</code> — expand gap by one, no data movement.</li>
-<li><b>Cursor movement:</b> <code>O(n)</code> worst case — gap must travel, shifting characters across.</li>
-</ul>
-
-<p>
-<b>But wait, isn't cursor movement expensive?</b>
-</p>
-
-<p>
-In practice, no. Most cursor movements are short hops — a few characters left or
-right, up or down a line. The gap only shifts by a few positions. The worst case
-(<code>Ctrl+End</code> jumping to the end of a large file) does incur a cost, but it is a
-single <code>memmove</code> — a blazingly fast operation on modern hardware.
-</p>
-
-
-<div id="org07b7bb5" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
-</p>
-<p><span class="figure-number">Figure 3: </span>Long cursor movement — the gap shifts right, dragging characters from right side to left side.</p>
-</div>
-
-<p>
-When moving the cursor right, characters on the left side of the gap are "peeled off"
-the right segment and appended to the left segment. A move of <i>N</i> positions requires
-shifting <i>N</i> characters across the gap boundary — hence <code>O(N)</code>. For small N this is
-negligible; the <code>memmove</code> call completes in nanoseconds.
-</p>
-
-<p>
-The real question is: <b>what happens when the gap runs out of space?</b>
-</p>
-
-<p>
-When you keep typing and the gap fills up completely, the buffer must be resized.
-This involves allocating a larger array and copying the contents over — an <code>O(n)</code>
-operation. Emacs handles this by doubling the buffer size, giving you ample gap
-space before the next resize. The amortized cost per insertion remains <code>O(1)</code>.
-</p>
-
-
-<div id="org9f1b63c" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
-</p>
-<p><span class="figure-number">Figure 4: </span>Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
-</div>
-
-<p>
-This is the only <code>O(N)</code> operation in the gap buffer's repertoire. But because the
-buffer size doubles each time — 8 → 16 → 32 → 64 — the resizes become progressively
-rarer. Type a single character and you get a fresh gap of 8 empty slots. Type 1000
-characters and you get a gap of 1024. The cost <i>amortizes</i> to zero over the lifetime
-of the buffer.
-</p>
-
-<p>
-<b>What about other data structures?</b>
-</p>
-
-<p>
-The gap buffer is not the only option. Several alternatives exist, each with their
-own trade-offs:
-</p>
-
-<ul class="org-ul">
-<li><b>Rope:</b> A binary tree where each leaf holds a short string fragment. Insertion
-and deletion are <code>O(log n)</code>. Excellent for very large documents. Used by
-<a href="https://github.com/atom/xray">Xi-editor</a> and <a href="https://github.com/zed-industries/zed">Zed</a>.</li>
-
-<li><b>Piece Table:</b> A table of <i>pieces</i> — references into an original buffer and an
-append-only change buffer. Never modifies the original. Used by <a href="https://code.visualstudio.com/blogs/2018/03/23/text-buffer-reimplementation">VS Code</a> and
-Microsoft Word.</li>
-
-<li><b>Linked List of Lines:</b> Each line is a separate string node. Simple but slow for
-cross-line operations. Used by many naive editors and early versions of <code>notepad</code>.</li>
-
-<li><b>Array (Flat):</b> A single contiguous array with no gap. Every insertion requires
-<code>O(n)</code> shifting. Simple but impractical for real-time editing.</li>
-</ul>
-
-<p>
-So why does emacs stick with the gap buffer? Because for the vast majority of
-editing scenarios — typing, deleting, small cursor movements — the gap buffer is
-hard to beat. It has excellent cache locality (everything is in one contiguous
-array), minimal allocation overhead, and is trivially simple to implement.
-</p>
-
-<p>
-<b>Which one should we pick for our editor?</b>
-</p>
-
-<p>
-Remember from the <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is to write an editor in a lisp or scheme
-that gives <code>100%</code> power to the user. A gap buffer is simple enough to implement in
-scheme in an afternoon, and its performance characteristics are well understood.
-A rope or piece table would add complexity that may not pay off until the editor
-handles very large files.
-</p>
-
-<p>
-There is also a philosophical angle. The gap buffer embodies a principle that
-resonates with lisp: <i>simple primitives that compose well</i>. A gap buffer is just
-an array with a split point. You can build higher-level abstractions — undo
-history, multi-cursor, collaborative editing — on top of it without fighting the
-data structure.
-</p>
-
-<p>
-<b>But does simple mean good enough?</b>
-</p>
-
-<p>
-That is the question we will explore in the next part. We will implement a gap
-buffer in scheme, wire it up to a basic display routine, and measure its
-performance on real-world editing workloads. The question is not just <i>can we build
-an editor on a gap buffer?</i> — emacs already proved that. The question is <i>can we
-build one that is entirely in scheme, with no C runtime, and still feel fast?</i>
-</p>
-
-<p>
-Watchout for the next part of the assay, till then.
-</p>
-
-<p>
-<i>Shorel'aran</i>
-</p>
 
   </div>
 </section>

@@ -13,8 +13,7 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782732357" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
 </head>
 
   <body class="container">
@@ -80,107 +79,107 @@
   </div>
   <p>
 It is often required to get git stats on terminal PS1, most solutions are based 
-aound bash can be slow sometimes or if you are like me who programmed something 
-in ruby also turned out to be slow. We can make things faster by porting such 
-scripts to golang. one such solution can be this :
+around bash which can be slow sometimes or if you are like me who programmed 
+something in ruby also turned out to be slow. We can make things faster by 
+porting such scripts to golang. Here is one such solution :
 </p>
 
 <div class="org-src-container">
 <pre class="src src-go">
-<span class="org-keyword">package</span> main
+package main
 
-<span class="org-keyword">import</span> (
-        <span class="org-string">"os"</span>
-        <span class="org-string">"fmt"</span>
-        <span class="org-string">"regexp"</span>
-        <span class="org-string">"os/exec"</span>
-        <span class="org-comment">//"strings"</span>
+import (
+        "os"
+        "fmt"
+        "regexp"
+        "os/exec"
+        //"strings"
 )
 
-<span class="org-keyword">var</span> getSymbol = <span class="org-keyword">map</span>[string]string{
-        <span class="org-string">"untracked"</span>:<span class="org-string">"\xe2\x9a\xa0\xef\xb8\x8f"</span>,
-        <span class="org-string">"alliswell"</span>:<span class="org-string">"\xe2\x98\xaf\xef\xb8\x8f"</span>,
-        <span class="org-string">"hazard"</span>:<span class="org-string">"\xe2\x98\xa2\xef\xb8\x8f"</span>,
-        <span class="org-string">"deleted"</span>:<span class="org-string">"\xE2\x9D\x8C"</span>,
-        <span class="org-string">"smiley"</span>:<span class="org-string">"\xf0\x9f\x99\x82"</span>,
-        <span class="org-string">"noentry"</span>:<span class="org-string">"\xe2\x9b\x94\xef\xb8\x8f"</span>,
-        <span class="org-string">"repoahead"</span>:<span class="org-string">"\xE2\x98\x9D"</span>,
-        <span class="org-string">"novc"</span>:<span class="org-string">"\xf0\x9f\x9a\xab\x0a"</span>,
-        <span class="org-string">"changes"</span>:<span class="org-string">"\xe2\x99\xbb\xef\xb8\x8f"</span>,
+var getSymbol = map[string]string{
+        "untracked":"\xe2\x9a\xa0\xef\xb8\x8f",
+        "alliswell":"\xe2\x98\xaf\xef\xb8\x8f",
+        "hazard":"\xe2\x98\xa2\xef\xb8\x8f",
+        "deleted":"\xE2\x9D\x8C",
+        "smiley":"\xf0\x9f\x99\x82",
+        "noentry":"\xe2\x9b\x94\xef\xb8\x8f",
+        "repoahead":"\xE2\x98\x9D",
+        "novc":"\xf0\x9f\x9a\xab\x0a",
+        "changes":"\xe2\x99\xbb\xef\xb8\x8f",
 }
 
-<span class="org-keyword">func</span> execCommand(command string) string{
-        gitExec := exec.Command(<span class="org-string">"git"</span>, command)
+func execCommand(command string) string{
+        gitExec := exec.Command("git", command)
         outPut, err  := gitExec.Output()
-        <span class="org-keyword">if</span> err != nil {
-                <span class="org-keyword">return</span> err.Error()
+        if err != nil {
+                return err.Error()
         }
-        <span class="org-keyword">return</span> string(outPut)
+        return string(outPut)
 }
 
-<span class="org-keyword">func</span> processStatus(status string) string{
-        <span class="org-keyword">var</span> noVC = regexp.MustCompile(<span class="org-string">"Not a git repository"</span>)
-        <span class="org-keyword">var</span> unTracked = regexp.MustCompile(<span class="org-string">"Untracked files"</span>)
-        <span class="org-keyword">var</span> notStaged = regexp.MustCompile(<span class="org-string">"Changes not staged for commit"</span>)
-        <span class="org-keyword">var</span> exitCode = regexp.MustCompile(<span class="org-string">"exit status 128"</span>)
+func processStatus(status string) string{
+        var noVC = regexp.MustCompile("Not a git repository")
+        var unTracked = regexp.MustCompile("Untracked files")
+        var notStaged = regexp.MustCompile("Changes not staged for commit")
+        var exitCode = regexp.MustCompile("exit status 128")
 
-        <span class="org-keyword">switch</span> {
-                <span class="org-keyword">case</span> noVC.MatchString(status) :
-                <span class="org-keyword">return</span> getSymbol[<span class="org-string">"novc"</span>]
-                <span class="org-keyword">case</span> unTracked.MatchString(status):
-                <span class="org-keyword">return</span> getSymbol[<span class="org-string">"untracked"</span>]
-                <span class="org-keyword">case</span> notStaged.MatchString(status) :
-                <span class="org-keyword">return</span> getSymbol[<span class="org-string">"changes"</span>]
-                <span class="org-keyword">case</span> exitCode.MatchString(status):
-                <span class="org-keyword">return</span> getSymbol[<span class="org-string">"noentry"</span>]
-                <span class="org-keyword">default</span>:
-                <span class="org-keyword">return</span> getSymbol[<span class="org-string">"alliswell"</span>]
-        }
-
-}
-
-<span class="org-keyword">func</span> processBranch(branchdata string) string{
-        <span class="org-keyword">var</span> branchMatch = regexp.MustCompile(<span class="org-string">`[(^\*)].+`</span>)
-        match := branchMatch.FindAllString(branchdata, <span class="org-constant">1</span>)
-
-        <span class="org-keyword">if</span> match != nil{
-                <span class="org-keyword">return</span> <span class="org-string">"\033[38;5;112m"</span>+ match[<span class="org-constant">0</span>][<span class="org-constant">1</span>:] + <span class="org-string">"\033[0m\n"</span>
+        switch {
+                case noVC.MatchString(status) :
+                return getSymbol["novc"]
+                case unTracked.MatchString(status):
+                return getSymbol["untracked"]
+                case notStaged.MatchString(status) :
+                return getSymbol["changes"]
+                case exitCode.MatchString(status):
+                return getSymbol["noentry"]
+                default:
+                return getSymbol["alliswell"]
         }
 
-        <span class="org-keyword">return</span> getSymbol[<span class="org-string">"novc"</span>]
 }
 
-<span class="org-keyword">func</span> gitBranch() string{
-        <span class="org-keyword">return</span> processBranch(execCommand(<span class="org-string">"branch"</span>))
+func processBranch(branchdata string) string{
+        var branchMatch = regexp.MustCompile(`[(^\*)].+`)
+        match := branchMatch.FindAllString(branchdata, 1)
+
+        if match != nil{
+                return "\033[38;5;112m"+ match[0][1:] + "\033[0m\n"
+        }
+
+        return getSymbol["novc"]
 }
 
-<span class="org-keyword">func</span> gitStatus() string{
-        <span class="org-keyword">return</span> processStatus(execCommand(<span class="org-string">"status"</span>))
+func gitBranch() string{
+        return processBranch(execCommand("branch"))
 }
 
-<span class="org-keyword">func</span> main(){
-        <span class="org-keyword">var</span> args []string = os.Args[<span class="org-constant">0</span>:]
+func gitStatus() string{
+        return processStatus(execCommand("status"))
+}
 
-        <span class="org-keyword">if</span> len(args) &gt; <span class="org-constant">1</span> {
-                <span class="org-keyword">switch</span> args[<span class="org-constant">1</span>]{
-                <span class="org-keyword">case</span> <span class="org-string">"b"</span>, <span class="org-string">"branch"</span>:
+func main(){
+        var args []string = os.Args[0:]
+
+        if len(args) &gt; 1 {
+                switch args[1]{
+                case "b", "branch":
                         fmt.Print(gitBranch())
-                <span class="org-keyword">case</span> <span class="org-string">"s"</span>, <span class="org-string">"status"</span>:
+                case "s", "status":
                         fmt.Print(gitStatus())
-                <span class="org-keyword">case</span> <span class="org-string">"p"</span>, <span class="org-string">"prompt"</span>:
-                        fmt.Print(gitStatus(), <span class="org-string">" "</span>, gitBranch(), <span class="org-string">"&gt;&gt;"</span>)
-                <span class="org-keyword">default</span>:
-                        fmt.Print(execCommand(args[<span class="org-constant">1</span>]))
+                case "p", "prompt":
+                        fmt.Print(gitStatus(), " ", gitBranch(), "&gt;&gt;")
+                default:
+                        fmt.Print(execCommand(args[1]))
                 }
-        }<span class="org-keyword">else</span>{
-                fmt.Println(<span class="org-string">"Command Not found"</span>)
+        }else{
+                fmt.Println("Command Not found")
         }
 }
 </pre>
 </div>
 
 <p>
-You can download this by executing the following command on your terminal:
+You can download this by executing the following command on your terminal :
 </p>
 
 <div class="org-src-container">
@@ -193,13 +192,13 @@ And then compiling it with go.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">go build gits.go -o gits
+<pre class="src src-bash">go gits.go -o gits
 </pre>
 </div>
 
 <p>
-Once that is done you should put it somewhere and include it in the PATH.
-Also the PS1 should be modified like this.
+Once that is done you should put it somewhere and included in the PATH.
+Also the PS1 should be modified like so.
 </p>
 
 <div class="org-src-container">
@@ -208,22 +207,22 @@ Also the PS1 should be modified like this.
 </div>
 
 <p>
-This would yield a prompt like this:
+This would yield a prompt like this :
 </p>
 
 
-<div id="orgdd1ed06" class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" />
+<div id="git no changes." class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_normal.png" alt="gits_normal.png" style="width:auto" />
 </p>
 </div>
 
 <p>
-If git files are unstaged on the current path then it may look like this:
+If git files are unstaged on the current path then may be like this :
 </p>
 
 
-<div id="orgef8d5a6" class="figure">
-<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" />
+<div id="git no changes." class="figure">
+<p><img src="/assets/blog/2018/07/19/git-status-on-unix-terminal/gits_unstaged.png" alt="gits_unstaged.png" style="width:auto" />
 </p>
 </div>
 
