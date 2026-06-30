@@ -30,7 +30,7 @@ if [ ! -d "$PAGES_DIR/.git" ]; then
 fi
 
 git -C "$PAGES_DIR" fetch origin
-git -C "$PAGES_DIR" checkout "$BRANCH"
+git -C "$PAGES_DIR" checkout -f "$BRANCH"
 git -C "$PAGES_DIR" pull --ff-only origin "$BRANCH"
 
 # 3) Preserve CNAME if present in repo
