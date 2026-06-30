@@ -205,6 +205,10 @@ if [ -d "$BLOG_DIR/media" ]; then
     mkdir -p "$BLOG_DIR/public/media/js"
     cp -r "$BLOG_DIR/media/js/"* "$BLOG_DIR/public/media/js/" 2>/dev/null || true
   fi
+  if [ -d "$BLOG_DIR/media/css" ]; then
+    mkdir -p "$BLOG_DIR/public/media/css"
+    cp -r "$BLOG_DIR/media/css/"* "$BLOG_DIR/public/media/css/" 2>/dev/null || true
+  fi
 fi
 if [ -d "$BLOG_DIR/assets" ]; then
   mkdir -p "$BLOG_DIR/public/assets"
@@ -224,18 +228,10 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
 
 
 
-# Force Disqus to use its light colour scheme as a hint to embed.js.
-# disqus-theme-fix.js handles the filter + image counter-filter at runtime.
+# Inject claps.js runtime helper (backend-connected clap counts).
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
-    -e 's|var disqus_config = function () {|var disqus_config = function () {\n        this.page.color_scheme = '\''light'\'';|'
-
-# Inject runtime UI helpers:
-# - claps.js wires backend-connected clap counts (one clap per visitor).
-# - disqus-theme-fix.js applies the iframe filter and tries to un-filter images.
-find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
-  xargs -0 sed -i '' \
-    -e 's|</body>|<script src="/media/js/claps.js"></script>\n<script src="/media/js/disqus-theme-fix.js"></script>\n</body>|g'
+    -e 's|</body>|<script src="/media/js/claps.js"></script>\n</body>|g'
 
 # Remove synthetic homepage title injected by generic post template.
 if [ -f "$BLOG_DIR/public/index.html" ]; then
@@ -289,6 +285,39 @@ fi
 
 # Generate archive page from published posts (overrides AOG's auto-generated listing).
 python3 "$BLOG_DIR/scripts/generate_archive.py" "$BLOG_DIR"
+
+# Generate drafts index page (lists articles in drafts/ directory).
+python3 "$BLOG_DIR/scripts/generate_drafts.py" "$BLOG_DIR"
+
+# Build HTML preview pages for each draft article.
+python3 "$BLOG_DIR/scripts/build_draft_previews.py" "$BLOG_DIR"
+
+# Apply post-processing to draft preview pages (they were built after the
+# main post-processing pipeline ran, so they missed CSS/JS/highlight injection).
+if [ -d "$BLOG_DIR/public/drafts" ]; then
+  # Syntax highlighting for exported code blocks.
+  node "$BLOG_DIR/scripts/highlight_exported_code.js" "$BLOG_DIR/public/drafts"
+
+  # Inject claps.js into draft pages.
+  find "$BLOG_DIR/public/drafts" -type f -name "*.html" -print0 | \
+    xargs -0 sed -i '' \
+      -e 's|</body>|<script src="/media/js/claps.js"></script>\n</body>|g' 2>/dev/null || true
+
+  # Inject code-theme CSS into draft pages.
+  CODE_CSS="$BLOG_DIR/media/css/doom-monokai-pro.css"
+  if [ -f "$CODE_CSS" ]; then
+    CODE_VER="$(stat -f '%m' "$BLOG_DIR/public/media/css/code-theme-monokai-pro.css" 2>/dev/null || date +%s)"
+    find "$BLOG_DIR/public/drafts" -type f -name "*.html" -print0 | \
+      xargs -0 sed -i '' \
+        -e "s|</head>|  <link rel=\"stylesheet\" href=\"/media/css/code-theme-monokai-pro.css?v=${CODE_VER}\" type=\"text/css\">\n</head>|g" 2>/dev/null || true
+  fi
+fi
+
+# Inject series navigation into published articles AND draft preview pages.
+python3 "$BLOG_DIR/scripts/inject_series_nav.py" "$BLOG_DIR"
+
+# Generate the LiveDrafts editor page (/editor/).
+python3 "$BLOG_DIR/scripts/generate_editor_page.py" "$BLOG_DIR"
 
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"

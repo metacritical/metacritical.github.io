@@ -1,0 +1,281 @@
+#+TITLE:       Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-08-18 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-3
+#+KEYWORDS:    scheme, editor, gap-buffer, data-structures, lisp
+#+TAGS:        Scheme, Gap Buffer, Data Structures, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Implementing a gap buffer from scratch in Scheme — the core data structure for our editor.
+
+In the [[/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/][previous part]] we explored why the gap buffer is the right data structure for a
+text editor. We looked at how emacs uses it, how insertion and deletion are =O(1)=, and
+how cursor movement is =O(N)= but amortizes to nearly nothing. Now it is time to get our
+hands dirty.
+
+We are going to implement a gap buffer in Scheme.
+
+*Why Scheme?*
+
+Remember the thesis from [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] — the goal is an editor written entirely in a single
+language, where the user has =100%= power. Scheme is a Lisp. It is a general-purpose
+programming language powerful enough to build an editor in, yet simple enough to serve as
+an extension language. It has first-class functions, proper tail calls, macros, and
+garbage collection — all the ingredients we need.
+
+I will use [[https://srfi.schemers.org/][R7RS-small]] Scheme for these examples. The code should run on [[https://www.call-cc.org/][Chicken]],
+[[https://www.gnu.org/software/guile/][Guile]], [[https://racket-lang.org/][Racket]] (in =#lang r7rs= mode), or any conforming implementation.
+
+*The Data Structure*
+
+A gap buffer is three things: an array of characters, a cursor position (the gap start),
+and the gap end. Everything before the gap start is text the user has typed. Everything
+after the gap end is text that comes after the cursor. The gap itself is empty space,
+reserved for fast insertions.
+
+In Scheme, we represent this as a three-element vector:
+
+#+BEGIN_SRC scheme
+;;; A gap buffer is a vector:  #(charvec gap-start gap-end)
+;;;   charvec   — a mutable vector of characters
+;;;   gap-start — index where the gap begins (== cursor position)
+;;;   gap-end   — index where the gap ends (exclusive)
+
+(define (make-gap-buffer capacity)
+  (vector (make-vector capacity #\nul)  ; charvec
+          0                             ; gap-start
+          capacity))                    ; gap-end (gap fills the whole buffer)
+#+END_SRC
+
+The accessors are trivial:
+
+#+BEGIN_SRC scheme
+(define (gb-buf gb)      (vector-ref gb 0))
+(define (gb-start gb)    (vector-ref gb 1))
+(define (gb-end gb)      (vector-ref gb 2))
+(define (gb-start! gb v) (vector-set! gb 1 v))
+(define (gb-end!   gb v) (vector-set! gb 2 v))
+
+(define (gb-gap-size gb)  (- (gb-end gb) (gb-start gb)))
+(define (gb-capacity gb)  (vector-length (gb-buf gb)))
+(define (gb-text-size gb) (- (gb-capacity gb) (gb-gap-size gb)))
+#+END_SRC
+
+When the buffer is fresh, the gap occupies the entire array. =gap-start= is 0 and
+=gap-end= is =capacity=. There is no text yet — just empty space waiting to be filled.
+
+*Moving the Cursor*
+
+The gap buffer's one non-trivial operation is moving the gap. When the user moves the
+cursor, we must shift the gap to the new position. Characters on one side of the gap
+"jump" to the other side.
+
+If we move the cursor /left/ (from position 5 to position 2, say), the characters between
+position 2 and the old gap start must move from the left side of the gap to the right side.
+We copy them backwards (high index to low) to avoid clobbering data we haven't read yet:
+
+#+BEGIN_SRC scheme
+;;; Move the gap so that gap-start == pos.
+(define (gb-move-to! gb pos)
+  (let ((buf (gb-buf gb))
+        (gs  (gb-start gb))
+        (ge  (gb-end gb)))
+    (cond
+     ((< pos gs)
+      ;; Shift left: move chars [pos, gs) to [ge-(gs-pos), ge)
+      (let loop ((src (- gs 1))
+                 (dst (- ge 1)))
+        (when (>= src pos)
+          (vector-set! buf dst (vector-ref buf src))
+          (loop (- src 1) (- dst 1)))))
+     ((> pos gs)
+      ;; Shift right: move chars [ge, ge+(pos-gs)) to [gs, pos)
+      (let loop ((src ge)
+                 (dst gs))
+        (when (< dst pos)
+          (vector-set! buf dst (vector-ref buf src))
+          (loop (+ src 1) (+ dst 1))))))
+    (let ((delta (- ge gs)))
+      (gb-start! gb pos)
+      (gb-end!   gb (+ pos delta)))))
+#+END_SRC
+
+This is the =O(N)= operation we discussed in Part 2. But N here is the /distance moved/,
+not the file size. A single character hop shifts exactly one element.
+
+*Insertion and Deletion*
+
+Once the gap is in the right place, insertion and deletion are gloriously simple:
+
+#+BEGIN_SRC scheme
+;;; Insert a single character at the cursor.
+(define (gb-insert-char! gb ch)
+  (when (= (gb-gap-size gb) 0)
+    (gb-resize! gb))  ; gap full — grow the buffer
+  (let ((buf (gb-buf gb))
+        (gs   (gb-start gb)))
+    (vector-set! buf gs ch)
+    (gb-start! gb (+ gs 1))))
+
+;;; Delete the character before the cursor (backspace).
+(define (gb-delete-char! gb)
+  (when (> (gb-start gb) 0)
+    (gb-start! gb (- (gb-start gb) 1))))
+
+;;; Delete the character after the cursor (forward-delete).
+(define (gb-delete-forward! gb)
+  (when (< (gb-end gb) (gb-capacity gb))
+    (gb-end! gb (+ (gb-end gb) 1))))
+#+END_SRC
+
+Notice what is /not/ here. No loops. No array shifts. No memory allocation (except on
+resize). Insertion is a single =vector-set!=. Deletion is just bumping a pointer. This is
+why gap buffers are fast — the complexity is pushed into cursor movement, which happens
+infrequently relative to typing.
+
+*Resize — When the Gap Runs Out*
+
+When the gap fills up completely, we need a bigger array. The strategy is simple: allocate
+a new array twice the size, copy the text over, and open a fresh gap in the middle:
+
+#+BEGIN_SRC scheme
+;;; Double the buffer capacity and open a new gap at the cursor.
+(define (gb-resize! gb)
+  (let* ((old-cap    (gb-capacity gb))
+         (new-cap    (* old-cap 2))
+         (old-buf    (gb-buf gb))
+         (gs         (gb-start gb))
+         (ge         (gb-end gb))
+         (new-buf    (make-vector new-cap #\nul))
+         (new-gap    (- new-cap old-cap))     ; extra space
+         (new-ge     (+ ge new-gap)))          ; gap-end shifts right
+    ;; Copy text before the gap (unchanged position).
+    (let loop ((i 0))
+      (when (< i gs)
+        (vector-set! new-buf i (vector-ref old-buf i))
+        (loop (+ i 1))))
+    ;; Copy text after the gap (shifted right by new-gap).
+    (let loop ((i ge) (j new-ge))
+      (when (< i old-cap)
+        (vector-set! new-buf j (vector-ref old-buf i))
+        (loop (+ i 1) (+ j 1))))
+    ;; Swap in the new buffer and update gap-end.
+    (vector-set! gb 0 new-buf)
+    (gb-end! gb new-ge)))
+#+END_SRC
+
+This is the only =O(N)= allocation in the entire structure. But because we double each
+time, the /amortized/ cost per insertion remains =O(1)=. The resizes become exponentially
+rarer as the buffer grows.
+
+*String Conversion Helpers*
+
+To make the buffer useful, we need ways to load text into it and extract text back out:
+
+#+BEGIN_SRC scheme
+;;; Create a gap buffer pre-loaded with a string.
+(define (string->gap-buffer str (gap-size 16))
+  (let* ((len (string-length str))
+         (cap (+ len gap-size))
+         (gb  (make-gap-buffer cap)))
+    ;; Copy the string into the buffer, then position gap at end.
+    (let loop ((i 0))
+      (when (< i len)
+        (vector-set! (gb-buf gb) i (string-ref str i))
+        (loop (+ i 1))))
+    (gb-start! gb len)
+    (gb-end!   gb (+ len gap-size))
+    gb))
+
+;;; Extract the full text of the buffer as a string.
+(define (gap-buffer->string gb)
+  (let* ((buf (gb-buf gb))
+         (gs  (gb-start gb))
+         (ge  (gb-end gb))
+         (cap (gb-capacity gb))
+         (size (gb-text-size gb))
+         (out (make-string size)))
+    ;; Copy text before gap.
+    (let loop ((i 0))
+      (when (< i gs)
+        (string-set! out i (vector-ref buf i))
+        (loop (+ i 1))))
+    ;; Copy text after gap.
+    (let loop ((i ge) (j gs))
+      (when (< i cap)
+        (string-set! out j (vector-ref buf i))
+        (loop (+ i 1) (+ j 1))))
+    out))
+#+END_SRC
+
+*Putting It All Together*
+
+Let us test our gap buffer with a simple editing session:
+
+#+BEGIN_SRC scheme
+;; Start with some text, cursor at the beginning.
+(define gb (string->gap-buffer "Hello World"))
+
+;; Move cursor to position 5 (between "Hello" and " World").
+(gb-move-to! gb 5)
+
+;; Insert a comma.
+(gb-insert-char! gb #\,)
+
+;; Insert an exclamation mark.
+(gb-insert-char! gb #\!)
+
+;; Read back the result.
+(display (gap-buffer->string gb))
+(newline)
+;; => "Hello,! World"
+#+END_SRC
+
+And here is a slightly larger test that exercises resize:
+
+#+BEGIN_SRC scheme
+;; Start with a tiny gap (4 slots).
+(define gb (string->gap-buffer "ABCDE" 4))
+
+;; Insert 10 characters at position 0 — this will force two resizes.
+(gb-move-to! gb 0)
+(for-each (lambda (ch) (gb-insert-char! gb ch))
+          (string->list "0123456789"))
+
+(display (gap-buffer->string gb))
+(newline)
+;; => "0123456789ABCDE"
+
+(display (gb-capacity gb))
+(newline)
+;; => 38  (started at 9, doubled to 18, then to 38)
+#+END_SRC
+
+*What About Performance?*
+
+The beauty of this implementation is that the /hot path/ — typing — is essentially free.
+Each character typed is one =vector-set!= and one integer increment. No allocation, no
+copying, no garbage collection pressure.
+
+Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor
+movements are small hops. The =O(N)= worst case (jumping from beginning to end of a large
+file) is a single tight loop over raw memory — on modern hardware, moving 100,000
+characters takes microseconds.
+
+*What We Have Built So Far*
+
+We now have a working text buffer. It can hold text, accept insertions and deletions, move
+the cursor, and resize when needed. It is about 80 lines of Scheme. That is the foundation
+of our editor.
+
+But a buffer full of characters is not yet an editor. We cannot display it. We cannot split
+it into lines. We cannot scroll or wrap text. Those are the problems we will tackle next.
+
+In the [[/blog/2018/08/25/writing-a-programmers-editor-part-4/][next part]] we will build a line management layer on top of the gap buffer — because
+editors do not think in terms of flat character arrays, they think in terms of lines,
+columns, and viewports.
+
+Watchout for the next part of the assay, till then.
+
+/Shorel'aran/

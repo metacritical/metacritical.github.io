@@ -1,0 +1,36 @@
+#+TITLE:       Writing a Programmers Editor (Reflections & Lessons) - Part 12
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-10-20 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-12
+#+KEYWORDS:    scheme, editor, reflections, lessons, power-continuum
+#+TAGS:        Scheme, Editor, Reflections, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Looking back at the series — what we learned, what worked, and answering the questions from Part 1.
+
+*Draft — not yet published.*
+
+In [[/blog/2018/10/13/writing-a-programmers-editor-part-11/][Part 11]] we will have built the extensibility layer. The editor will be complete —
+a working text editor written entirely in Scheme. This final part is a reflection.
+
+We started in [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] with questions:
+
+- *Are these languages equally powerful in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?*
+- *How do these existing Editors work?*
+- *Is there an efficiency equation that we are unaware of?*
+- *What if the delicate balance in powers of the runtime and scripting exists for a reason
+  and has a penalty when disturbed?*
+
+This part answers them — with the benefit of having actually built the thing.
+
+Topics:
+
+- What worked: the gap buffer was simple and fast. Scheme was expressive enough.
+- What was hard: terminal I/O, performance in a garbage-collected language.
+- The power continuum revisited: did writing the editor in =100%= Scheme actually help?
+- What emacs got right: the balance of C core and elisp layer.
+- What we would do differently next time.
+- Final thoughts on the Feynman principle: /What I cannot create, I do not understand./
+
+/Shorel'aran/

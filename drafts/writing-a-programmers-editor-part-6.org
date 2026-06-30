@@ -1,0 +1,32 @@
+#+TITLE:       Writing a Programmers Editor (Keymaps & Input Handling) - Part 6
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-09-08 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-6
+#+KEYWORDS:    scheme, editor, keymaps, input, keybindings, modes
+#+TAGS:        Scheme, Keymaps, Input Handling, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Designing a keymap system — translating raw keystrokes into editor commands, and the foundation for modal editing.
+
+*Draft — not yet published.*
+
+In [[/blog/2018/09/01/writing-a-programmers-editor-part-5/][Part 5]] we will have learned how to read raw keystrokes from the terminal. But a
+keystroke is just a byte sequence. =\e [ A= means "up arrow" only because we /decide/ it
+does. The mapping from bytes to actions is the /keymap/, and it is one of the most important
+design decisions in any editor.
+
+This part covers:
+
+- Parsing escape sequences into structured key events (=C-x=, =M-f=, =<up>=, etc.).
+- Keymap trees: prefix keys (=C-x= followed by =C-f=), and how to represent them.
+- The distinction between /insert mode/ and /command mode/ (modal vs non-modal editing).
+- How emacs' keymaps work vs vim's modal approach.
+- Implementing a keymap dispatcher in Scheme.
+
+The keymap is where the editor's personality lives. Emacs feels different from vim because
+of the keymap, not the buffer.
+
+Watchout for this assay when it is published, till then.
+
+/Shorel'aran/

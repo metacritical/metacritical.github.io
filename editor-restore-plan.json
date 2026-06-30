@@ -1,0 +1,119 @@
+{
+  "project": "Restore LiveDrafts Editor & Code Block Features",
+  "created": "2025-06-30",
+  "last_updated": "2025-06-30",
+  "context": "Editor JS (3369 lines) and CSS (703 lines) survived the git mishap but were never wired into the site. Created bootstrap HTML, server-side API, Prism.js integration, Edit buttons, and combined dev server.",
+  "existing_assets": {
+    "editor_js": "media/js/draft-editor.js (3369 lines)",
+    "editor_css": "media/css/draft-editor.css (703 lines)"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Editor Foundation",
+      "status": "completed",
+      "tasks": [
+        {
+          "id": "1.1",
+          "name": "Add Prism.js library to the repo",
+          "status": "completed",
+          "details": "Downloaded prism-core.min.js, prism-autoloader.min.js, prism-okaidia.css, prism-light.css to media/js/prism/"
+        },
+        {
+          "id": "1.2",
+          "name": "Create editor API server script",
+          "status": "completed",
+          "details": "Created scripts/dev-editor-server.py with 4 endpoints: load-draft, save, upload, fetch-meta. All tested and working."
+        },
+        {
+          "id": "1.3",
+          "name": "Create editor bootstrap HTML page",
+          "status": "completed",
+          "details": "Created scripts/generate_editor_page.py. Generates /editor/index.html with contentEditable surface, toolbar (Save/Publish/CopyOrg/Undo/Redo), Prism + draft-editor.js, auto-load from ?slug=X query param."
+        },
+        {
+          "id": "1.4",
+          "name": "Wire editor assets into publish.sh",
+          "status": "completed",
+          "details": "publish.sh now copies media/css/ to public/media/css/, generates /editor/index.html."
+        },
+        {
+          "id": "1.5",
+          "name": "Update dev server to handle API routes",
+          "status": "completed",
+          "details": "dev-web.sh now uses dev-editor-server.py (combined static + API). Falls back to python -m http.server if script missing."
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Wire Editor to Drafts",
+      "status": "completed",
+      "tasks": [
+        {
+          "id": "2.1",
+          "name": "Add Edit button to draft preview pages",
+          "status": "completed",
+          "details": "build_draft_previews.py injects Edit button in DRAFT banner linking to /editor/?slug=X&kind=draft"
+        },
+        {
+          "id": "2.2",
+          "name": "Add Edit button to drafts listing page",
+          "status": "completed",
+          "details": "generate_drafts.py adds Edit link overlay on each draft card thumbnail"
+        },
+        {
+          "id": "2.3",
+          "name": "Add 'New Draft' button to drafts listing",
+          "status": "completed",
+          "details": "generate_drafts.py adds New Draft button (teal #36c9c7) linking to /editor/"
+        },
+        {
+          "id": "2.4",
+          "name": "Add Editor link to site navigation",
+          "status": "completed",
+          "details": "Added to AOG theme nav.mustache between Drafts and Nano Chat"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Static Code Block Controls",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "3.1",
+          "name": "Create lightweight code block enhancer script",
+          "status": "pending",
+          "priority": "low",
+          "details": "Enhance static <pre> blocks on published articles with language badge, copy button, theme toggle — without the full editor."
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Testing",
+      "status": "completed",
+      "tasks": [
+        {
+          "id": "4.1",
+          "name": "API endpoint tests",
+          "status": "completed",
+          "details": "Tested load-draft, save (roundtrip), static file serving, editor page, Prism/JS serving — all 10 tests passed."
+        },
+        {
+          "id": "4.2",
+          "name": "HTML↔Org roundtrip",
+          "status": "completed",
+          "details": "Save→Load roundtrip tested: title, body, tags all preserved correctly."
+        },
+        {
+          "id": "4.3",
+          "name": "Existing features regression",
+          "status": "completed",
+          "details": "Drafts listing, draft previews, series nav, published articles, search index — all verified working."
+        }
+      ]
+    }
+  ]
+}

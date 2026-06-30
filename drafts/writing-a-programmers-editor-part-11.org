@@ -1,0 +1,37 @@
+#+TITLE:       Writing a Programmers Editor (Modes & Extensibility) - Part 11
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-10-13 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-11
+#+KEYWORDS:    scheme, editor, modes, extensibility, plugins, scripting
+#+TAGS:        Scheme, Modes, Extensibility, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: The extensibility layer — major modes, minor modes, hooks, and giving the user 100% power.
+
+*Draft — not yet published.*
+
+In [[/blog/2018/10/06/writing-a-programmers-editor-part-10/][Part 10]] we will have undo/redo. The editor can hold text, display it, search it,
+highlight it, and undo mistakes. Now we arrive at the question that started this whole
+series in [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]]: /how much power should the user have?/
+
+This part covers:
+
+- *Major modes:* language-specific behaviour (Scheme mode, C mode, Markdown mode).
+  How the editor switches behaviour based on file type.
+- *Minor modes:* optional, composable features (auto-indent, line numbers, flymake).
+  Multiple minor modes can be active simultaneously.
+- *Hooks:* extension points where user code runs at specific events
+  (before-save-hook, post-command-hook, etc.).
+- *The scripting layer:* exposing the editor's internals to user Scheme code.
+  This is the "=100%= power" promise — the same language that built the editor extends it.
+- Comparison with emacs' elisp layer and vim's vimscript.
+- Implementing a mode system and hook mechanism in Scheme.
+
+This is the part that answers the original question. If the editor is written in Scheme
+and the user scripts it in Scheme, there is no power gap. The runtime /is/ the extension
+language.
+
+Watchout for this assay when it is published, till then.
+
+/Shorel'aran/

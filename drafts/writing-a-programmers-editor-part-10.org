@@ -1,0 +1,32 @@
+#+TITLE:       Writing a Programmers Editor (Undo/Redo & Command Log) - Part 10
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-10-06 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-10
+#+KEYWORDS:    scheme, editor, undo, redo, command-log, history
+#+TAGS:        Scheme, Undo, Redo, Command Log, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Building undo and redo — from linear history to undo trees, and the command log pattern.
+
+*Draft — not yet published.*
+
+In [[/blog/2018/09/29/writing-a-programmers-editor-part-9/][Part 9]] we will have syntax highlighting. The editor is starting to look and feel real.
+But one thing is missing: the ability to /take back/ a mistake. Every editor needs undo.
+
+This part covers:
+
+- *Linear undo:* a simple stack of operations, push on edit, pop on undo.
+- *The command pattern:* representing each edit as a reversible object (do/undo pair).
+- *Grouping:* why typing a word is one undo, not one per character.
+- *Undo trees:* vim's approach — branching history where you can undo to any past state
+  and then go in a different direction.
+- Emacs' undo: the "no redo, just undo the undo" philosophy.
+- Implementing a command log with undo/redo in Scheme.
+
+Undo is the safety net. Get it wrong and users lose trust in the editor. Get it right and
+they will experiment freely, knowing they can always go back.
+
+Watchout for this assay when it is published, till then.
+
+/Shorel'aran/

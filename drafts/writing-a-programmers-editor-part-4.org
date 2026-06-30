@@ -1,0 +1,290 @@
+#+TITLE:       Writing a Programmers Editor (Lines & Display) - Part 4
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-08-25 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-4
+#+KEYWORDS:    scheme, editor, lines, display, rendering
+#+TAGS:        Scheme, Lines, Display, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Building a line management and display layer on top of the gap buffer.
+
+In [[/blog/2018/08/18/writing-a-programmers-editor-part-3/][Part 3]] we built a gap buffer in Scheme. It can hold text, insert characters,
+delete them, move the cursor, and resize when the gap runs out. It is about 80 lines
+of code and it works.
+
+But a gap buffer by itself is useless. Nobody edits text by thinking in terms of character
+offsets. Users think in terms of /lines/ and /columns/. "Go to line 42, column 10." "Select
+from here to the end of the line." "How many lines are in this file?"
+
+Our buffer is a flat array. We need to turn it into something that understands lines.
+
+*The Naive Approach*
+
+The simplest way to find "line N" is to scan the buffer from the beginning, counting
+newlines until we reach the desired line. This is =O(N)= per lookup — fine for a 50-line
+file, agonising for a 50,000-line one.
+
+#+BEGIN_SRC scheme
+;;; Count the number of newlines in the buffer.
+(define (gb-line-count gb)
+  (let ((buf (gb-buf gb))
+        (gs  (gb-start gb))
+        (ge  (gb-end gb))
+        (cap (gb-capacity gb)))
+    (+ 1  ; there is always at least one line
+       (let loop ((i 0) (count 0))
+         (cond
+          ((and (= i gs) (< gs ge))
+           (loop ge count))  ; skip the gap
+          ((>= i cap) count)
+          ((char=? (vector-ref buf i) #\newline)
+           (loop (+ i 1) (+ count 1)))
+          (else
+           (loop (+ i 1) count)))))))
+#+END_SRC
+
+This works, but calling it after every keystroke would be absurd. We need something
+smarter.
+
+*Line Cache — A Layer of Indirection*
+
+The trick is to maintain a /line offset table/ — a vector that stores the character offset
+of the start of each line. Line 1 starts at offset 0. Line 2 starts right after the first
+newline. And so on.
+
+With this table, finding the start of line N is a single vector lookup — =O(1)=. Counting
+lines is just checking the table length. The cost is keeping the table up to date when the
+user edits text.
+
+#+BEGIN_SRC scheme
+;;; An editor buffer wraps a gap buffer with a line-offset table.
+;;;   #(gap-buffer line-offsets)
+;;; line-offsets is a vector of character offsets, one per line start.
+
+(define (make-editor-buffer capacity)
+  (vector (make-gap-buffer capacity)
+          (vector 0)))  ; one line, starting at offset 0
+
+(define (eb-gap gb)       (vector-ref gb 0))
+(define (eb-lines gb)     (vector-ref gb 1))
+(define (eb-lines! gb v)  (vector-set! gb 1 v))
+#+END_SRC
+
+*Rebuilding the Line Table*
+
+After a batch of edits, we rebuild the line table by scanning the buffer once. This is
+=O(N)= where N is the file size, but we only do it when we need accurate line information
+(say, before rendering or before a "go to line" command).
+
+#+BEGIN_SRC scheme
+;;; Rebuild the line-offset table from scratch.
+(define (eb-rebuild-lines! eb)
+  (let* ((gb   (eb-gap eb))
+         (buf  (gb-buf gb))
+         (gs   (gb-start gb))
+         (ge   (gb-end gb))
+         (cap  (gb-capacity gb))
+         (acc  '()))  ; accumulate offsets in reverse
+    ;; Walk the buffer (skipping the gap), collecting newline offsets.
+    (let loop ((i 0) (line-start 0))
+      (cond
+       ;; Skip the gap region.
+       ((and (= i gs) (< gs ge))
+        (loop ge line-start))
+       ;; End of buffer.
+       ((>= i cap)
+        (eb-lines! eb (list->vector (reverse acc))))
+       ;; Found a newline — next line starts at i+1.
+       ((char=? (vector-ref buf i) #\newline)
+        (loop (+ i 1) (+ i 1)))
+       (else
+        (loop (+ i 1) line-start))))))
+
+;;; Initialize: first line always starts at offset 0.
+#+END_SRC
+
+Wait — that collects /line-start offsets/, but we forgot to seed it with 0. Let me fix:
+
+#+BEGIN_SRC scheme
+(define (eb-rebuild-lines! eb)
+  (let* ((gb   (eb-gap eb))
+         (buf  (gb-buf gb))
+         (gs   (gb-start gb))
+         (ge   (gb-end gb))
+         (cap  (gb-capacity gb)))
+    ;; Collect the character offset of each line start.
+    ;; The first line always starts at offset 0.
+    (let loop ((i 0) (acc (list 0)))
+      (cond
+       ((and (= i gs) (< gs ge))
+        (loop ge acc))
+       ((>= i cap)
+        (eb-lines! eb (list->vector (reverse acc))))
+       ((char=? (vector-ref buf i) #\newline)
+        (loop (+ i 1) (cons (+ i 1) acc)))
+       (else
+        (loop (+ i 1) acc))))))
+#+END_SRC
+
+Now we can answer line queries instantly:
+
+#+BEGIN_SRC scheme
+;;; How many lines are in this buffer?
+(define (eb-line-count eb)
+  (vector-length (eb-lines eb)))
+
+;;; Get the character offset where line N begins (0-indexed).
+(define (eb-line-start eb line)
+  (let ((offsets (eb-lines eb)))
+    (if (< line (vector-length offsets))
+        (vector-ref offsets line)
+        #f)))
+
+;;; Find which line a character offset falls on (binary search).
+(define (eb-offset->line eb offset)
+  (let ((offsets (eb-lines eb)))
+    (let loop ((lo 0) (hi (- (vector-length offsets) 1)))
+      (if (<= lo hi)
+          (let* ((mid     (quotient (+ lo hi) 2))
+                 (mid-val (vector-ref offsets mid)))
+            (cond
+             ((and (< mid (- (vector-length offsets) 1))
+                   (>= offset (vector-ref offsets (+ mid 1))))
+              (loop (+ mid 1) hi))
+             ((< offset mid-val)
+              (loop lo (- mid 1)))
+             (else mid)))
+          lo))))
+#+END_SRC
+
+The binary search makes =offset->line= run in =O(log L)= where L is the number of lines.
+For a 10,000-line file, that is about 14 comparisons.
+
+*Column Computation*
+
+The column is simply the offset minus the line start:
+
+#+BEGIN_SRC scheme
+;;; Given a character offset, return (line . column).
+(define (eb-offset->position eb offset)
+  (let ((line (eb-offset->line eb offset)))
+    (cons line (- offset (eb-line-start eb line)))))
+#+END_SRC
+
+*Rendering — The Viewport*
+
+Now for the fun part: actually /displaying/ text on a terminal. A terminal is a grid of
+characters — typically 80 columns by 24 rows. Our viewport is a window into the buffer.
+
+We need three things:
+- =top-line= :: the first line visible in the viewport
+- =rows= :: number of terminal rows
+- =cols= :: number of terminal columns
+
+The render function walks the buffer from the start of =top-line=, collecting characters
+until it fills the viewport:
+
+#+BEGIN_SRC scheme
+;;; Render a viewport of the buffer as a list of strings (one per row).
+(define (eb-render-viewport eb top-line rows cols)
+  (let* ((gb      (eb-gap eb))
+         (text    (gap-buffer->string gb))
+         (lines   (eb-split-lines text)))
+    ;; Drop lines above the viewport.
+    (let ((visible (list-tail lines (min top-line (length lines)))))
+      ;; Take at most `rows` lines, truncate each to `cols`.
+      (let loop ((remaining visible) (row 0) (acc '()))
+        (if (or (>= row rows) (null? remaining))
+            (reverse acc)
+            (let* ((raw (car remaining))
+                   (trimmed (if (> (string-length raw) cols)
+                               (substring raw 0 cols)
+                               raw)))
+              (loop (cdr remaining) (+ row 1) (cons trimmed acc))))))))
+
+;;; Split a string into a list of lines (without newlines).
+(define (eb-split-lines str)
+  (let ((len (string-length str)))
+    (let loop ((i 0) (start 0) (acc '()))
+      (cond
+       ((>= i len)
+        (reverse (cons (substring str start i) acc)))
+       ((char=? (string-ref str i) #\newline)
+        (loop (+ i 1) (+ i 1) (cons (substring str start i) acc)))
+       (else
+        (loop (+ i 1) start acc))))))
+#+END_SRC
+
+This is not the most efficient renderer — it converts the entire buffer to a string on
+every render. In a real editor, we would render only the visible lines directly from the
+gap buffer, skipping the gap. But for now, this is clear and correct.
+
+*Wiring It Together*
+
+Let us test the whole stack:
+
+#+BEGIN_SRC scheme
+;; Create a buffer with some source code.
+(define eb (make-editor-buffer 256))
+(define gb (eb-gap eb))
+
+;; Type in a small program.
+(for-each (lambda (ch) (gb-insert-char! gb ch))
+          (string->list "(define (factorial n)\n  (if (= n 0)\n      1\n      (* n (factorial (- n 1)))))"))
+
+;; Rebuild the line table.
+(eb-rebuild-lines! eb)
+
+;; How many lines?
+(display "Lines: ")
+(display (eb-line-count eb))
+(newline)
+;; => Lines: 4
+
+;; Render the first 3 lines, 40 columns wide.
+(for-each (lambda (line)
+            (display line)
+            (newline))
+          (eb-render-viewport eb 0 3 40))
+;; => (define (factorial n)
+;; =>   (if (= n 0)
+;; =>       1
+#+END_SRC
+
+*What About Word Wrap?*
+
+The renderer above truncates long lines at =cols= characters. A real editor would /wrap/
+them — breaking a long line into multiple visual rows. There are two common strategies:
+
+- *Soft wrap:* The line is still one logical line. The renderer simply breaks it across
+  multiple rows. Moving the cursor down from a wrapped row goes to the next /visual/ row,
+  not the next logical line.
+
+- *Hard wrap:* The editor inserts a newline. The line is permanently split.
+
+Soft wrap is more user-friendly but harder to implement. We will revisit this in a later
+part when we build the full rendering engine.
+
+*What We Have Now*
+
+We now have a two-layer architecture:
+
+1. *Gap buffer* — holds raw text, handles fast insertion/deletion/movement.
+2. *Line layer* — tracks line boundaries, answers "what line is this offset on?",
+   renders a viewport to the terminal.
+
+This is the skeleton of an editor. The missing pieces are:
+- Terminal I/O — reading keystrokes, writing to the screen (Part 5).
+- Keymaps — translating keystrokes into editor commands (Part 6).
+- Redisplay — only repainting the parts of the screen that changed (Part 7).
+
+Each of these is a fascinating topic in its own right. But the foundation is here: a data
+structure that holds text efficiently and understands the concept of lines.
+
+In the [[/blog/2018/09/01/writing-a-programmers-editor-part-5/][next part]] we will dive into the terminal — raw mode, escape sequences, and how to
+turn a teletype emulator into an interactive display.
+
+Watchout for the next part of the assay, till then.
+
+/Shorel'aran/
