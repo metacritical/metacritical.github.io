@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Exploration to find the right data structure for the editor." />
+  <meta name="keywords" content="scheme, editor-data-structures, gap-buffer" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782781887" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782781887" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    </div>
+  </div>
+  <p>
+In my quest to write a programmable editor the first problem that i came across was
+which datastructure to hold the text in? What do other text editors use? For instance
+emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
+with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
+like.
+</p>
+
+
+<div id="orgcea60e6" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
+</div>
+
+<p>
+Notice the <i>green boxes</i> in the diagram above. Those represent the gap — empty space
+in the array reserved for future insertions. The text <code>"HELLO WORLD"</code> sits in a
+single contiguous array, but the gap splits it into two segments: the text <i>before</i>
+the cursor and the text <i>after</i> the cursor.
+</p>
+
+<p>
+When you move the cursor one position to the right (from before <code>"H"</code> to after
+<code>"H"</code>), the gap <i>shifts</i> with it. The <code>"H"</code> jumps from the right side of the gap to
+the left side. This is the fundamental mechanic of a gap buffer.
+</p>
+
+<p>
+<b>Why is this clever?</b>
+</p>
+
+<p>
+Because insertion and deletion at the cursor position becomes essentially free. When
+you type a character, it fills the empty gap space — no shifting of text required.
+When you press backspace, the gap simply grows by one. The cursor is always <i>inside</i>
+the gap, and edits happen at gap boundaries.
+</p>
+
+
+<div id="orge6c8a82" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Insertion — typing fills the gap from the left, shrinking it one cell at a time.</p>
+</div>
+
+<p>
+Notice how each typed character occupies one green box, reducing the gap size by one.
+The gap shrinks from the <i>left edge</i>, meaning the new characters appear before the
+cursor. This is why insertion is <code>O(1)</code> — it is just a memory write at the gap boundary.
+No existing text needs to be shifted.
+</p>
+
+<ul class="org-ul">
+<li><b>Insertion:</b> <code>O(1)</code> — write into gap, shrink gap by one.</li>
+<li><b>Deletion:</b> <code>O(1)</code> — expand gap by one, no data movement.</li>
+<li><b>Cursor movement:</b> <code>O(n)</code> worst case — gap must travel, shifting characters across.</li>
+</ul>
+
+<p>
+<b>But wait, isn't cursor movement expensive?</b>
+</p>
+
+<p>
+In practice, no. Most cursor movements are short hops — a few characters left or
+right, up or down a line. The gap only shifts by a few positions. The worst case
+(<code>Ctrl+End</code> jumping to the end of a large file) does incur a cost, but it is a
+single <code>memmove</code> — a blazingly fast operation on modern hardware.
+</p>
+
+
+<div id="orga2a904b" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Long cursor movement — the gap shifts right, dragging characters from right side to left side.</p>
+</div>
+
+<p>
+When moving the cursor right, characters on the left side of the gap are "peeled off"
+the right segment and appended to the left segment. A move of <i>N</i> positions requires
+shifting <i>N</i> characters across the gap boundary — hence <code>O(N)</code>. For small N this is
+negligible; the <code>memmove</code> call completes in nanoseconds.
+</p>
+
+<p>
+The real question is: <b>what happens when the gap runs out of space?</b>
+</p>
+
+<p>
+When you keep typing and the gap fills up completely, the buffer must be resized.
+This involves allocating a larger array and copying the contents over — an <code>O(n)</code>
+operation. Emacs handles this by doubling the buffer size, giving you ample gap
+space before the next resize. The amortized cost per insertion remains <code>O(1)</code>.
+</p>
+
+
+<div id="orga721e98" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
+</div>
+
+<p>
+This is the only <code>O(N)</code> operation in the gap buffer's repertoire. But because the
+buffer size doubles each time — 8 → 16 → 32 → 64 — the resizes become progressively
+rarer. Type a single character and you get a fresh gap of 8 empty slots. Type 1000
+characters and you get a gap of 1024. The cost <i>amortizes</i> to zero over the lifetime
+of the buffer.
+</p>
+
+<p>
+<b>What about other data structures?</b>
+</p>
+
+<p>
+The gap buffer is not the only option. Several alternatives exist, each with their
+own trade-offs:
+</p>
+
+<ul class="org-ul">
+<li><b>Rope:</b> A binary tree where each leaf holds a short string fragment. Insertion
+and deletion are <code>O(log n)</code>. Excellent for very large documents. Used by
+<a href="https://github.com/atom/xray">Xi-editor</a> and <a href="https://github.com/zed-industries/zed">Zed</a>.</li>
+
+<li><b>Piece Table:</b> A table of <i>pieces</i> — references into an original buffer and an
+append-only change buffer. Never modifies the original. Used by <a href="https://code.visualstudio.com/blogs/2018/03/23/text-buffer-reimplementation">VS Code</a> and
+Microsoft Word.</li>
+
+<li><b>Linked List of Lines:</b> Each line is a separate string node. Simple but slow for
+cross-line operations. Used by many naive editors and early versions of <code>notepad</code>.</li>
+
+<li><b>Array (Flat):</b> A single contiguous array with no gap. Every insertion requires
+<code>O(n)</code> shifting. Simple but impractical for real-time editing.</li>
+</ul>
+
+<p>
+So why does emacs stick with the gap buffer? Because for the vast majority of
+editing scenarios — typing, deleting, small cursor movements — the gap buffer is
+hard to beat. It has excellent cache locality (everything is in one contiguous
+array), minimal allocation overhead, and is trivially simple to implement.
+</p>
+
+<p>
+<b>Which one should we pick for our editor?</b>
+</p>
+
+<p>
+Remember from the <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is to write an editor in a lisp or scheme
+that gives <code>100%</code> power to the user. A gap buffer is simple enough to implement in
+scheme in an afternoon, and its performance characteristics are well understood.
+A rope or piece table would add complexity that may not pay off until the editor
+handles very large files.
+</p>
+
+<p>
+There is also a philosophical angle. The gap buffer embodies a principle that
+resonates with lisp: <i>simple primitives that compose well</i>. A gap buffer is just
+an array with a split point. You can build higher-level abstractions — undo
+history, multi-cursor, collaborative editing — on top of it without fighting the
+data structure.
+</p>
+
+<p>
+<b>But does simple mean good enough?</b>
+</p>
+
+<p>
+That is the question we will explore in the next part. We will implement a gap
+buffer in scheme, wire it up to a basic display routine, and measure its
+performance on real-world editing workloads. The question is not just <i>can we build
+an editor on a gap buffer?</i> — emacs already proved that. The question is <i>can we
+build one that is entirely in scheme, with no C runtime, and still feel fast?</i>
+</p>
+
+<p>
+Watchout for the next part of the assay, till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
+</p>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-08-11</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.color_scheme = 'light';
+        this.page.url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+        this.page.identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
+      };
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  <script src="/media/js/claps.js"></script>
+<script src="/media/js/disqus-theme-fix.js"></script>
+</body>
+</html>
