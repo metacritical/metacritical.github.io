@@ -577,11 +577,6 @@ Post List
 	min-height: 280px !important;
 }
 
-/* Disqus renders its composer inside a cross-origin iframe with transparent
-   body and white text (dark theme). Parent CSS cannot reach inside the iframe,
-   so we invert the iframe's rendered output: white text → black, while the
-   transparent background stays transparent, letting our light page show through.
-   hue-rotate(180deg) approximately restores non-grayscale colours (links, avatars). */
 #disqus_thread iframe[src*="disqus"] {
 	filter: invert(1) hue-rotate(180deg);
 }

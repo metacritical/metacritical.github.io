@@ -214,26 +214,6 @@ fi
 # Keep custom domain mapping in generated output.
 printf 'selfdotsend.com\n' > "$BLOG_DIR/public/CNAME"
 
-# Inject Disqus iframe visibility fix into generated CSS.  AOG overwrites
-# public/media/css/ with its own copy, so we append our override after publish.
-for css in "$BLOG_DIR/public/media/css/style.css" "$BLOG_DIR/public/media/css/theme-medium.css"; do
-  [ -f "$css" ] || continue
-  if ! grep -q 'disqus.*invert\|invert.*disqus\|disqus_thread iframe\[src' "$css"; then
-    cat >> "$css" <<'DISQUSCSS'
-
-/* Disqus iframe visibility fix — cross-origin iframe renders white text
-   on transparent body.  filter: invert(1) hue-rotate(180deg) turns white
-   text to black while keeping transparent areas transparent. */
-#disqus_thread iframe[src*="disqus"] {
-  filter: invert(1) hue-rotate(180deg);
-}
-html[data-theme="medium"] #disqus_thread iframe[src*="disqus"] {
-  filter: invert(1) hue-rotate(180deg);
-}
-DISQUSCSS
-  fi
-done
-
 # Normalize Org-exported file:// URLs to site-root absolute URLs.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
@@ -244,20 +224,15 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
 
 
 
-# Force Disqus to use its light colour scheme and apply a CSS filter
-# fallback.  The composer lives in a cross-origin iframe — parent CSS
-# cannot reach inside it, so if Disqus picks its dark theme the white
-# text is invisible on a light page.  The JS helper applies
-# filter: invert(1) hue-rotate(180deg) to the iframe element so white
-# text becomes black while the transparent background lets our page
-# colour show through.
+# Force Disqus to use its light colour scheme as a hint to embed.js.
+# disqus-theme-fix.js handles the filter + image counter-filter at runtime.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
     -e 's|var disqus_config = function () {|var disqus_config = function () {\n        this.page.color_scheme = '\''light'\'';|'
 
 # Inject runtime UI helpers:
 # - claps.js wires backend-connected clap counts (one clap per visitor).
-# - disqus-theme-fix.js applies the iframe invert filter at runtime.
+# - disqus-theme-fix.js applies the iframe filter and tries to un-filter images.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
     -e 's|</body>|<script src="/media/js/claps.js"></script>\n<script src="/media/js/disqus-theme-fix.js"></script>\n</body>|g'
