@@ -2,6 +2,11 @@
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
 *, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
+html,
+body {
+	color-scheme: light;
+}
+
 /* Clearfix */
 .clearfix:after {
 	content: "";
@@ -538,6 +543,47 @@ Post List
 	max-width: 760px;
 	margin: 40px auto 0 auto;
 	padding: 0 40px;
+	background: #fff;
+	color: #222;
+	color-scheme: light;
+}
+
+#comments h1,
+#comments h2,
+#comments h3,
+#comments p,
+#comments a,
+#disqus_thread {
+	color: #222;
+}
+
+#disqus_thread {
+	min-height: 60px;
+	position: relative;
+	background: #fff;
+	color-scheme: light;
+}
+
+#disqus_thread:not(:has(iframe))::before {
+	content: "Loading comments…";
+	display: block;
+	text-align: center;
+	padding: 30px 0;
+	color: #666;
+	font-size: 14px;
+}
+
+#disqus_thread iframe {
+	min-height: 280px !important;
+}
+
+/* Disqus renders its composer inside a cross-origin iframe with transparent
+   body and white text (dark theme). Parent CSS cannot reach inside the iframe,
+   so we invert the iframe's rendered output: white text → black, while the
+   transparent background stays transparent, letting our light page show through.
+   hue-rotate(180deg) approximately restores non-grayscale colours (links, avatars). */
+#disqus_thread iframe[src*="disqus"] {
+	filter: invert(1) hue-rotate(180deg);
 }
 
 /* Post Page */
@@ -756,3 +802,4 @@ h2.month {
 	.post h1 { font-size:24px; }
 	.post h2 { font-size:20px; }
 }
+

@@ -1,0 +1,6 @@
+/* Disqus iframe colour fix — see style.css for the full explanation.
+   The filter inverts Disqus's dark-theme white text to black while
+   keeping the transparent background transparent. */
+#disqus_thread iframe[src*="disqus"] {
+  filter: invert(1) hue-rotate(180deg);
+}

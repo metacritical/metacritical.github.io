@@ -236,6 +236,36 @@ html[data-theme="medium"] #comments h1 {
   margin-bottom: 12px;
 }
 
+
+/* Keep third-party Disqus readable even when the OS/browser prefers dark UI. */
+html[data-theme="medium"] #comments {
+  background: #faf9f5;
+  color: #1f1f1b;
+  color-scheme: light;
+}
+
+html[data-theme="medium"] #comments h1,
+html[data-theme="medium"] #comments h2,
+html[data-theme="medium"] #comments h3,
+html[data-theme="medium"] #comments p,
+html[data-theme="medium"] #comments a,
+html[data-theme="medium"] #disqus_thread {
+  color: #1f1f1b;
+}
+
+html[data-theme="medium"] #disqus_thread {
+  background: #faf9f5;
+  color-scheme: light;
+}
+
+html[data-theme="medium"] #disqus_thread:not(:has(iframe))::before {
+  color: #6f6a5e;
+}
+
+html[data-theme="medium"] #disqus_thread iframe[src*="disqus"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 html[data-theme="medium"] #footer .small {
   color: #7a756b;
 }

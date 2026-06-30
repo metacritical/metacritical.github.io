@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1770776347" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782775370" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782780928" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782780928" type="text/css">
 </head>
 
   <body class="container">
@@ -87,7 +87,7 @@ like.
 </p>
 
 
-<div id="orge7670bc" class="figure">
+<div id="org7ca7c42" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
@@ -118,7 +118,7 @@ the gap, and edits happen at gap boundaries.
 </p>
 
 
-<div id="org680748d" class="figure">
+<div id="org43b7c16" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Insertion — typing fills the gap from the left, shrinking it one cell at a time.</p>
@@ -149,7 +149,7 @@ single <code>memmove</code> — a blazingly fast operation on modern hardware.
 </p>
 
 
-<div id="org5b92a43" class="figure">
+<div id="org03eb4e3" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
 </p>
 <p><span class="figure-number">Figure 3: </span>Long cursor movement — the gap shifts right, dragging characters from right side to left side.</p>
@@ -174,7 +174,7 @@ space before the next resize. The amortized cost per insertion remains <code>O(1
 </p>
 
 
-<div id="org87eb99e" class="figure">
+<div id="org5cc07af" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
 </p>
 <p><span class="figure-number">Figure 4: </span>Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
@@ -277,6 +277,7 @@ Watchout for the next part of the assay, till then.
     </div>
     <script type="text/javascript">
       var disqus_config = function () {
+        this.page.color_scheme = 'light';
         this.page.url = "https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
         this.page.identifier = "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2";
       };
@@ -312,5 +313,6 @@ Watchout for the next part of the assay, till then.
 </div>
 
   <script src="/media/js/claps.js"></script>
+<script src="/media/js/disqus-theme-fix.js"></script>
 </body>
 </html>

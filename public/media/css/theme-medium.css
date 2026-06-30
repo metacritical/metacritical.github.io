@@ -405,3 +405,13 @@ html[data-theme="medium"] #footer .small {
   html[data-theme="medium"] .medium-post-card { grid-template-columns: 1fr; gap: 14px; }
   html[data-theme="medium"] .medium-post-thumb { order: -1; }
 }
+
+/* Disqus iframe visibility fix — cross-origin iframe renders white text
+   on transparent body.  filter: invert(1) hue-rotate(180deg) turns white
+   text to black while keeping transparent areas transparent. */
+#disqus_thread iframe[src*="disqus"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+html[data-theme="medium"] #disqus_thread iframe[src*="disqus"] {
+  filter: invert(1) hue-rotate(180deg);
+}
