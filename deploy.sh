@@ -9,6 +9,13 @@ COMMIT_MSG="${COMMIT_MSG:-Deploy site $(date '+%Y-%m-%d %H:%M:%S')}"
 
 cd "$BLOG_DIR"
 
+# 0) Must be on source branch — publish.sh needs source files.
+CURRENT_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD)"
+if [ "$CURRENT_BRANCH" != "source" ]; then
+  echo "ERROR: deploy.sh must run from the 'source' branch (currently on '$CURRENT_BRANCH')"
+  exit 1
+fi
+
 # 1) Build site
 RENDER_DIAGRAMS="${RENDER_DIAGRAMS:-1}" ./publish.sh
 
@@ -51,3 +58,6 @@ if [ -n "$(git -C "$PAGES_DIR" status --porcelain)" ]; then
 else
   echo "No changes to deploy."
 fi
+
+# 7) Switch back to source branch
+git -C "$BLOG_DIR" checkout source
