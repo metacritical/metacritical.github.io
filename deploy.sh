@@ -2,15 +2,12 @@
 set -euo pipefail
 
 BLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PAGES_REPO_URL="${PAGES_REPO_URL:-git@github.com:metacritical/metacritical.github.io.git}"
-PAGES_DIR="${PAGES_DIR:-$HOME/Development/metacritical.github.io}"
-BRANCH="${PAGES_BRANCH:-master}"
 COMMIT_MSG="${COMMIT_MSG:-Deploy site $(date '+%Y-%m-%d %H:%M:%S')}"
 
 cd "$BLOG_DIR"
 
 # 0) Must be on source branch — publish.sh needs source files.
-CURRENT_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD)"
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [ "$CURRENT_BRANCH" != "source" ]; then
   echo "ERROR: deploy.sh must run from the 'source' branch (currently on '$CURRENT_BRANCH')"
   exit 1
@@ -19,45 +16,39 @@ fi
 # 1) Build site
 RENDER_DIAGRAMS="${RENDER_DIAGRAMS:-1}" ./publish.sh
 
-# 1b) Snapshot built output before switching branches.
-# public/ is tracked on source, so git checkout master wipes it.
-TMP_BUILD="$(mktemp -d)"
-rsync -a "$BLOG_DIR/public/" "$TMP_BUILD/"
-
-# 2) Ensure pages repo exists and is current
-if [ ! -d "$PAGES_DIR/.git" ]; then
-  git clone "$PAGES_REPO_URL" "$PAGES_DIR"
+# 2) Commit built output on source so working tree is clean before branch switch.
+git add public/
+if ! git diff --cached --quiet; then
+  git commit -m "🔄 Sync: Regenerate Public Output (Build)"
 fi
+git push origin source
 
-git -C "$PAGES_DIR" fetch origin
-git -C "$PAGES_DIR" checkout -f "$BRANCH"
-git -C "$PAGES_DIR" pull --ff-only origin "$BRANCH"
+# 3) Switch to master
+git checkout master
+git pull --ff-only origin master 2>/dev/null || true
 
-# 3) Preserve CNAME if present in repo
-TMP_CNAME=""
-if [ -f "$PAGES_DIR/CNAME" ]; then
-  TMP_CNAME="$(cat "$PAGES_DIR/CNAME")"
-fi
+# 4) Clear working tree using git (preserves .git).
+git rm -rf . 2>/dev/null || true
 
-# 4) Replace repo root contents with built output from snapshot
-find "$PAGES_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-rsync -a --delete "$TMP_BUILD/" "$PAGES_DIR/"
-rm -rf "$TMP_BUILD"
+# 5) Extract built files from source branch's public/ directory.
+git checkout source -- public/
 
-# 5) Restore CNAME if it existed
-if [ -n "$TMP_CNAME" ]; then
-  printf '%s\n' "$TMP_CNAME" > "$PAGES_DIR/CNAME"
-fi
+# 6) Flatten public/ contents to repo root.
+cp -a public/. .
+rm -rf public
 
-# 6) Commit and push if there are changes
-if [ -n "$(git -C "$PAGES_DIR" status --porcelain)" ]; then
-  git -C "$PAGES_DIR" add -A
-  git -C "$PAGES_DIR" commit -m "$COMMIT_MSG"
-  git -C "$PAGES_DIR" push origin "$BRANCH"
-  echo "Deployed to $PAGES_REPO_URL ($BRANCH)"
+# 7) Ensure CNAME is present.
+printf 'selfdotsend.com\n' > CNAME
+
+# 8) Commit and push if there are changes.
+git add -A
+if ! git diff --cached --quiet; then
+  git commit -m "$COMMIT_MSG"
+  git push origin master
+  echo "Deployed to master."
 else
   echo "No changes to deploy."
 fi
 
-# 7) Switch back to source branch
-git -C "$BLOG_DIR" checkout source
+# 9) Switch back to source branch.
+git checkout source
