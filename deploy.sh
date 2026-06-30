@@ -12,6 +12,11 @@ cd "$BLOG_DIR"
 # 1) Build site
 RENDER_DIAGRAMS="${RENDER_DIAGRAMS:-1}" ./publish.sh
 
+# 1b) Snapshot built output before switching branches.
+# public/ is tracked on source, so git checkout master wipes it.
+TMP_BUILD="$(mktemp -d)"
+rsync -a "$BLOG_DIR/public/" "$TMP_BUILD/"
+
 # 2) Ensure pages repo exists and is current
 if [ ! -d "$PAGES_DIR/.git" ]; then
   git clone "$PAGES_REPO_URL" "$PAGES_DIR"
@@ -27,9 +32,10 @@ if [ -f "$PAGES_DIR/CNAME" ]; then
   TMP_CNAME="$(cat "$PAGES_DIR/CNAME")"
 fi
 
-# 4) Replace repo root contents with generated site output
+# 4) Replace repo root contents with built output from snapshot
 find "$PAGES_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-rsync -a --delete "$BLOG_DIR/public/" "$PAGES_DIR/"
+rsync -a --delete "$TMP_BUILD/" "$PAGES_DIR/"
+rm -rf "$TMP_BUILD"
 
 # 5) Restore CNAME if it existed
 if [ -n "$TMP_CNAME" ]; then
