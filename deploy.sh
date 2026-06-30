@@ -23,7 +23,10 @@ if ! git diff --cached --quiet; then
 fi
 git push origin source
 
-# 3) Switch to master
+# 3) Remove untracked files (e.g. stale root-level files from prior deploys)
+git clean -fd
+
+# 4) Switch to master
 git checkout master
 git pull --ff-only origin master 2>/dev/null || true
 
