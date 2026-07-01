@@ -12,12 +12,43 @@ output_paths = [public_dir / "archive" / "index.html", public_dir / "blog" / "in
 MONTHS = ["January","February","March","April","May","June",
           "July","August","September","October","November","December"]
 
+
+def source_backed_slugs():
+    """Slugs that have a backing source file in posts/.
+
+    Excludes stale orphan pages left over from old builds that have no source.
+    """
+    valid = set()
+    posts_dir = blog_dir / "posts"
+    if not posts_dir.is_dir():
+        return valid
+    for org in posts_dir.glob("*.org"):
+        try:
+            text = org.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        m_date = re.search(r'^#\+DATE:\s+\[?(\d{4})-(\d{2})-(\d{2})', text, re.MULTILINE)
+        y, mo, d = m_date.groups() if m_date else ("", "", "")
+        m_uri = re.search(r'^#\+URI:\s+(.+)', text, re.MULTILINE)
+        if m_uri:
+            uri = m_uri.group(1).strip().replace("%y", y).replace("%m", mo).replace("%d", d)
+            slug = uri.rstrip("/").split("/")[-1]
+        else:
+            slug = org.stem
+        valid.add(slug)
+    return valid
+
+
+valid_slugs = source_backed_slugs()
+
 posts = []
 for idx_file in sorted(public_dir.glob("blog/*/*/*/*/index.html")):
     parts = idx_file.parts
     rel = "/" + "/".join(parts[parts.index("blog"):])
     slug = idx_file.parent.name
     if slug in ("archive", "all-posts"):
+        continue
+    if valid_slugs and slug not in valid_slugs:
         continue
     year, month, day = parts[-5], parts[-4], parts[-3]
     try:
@@ -26,7 +57,8 @@ for idx_file in sorted(public_dir.glob("blog/*/*/*/*/index.html")):
         continue
     m = re.search(r"<title>(.*?)</title>", content)
     raw_title = m.group(1).strip() if m else slug
-    title = html.escape(raw_title.split(" - Self")[0].strip()) if " - Self" in raw_title else html.escape(raw_title)
+    raw_clean = raw_title.split(" - Self")[0].strip() if " - Self" in raw_title else raw_title
+    title = html.escape(html.unescape(raw_clean))
     rel = "/" + "/".join(parts[parts.index("blog"):])
     url = rel.replace("/index.html", "/").rstrip("/") + "/"
     posts.append((int(year), int(month), int(day), title, url, slug))

@@ -12,12 +12,6 @@
     "excerpt": "This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist."
   },
   {
-    "title": "First Post",
-    "url": "/blog/2025/04/10/first-post/",
-    "date": "2025-04-10",
-    "excerpt": "This is your first blog post with Alchemist. Edit this file to get started."
-  },
-  {
     "title": "Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12",
     "url": "/blog/2018/10/20/writing-a-programmers-editor-part-12/",
     "date": "2018-10-20",
@@ -99,7 +93,7 @@
     "title": "Lolcat in Arm Assembly",
     "url": "/blog/2018/07/14/lolcat-in-arm-assembly/",
     "date": "2018-07-14",
-    "excerpt": ""
+    "excerpt": "lolcat is one of those gloriously useless little Unix programs that everybody loves anyway. It reads text and prints it back in rainbow colours — the same bytes you piped in, now dressed for a party. The original is a..."
   },
   {
     "title": "Lolcat in 64 arm assembly.",

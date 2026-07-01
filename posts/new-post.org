@@ -8,3 +8,226 @@
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Rewriting x86 Lolcat in Arm assembly.
+
+=lolcat= is one of those gloriously useless little Unix programs that everybody
+loves anyway. It reads text and prints it back in rainbow colours — the same bytes
+you piped in, now dressed for a party. The original is a Ruby gem; there are C and
+x86 assembly ports floating around. This is a port of the idea to /64-bit ARM/
+assembly — AArch64 — the instruction set inside every modern phone, every Apple
+Silicon Mac, and every Raspberry Pi from the 3 onward.
+
+The whole thing is one =_start=, a handful of syscalls, and a lookup table. No libc,
+no runtime. Let us build it.
+
+*What Lolcat Actually Does*
+
+Strip away the charm and =lolcat= is a filter:
+
+1. Read bytes from standard input.
+2. Before each printable character, emit an ANSI colour escape.
+3. Advance a /hue counter/ so the colour drifts along each line.
+4. On a newline, nudge the starting hue so the rainbow runs /diagonally/ down the page.
+5. At the end, emit a reset so the terminal goes back to normal.
+
+An ANSI 256-colour escape looks like =ESC [ 38 ; 5 ; N m=, where =N= selects a colour
+from the terminal's 256-colour palette. Pick a sequence of =N= values that walks
+around the colour wheel and you get a rainbow.
+
+*The AArch64 Calling Convention, In One Breath*
+
+To write bare assembly we only need the Linux syscall ABI for AArch64:
+
+- Syscall /number/ goes in =x8=.
+- Arguments go in =x0=, =x1=, =x2=, ... =x5=.
+- You trigger the kernel with =svc #0=.
+- The return value comes back in =x0=.
+
+The three syscalls we need:
+
+| Syscall | Number (=x8=) | Args |
+|---------+---------------+-----------------------------|
+| read    | 63            | x0=fd, x1=buf, x2=count     |
+| write   | 64            | x0=fd, x1=buf, x2=count     |
+| exit    | 93            | x0=status                   |
+
+File descriptor =0= is stdin, =1= is stdout. That is the entire operating-system
+surface this program touches.
+
+*The Rainbow Table*
+
+The clever trick that keeps the assembly small: pre-render every colour escape as a
+/fixed-width/ string. Each escape is written with a padded three-digit colour code —
+ANSI happily accepts leading zeros — so every entry is exactly *11 bytes*:
+
+#+BEGIN_EXAMPLE
+ESC [ 3 8 ; 5 ; N N N m      =>  "\033[38;5;196m"   (11 bytes)
+#+END_EXAMPLE
+
+With a fixed stride, emitting colour /i/ is just "write 11 bytes starting at
+=COLORS + i*11=". No integer-to-string conversion at runtime — the hard part is done
+once, at assembly time, in the =.data= section.
+
+We use thirty codes that loop once around the colour cube:
+
+#+BEGIN_SRC asm
+// 30 rainbow colours, each escape padded to exactly 11 bytes.
+.section .data
+COLORS:
+  .ascii "\033[38;5;196m\033[38;5;202m\033[38;5;208m\033[38;5;214m\033[38;5;220m"
+  .ascii "\033[38;5;226m\033[38;5;190m\033[38;5;154m\033[38;5;118m\033[38;5;082m"
+  .ascii "\033[38;5;046m\033[38;5;047m\033[38;5;048m\033[38;5;049m\033[38;5;050m"
+  .ascii "\033[38;5;051m\033[38;5;045m\033[38;5;039m\033[38;5;033m\033[38;5;027m"
+  .ascii "\033[38;5;021m\033[38;5;057m\033[38;5;093m\033[38;5;129m\033[38;5;165m"
+  .ascii "\033[38;5;201m\033[38;5;200m\033[38;5;199m\033[38;5;198m\033[38;5;197m"
+.equ NCOLORS, 30
+.equ CWIDTH,  11
+
+RESET:  .ascii "\033[0m"
+.equ RESET_LEN, 4
+
+.section .bss
+.lcomm BUFFER, 4096      // input scratch buffer
+.equ  BUFSZ, 4096
+#+END_SRC
+
+*The Program*
+
+Now the logic. We keep our state in the callee-saved registers =x19–x24= so that
+syscalls (which only clobber =x0=) never stomp on it:
+
+- =x19= — bytes read in the current block
+- =x20= — pointer to the buffer
+- =x21= — index into the current block
+- =x23= — the rolling colour counter
+- =x24= — the line counter (drives the diagonal shift)
+
+#+BEGIN_SRC asm
+.section .text
+.global _start
+
+_start:
+    mov     x23, #0             // colour counter
+    mov     x24, #0             // line counter
+
+read_block:
+    mov     x0, #0              // fd = stdin
+    adrp    x20, BUFFER
+    add     x20, x20, :lo12:BUFFER
+    mov     x1, x20
+    mov     x2, #BUFSZ
+    mov     x8, #63             // read
+    svc     #0
+    cmp     x0, #0
+    b.le    finish              // 0 = EOF, <0 = error
+    mov     x19, x0             // bytes read this block
+    mov     x21, #0             // i = 0
+
+next_char:
+    cmp     x21, x19
+    b.ge    read_block          // block done, read more
+    ldrb    w22, [x20, x21]     // current byte
+    cmp     w22, #10            // '\n' ?
+    b.eq    newline
+
+    // ---- emit the colour escape for this column ----
+    mov     w9,  #NCOLORS
+    udiv    w10, w23, w9        // w10 = counter / NCOLORS
+    msub    w11, w10, w9, w23   // w11 = counter mod NCOLORS
+    mov     w12, #CWIDTH
+    mul     w11, w11, w12       // offset = idx * 11
+    adrp    x1,  COLORS
+    add     x1,  x1, :lo12:COLORS
+    add     x1,  x1, w11, uxtw  // x1 = &COLORS[offset]
+    mov     x2,  #CWIDTH
+    bl      write_out
+
+    // ---- emit the character itself ----
+    add     x1,  x20, x21
+    mov     x2,  #1
+    bl      write_out
+
+    add     x23, x23, #1        // advance hue
+    add     x21, x21, #1        // advance index
+    b       next_char
+
+newline:
+    // print the newline byte as-is
+    add     x1,  x20, x21
+    mov     x2,  #1
+    bl      write_out
+    add     x24, x24, #1        // next line
+    mov     x23, x24            // shift start hue -> diagonal rainbow
+    add     x21, x21, #1
+    b       next_char
+
+finish:
+    adrp    x1, RESET
+    add     x1, x1, :lo12:RESET
+    mov     x2, #RESET_LEN
+    bl      write_out
+    mov     x0, #0
+    mov     x8, #93             // exit
+    svc     #0
+
+// write(1, x1, x2) — leaf helper, clobbers only x0/x8
+write_out:
+    mov     x0, #1              // fd = stdout
+    mov     x8, #64             // write
+    svc     #0
+    ret
+#+END_SRC
+
+*The Interesting Bits*
+
+The one piece of real arithmetic is the modulo. AArch64 has no modulo instruction, so
+we do it the classic way with =udiv= and =msub=:
+
+#+BEGIN_SRC asm
+    udiv    w10, w23, w9        // q   = counter / NCOLORS
+    msub    w11, w10, w9, w23   // rem = counter - q*NCOLORS
+#+END_SRC
+
+=msub Wd, Wn, Wm, Wa= computes =Wa - (Wn * Wm)=, which is exactly =counter - q*NCOLORS=
+— the remainder. That remainder indexes the rainbow, and multiplying by =CWIDTH=
+turns the index into a byte offset into =COLORS=.
+
+The diagonal effect is almost free. On every newline we bump =x24= and copy it into the
+colour counter =x23=. Each new line therefore /starts/ one hue further along than the
+last, so the rainbow flows down and to the right instead of restarting flat on every
+row.
+
+Notice there is no buffering of output — we issue a =write= per escape and per
+character. That is wasteful (thousands of tiny syscalls), but it keeps the program
+honest and readable. Batching the escape and the byte into one buffer before writing is
+the obvious optimisation, and a good exercise to try next.
+
+*Building And Running It*
+
+On any Linux AArch64 box (a Raspberry Pi, an ARM cloud VM, or =qemu-aarch64=):
+
+#+BEGIN_SRC sh
+as -o lolcat.o lolcat.s
+ld -o lolcat lolcat.o
+
+echo "hello from bare-metal ARM" | ./lolcat
+cat /etc/os-release | ./lolcat
+#+END_SRC
+
+No linker flags, no libraries — =_start= is the entry point and the kernel is the only
+dependency.
+
+*A Note On Apple Silicon And macOS*
+
+This is written for the /Linux/ syscall ABI. macOS on Apple Silicon is also AArch64,
+but it uses a different convention: syscalls go through =svc #0x80=, the syscall number
+lives in =x16=, and the numbers carry a =0x2000000= class bit — so =write= is
+=0x2000004=, not =64=. The register-and-lookup-table logic above is identical; only the
+three syscall stubs change. Port those and the same rainbow runs on a Mac.
+
+*Why Bother?*
+
+Because =lolcat= is small enough to hold in your head and silly enough to make
+assembly fun. In about seventy instructions you touch raw syscalls, ANSI escapes,
+integer division without a divide-and-mod instruction, position-independent data
+access with =adrp= / =:lo12:=, and the AArch64 register conventions — all in service of
+making =cat= wear a rainbow. That is the best kind of useless.

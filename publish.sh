@@ -162,10 +162,11 @@ generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap s
 generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
 generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
 
-# Convert ditaa-rendered gap buffer diagrams from default green to #BBFF00.
-# Only rewrite a file if the conversion actually changes pixels, so mtimes
-# stay stable and Doorman does not see generated assets as source changes.
-convert_gapbuffer_color() {
+# Convert ditaa-generated diagrams from default green to #BBFF00,
+# matching the gapbuffer diagram fill color. Only rewrites files where
+# pixels actually change so mtimes stay stable and Doorman does not see
+# generated assets as source changes.
+convert_ditaa_color() {
   local file="$1"
   local tmp
   tmp="$(mktemp "${file}.XXXXXX")"
@@ -176,8 +177,13 @@ convert_gapbuffer_color() {
     mv "$tmp" "$file"
   fi
 }
-find "$BLOG_DIR/assets" -path "*/gapbuffer*.png" -not -name "gapbuffer1.png" -print0 | \
-  while IFS= read -r -d '' file; do convert_gapbuffer_color "$file"; done
+
+# Extract all ditaa output file paths from org source blocks.
+rg --no-filename -o 'BEGIN_SRC ditaa.*:file\s+(\S+)' "$BLOG_DIR"/posts/*.org -r '$1' 2>/dev/null | \
+  sed "s|^|$BLOG_DIR/|" | \
+  while IFS= read -r file; do
+    [ -f "$file" ] && convert_ditaa_color "$file"
+  done
 
 # Publish with AOG using native selfdotsend theme.
 echo "Publishing blog with AOG..."
@@ -307,6 +313,9 @@ fi
 
 # Generate archive page from published posts (overrides AOG's auto-generated listing).
 python3 "$BLOG_DIR/scripts/generate_archive.py" "$BLOG_DIR"
+
+# Regenerate the homepage card list from published posts (overrides static index.org cards).
+python3 "$BLOG_DIR/scripts/generate_home.py" "$BLOG_DIR"
 
 # Generate drafts index page (lists articles in drafts/ directory).
 python3 "$BLOG_DIR/scripts/generate_drafts.py" "$BLOG_DIR"
