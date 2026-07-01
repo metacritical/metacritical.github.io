@@ -71,11 +71,12 @@ while true; do
   NEXT_HASH="$(hash_state)"
   if [ "$NEXT_HASH" != "$LAST_HASH" ]; then
     echo "[watch] Change detected. Rebuilding..."
-    if "$BLOG_DIR/publish.sh"; then
+    BUILD_TIMEOUT="${BUILD_TIMEOUT:-300}"
+    if /opt/homebrew/bin/timeout "$BUILD_TIMEOUT" "$BLOG_DIR/publish.sh"; then
       LAST_HASH="$NEXT_HASH"
       echo "[watch] Rebuild complete."
     else
-      echo "[watch] Rebuild failed. Will retry on next change."
+      echo "[watch] Rebuild failed or timed out after ${BUILD_TIMEOUT}s. Will retry on next change."
     fi
   fi
 done

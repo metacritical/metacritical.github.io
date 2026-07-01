@@ -97,6 +97,20 @@ The agent must follow these rules for every commit:
 14. If the change restores prior behavior, say `Restore` or `Revert`, not just `Fix`.
 15. If assets are regenerated, state what triggered the regeneration.
 
+## Icon And Emoji Rules
+
+**For UI elements** (toolbars, buttons, menus, editor controls):
+- Always prefer inline SVG icons over emojis or Unicode symbols.
+- Use Feather-style SVGs (`viewBox="0 0 24 24"`, `stroke="currentColor"`,
+  `stroke-width="2"`) to match the existing icon set in the slash menu.
+- Simple text labels (e.g., `B`, `I`, `L`, `C`, `R`) are acceptable and do
+  not need SVG replacement.
+- Never use emoji characters (e.g., 💾, 🖼) for toolbar or button icons.
+
+**For commit messages**:
+- Always prefer emoji prefixes (see the Approved Categories table above).
+- Commit message emojis are the only place emojis should be used.
+
 ---
 
 ## Commit Title Format

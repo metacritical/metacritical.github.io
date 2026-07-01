@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
   <link rel="stylesheet" href="/media/css/draft-editor.css" type="text/css">
   <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782903116" type="text/css">
+  <script>window.__imageSettings = {};</script>
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782912771" type="text/css">
 </head>
 
   <body class="container">
@@ -81,12 +82,15 @@
     <div class="post-author-meta">
       <span class="post-author-name">Pankaj Doharey</span>
       <span class="post-author-date"></span>
-    </div>
+    <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
   </div>
+</div>
   <style>
 .article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
 .article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
 </style>
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/terminal/">Terminal</a></li><li><a class="article-tag" href="/tags/raw-mode/">Raw Mode</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
@@ -377,11 +381,11 @@ document.addEventListener('DOMContentLoaded', function() {
     '<span class="de-save-indicator" id="de-save-dot" title="Save status"></span>' +
     '<span class="de-tb-status-text" id="de-status-text"></span>' +
     '<span class="de-tool-spacer"></span>' +
-    '<button class="de-tb-icon" type="button" id="de-save" title="Save Draft">&#128190;</button>' +
-    '<button class="de-tb-icon" type="button" id="de-publish" title="Publish">&#8593;</button>' +
+    '<button class="de-tb-icon" type="button" id="de-save" title="Save Draft"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>' +
+    '<button class="de-tb-icon" type="button" id="de-publish" title="Publish"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>' +
     '<span class="de-tb-sep"></span>' +
-    '<button class="de-tb-icon" type="button" id="de-undo" title="Undo">&#8630;</button>' +
-    '<button class="de-tb-icon" type="button" id="de-redo" title="Redo">&#8631;</button>';
+    '<button class="de-tb-icon" type="button" id="de-undo" title="Undo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>' +
+    '<button class="de-tb-icon" type="button" id="de-redo" title="Redo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>';
 
   // Insert metadata row right after title, then toolbar below it.
   if (titleEl.nextSibling) {
@@ -401,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
     '.de-meta-sep{color:#c4beb1;font-size:12px}',
     '.de-meta-date{font-size:12px;color:#9c968a}',
     '.de-meta-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}',
-    '.de-meta-tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;color:#6f6a5e;background:#f1ece0;padding:2px 4px 2px 9px;border-radius:11px;transition:background .12s}',
+    '.de-meta-tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:500;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 4px 3px 11px;border-radius:12px;transition:background .12s}',
     '.de-meta-tag:hover{background:#e8e3d4}',
     '.de-meta-tag .de-tag-remove{cursor:pointer;color:#b0aaa0;font-size:13px;line-height:1;padding:0 0 0 2px;border:none;background:none}',
     '.de-meta-tag .de-tag-remove:hover{color:#dc2626}',
@@ -464,12 +468,25 @@ document.addEventListener('DOMContentLoaded', function() {
     var img = fig.querySelector('img');
     if (!img) return;
     var src = img.getAttribute('src') || '';
-    var w = fig.getAttribute('data-width') || '760';
-    var h = fig.getAttribute('data-height') || '420';
+    var saved = (window.__imageSettings || {})[src] || {};
+    var fit = saved.fit || 'cover';
+    var position = saved.position || 'center';
+    var filter = saved.filter || 'none';
+    var align = saved.align || 'center';
+    var imgW = (img.getAttribute('width') || '').replace('px', '');
+    var imgH = (img.getAttribute('height') || '').replace('px', '');
+    var w = saved.width || imgW || '760';
+    var h = saved.height || imgH || '420';
     var newFig = document.createElement('figure');
-    newFig.className = 'image-block fit-cover pos-center align-center';
+    var cls = 'image-block fit-' + fit + ' pos-' + position + ' align-' + align;
+    if (filter && filter !== 'none') cls += ' filter-' + filter;
+    newFig.className = cls;
     newFig.setAttribute('contenteditable', 'false');
     newFig.setAttribute('data-src', src);
+    newFig.dataset.fit = fit;
+    newFig.dataset.position = position;
+    newFig.dataset.filter = filter;
+    newFig.dataset.align = align;
     newFig.style.cssText = 'width:' + w + 'px;max-width:100%;height:' + h + 'px';
     newFig.innerHTML = '<img src="' + src + '" alt="">' + (img.alt ? '<figcaption>' + img.alt + '</figcaption>' : '');
     fig.parentNode.replaceChild(newFig, fig);

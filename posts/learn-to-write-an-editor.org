@@ -4,7 +4,7 @@
 #+DATE:        [2018-08-06 Mon]
 #+URI:         /blog/%y/%m/%d/learn-to-write-an-editor
 #+KEYWORDS:    editor, emacs, vim, scheme
-#+TAGS:        editor, scheme, emacs, Writing an Editor
+#+TAGS:        editor, emacs, vim, scheme, writing an editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: A series of Assays on writing a programmers editor.

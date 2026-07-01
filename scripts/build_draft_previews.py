@@ -9,6 +9,7 @@ import re
 import os
 import sys
 import html
+import json
 import shutil
 import subprocess
 import tempfile
@@ -79,6 +80,22 @@ for org_file in sorted(drafts_dir.glob("*.org")):
     slug = org_file.stem
     content = org_file.read_text(encoding="utf-8", errors="replace")
 
+    # Parse image settings from #+ATTR_HTML lines so they survive rebuild.
+    image_settings = {}
+    for attr_match in re.finditer(r'^#\+ATTR_HTML:\s+(.*?)\s*$', content, re.MULTILINE):
+        attrs_str = attr_match.group(1)
+        img_match = re.search(r'\[\[([^\]]+)\]\]', content[attr_match.end():])
+        if not img_match:
+            continue
+        img_url = img_match.group(1)
+        settings = {}
+        for m in re.finditer(r':(width|height)\s+(\d+)', attrs_str):
+            settings[m.group(1)] = m.group(2)
+        for m in re.finditer(r':data-(\S+)\s+(\S+)', attrs_str):
+            settings[m.group(1)] = m.group(2)
+        if settings:
+            image_settings[img_url] = settings
+
     m_uri = re.search(r'^#\+URI:\s+(.*)', content, re.MULTILINE)
     m_date = re.search(r'^#\+DATE:\s+\[?(\d{4})-(\d{2})-(\d{2})', content, re.MULTILINE)
 
@@ -131,6 +148,10 @@ for org_file in sorted(drafts_dir.glob("*.org")):
         '  <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">'
     )
     page_html = page_html.replace('</head>', f'  {editor_css}\n</head>', 1)
+
+    # Inject saved image settings so the bootstrap script can restore them.
+    settings_json = json.dumps(image_settings)
+    page_html = page_html.replace('</head>', f'  <script>window.__imageSettings = {settings_json};</script>\n</head>', 1)
 
     # Inject editor JS and bootstrap script before </body>.
     editor_js = f"""
@@ -199,11 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {{
     '<span class="de-save-indicator" id="de-save-dot" title="Save status"></span>' +
     '<span class="de-tb-status-text" id="de-status-text"></span>' +
     '<span class="de-tool-spacer"></span>' +
-    '<button class="de-tb-icon" type="button" id="de-save" title="Save Draft">&#128190;</button>' +
-    '<button class="de-tb-icon" type="button" id="de-publish" title="Publish">&#8593;</button>' +
+    '<button class="de-tb-icon" type="button" id="de-save" title="Save Draft"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>' +
+    '<button class="de-tb-icon" type="button" id="de-publish" title="Publish"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>' +
     '<span class="de-tb-sep"></span>' +
-    '<button class="de-tb-icon" type="button" id="de-undo" title="Undo">&#8630;</button>' +
-    '<button class="de-tb-icon" type="button" id="de-redo" title="Redo">&#8631;</button>';
+    '<button class="de-tb-icon" type="button" id="de-undo" title="Undo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>' +
+    '<button class="de-tb-icon" type="button" id="de-redo" title="Redo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>';
 
   // Insert metadata row right after title, then toolbar below it.
   if (titleEl.nextSibling) {{
@@ -223,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {{
     '.de-meta-sep{{color:#c4beb1;font-size:12px}}',
     '.de-meta-date{{font-size:12px;color:#9c968a}}',
     '.de-meta-tags{{display:flex;gap:4px;flex-wrap:wrap;align-items:center}}',
-    '.de-meta-tag{{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;color:#6f6a5e;background:#f1ece0;padding:2px 4px 2px 9px;border-radius:11px;transition:background .12s}}',
+    '.de-meta-tag{{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:500;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 4px 3px 11px;border-radius:12px;transition:background .12s}}',
     '.de-meta-tag:hover{{background:#e8e3d4}}',
     '.de-meta-tag .de-tag-remove{{cursor:pointer;color:#b0aaa0;font-size:13px;line-height:1;padding:0 0 0 2px;border:none;background:none}}',
     '.de-meta-tag .de-tag-remove:hover{{color:#dc2626}}',
@@ -286,12 +307,25 @@ document.addEventListener('DOMContentLoaded', function() {{
     var img = fig.querySelector('img');
     if (!img) return;
     var src = img.getAttribute('src') || '';
-    var w = fig.getAttribute('data-width') || '760';
-    var h = fig.getAttribute('data-height') || '420';
+    var saved = (window.__imageSettings || {{}})[src] || {{}};
+    var fit = saved.fit || 'cover';
+    var position = saved.position || 'center';
+    var filter = saved.filter || 'none';
+    var align = saved.align || 'center';
+    var imgW = (img.getAttribute('width') || '').replace('px', '');
+    var imgH = (img.getAttribute('height') || '').replace('px', '');
+    var w = saved.width || imgW || '760';
+    var h = saved.height || imgH || '420';
     var newFig = document.createElement('figure');
-    newFig.className = 'image-block fit-cover pos-center align-center';
+    var cls = 'image-block fit-' + fit + ' pos-' + position + ' align-' + align;
+    if (filter && filter !== 'none') cls += ' filter-' + filter;
+    newFig.className = cls;
     newFig.setAttribute('contenteditable', 'false');
     newFig.setAttribute('data-src', src);
+    newFig.dataset.fit = fit;
+    newFig.dataset.position = position;
+    newFig.dataset.filter = filter;
+    newFig.dataset.align = align;
     newFig.style.cssText = 'width:' + w + 'px;max-width:100%;height:' + h + 'px';
     newFig.innerHTML = '<img src="' + src + '" alt="">' + (img.alt ? '<figcaption>' + img.alt + '</figcaption>' : '');
     fig.parentNode.replaceChild(newFig, fig);
