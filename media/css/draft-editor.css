@@ -409,6 +409,7 @@
   position: relative;
   transition: border-color .15s ease, box-shadow .15s ease;
   overflow: hidden;
+  box-sizing: border-box;
 }
 .de-body figure.image-block.is-selected,
 .de-body figure.image-block:focus,
@@ -472,6 +473,12 @@
 }
 .de-image-resize-handle {
   position: absolute;
+  pointer-events: auto;
+  z-index: 5;
+  background: rgba(54,201,199,0.85);
+  border-radius: 2px;
+}
+.de-image-resize-handle[data-dir="se"] {
   right: 2px;
   bottom: 2px;
   width: 14px;
@@ -479,8 +486,22 @@
   cursor: nwse-resize;
   background: linear-gradient(135deg, transparent 50%, rgba(54,201,199,0.85) 50%);
   border-radius: 0 0 5px 0;
-  pointer-events: auto;
-  z-index: 5;
+}
+.de-image-resize-handle[data-dir="e"] {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 40px;
+  cursor: ew-resize;
+}
+.de-image-resize-handle[data-dir="s"] {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 6px;
+  cursor: ns-resize;
 }
 .de-body > .is-selected {
   outline: 2px dashed #36c9c7;

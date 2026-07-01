@@ -326,6 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {{
     newFig.dataset.position = position;
     newFig.dataset.filter = filter;
     newFig.dataset.align = align;
+    newFig.dataset.width = w;
+    newFig.dataset.height = h;
     newFig.style.cssText = 'width:' + w + 'px;max-width:100%;height:' + h + 'px';
     newFig.innerHTML = '<img src="' + src + '" alt="">' + (img.alt ? '<figcaption>' + img.alt + '</figcaption>' : '');
     fig.parentNode.replaceChild(newFig, fig);
