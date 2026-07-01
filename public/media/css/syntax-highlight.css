@@ -1,0 +1,85 @@
+/**
+ * Syntax highlighting styles for Org-mode export
+ * Based on Monokai theme
+ */
+
+/* Base styles for code blocks */
+pre.src {
+  background-color: #272822;
+  color: #f8f8f2;
+  border: none !important;
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  line-height: 1.5;
+}
+
+/* Org-mode syntax highlighting classes */
+.org-keyword { color: #f92672; font-weight: bold; }
+.org-string { color: #e6db74; }
+.org-comment, .org-comment-delimiter { color: #75715e; font-style: italic; }
+.org-function-name { color: #a6e22e; }
+.org-variable-name { color: #f8f8f2; }
+.org-type { color: #66d9ef; font-style: italic; }
+.org-constant { color: #ae81ff; }
+.org-builtin { color: #66d9ef; }
+.org-preprocessor { color: #f92672; }
+.org-doc { color: #75715e; font-style: italic; }
+.org-negation-char { color: #f92672; }
+.org-regexp-grouping-backslash { color: #f8f8f2; }
+.org-regexp-grouping-construct { color: #f8f8f2; }
+.org-warning { color: #fd971f; font-weight: bold; }
+.org-error { color: #f92672; font-weight: bold; }
+
+/* Language-specific customizations */
+
+/* Elisp specific classes */
+.src-elisp .org-keyword { color: #f92672; }
+.src-elisp .org-string { color: #e6db74; }
+.src-elisp .org-comment { color: #75715e; }
+.src-elisp .org-function-name { color: #a6e22e; }
+.src-elisp .org-variable-name { color: #f8f8f2; }
+.src-elisp .org-type { color: #66d9ef; }
+.src-elisp .org-constant { color: #ae81ff; }
+
+/* JavaScript specific classes */
+.src-js .org-keyword { color: #66d9ef; }
+.src-js .org-string { color: #e6db74; }
+.src-js .org-comment { color: #75715e; }
+.src-js .org-function-name { color: #a6e22e; }
+.src-js .org-variable-name { color: #f8f8f2; }
+.src-js .org-type { color: #66d9ef; }
+.src-js .org-constant { color: #ae81ff; }
+
+/* CSS specific classes */
+.src-css .org-keyword { color: #66d9ef; }
+.src-css .org-string { color: #e6db74; }
+.src-css .org-comment { color: #75715e; }
+.src-css .org-variable-name { color: #a6e22e; }
+.src-css .org-constant { color: #ae81ff; }
+
+/* Python specific classes */
+.src-python .org-keyword { color: #f92672; }
+.src-python .org-string { color: #e6db74; }
+.src-python .org-comment { color: #75715e; }
+.src-python .org-function-name { color: #a6e22e; }
+.src-python .org-variable-name { color: #f8f8f2; }
+.src-python .org-type { color: #66d9ef; }
+.src-python .org-constant { color: #ae81ff; }
+
+/* Ruby specific classes */
+.src-ruby .org-keyword { color: #f92672; }
+.src-ruby .org-string { color: #e6db74; }
+.src-ruby .org-comment { color: #75715e; }
+.src-ruby .org-function-name { color: #a6e22e; }
+.src-ruby .org-variable-name { color: #f8f8f2; }
+.src-ruby .org-constant { color: #ae81ff; }
+
+/* Shell/Bash specific classes */
+.src-sh .org-keyword { color: #f92672; }
+.src-sh .org-string { color: #e6db74; }
+.src-sh .org-comment { color: #75715e; }
+.src-sh .org-variable-name { color: #f8f8f2; }
+.src-sh .org-constant { color: #ae81ff; }

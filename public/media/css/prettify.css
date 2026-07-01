@@ -1,0 +1,59 @@
+/* Pretty printing styles for prettify.js */
+/* Derived from prettify.css https://github.com/google/code-prettify */
+
+.prettyprint {
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  padding: 8px 12px;
+  overflow: auto;
+  font-family: monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.prettyprint .kwd { color: #008; font-weight: bold; } /* keyword */
+.prettyprint .typ { color: #606; } /* type */
+.prettyprint .lit { color: #066; } /* literal */
+.prettyprint .pun { color: #660; } /* punctuation */
+.prettyprint .pln { color: #000; } /* plain text */
+.prettyprint .tag { color: #008; font-weight: bold; } /* html/xml tag */
+.prettyprint .atn { color: #606; } /* attribute name */
+.prettyprint .atv { color: #080; } /* attribute value */
+.prettyprint .dec { color: #606; } /* decimal */
+.prettyprint .var { color: #606; } /* variable name */
+.prettyprint .fun { color: #F00; } /* function name */
+.prettyprint .str { color: #080; } /* string */
+.prettyprint .com { color: #800; font-style: italic; } /* comment */
+.prettyprint .dir { color: #008; font-weight: bold; } /* directive */
+.prettyprint .sym { color: #066; } /* symbol */
+.prettyprint .line { color: #333; } /* line number */
+.prettyprint .arrow { color: #333; } /* arrow */
+.prettyprint .property { color: #606; } /* property */
+.prettyprint .react { color: #F90; } /* React */
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0; color: #888; }
+li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 { list-style-type: none }
+
+/* Alternate shading for lines */
+li.L1,li.L3,li.L5,li.L7,li.L9 { background: #f8f8f8; }
+
+@media print {
+  .prettyprint {
+    background-color: none;
+    border: none;
+  }
+  .prettyprint .kwd,
+  .prettyprint .typ,
+  .prettyprint .tag { font-weight: bold; }
+  .prettyprint .str,
+  .prettyprint .atv { color: #060; }
+  .prettyprint .atn,
+  .prettyprint .kwd,
+  .prettyprint .tag { color: #006; }
+  .prettyprint .com { color: #600; font-style: italic; }
+  .prettyprint .lit { color: #044; }
+  .prettyprint .pun,
+  .prettyprint .pln,
+  .prettyprint .dec { color: #440; }
+}
