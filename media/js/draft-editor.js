@@ -565,9 +565,9 @@ class DraftEditor {
       <button type="button" data-action="clear-hl">HL-</button>
       <button type="button" data-action="font-size-up" title="Increase font size">A+</button>
       <button type="button" data-action="font-size-down" title="Decrease font size">A-</button>
-      <input class="de-inline-color" type="color" value="#ffea55" title="Highlight color">
-      <input class="de-text-color" type="color" value="#1c1b19" title="Text color">
-      <button type="button" data-action="clear-color">Clr</button>
+      <span class="de-color-wrap"><input class="de-inline-color" type="color" value="#ffea55" title="Background color"><span class="de-color-label">BG</span></span>
+      <span class="de-color-wrap"><input class="de-text-color" type="color" value="#1c1b19" title="Foreground color"><span class="de-color-label">FG</span></span>
+      <button type="button" data-action="clear-color" title="Clear colors">Clr</button>
     `;
     document.body.appendChild(this.bubble);
     this.inlineColor = this.bubble.querySelector('.de-inline-color');
@@ -804,7 +804,11 @@ class DraftEditor {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.title = it.label;
-      if (it.svg) { btn.innerHTML = it.svg; } else { btn.textContent = it.icon; }
+      if (it.svg) {
+        btn.innerHTML = it.svg + '<span class="de-insert-label">' + it.label + '</span>';
+      } else {
+        btn.innerHTML = '<span class="de-insert-icon">' + it.icon + '</span><span class="de-insert-label">' + it.label + '</span>';
+      }
       btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); it.action(); });
       this.insertMenu.appendChild(btn);
     });
@@ -1479,12 +1483,14 @@ Bob --> Alice: Hi
     const onUp = () => {
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
+      fig.dataset.resizing = '0';
       fig.dataset.width = parseInt(fig.style.width, 10) + '';
       fig.dataset.height = parseInt(fig.style.height, 10) + '';
       this._markDirty();
     };
     handle.addEventListener('mousedown', (ev) => {
       ev.preventDefault(); ev.stopPropagation();
+      fig.dataset.resizing = '1';
       startX = ev.clientX;
       startY = ev.clientY;
       startW = fig.getBoundingClientRect().width;
@@ -1498,10 +1504,11 @@ Bob --> Alice: Hi
     if (!fig || fig.dataset.resizeObserved || !('ResizeObserver' in window)) return;
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
+        if (fig.dataset.resizing === '1') continue;
         const w = Math.round(entry.contentRect.width);
         const h = Math.round(entry.contentRect.height);
-        if (w) { fig.dataset.width = w + ''; fig.style.width = w + 'px'; fig.style.maxWidth = '100%'; }
-        if (h) { fig.dataset.height = h + ''; fig.style.height = h + 'px'; }
+        if (w) { fig.dataset.width = w + ''; }
+        if (h) { fig.dataset.height = h + ''; }
       }
     });
     ro.observe(fig);
@@ -2500,7 +2507,7 @@ Bob --> Alice: Hi
         this._deselectBlocks();
         this.bubble.style.display = 'none';
       } else if (inEditor && !inToolbar) {
-        if (this.imageToolbar && !this.imageToolbar.contains(evt.target)) this._hideImageToolbar();
+        if (this.imageToolbar && !this.imageToolbar.contains(evt.target) && !(evt.target.closest && evt.target.closest('figure.image-block'))) this._hideImageToolbar();
         if (this.tableToolbar && !this.tableToolbar.contains(evt.target)) this.tableToolbar.classList.remove('open');
         const selectedObject = this.bodyEl.querySelector(':scope > .is-selected.image-block, :scope > .is-selected.table-block');
         if (selectedObject && !selectedObject.contains(evt.target)) selectedObject.classList.remove('is-selected');
@@ -2602,9 +2609,25 @@ Bob --> Alice: Hi
       return href ? `[[${href}][${text}]]` : text;
     }
 
+    // AOG code blocks: process only the <pre>, skip .cb-bar and other siblings.
+    if (tag === 'div' && node.classList && node.classList.contains('org-src-container')) {
+      var pre = node.querySelector('pre');
+      return pre ? this.nodeToOrg(pre) : '';
+    }
+
     if (tag === 'pre') {
-      const lang = (node.getAttribute('data-lang') || 'text').trim();
-      const bg = (node.getAttribute('data-bg') || 'light').trim();
+      var lang = (node.getAttribute('data-lang') || '').trim();
+      if (!lang) {
+        var classes = node.className.split(/\s+/);
+        for (var ci = 0; ci < classes.length; ci++) {
+          if (classes[ci].indexOf('src-') === 0 && classes[ci].length > 4) {
+            lang = classes[ci].substring(4);
+            break;
+          }
+        }
+      }
+      if (!lang) lang = 'text';
+      var bg = (node.getAttribute('data-bg') || 'light').trim();
       const syntaxTheme = (node.getAttribute('data-syntax-theme') || 'default').trim();
       const collect = (n) => {
         let out = '';

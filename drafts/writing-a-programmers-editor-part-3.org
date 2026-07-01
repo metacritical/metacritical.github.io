@@ -4,14 +4,17 @@
 #+DATE:        [2018-08-18 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-3
 #+KEYWORDS:    scheme, editor, gap-buffer, data-structures, lisp
-#+TAGS:        Scheme, Gap Buffer, Data Structures, Writing an Editor
+#+TAGS:        scheme, gap buffer, data structures, writing an editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Implementing a gap buffer from scratch in Scheme — the core data structure for our editor.
 
+#+ATTR_HTML: :width 668px :height 211px
+[[/media/images/placeholder.png]]
+
 In the [[/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/][previous part]] we explored why the gap buffer is the right data structure for a
-text editor. We looked at how emacs uses it, how insertion and deletion are =O(1)=, and
-how cursor movement is =O(N)= but amortizes to nearly nothing. Now it is time to get our
+text editor. We looked at how emacs uses it, how insertion and deletion are ~O(1)~, and
+how cursor movement is ~O(N)~ but amortizes to nearly nothing. Now it is time to get our
 hands dirty.
 
 We are going to implement a gap buffer in Scheme.
@@ -19,13 +22,13 @@ We are going to implement a gap buffer in Scheme.
 *Why Scheme?*
 
 Remember the thesis from [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] — the goal is an editor written entirely in a single
-language, where the user has =100%= power. Scheme is a Lisp. It is a general-purpose
+language, where the user has ~100%~ power. Scheme is a Lisp. It is a general-purpose
 programming language powerful enough to build an editor in, yet simple enough to serve as
 an extension language. It has first-class functions, proper tail calls, macros, and
 garbage collection — all the ingredients we need.
 
 I will use [[https://srfi.schemers.org/][R7RS-small]] Scheme for these examples. The code should run on [[https://www.call-cc.org/][Chicken]],
-[[https://www.gnu.org/software/guile/][Guile]], [[https://racket-lang.org/][Racket]] (in =#lang r7rs= mode), or any conforming implementation.
+[[https://www.gnu.org/software/guile/][Guile]], [[https://racket-lang.org/][Racket]] (in ~#lang r7rs~ mode), or any conforming implementation.
 
 *The Data Structure*
 
@@ -62,8 +65,8 @@ The accessors are trivial:
 (define (gb-text-size gb) (- (gb-capacity gb) (gb-gap-size gb)))
 #+END_SRC
 
-When the buffer is fresh, the gap occupies the entire array. =gap-start= is 0 and
-=gap-end= is =capacity=. There is no text yet — just empty space waiting to be filled.
+When the buffer is fresh, the gap occupies the entire array. ~gap-start~ is 0 and
+~gap-end~ is ~capacity~. There is no text yet — just empty space waiting to be filled.
 
 *Moving the Cursor*
 
@@ -101,7 +104,7 @@ We copy them backwards (high index to low) to avoid clobbering data we haven't r
       (gb-end!   gb (+ pos delta)))))
 #+END_SRC
 
-This is the =O(N)= operation we discussed in Part 2. But N here is the /distance moved/,
+This is the ~O(N)~ operation we discussed in Part 2. But N here is the /distance moved/,
 not the file size. A single character hop shifts exactly one element.
 
 *Insertion and Deletion*
@@ -130,7 +133,7 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
 #+END_SRC
 
 Notice what is /not/ here. No loops. No array shifts. No memory allocation (except on
-resize). Insertion is a single =vector-set!=. Deletion is just bumping a pointer. This is
+resize). Insertion is a single ~vector-set!~. Deletion is just bumping a pointer. This is
 why gap buffers are fast — the complexity is pushed into cursor movement, which happens
 infrequently relative to typing.
 
@@ -165,8 +168,8 @@ a new array twice the size, copy the text over, and open a fresh gap in the midd
     (gb-end! gb new-ge)))
 #+END_SRC
 
-This is the only =O(N)= allocation in the entire structure. But because we double each
-time, the /amortized/ cost per insertion remains =O(1)=. The resizes become exponentially
+This is the only ~O(N)~ allocation in the entire structure. But because we double each
+time, the /amortized/ cost per insertion remains ~O(1)~. The resizes become exponentially
 rarer as the buffer grows.
 
 *String Conversion Helpers*
@@ -255,11 +258,11 @@ And here is a slightly larger test that exercises resize:
 *What About Performance?*
 
 The beauty of this implementation is that the /hot path/ — typing — is essentially free.
-Each character typed is one =vector-set!= and one integer increment. No allocation, no
+Each character typed is one ~vector-set!~ and one integer increment. No allocation, no
 copying, no garbage collection pressure.
 
 Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor
-movements are small hops. The =O(N)= worst case (jumping from beginning to end of a large
+movements are small hops. The ~O(N)~ worst case (jumping from beginning to end of a large
 file) is a single tight loop over raw memory — on modern hardware, moving 100,000
 characters takes microseconds.
 

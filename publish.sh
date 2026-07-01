@@ -228,10 +228,10 @@ find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
 
 
 
-# Inject claps.js runtime helper (backend-connected clap counts).
+# Inject claps.js and code-block-controls.js runtime helpers.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
-    -e 's|</body>|<script src="/media/js/claps.js"></script>\n</body>|g'
+    -e 's|</body>|<script src="/media/js/claps.js"></script>\n<script src="/media/js/code-block-controls.js"></script>\n</body>|g'
 
 # Remove synthetic homepage title injected by generic post template.
 if [ -f "$BLOG_DIR/public/index.html" ]; then
@@ -298,10 +298,10 @@ if [ -d "$BLOG_DIR/public/drafts" ]; then
   # Syntax highlighting for exported code blocks.
   node "$BLOG_DIR/scripts/highlight_exported_code.js" "$BLOG_DIR/public/drafts"
 
-  # Inject claps.js into draft pages.
+  # Inject claps.js and code-block-controls.js into draft pages.
   find "$BLOG_DIR/public/drafts" -type f -name "*.html" -print0 | \
     xargs -0 sed -i '' \
-      -e 's|</body>|<script src="/media/js/claps.js"></script>\n</body>|g' 2>/dev/null || true
+      -e 's|</body>|<script src="/media/js/claps.js"></script>\n<script src="/media/js/code-block-controls.js"></script>\n</body>|g' 2>/dev/null || true
 
   # Inject code-theme CSS into draft pages.
   CODE_CSS="$BLOG_DIR/media/css/doom-monokai-pro.css"
@@ -315,6 +315,9 @@ fi
 
 # Inject series navigation into published articles AND draft preview pages.
 python3 "$BLOG_DIR/scripts/inject_series_nav.py" "$BLOG_DIR"
+
+# Inject clickable tag links into article and draft pages.
+python3 "$BLOG_DIR/scripts/inject_tags.py" "$BLOG_DIR"
 
 # Generate the LiveDrafts editor page (/editor/).
 python3 "$BLOG_DIR/scripts/generate_editor_page.py" "$BLOG_DIR"

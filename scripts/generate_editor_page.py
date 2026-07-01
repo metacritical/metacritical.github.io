@@ -28,7 +28,8 @@ if not template_path.exists():
 
 template = template_path.read_text(encoding="utf-8", errors="replace")
 
-EDITOR_BODY = """<div id="de-app">
+EDITOR_BODY = """<div id="de-editor-banner" style="display:none;background:#f59e0b;color:#1f1f1b;padding:6px 16px;font-size:12px;font-weight:600;text-align:center;letter-spacing:.04em;position:sticky;top:0;z-index:100;border-bottom:1px solid #d97706"></div>
+<div id="de-app">
   <div class="de-toolbar">
     <button class="de-tb-btn" type="button" onclick="window.editor.saveDoc('draft')">Save Draft</button>
     <button class="de-tb-btn primary" type="button" onclick="window.editor.saveDoc('publish')">Publish</button>
@@ -85,8 +86,25 @@ document.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(location.search);
   var slug = params.get('slug');
   var kind = params.get('kind') || 'draft';
+  var banner = document.getElementById('de-editor-banner');
+
   if (slug) {
-    window.editor.loadDraftFromQuery(slug, kind);
+    window.editor.loadDraftFromQuery(slug, kind).then(function(ok) {
+      if (ok && banner) {
+        var mode = window.editor.activeSourceMode || kind;
+        if (mode === 'publish') {
+          banner.style.background = '#36c9c7';
+          banner.style.borderBottom = '1px solid #2bbab8';
+          banner.textContent = 'Editing Published Post: ' + slug;
+        } else {
+          banner.textContent = 'Editing Draft: ' + slug;
+        }
+        banner.style.display = 'block';
+      }
+    });
+  } else if (banner) {
+    banner.textContent = 'New Draft';
+    banner.style.display = 'block';
   }
 
   // Keyboard shortcuts.

@@ -253,6 +253,111 @@ def handle_fetch_meta(body_data):
     }
 
 
+def handle_get_all_tags():
+    """GET /editor/api/tags — collect all tags from posts/ and drafts/ org files."""
+    all_tags = set()
+    for search_dir in [POSTS_DIR, DRAFTS_DIR]:
+        if not search_dir.is_dir():
+            continue
+        for org_file in search_dir.glob("*.org"):
+            content = org_file.read_text(encoding="utf-8", errors="replace")
+            headers, _ = parse_org_file(content)
+            for tag in parse_tags(headers):
+                all_tags.add(tag.strip().lower())
+    # Also scan public/tags/ directories for tags that exist on the site.
+    tags_public = PUBLIC_DIR / "tags"
+    if tags_public.is_dir():
+        for d in tags_public.iterdir():
+            if d.is_dir() and d.name != "index.html":
+                all_tags.add(d.name.replace("-", " "))
+    return 200, {"ok": True, "tags": sorted(all_tags)}
+
+
+SERIES_DIR = BLOG_DIR / "series"
+
+
+def handle_list_series():
+    """GET /editor/api/series — list all series."""
+    if not SERIES_DIR.is_dir():
+        return 200, {"ok": True, "series": []}
+    result = []
+    for f in sorted(SERIES_DIR.glob("*.json")):
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            result.append({
+                "slug": f.stem,
+                "name": data.get("name", f.stem),
+                "description": data.get("description", ""),
+                "count": len(data.get("articles", [])),
+            })
+        except Exception:
+            pass
+    return 200, {"ok": True, "series": result}
+
+
+def handle_get_series(slug):
+    """GET /editor/api/series/<slug> — get series detail."""
+    f = SERIES_DIR / f"{slug}.json"
+    if not f.exists():
+        return 404, {"ok": False, "error": "Series not found"}
+    data = json.loads(f.read_text(encoding="utf-8"))
+    return 200, {"ok": True, "series": data}
+
+
+def handle_save_series(body_data):
+    """POST /editor/api/series — create or update a series."""
+    slug = body_data.get("slug", "").strip()
+    name = body_data.get("name", "").strip()
+    description = body_data.get("description", "")
+    articles = body_data.get("articles", [])
+    if not slug or not name:
+        return 400, {"ok": False, "error": "slug and name required"}
+    SERIES_DIR.mkdir(parents=True, exist_ok=True)
+    f = SERIES_DIR / f"{slug}.json"
+    data = {"name": name, "description": description, "articles": articles}
+    f.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return 200, {"ok": True, "slug": slug}
+
+
+def handle_series_add_article(series_slug, body_data):
+    """POST /editor/api/series/<slug>/add — add article to series."""
+    f = SERIES_DIR / f"{series_slug}.json"
+    if not f.exists():
+        return 404, {"ok": False, "error": "Series not found"}
+    data = json.loads(f.read_text(encoding="utf-8"))
+    article = body_data.get("article", {})
+    title = article.get("title", "")
+    url = article.get("url", "")
+    date = article.get("date", "")
+    status = article.get("status", "draft")
+    # Check if already exists.
+    for a in data.get("articles", []):
+        if url and url in a.get("url", ""):
+            return 200, {"ok": True, "message": "Already in series"}
+    data.setdefault("articles", []).append({
+        "title": title, "url": url, "date": date, "status": status
+    })
+    f.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return 200, {"ok": True, "position": len(data["articles"])}
+
+
+def handle_series_remove_article(series_slug, body_data):
+    """POST /editor/api/series/<slug>/remove — remove article from series."""
+    f = SERIES_DIR / f"{series_slug}.json"
+    if not f.exists():
+        return 404, {"ok": False, "error": "Series not found"}
+    data = json.loads(f.read_text(encoding="utf-8"))
+    article_url = body_data.get("url", "")
+    article_slug = body_data.get("slug", "")
+    before = len(data.get("articles", []))
+    data["articles"] = [
+        a for a in data.get("articles", [])
+        if article_url not in a.get("url", "") and article_slug not in a.get("url", "")
+    ]
+    f.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return 200, {"ok": True, "removed": before - len(data["articles"])}
+
+
 class DevEditorHandler(SimpleHTTPRequestHandler):
     """Serves static files from public/ and handles /editor/api/* routes."""
 
@@ -290,6 +395,20 @@ class DevEditorHandler(SimpleHTTPRequestHandler):
                 code, data = handle_load_draft(query)
                 self._send_json(code, data)
                 return
+            if path == "/editor/api/tags":
+                code, data = handle_get_all_tags()
+                self._send_json(code, data)
+                return
+            if path == "/editor/api/series":
+                code, data = handle_list_series()
+                self._send_json(code, data)
+                return
+            # /editor/api/series/<slug>
+            parts = path.strip("/").split("/")
+            if len(parts) == 4 and parts[0] == "editor" and parts[1] == "api" and parts[2] == "series":
+                code, data = handle_get_series(parts[3])
+                self._send_json(code, data)
+                return
             self._send_json(404, {"ok": False, "error": "Unknown API endpoint"})
             return
 
@@ -312,6 +431,14 @@ class DevEditorHandler(SimpleHTTPRequestHandler):
                 code, data = handle_upload(body_data)
             elif path == "/editor/api/fetch-meta":
                 code, data = handle_fetch_meta(body_data)
+            elif path == "/editor/api/series":
+                code, data = handle_save_series(body_data)
+            elif path.startswith("/editor/api/series/") and path.endswith("/add"):
+                series_slug = path.split("/")[4]
+                code, data = handle_series_add_article(series_slug, body_data)
+            elif path.startswith("/editor/api/series/") and path.endswith("/remove"):
+                series_slug = path.split("/")[4]
+                code, data = handle_series_remove_article(series_slug, body_data)
             else:
                 code, data = 404, {"ok": False, "error": "Unknown API endpoint"}
 

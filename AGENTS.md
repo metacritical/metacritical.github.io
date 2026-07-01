@@ -1,10 +1,41 @@
 # AGENTS.md
 
-## Purpose
+## Anti-Regression Rules
 
-This file defines how the agent must write Git commit messages. The goal is to produce commit history that is readable, professional, searchable, and useful during review, debugging, release prep, and long-term maintenance.
+**Before modifying any file, read the FULL file** — not just the section you
+plan to change. Partial reads cause regressions because you miss existing
+functionality that your edit will overwrite or disconnect.
 
-Every commit message must explain intent, scope, and impact. Avoid vague, mechanical, or overly compressed messages. Prefer clear English over shorthand. Optimize for humans reading the history months later.
+**Never recreate functionality that already exists.** Before writing new code
+for a feature (tag management, toolbar, save mechanism, image handling, etc.),
+grep the codebase for existing implementations. If it exists, wire it up — do
+not rewrite it.
+
+**Before saving changes, verify the save path is clean.** When auto-save or
+manual save writes org files from the editor's HTML→Org conversion, ensure
+non-content elements (series nav CSS, toolbars, metadata rows, scripts) are
+excluded from the editable body. If they leak into the body, they get written
+to the org file as garbage text.
+
+**After each change, verify these still work:**
+1. Code blocks: syntax highlighting, copy button, dark/light toggle
+2. Auto-save: content AND tags persist to the org file
+3. Editor toolbars: bubble, slash menu, plus button, image toolbar
+4. Series nav: renders correctly (not dumped as raw text)
+5. No garbage CSS or HTML in org source files after save
+
+**When something breaks, git checkout the corrupted file from HEAD before
+rebuilding.** Auto-save can corrupt org files. Always restore from git first.
+
+---
+
+## Dev Server Rules
+
+**NEVER kill or restart the dev server.** Doorman is running and watches for
+file changes automatically. It rebuilds and reloads on its own. If you need to
+verify changes, just wait for Doorman to rebuild — do not run `kill`, `lsof`,
+or `python -m http.server` to restart anything. If the server is already
+running on port 8080, leave it alone.
 
 ---
 

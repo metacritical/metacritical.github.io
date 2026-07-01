@@ -4,10 +4,17 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Tue, 30 Jun 2026 20:26:42 IST</pubDate>
-    <lastBuildDate>Tue, 30 Jun 2026 20:26:42 IST</lastBuildDate>
+    <pubDate>Wed, 01 Jul 2026 16:21:56 IST</pubDate>
+    <lastBuildDate>Wed, 01 Jul 2026 16:21:56 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
+    <item>
+      <title>Writing a Programmers Editor - Part 1</title>
+      <link>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</link>
+      <description><![CDATA[A series of Assays on writing a programmers editor.]]></description>
+      <pubDate>2026-06-30</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/08/06/learn-to-write-an-editor</guid>
+    </item>
     <item>
       <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</title>
       <link>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</link>
@@ -209,41 +216,6 @@ This is your first blog post with Alchemist. Edit this file to get started.
       <description><![CDATA[Get git status on unix terminal (PS1).]]></description>
       <pubDate>2026-02-09</pubDate>
       <guid>https://selfdotsend.com/blog/2018/07/19/git-status-on-unix-terminal</guid>
-    </item>
-    <item>
-      <title>All Posts</title>
-      <link>https://selfdotsend.com/blog/2025/04/10/all-posts/</link>
-      <description><![CDATA[<section id="wrapper" class="post-page">
-  <div class="post">
-  <h1 class="title">All Posts</h1>
-  <aside class="story-rail" aria-label="Story actions">
-    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
-      <img src="/media/images/clap.png" alt="" aria-hidden="true">
-    </button>
-    <span class="story-clap-count">0</span>
-    <div class="story-share-label">Share</div>
-    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
-    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
-    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
-  </aside>
-  <div class="post-author-row">
-    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
-    <div class="post-author-meta">
-      <span class="post-author-name">Pankaj Doharey</span>
-      <span class="post-author-date"></span>
-    </div>
-  </div>
-  <div id="outline-container-all-posts" class="outline-2">
-<h2 id="all-posts">All Posts</h2>
-<div class="outline-text-2" id="text-all-posts">
-</div>
-</div>
-
-  </div>
-</section>
-]]></description>
-      <pubDate>2026-02-09</pubDate>
-      <guid>https://selfdotsend.com/blog/2025/04/10/all-posts/</guid>
     </item>
   </channel>
 </rss>

@@ -61,6 +61,13 @@ cat > "$FILENAME" <<EOF
 #+DESCRIPTION:
 EOF
 
+if [ "$PUBLISH" -eq 0 ]; then
+  # Drafts get a default hero banner placeholder.
+  echo "" >> "$FILENAME"
+  echo "[[/media/images/placeholder.png]]" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+fi
+
 echo "Created $STATUS article:"
 echo "  $FILENAME"
 if [ "$PUBLISH" -eq 0 ]; then
