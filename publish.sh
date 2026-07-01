@@ -290,7 +290,7 @@ if [ -f "$DOOM_CSS" ] && [ -f "$TARGET_THEME_CSS" ]; then
   while IFS= read -r -d '' html_file; do
     if [ -f "$html_file" ] && ! rg -q '/media/css/code-theme-monokai-pro.css' "$html_file"; then
       tmp_file="$(mktemp)"
-      awk -v code_ver="$CODE_VER" '
+      if awk -v code_ver="$CODE_VER" '
         {
           print
           if (!inserted && $0 ~ /\/media\/css\/theme-medium\.css\?v=[0-9]+/) {
@@ -298,8 +298,11 @@ if [ -f "$DOOM_CSS" ] && [ -f "$TARGET_THEME_CSS" ]; then
             inserted=1
           }
         }
-      ' "$html_file" > "$tmp_file"
-      mv "$tmp_file" "$html_file"
+      ' "$html_file" > "$tmp_file" 2>/dev/null; then
+        mv "$tmp_file" "$html_file"
+      else
+        rm -f "$tmp_file"
+      fi
     fi
   done < <(find "$BLOG_DIR/public" -type f -name "*.html" -print0)
 fi
