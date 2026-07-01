@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/media/css/theme-medium.css" type="text/css">
   <link rel="stylesheet" href="/media/css/draft-editor.css" type="text/css">
   <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">
-  <script>window.__imageSettings = {"/media/images/placeholder.png": {"width": "684", "height": "396", "fit": "cover", "position": "center", "filter": "blur", "align": "center"}};</script>
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782913306" type="text/css">
+  <script>window.__imageSettings = {"/media/images/placeholder.png": {"width": "708", "height": "392", "fit": "none", "position": "center", "align": "center"}};</script>
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782916219" type="text/css">
 </head>
 
   <body class="container">
@@ -86,8 +86,8 @@
   </div>
 </div>
   
-<div id="orgb79cf25" class="figure">
-<p><img src="/media/images/placeholder.png" alt="placeholder.png" width="684px" height="396px" data-fit="cover" data-position="center" data-filter="blur" data-align="center" />
+<div id="org3e818e1" class="figure">
+<p><img src="/media/images/placeholder.png" alt="placeholder.png" width="708px" height="392px" data-fit="none" data-position="center" data-align="center" />
 </p>
 </div>
   <style>
@@ -99,10 +99,7 @@
 </style>
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">scheme</a></li><li><a class="article-tag" href="/tags/gap-buffer/">gap buffer</a></li><li><a class="article-tag" href="/tags/data-structures/">data structures</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">writing an editor</a></li></ul>
   <p>
-In the <a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">previous part</a> we explored why the gap buffer is the right data structure for a
-text editor. We looked at how emacs uses it, how insertion and deletion are <code>O(1)</code>, and
-how cursor movement is <code>O(N)</code> but amortizes to nearly nothing. Now it is time to get our
-hands dirty.
+In the <a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">previous part</a> we explored why the gap buffer is the right data structure for a text editor. We looked at how emacs uses it, how insertion and deletion are <code>O(1)</code>, and how cursor movement is <code>O(N)</code> but amortizes to nearly nothing. Now it is time to get our hands dirty.
 </p>
 
 <p>
@@ -114,16 +111,11 @@ We are going to implement a gap buffer in Scheme.
 </p>
 
 <p>
-Remember the thesis from <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is an editor written entirely in a single
-language, where the user has <code>100%</code> power. Scheme is a Lisp. It is a general-purpose
-programming language powerful enough to build an editor in, yet simple enough to serve as
-an extension language. It has first-class functions, proper tail calls, macros, and
-garbage collection — all the ingredients we need.
+Remember the thesis from <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is an editor written entirely in a single language, where the user has <code>100%</code> power. Scheme is a Lisp. It is a general-purpose programming language powerful enough to build an editor in, yet simple enough to serve as an extension language. It has first-class functions, proper tail calls, macros, and garbage collection — all the ingredients we need.
 </p>
 
 <p>
-I will use <a href="https://srfi.schemers.org/">R7RS-small</a> Scheme for these examples. The code should run on <a href="https://www.call-cc.org/">Chicken</a>,
-<a href="https://www.gnu.org/software/guile/">Guile</a>, <a href="https://racket-lang.org/">Racket</a> (in <code>#lang r7rs</code> mode), or any conforming implementation.
+I will use <a href="https://srfi.schemers.org/">R7RS-small</a> Scheme for these examples. The code should run on <a href="https://www.call-cc.org/">Chicken</a>, <a href="https://www.gnu.org/software/guile/">Guile</a>, <a href="https://racket-lang.org/">Racket</a> (in <code>#lang r7rs</code> mode), or any conforming implementation.
 </p>
 
 <p>
@@ -131,10 +123,7 @@ I will use <a href="https://srfi.schemers.org/">R7RS-small</a> Scheme for these 
 </p>
 
 <p>
-A gap buffer is three things: an array of characters, a cursor position (the gap start),
-and the gap end. Everything before the gap start is text the user has typed. Everything
-after the gap end is text that comes after the cursor. The gap itself is empty space,
-reserved for fast insertions.
+A gap buffer is three things: an array of characters, a cursor position (the gap start), and the gap end. Everything before the gap start is text the user has typed. Everything after the gap end is text that comes after the cursor. The gap itself is empty space, reserved for fast insertions.
 </p>
 
 <p>
@@ -172,8 +161,7 @@ The accessors are trivial:
 </div>
 
 <p>
-When the buffer is fresh, the gap occupies the entire array. <code>gap-start</code> is 0 and
-<code>gap-end</code> is <code>capacity</code>. There is no text yet — just empty space waiting to be filled.
+When the buffer is fresh, the gap occupies the entire array. <code>gap-start</code> is 0 and <code>gap-end</code> is <code>capacity</code>. There is no text yet — just empty space waiting to be filled.
 </p>
 
 <p>
@@ -181,15 +169,11 @@ When the buffer is fresh, the gap occupies the entire array. <code>gap-start</co
 </p>
 
 <p>
-The gap buffer's one non-trivial operation is moving the gap. When the user moves the
-cursor, we must shift the gap to the new position. Characters on one side of the gap
-"jump" to the other side.
+The gap buffer's one non-trivial operation is moving the gap. When the user moves the cursor, we must shift the gap to the new position. Characters on one side of the gap "jump" to the other side.
 </p>
 
 <p>
-If we move the cursor <i>left</i> (from position 5 to position 2, say), the characters between
-position 2 and the old gap start must move from the left side of the gap to the right side.
-We copy them backwards (high index to low) to avoid clobbering data we haven't read yet:
+If we move the cursor <i>left</i> (from position 5 to position 2, say), the characters between position 2 and the old gap start must move from the left side of the gap to the right side. We copy them backwards (high index to low) to avoid clobbering data we haven't read yet:
 </p>
 
 <div class="org-src-container">
@@ -220,8 +204,7 @@ We copy them backwards (high index to low) to avoid clobbering data we haven't r
 </div>
 
 <p>
-This is the <code>O(N)</code> operation we discussed in Part 2. But N here is the <i>distance moved</i>,
-not the file size. A single character hop shifts exactly one element.
+This is the <code>O(N)</code> operation we discussed in Part 2. But N here is the <i>distance moved</i>, not the file size. A single character hop shifts exactly one element.
 </p>
 
 <p>
@@ -255,10 +238,7 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
 </div>
 
 <p>
-Notice what is <i>not</i> here. No loops. No array shifts. No memory allocation (except on
-resize). Insertion is a single <code>vector-set!</code>. Deletion is just bumping a pointer. This is
-why gap buffers are fast — the complexity is pushed into cursor movement, which happens
-infrequently relative to typing.
+Notice what is <i>not</i> here. No loops. No array shifts. No memory allocation (except on resize). Insertion is a single <code>vector-set!</code>. Deletion is just bumping a pointer. This is why gap buffers are fast — the complexity is pushed into cursor movement, which happens infrequently relative to typing.
 </p>
 
 <p>
@@ -266,8 +246,7 @@ infrequently relative to typing.
 </p>
 
 <p>
-When the gap fills up completely, we need a bigger array. The strategy is simple: allocate
-a new array twice the size, copy the text over, and open a fresh gap in the middle:
+When the gap fills up completely, we need a bigger array. The strategy is simple: allocate a new array twice the size, copy the text over, and open a fresh gap in the middle:
 </p>
 
 <div class="org-src-container">
@@ -298,9 +277,7 @@ a new array twice the size, copy the text over, and open a fresh gap in the midd
 </div>
 
 <p>
-This is the only <code>O(N)</code> allocation in the entire structure. But because we double each
-time, the <i>amortized</i> cost per insertion remains <code>O(1)</code>. The resizes become exponentially
-rarer as the buffer grows.
+This is the only <code>O(N)</code> allocation in the entire structure. But because we double each time, the <i>amortized</i> cost per insertion remains <code>O(1)</code>. The resizes become exponentially rarer as the buffer grows.
 </p>
 
 <p>
@@ -404,16 +381,11 @@ And here is a slightly larger test that exercises resize:
 </p>
 
 <p>
-The beauty of this implementation is that the <i>hot path</i> — typing — is essentially free.
-Each character typed is one <code>vector-set!</code> and one integer increment. No allocation, no
-copying, no garbage collection pressure.
+The beauty of this implementation is that the <i>hot path</i> — typing — is essentially free. Each character typed is one <code>vector-set!</code> and one integer increment. No allocation, no copying, no garbage collection pressure.
 </p>
 
 <p>
-Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor
-movements are small hops. The <code>O(N)</code> worst case (jumping from beginning to end of a large
-file) is a single tight loop over raw memory — on modern hardware, moving 100,000
-characters takes microseconds.
+Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor movements are small hops. The <code>O(N)</code> worst case (jumping from beginning to end of a large file) is a single tight loop over raw memory — on modern hardware, moving 100,000 characters takes microseconds.
 </p>
 
 <p>
@@ -421,20 +393,15 @@ characters takes microseconds.
 </p>
 
 <p>
-We now have a working text buffer. It can hold text, accept insertions and deletions, move
-the cursor, and resize when needed. It is about 80 lines of Scheme. That is the foundation
-of our editor.
+We now have a working text buffer. It can hold text, accept insertions and deletions, move the cursor, and resize when needed. It is about 80 lines of Scheme. That is the foundation of our editor.
 </p>
 
 <p>
-But a buffer full of characters is not yet an editor. We cannot display it. We cannot split
-it into lines. We cannot scroll or wrap text. Those are the problems we will tackle next.
+But a buffer full of characters is not yet an editor. We cannot display it. We cannot split it into lines. We cannot scroll or wrap text. Those are the problems we will tackle next.
 </p>
 
 <p>
-In the <a href="/blog/2018/08/25/writing-a-programmers-editor-part-4/">next part</a> we will build a line management layer on top of the gap buffer — because
-editors do not think in terms of flat character arrays, they think in terms of lines,
-columns, and viewports.
+In the <a href="/blog/2018/08/25/writing-a-programmers-editor-part-4/">next part</a> we will build a line management layer on top of the gap buffer — because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
 </p>
 
 <p>
@@ -804,6 +771,8 @@ document.addEventListener('DOMContentLoaded', function() {
     newFig.dataset.position = position;
     newFig.dataset.filter = filter;
     newFig.dataset.align = align;
+    newFig.dataset.width = w;
+    newFig.dataset.height = h;
     newFig.style.cssText = 'width:' + w + 'px;max-width:100%;height:' + h + 'px';
     newFig.innerHTML = '<img src="' + src + '" alt="">' + (img.alt ? '<figcaption>' + img.alt + '</figcaption>' : '');
     fig.parentNode.replaceChild(newFig, fig);
@@ -1194,6 +1163,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script src="/media/js/claps.js"></script>
 <script src="/media/js/code-block-controls.js"></script>
-<script src="/media/js/dev-reload.js"></script>
 </body>
 </html>

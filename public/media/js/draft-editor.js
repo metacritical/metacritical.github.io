@@ -230,6 +230,7 @@ class DraftEditor {
 
     this._injectUi();
     this._bindEvents();
+    this._refreshImageBlocks();
   }
 
   setStatus(text, bad) {
@@ -351,6 +352,10 @@ class DraftEditor {
 
   _ensureImageBlock(fig) {
     if (!fig) return;
+    const styleW = parseInt(fig.style.width, 10);
+    const styleH = parseInt(fig.style.height, 10);
+    if (styleW) fig.dataset.width = styleW + '';
+    if (styleH) fig.dataset.height = styleH + '';
     this._addImageResizeHandle(fig);
     this._observeImageSize(fig);
   }
@@ -1463,41 +1468,75 @@ Bob --> Alice: Hi
 
   _addImageResizeHandle(fig) {
     if (!fig || fig.querySelector('.de-image-resize-handle')) return;
-    const handle = document.createElement('div');
-    handle.className = 'de-image-resize-handle';
-    handle.setAttribute('contenteditable', 'false');
-    fig.appendChild(handle);
+
+    const makeHandle = (dir) => {
+      const h = document.createElement('div');
+      h.className = 'de-image-resize-handle';
+      h.setAttribute('contenteditable', 'false');
+      h.dataset.dir = dir;
+      fig.appendChild(h);
+      return h;
+    };
+
+    const rightHandle = makeHandle('e');
+    const bottomHandle = makeHandle('s');
+    const cornerHandle = makeHandle('se');
+
     let startX, startY, startW, startH;
-    const onMove = (ev) => {
-      const dx = ev.clientX - startX;
-      const dy = ev.clientY - startY;
-      const bodyW = this.bodyEl.getBoundingClientRect().width;
-      const newW = Math.max(160, Math.min(startW + dx, bodyW - 40));
-      const newH = Math.max(120, startH + dy);
-      fig.style.width = newW + 'px';
-      fig.style.maxWidth = '100%';
-      fig.style.height = newH + 'px';
-      this._positionBlockToolbar(fig);
-      this._positionImageToolbar(fig);
-    };
-    const onUp = () => {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      fig.dataset.resizing = '0';
-      fig.dataset.width = parseInt(fig.style.width, 10) + '';
-      fig.dataset.height = parseInt(fig.style.height, 10) + '';
-      this._markDirty();
-    };
-    handle.addEventListener('mousedown', (ev) => {
-      ev.preventDefault(); ev.stopPropagation();
+
+    const startResize = (ev, mode) => {
+      ev.preventDefault();
+      ev.stopPropagation();
       fig.dataset.resizing = '1';
       startX = ev.clientX;
       startY = ev.clientY;
       startW = fig.getBoundingClientRect().width;
       startH = fig.getBoundingClientRect().height;
+
+      const onMove = (e) => {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const bodyW = this.bodyEl.clientWidth;
+        let newW, newH;
+
+        if (mode === 'se') {
+          const targetW = Math.max(160, Math.min(startW + dx, bodyW));
+          const targetH = Math.max(120, startH + dy);
+          const scale = Math.max(targetW / startW, targetH / startH);
+          const clampedScale = Math.max(160 / startW, Math.min(scale, bodyW / startW));
+          newW = Math.round(startW * clampedScale);
+          newH = Math.round(startH * clampedScale);
+        } else if (mode === 'e') {
+          newW = Math.max(160, Math.min(startW + dx, bodyW));
+          newH = startH;
+        } else if (mode === 's') {
+          newW = startW;
+          newH = Math.max(120, startH + dy);
+        }
+
+        fig.style.width = newW + 'px';
+        fig.style.maxWidth = '100%';
+        fig.style.height = newH + 'px';
+        this._positionBlockToolbar(fig);
+        this._positionImageToolbar(fig);
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        fig.dataset.resizing = '0';
+        fig.dataset.width = parseInt(fig.style.width, 10) + '';
+        fig.dataset.height = parseInt(fig.style.height, 10) + '';
+        this._markDirty();
+      };
+
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
-    });
+    };
+
+    cornerHandle.addEventListener('mousedown', (ev) => startResize(ev, 'se'));
+    rightHandle.addEventListener('mousedown', (ev) => startResize(ev, 'e'));
+    bottomHandle.addEventListener('mousedown', (ev) => startResize(ev, 's'));
   }
 
   _observeImageSize(fig) {
@@ -1507,8 +1546,10 @@ Bob --> Alice: Hi
         if (fig.dataset.resizing === '1') continue;
         const w = Math.round(entry.contentRect.width);
         const h = Math.round(entry.contentRect.height);
-        if (w) { fig.dataset.width = w + ''; }
-        if (h) { fig.dataset.height = h + ''; }
+        const styleW = parseInt(fig.style.width, 10) || 0;
+        const styleH = parseInt(fig.style.height, 10) || 0;
+        if (w && styleW && Math.abs(w - styleW) <= 1) { fig.dataset.width = w + ''; }
+        if (h && styleH && Math.abs(h - styleH) <= 1) { fig.dataset.height = h + ''; }
       }
     });
     ro.observe(fig);

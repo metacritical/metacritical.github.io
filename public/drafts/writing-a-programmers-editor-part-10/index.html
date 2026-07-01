@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/media/css/draft-editor.css" type="text/css">
   <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">
   <script>window.__imageSettings = {};</script>
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782913306" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782916219" type="text/css">
 </head>
 
   <body class="container">
@@ -488,6 +488,8 @@ document.addEventListener('DOMContentLoaded', function() {
     newFig.dataset.position = position;
     newFig.dataset.filter = filter;
     newFig.dataset.align = align;
+    newFig.dataset.width = w;
+    newFig.dataset.height = h;
     newFig.style.cssText = 'width:' + w + 'px;max-width:100%;height:' + h + 'px';
     newFig.innerHTML = '<img src="' + src + '" alt="">' + (img.alt ? '<figcaption>' + img.alt + '</figcaption>' : '');
     fig.parentNode.replaceChild(newFig, fig);
@@ -878,6 +880,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script src="/media/js/claps.js"></script>
 <script src="/media/js/code-block-controls.js"></script>
-<script src="/media/js/dev-reload.js"></script>
 </body>
 </html>
