@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12",
+    "url": "/blog/2018/10/20/writing-a-programmers-editor-part-12/",
+    "date": "2018-10-20",
+    "excerpt": "In Part 11 we built the extensibility layer, and with it the editor was complete — a working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap. Eleven parts ago, in Part 1 , this wa..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Syntax Highlighting) - Part 9",
+    "url": "/blog/2018/09/29/writing-a-programmers-editor-part-9/",
+    "date": "2018-09-29",
+    "excerpt": "In Part 8 we made the buffer searchable. Now we make it readable . Syntax highlighting — colouring keywords, strings, comments, and numbers differently — is what turns a wall of monospace into something the eye parses..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Search &amp; Replace) - Part 8",
+    "url": "/blog/2018/09/22/writing-a-programmers-editor-part-8/",
+    "date": "2018-09-22",
+    "excerpt": "In Part 7 we made the screen fast. Now we add the feature a programmer reaches for more than any other after basic editing: search. But not just any search — incremental search, the kind where matches light up as you ..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7",
+    "url": "/blog/2018/09/15/writing-a-programmers-editor-part-7/",
+    "date": "2018-09-15",
+    "excerpt": "In Part 6 we wired keystrokes to commands. Now every command changes the buffer, and after every change the screen must reflect the new state. The obvious approach — clear the screen and redraw everything — is also th..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6",
+    "url": "/blog/2018/09/08/writing-a-programmers-editor-part-6/",
+    "date": "2018-09-08",
+    "excerpt": "In Part 5 we taught the editor to read raw keystrokes from the terminal. But a keystroke is just a byte, or a short sequence of bytes. \\e[A means \"up arrow\" only because we decide it does. The mapping from bytes to ac..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5",
+    "url": "/blog/2018/09/01/writing-a-programmers-editor-part-5/",
+    "date": "2018-09-01",
+    "excerpt": "In Part 4 we built a line management layer and a viewport renderer. But that renderer only returns strings — it never actually paints anything on a screen. To turn those strings into an interactive display, we have to..."
+  },
+  {
+    "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
+    "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
+    "date": "2018-08-11",
+    "excerpt": "In my quest to write a programmable editor the first problem that i came across was which datastructure to hold the text in? What do other text editors use? For instance emacs in which this blog is written uses a gap ..."
+  },
+  {
+    "title": "Archive",
+    "url": "/blog/",
+    "date": "1970-01-01",
+    "excerpt": ""
+  }
+]
