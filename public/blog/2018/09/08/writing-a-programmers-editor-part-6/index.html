@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Designing a keymap system — translating raw keystrokes into editor commands, and the foundation for modal editing." />
+  <meta name="keywords" content="scheme, editor, keymaps, input, keybindings, modes" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782934307" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782934307" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/editor/">Editor</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
+  </div>
+</div>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/keymaps/">Keymaps</a></li><li><a class="article-tag" href="/tags/input-handling/">Input Handling</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
+In <a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Part 5</a> we taught the editor to read raw keystrokes from the terminal. But a keystroke
+is just a byte, or a short sequence of bytes. <code>\e[A</code> means "up arrow" only because we
+<i>decide</i> it does. The mapping from bytes to actions is the <i>keymap</i>, and it is one of the
+most consequential design decisions in any editor.
+</p>
+
+<p>
+Here is a claim I will defend for the rest of this article: <b>the keymap is where an editor's
+personality lives.</b> Emacs and vim both read the same bytes from the same terminal driver we
+built in Part 5. What makes them feel like different universes is not the buffer, not the
+renderer — it is how they interpret those bytes.
+</p>
+
+<p>
+<b>From Bytes To Key Events</b>
+</p>
+
+<p>
+The raw <code>read-key</code> from Part 5 gave us either a character or a symbol like <code>'up</code>. But real
+editors bind <i>modified</i> keys — <code>Ctrl-x</code>, <code>Meta-f</code>, <code>Ctrl-Meta-s</code>. We need to fold those
+modifiers into a single, comparable representation.
+</p>
+
+<p>
+In a terminal, control keys are not special escape sequences — they are genuinely different
+bytes. <code>Ctrl-A</code> is byte 1, <code>Ctrl-B</code> is byte 2, all the way to <code>Ctrl-Z</code> at byte 26. In
+general, <code>Ctrl</code> with a letter clears the top three bits of its ASCII code. The <i>Meta</i> (Alt)
+modifier is even simpler: the terminal prefixes the key with an escape byte. <code>Meta-f</code> is
+<code>\e f</code>.
+</p>
+
+<p>
+We normalise all of this into a small tagged value — a <i>key event</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A key event is a pair: (modifiers . base)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">modifiers &#8212; a list drawn from '(ctrl meta)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">base      &#8212; a character, or a symbol like 'up / 'return / 'tab
+</span>
+(<span class="org-keyword">define</span> (<span class="org-function-name">key</span> mods base) (cons mods base))
+(<span class="org-keyword">define</span> (<span class="org-function-name">key-mods</span> k)    (car k))
+(<span class="org-keyword">define</span> (<span class="org-function-name">key-base</span> k)    (cdr k))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Convert a raw control byte back into (ctrl . letter).
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">decode-control</span> ch)
+  (<span class="org-keyword">let</span> ((code (char-&gt;integer ch)))
+    (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> (&gt;= code 1) (&lt;= code 26))
+        (key '(ctrl) (integer-&gt;char (+ code 96)))  <span class="org-comment-delimiter">; </span><span class="org-comment">1 -&gt; #\a
+</span>        (key '() ch))))
+</pre>
+</div>
+
+<p>
+Now <code>Ctrl-A</code> and the letter <code>a</code> are distinct, comparable values: <code>((ctrl) . #\a)</code> versus
+<code>(() . #\a)</code>. That distinction is the whole game.
+</p>
+
+<p>
+<b>Parsing The Escape Layer</b>
+</p>
+
+<p>
+We extend Part 5's reader so that an escape byte can mean one of three things: a Meta
+modifier on the next key, the start of an arrow-key sequence, or a bare Escape. Order of
+checks matters — after <code>\e</code> we peek at the next byte to disambiguate.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Read one fully-decoded key event from the terminal.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">read-key-event</span>)
+  (<span class="org-keyword">let</span> ((c (read-char)))
+    (<span class="org-keyword">cond</span>
+     ((eof-object? c) 'eof)
+     ((char=? c #\escape)
+      (<span class="org-keyword">let</span> ((next (read-char)))
+        (<span class="org-keyword">cond</span>
+         ((eof-object? next) (key '() 'escape))
+         <span class="org-comment-delimiter">;; </span><span class="org-comment">CSI sequence: arrows, home, end.
+</span>         ((char=? next #\[)
+          (<span class="org-keyword">case</span> (read-char)
+            ((#\A) (key '() 'up))
+            ((#\B) (key '() 'down))
+            ((#\C) (key '() 'right))
+            ((#\D) (key '() 'left))
+            ((#\H) (key '() 'home))
+            ((#\F) (key '() 'end))
+            (<span class="org-keyword">else</span>  (key '() 'escape))))
+         <span class="org-comment-delimiter">;; </span><span class="org-comment">Otherwise it was Meta + the next key.
+</span>         (<span class="org-keyword">else</span> (key '(meta) next)))))
+     ((char=? c #\return)    (key '() 'return))
+     ((char=? c #\tab)       (key '() 'tab))
+     ((char=? c #\delete)    (key '() 'backspace))
+     (<span class="org-keyword">else</span> (decode-control c)))))
+</pre>
+</div>
+
+<p>
+<b>The Keymap Itself</b>
+</p>
+
+<p>
+What structure should hold the bindings? The naive answer is a flat hash table mapping key
+events to commands. That works for single keys. But real editors use <i>prefix keys</i>: in
+emacs, <code>C-x C-f</code> means "the <code>C-f</code> that follows <code>C-x</code>", which is completely different from a
+bare <code>C-f</code>. A flat table cannot express this.
+</p>
+
+<p>
+The right structure is a <i>tree</i>. Each keymap is a table of bindings; a binding is either a
+command (a leaf) or <i>another keymap</i> (a branch). Pressing a prefix key walks you one level
+down the tree.
+</p>
+
+
+<div id="org9b0d2dd" class="figure">
+<p><img src="/assets/blog/2018/09/08/writing-a-programmers-editor-part-6/keymap-tree.png" alt="keymap-tree.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>A keymap tree — most keys map to commands, but a prefix key like <code>C-x</code> maps to a nested keymap.</p>
+</div>
+
+<p>
+We represent a keymap as an association list keyed by key events. It is a table; some of its
+values are commands, some are child keymaps.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A keymap is a mutable box holding an alist of (key-event . binding).
+</span><span class="org-comment-delimiter">;;; </span><span class="org-comment">A binding is either a procedure (command) or another keymap.
+</span>
+(<span class="org-keyword">define</span> (<span class="org-function-name">make-keymap</span>) (list 'keymap))
+(<span class="org-keyword">define</span> (<span class="org-function-name">keymap?</span> x)    (<span class="org-keyword">and</span> (pair? x) (eq? (car x) 'keymap)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Bind a single key event in a keymap to a command or child keymap.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">keymap-set!</span> km k binding)
+  (<span class="org-keyword">let</span> ((cell (assoc k (cdr km))))
+    (<span class="org-keyword">if</span> cell
+        (set-cdr! cell binding)
+        (set-cdr! km (cons (cons k binding) (cdr km))))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Look up a single key event. Returns the binding or #f.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">keymap-ref</span> km k)
+  (<span class="org-keyword">let</span> ((cell (assoc k (cdr km))))
+    (<span class="org-keyword">and</span> cell (cdr cell))))
+</pre>
+</div>
+
+<p>
+Defining a multi-key binding is then just walking (or building) the tree:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Bind a sequence of key events to a command, creating prefix maps as needed.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">define-key!</span> km keys command)
+  (<span class="org-keyword">if</span> (null? (cdr keys))
+      (keymap-set! km (car keys) command)
+      (<span class="org-keyword">let</span> ((next (keymap-ref km (car keys))))
+        (<span class="org-keyword">let</span> ((child (<span class="org-keyword">if</span> (keymap? next) next (make-keymap))))
+          (keymap-set! km (car keys) child)
+          (define-key! child (cdr keys) command)))))
+</pre>
+</div>
+
+<p>
+<b>The Dispatcher</b>
+</p>
+
+<p>
+The dispatcher is the heart of the input loop. It reads a key, looks it up, and reacts:
+</p>
+
+<ul class="org-ul">
+<li>If the binding is a command, run it.</li>
+<li>If the binding is a keymap, we are mid-prefix — read the next key and descend.</li>
+<li>If there is no binding, either self-insert (a plain printable character) or beep.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Read keys and dispatch against a keymap until a command runs.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">dispatch</span> editor root-map)
+  (<span class="org-keyword">let</span> <span class="org-function-name">loop</span> ((km root-map))
+    (<span class="org-keyword">let*</span> ((k       (read-key-event))
+           (binding (keymap-ref km k)))
+      (<span class="org-keyword">cond</span>
+       ((procedure? binding) (binding editor))      <span class="org-comment-delimiter">; </span><span class="org-comment">run the command
+</span>       ((keymap? binding)    (loop binding))        <span class="org-comment-delimiter">; </span><span class="org-comment">prefix &#8212; read more
+</span>       <span class="org-comment-delimiter">;; </span><span class="org-comment">Unbound plain character in the top-level map: insert it.
+</span>       ((<span class="org-keyword">and</span> (eq? km root-map) (self-insertable? k))
+        (self-insert-command editor (key-base k)))
+       (<span class="org-keyword">else</span> (beep))))))                            <span class="org-comment-delimiter">; </span><span class="org-comment">unknown chord
+</span>
+(<span class="org-keyword">define</span> (<span class="org-function-name">self-insertable?</span> k)
+  (<span class="org-keyword">and</span> (null? (key-mods k)) (char? (key-base k))))
+</pre>
+</div>
+
+<p>
+Now building the default bindings is declarative and readable — this is where the editor's
+character is written down:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span class="org-keyword">define</span> <span class="org-function-name">global-map</span> (make-keymap))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Movement.
+</span>(define-key! global-map (list (key '(ctrl) #\f)) cmd-forward-char)
+(define-key! global-map (list (key '(ctrl) #\b)) cmd-backward-char)
+(define-key! global-map (list (key '(ctrl) #\n)) cmd-next-line)
+(define-key! global-map (list (key '(ctrl) #\p)) cmd-previous-line)
+(define-key! global-map (list (key '() 'up))     cmd-previous-line)
+(define-key! global-map (list (key '() 'down))   cmd-next-line)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">A prefix chord: C-x C-s to save, C-x C-c to quit.
+</span>(define-key! global-map
+  (list (key '(ctrl) #\x) (key '(ctrl) #\s)) cmd-save-file)
+(define-key! global-map
+  (list (key '(ctrl) #\x) (key '(ctrl) #\c)) cmd-quit)
+</pre>
+</div>
+
+<p>
+<b>Two Philosophies: Modal And Modeless</b>
+</p>
+
+<p>
+We now have the machinery for <i>modeless</i> editing — the emacs way, where every key does the
+same thing all the time and modifiers select commands. But there is another school entirely:
+<i>modal</i> editing, the vim way.
+</p>
+
+<p>
+In a modal editor the <i>same</i> key means different things depending on the current mode. In
+insert mode, <code>j</code> inserts the letter j. In normal mode, <code>j</code> moves the cursor down. There are
+no modifiers on the common commands because the mode <i>is</i> the modifier.
+</p>
+
+<p>
+Beautifully, our tree-of-keymaps structure handles both with no new machinery. Modal editing
+is just <i>swapping which keymap is active</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Modal editing: the active keymap depends on the editor's current mode.
+</span>(<span class="org-keyword">define</span> <span class="org-function-name">normal-map</span> (make-keymap))
+(<span class="org-keyword">define</span> <span class="org-function-name">insert-map</span> (make-keymap))
+
+(define-key! normal-map (list (key '() #\j)) cmd-next-line)
+(define-key! normal-map (list (key '() #\k)) cmd-previous-line)
+(define-key! normal-map (list (key '() #\i))
+  (<span class="org-keyword">lambda</span> (ed) (editor-set-mode! ed 'insert)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">In insert mode, unbound printable keys self-insert; Esc goes back.
+</span>(define-key! insert-map (list (key '() 'escape))
+  (<span class="org-keyword">lambda</span> (ed) (editor-set-mode! ed 'normal)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">The dispatcher just picks the keymap for the current mode.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">active-keymap</span> ed)
+  (<span class="org-keyword">case</span> (editor-mode ed)
+    ((normal) normal-map)
+    ((insert) insert-map)
+    (<span class="org-keyword">else</span>     global-map)))
+</pre>
+</div>
+
+<p>
+This is the payoff of building the right abstraction. We did not design a "modal system" and
+a "modeless system" separately. We built <i>one</i> thing — a tree of keymaps and a dispatcher —
+and both philosophies fall out of how we wire it up. The user who wants emacs bindings and
+the user who wants vim bindings are both first-class citizens, because the keymap is data,
+not hard-coded logic.
+</p>
+
+<p>
+<b>What We Have Now</b>
+</p>
+
+<p>
+Input handling is complete:
+</p>
+
+<ol class="org-ol">
+<li>Raw bytes are decoded into normalised key events with modifiers.</li>
+<li>Bindings live in a keymap tree that naturally supports prefix chords.</li>
+<li>A single dispatcher drives the whole input loop.</li>
+<li>Both modeless (emacs-style) and modal (vim-style) editing emerge from the same structure.</li>
+</ol>
+
+<p>
+The editor can now read text, hold it, display it, and respond to commands. But every time
+the user presses a key, we still redraw the entire screen — and on a real terminal, over a
+real connection, that flickers and lags.
+</p>
+
+<p>
+In the <a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">next part</a> we tackle redisplay: how to repaint only the pixels that actually changed,
+the way a real editor keeps a screen feeling instant.
+</p>
+
+<p>
+Watchout for the next part of the assay, till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
+</p>
+<div class="series-nav-wrap">
+<style>
+.series-nav-wrap{margin:36px 0 28px;font-family:"ui-sans-serif",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.series-nav-wrap *{box-sizing:border-box}
+.series-nav-card{border:1px solid #e2ddd0;border-radius:12px;overflow:hidden;background:#faf8f2}
+.series-nav-top{padding:16px 20px 14px;border-bottom:1px solid #ebe6d9}
+.sn-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#36c9c7;margin-bottom:4px}
+.sn-name{font-family:"Charter","Iowan Old Style","Palatino Linotype",Palatino,serif;font-size:18px;font-weight:600;color:#1f1f1b;margin:0;line-height:1.3}
+.sn-desc{font-size:12.5px;line-height:1.55;color:#6f6a5e;margin:3px 0 0}
+.sn-pn{display:flex;border-bottom:1px solid #ebe6d9}
+.sn-card{flex:1;padding:11px 16px;text-decoration:none;display:flex;flex-direction:column;gap:1px;min-width:0;transition:background .12s}
+a.sn-card:hover{background:rgba(54,201,199,.06)}
+.sn-card-l{border-right:1px solid #ebe6d9;text-align:left}
+.sn-card-r{text-align:right}
+.sn-card-lbl{font-size:10px;font-weight:600;letter-spacing:.03em;color:#a8a294}
+.sn-card-tt{font-size:12px;font-weight:500;color:#36c9c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-card.off .sn-card-tt{color:#bfb9ac}
+a.sn-card.off:hover{background:transparent;cursor:default}
+.sn-pos{display:flex;align-items:center;font-size:11px;font-weight:600;color:#6f6a5e;padding:0 14px;white-space:nowrap}
+.sn-list{list-style:none;margin:0;padding:4px 0}
+.sn-row{display:flex;align-items:center;gap:10px;padding:5px 20px;font-size:13px;line-height:1.4;transition:background .1s}
+.sn-row:hover{background:#f4f1e8}
+.sn-dot{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#e8e3d4;color:#8a8578;font-size:10px;font-weight:700}
+.sn-row.here .sn-dot{background:#36c9c7;color:#fff}
+.sn-tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-tt a{color:#33312b;text-decoration:none;font-weight:500}
+.sn-tt a:hover{color:#36c9c7}
+.sn-row.here .sn-tt{color:#1f1f1b;font-weight:700}
+.sn-tt.off{color:#bfb9ac}
+.sn-tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.04em;flex:0 0 auto}
+.sn-tag.here{background:#36c9c7;color:#fff}
+.sn-tag.draft{background:#e8e3d4;color:#a8a294}
+.sn-date{font-size:10.5px;color:#c4beb1;font-variant-numeric:tabular-nums;flex:0 0 auto;margin-left:auto;padding-left:6px}
+.sn-foot{padding:7px 20px;font-size:10px;color:#c4beb1;text-align:center;border-top:1px solid #ebe6d9;background:#f6f3eb}
+@media(max-width:540px){
+ .series-nav-wrap{margin:24px 0}
+ .series-nav-top{padding:12px 14px 10px}
+ .sn-name{font-size:16px}
+ .sn-card{padding:8px 10px}
+ .sn-card-tt{font-size:11px}
+ .sn-row{padding:4px 14px;gap:8px}
+ .sn-date{display:none}
+}
+</style>
+<div class="series-nav-card">
+<div class="series-nav-top">
+<span class="sn-eyebrow">Article Series</span>
+<h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+</div>
+<div class="sn-pn">
+<a class="sn-card sn-card-l" href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">
+<span class="sn-card-lbl">&larr; Previous</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5</span>
+</a>
+<span class="sn-pos">6 / 12</span>
+<a class="sn-card sn-card-r" href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">
+<span class="sn-card-lbl">Next &rarr;</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</span>
+</a>
+</div>
+<ol class="sn-list">
+<li class="sn-row">
+<span class="sn-dot">1</span>
+<span class="sn-tt"><a href="/blog/2018/08/06/learn-to-write-an-editor/">Writing a Programmers Editor - Part 1</a></span>
+<span class="sn-date">2018-08-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">2</span>
+<span class="sn-tt"><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</a></span>
+<span class="sn-date">2018-08-11</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">3</span>
+<span class="sn-tt"><a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3</a></span>
+<span class="sn-date">2018-08-18</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">4</span>
+<span class="sn-tt"><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Writing a Programmers Editor (Lines &amp; Display) - Part 4</a></span>
+<span class="sn-date">2018-08-25</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">5</span>
+<span class="sn-tt"><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5</a></span>
+<span class="sn-date">2018-09-01</span>
+</li>
+<li class="sn-row here">
+<span class="sn-dot">6</span>
+<span class="sn-tt">Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</span>
+<span class="sn-tag here">Here</span>
+<span class="sn-date">2018-09-08</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">7</span>
+<span class="sn-tt"><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</a></span>
+<span class="sn-date">2018-09-15</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">8</span>
+<span class="sn-tt"><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Writing a Programmers Editor (Search &amp; Replace) - Part 8</a></span>
+<span class="sn-date">2018-09-22</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">9</span>
+<span class="sn-tt"><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Writing a Programmers Editor (Syntax Highlighting) - Part 9</a></span>
+<span class="sn-date">2018-09-29</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">10</span>
+<span class="sn-tt"><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</a></span>
+<span class="sn-date">2018-10-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">11</span>
+<span class="sn-tt"><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</a></span>
+<span class="sn-date">2018-10-13</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">12</span>
+<span class="sn-tt"><a href="/blog/2018/10/20/writing-a-programmers-editor-part-12/">Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</a></span>
+<span class="sn-date">2018-10-20</span>
+</li>
+</ol>
+<div class="sn-foot">12 of 12 articles published</div>
+</div>
+</div>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-09-08</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/09/08/writing-a-programmers-editor-part-6";
+        this.page.identifier = "/blog/2018/09/08/writing-a-programmers-editor-part-6";
+      };
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  <script src="/media/js/claps.js"></script>
+<script src="/media/js/code-block-controls.js"></script>
+<script src="/media/js/dev-reload.js"></script>
+</body>
+</html>

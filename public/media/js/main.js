@@ -76,24 +76,11 @@
     var rail = document.querySelector(".story-rail");
     if (!rail) return;
 
-    var clapBtn = rail.querySelector(".story-clap-btn");
-    var clapCount = rail.querySelector(".story-clap-count");
     var xLink = rail.querySelector(".story-share-x");
     var fbLink = rail.querySelector(".story-share-fb");
     var lnLink = rail.querySelector(".story-share-ln");
     var url = window.location.href;
     var title = (document.querySelector(".post .title") || {}).textContent || document.title;
-    var key = "story_claps:" + window.location.pathname;
-
-    var count = parseInt(localStorage.getItem(key) || "0", 10);
-    if (!Number.isFinite(count)) count = 0;
-    clapCount.textContent = String(count);
-
-    clapBtn.addEventListener("click", function () {
-      count += 1;
-      localStorage.setItem(key, String(count));
-      clapCount.textContent = String(count);
-    });
 
     var eUrl = encodeURIComponent(url);
     var eTitle = encodeURIComponent(title);
@@ -110,8 +97,6 @@
 
   function applyRetinaImages() {
     if (!isRetina()) return;
-    // Class names starting with digits must be escaped in selectors.
-    // Using attribute selector avoids selector syntax errors in browsers.
     var imgs = document.querySelectorAll("img[class~='2x']");
     imgs.forEach(function (img) {
       if (img.dataset.retinaApplied === "1") return;
@@ -153,7 +138,6 @@
 
     var blocks = document.querySelectorAll("pre.src");
     blocks.forEach(function (block) {
-      // If Org htmlize already injected semantic spans, keep that output.
       if (block.querySelector("span[class^='org-']")) return;
 
       block.classList.add("prettyprint");
@@ -175,8 +159,6 @@
     applyRetinaImages();
     applyPrettifyFallback();
 
-    // The homepage body is authored in Org export HTML; drop the synthetic
-    // "Home" title injected by the generic post template.
     var path = window.location.pathname || "/";
     if (path === "/" || path === "/index.html") {
       var topTitle = document.querySelector(".post > h1.title");
@@ -185,7 +167,6 @@
       }
     }
 
-    // Clean post metadata presentation.
     var meta = document.querySelector(".post-meta");
     if (meta) {
       var dateEl = meta.querySelector(".post-info--date");

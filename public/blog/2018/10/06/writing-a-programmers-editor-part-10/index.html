@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Building undo and redo — from linear history to undo trees, and the command log pattern." />
+  <meta name="keywords" content="scheme, editor, undo, redo, command-log, history" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782934307" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782934307" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/editor/">Editor</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
+  </div>
+</div>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/undo/">Undo</a></li><li><a class="article-tag" href="/tags/redo/">Redo</a></li><li><a class="article-tag" href="/tags/command-log/">Command Log</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
+In <a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> we gave the editor colour. The editor now looks and feels real. But one thing is
+still missing, and it is the thing that lets people <i>trust</i> an editor: the ability to take
+back a mistake. Undo is the safety net. Get it wrong and users edit timidly, afraid of losing
+work. Get it right and they experiment freely, knowing they can always step back.
+</p>
+
+<p>
+<b>The Command Pattern: Every Edit Is Reversible</b>
+</p>
+
+<p>
+The foundational idea is to stop thinking of edits as things that <i>happen</i> and start thinking
+of them as <i>objects</i>. Each edit is a small record that knows two things: how to <i>do</i> itself
+and how to <i>undo</i> itself. This is the classic <i>command pattern</i>, and it is the bedrock of
+every undo system.
+</p>
+
+<p>
+For a text editor, the two primitive edits are insertion and deletion — and they are perfect
+inverses. The undo of "insert <code>X</code> at position 5" is "delete the text at position 5". The undo
+of "delete <code>Y</code> at position 5" is "insert <code>Y</code> back at position 5". So an edit record needs
+only: the kind, the position, and the text involved.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">An edit record: #(kind pos text)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">kind &#8212; 'insert or 'delete
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">pos  &#8212; buffer offset where it happened
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">text &#8212; the string inserted or deleted
+</span>
+(<span class="org-keyword">define</span> (<span class="org-function-name">edit</span> kind pos text) (vector kind pos text))
+(<span class="org-keyword">define</span> (<span class="org-function-name">edit-kind</span> e) (vector-ref e 0))
+(<span class="org-keyword">define</span> (<span class="org-function-name">edit-pos</span>  e) (vector-ref e 1))
+(<span class="org-keyword">define</span> (<span class="org-function-name">edit-text</span> e) (vector-ref e 2))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">The inverse of an edit &#8212; insert becomes delete and vice versa.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">invert-edit</span> e)
+  (edit (<span class="org-keyword">if</span> (eq? (edit-kind e) 'insert) 'delete 'insert)
+        (edit-pos e)
+        (edit-text e)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Apply an edit to the buffer (used for both do and redo/undo).
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">apply-edit!</span> eb e)
+  (<span class="org-keyword">case</span> (edit-kind e)
+    ((insert) (buffer-insert-at! eb (edit-pos e) (edit-text e)))
+    ((delete) (buffer-delete-at! eb (edit-pos e) (string-length (edit-text e))))))
+</pre>
+</div>
+
+<p>
+With inversion in hand, undo is almost trivial: to undo an edit, apply its inverse.
+</p>
+
+<p>
+<b>Linear Undo: Two Stacks</b>
+</p>
+
+<p>
+The simplest complete undo system is two stacks. When the user makes an edit, push it on the
+<i>undo</i> stack. To undo, pop the undo stack, apply the inverse, and push the original onto the
+<i>redo</i> stack. To redo, pop the redo stack, re-apply, and push back onto undo. Any <i>new</i> edit
+clears the redo stack — you cannot redo down a path you have abandoned.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">History: two stacks held in a mutable record.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">make-history</span>) (vector '() '()))          <span class="org-comment-delimiter">; </span><span class="org-comment">(undo-stack redo-stack)
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">hist-undo</span> h)     (vector-ref h 0))
+(<span class="org-keyword">define</span> (<span class="org-function-name">hist-redo</span> h)     (vector-ref h 1))
+(<span class="org-keyword">define</span> (<span class="org-function-name">hist-undo!</span> h v)  (vector-set! h 0 v))
+(<span class="org-keyword">define</span> (<span class="org-function-name">hist-redo!</span> h v)  (vector-set! h 1 v))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Record a freshly-performed edit. New edits invalidate the redo branch.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">history-record!</span> h e)
+  (hist-undo! h (cons e (hist-undo h)))
+  (hist-redo! h '()))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Undo: pop the undo stack, apply the inverse, remember it for redo.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">do-undo!</span> eb h)
+  (<span class="org-keyword">let</span> ((stack (hist-undo h)))
+    (<span class="org-keyword">unless</span> (null? stack)
+      (<span class="org-keyword">let</span> ((e (car stack)))
+        (apply-edit! eb (invert-edit e))
+        (hist-undo! h (cdr stack))
+        (hist-redo! h (cons e (hist-redo h)))))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Redo: pop the redo stack, re-apply, push back onto undo.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">do-redo!</span> eb h)
+  (<span class="org-keyword">let</span> ((stack (hist-redo h)))
+    (<span class="org-keyword">unless</span> (null? stack)
+      (<span class="org-keyword">let</span> ((e (car stack)))
+        (apply-edit! eb e)
+        (hist-redo! h (cdr stack))
+        (hist-undo! h (cons e (hist-undo h)))))))
+</pre>
+</div>
+
+<p>
+That is a fully working undo/redo in about thirty lines. But used naively it has an annoying
+flaw: it undoes <i>one character at a time</i>.
+</p>
+
+<p>
+<b>Grouping: One Word, One Undo</b>
+</p>
+
+<p>
+If typing "hello" pushes five separate insert records, then undo removes "o", then "l", then
+"l"... users hate this. They expect undo to work in <i>meaningful units</i> — a word, a line, a
+command. The solution is to <i>coalesce</i> consecutive similar edits into a group.
+</p>
+
+<p>
+The rule emacs uses is essentially: consecutive self-inserts merge, but a cursor movement, a
+deletion, or a pause <i>breaks</i> the group. We implement this by checking whether a new edit is
+<i>adjacent and same-kind</i> as the top of the undo stack, and if so, extending it instead of
+pushing:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Record an insert, coalescing with the previous one if adjacent.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">history-record-insert!</span> h pos text)
+  (<span class="org-keyword">let</span> ((stack (hist-undo h)))
+    (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> (pair? stack)
+             (eq? (edit-kind (car stack)) 'insert)
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">New text begins exactly where the previous insert ended.
+</span>             (= pos (+ (edit-pos (car stack))
+                       (string-length (edit-text (car stack))))))
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">Extend the existing group in place.
+</span>        (hist-undo! h (cons (edit 'insert (edit-pos (car stack))
+                                  (string-append (edit-text (car stack)) text))
+                            (cdr stack)))
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">Start a new group.
+</span>        (history-record! h (edit 'insert pos text)))
+    (hist-redo! h '())))
+</pre>
+</div>
+
+<p>
+Now typing a word is a single undo, but moving the cursor and typing again starts a fresh
+group — exactly the behaviour muscle memory expects. The same coalescing logic, mirrored,
+handles runs of backspaces.
+</p>
+
+<p>
+<b>Beyond Linear: The Undo Tree</b>
+</p>
+
+<p>
+Linear undo has a subtle data-loss problem. Suppose you type A, undo it, then type B. In a
+two-stack model, typing B <i>clears the redo stack</i> — A is gone forever. But what if you wanted
+it back? Vim's answer is the <i>undo tree</i>: history is not a line, it is a branching tree, and
+<i>no state is ever destroyed</i>.
+</p>
+
+
+<div id="orgde9a6e5" class="figure">
+<p><img src="/assets/blog/2018/10/06/writing-a-programmers-editor-part-10/undo-tree.png" alt="undo-tree.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>An undo tree — undoing then editing creates a new branch instead of discarding the old one. Every past state remains reachable.</p>
+</div>
+
+<p>
+A tree node holds an edit, a link to its parent, and a list of children. "Undo" walks to the
+parent; "redo" walks to the <i>most recent</i> child; and a tree-navigation command lets you pick a
+<i>different</i> child to travel down an abandoned branch.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">An undo-tree node: #(edit parent children)
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">node</span> edit parent) (vector edit parent '()))
+(<span class="org-keyword">define</span> (<span class="org-function-name">node-edit</span> n)       (vector-ref n 0))
+(<span class="org-keyword">define</span> (<span class="org-function-name">node-parent</span> n)     (vector-ref n 1))
+(<span class="org-keyword">define</span> (<span class="org-function-name">node-children</span> n)   (vector-ref n 2))
+(<span class="org-keyword">define</span> (<span class="org-function-name">node-add-child!</span> n c) (vector-set! n 2 (cons c (node-children n))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Record an edit as a new child of the current node, and move there.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">tree-record!</span> tree e)
+  (<span class="org-keyword">let*</span> ((cur   (tree-current tree))
+         (child (node e cur)))
+    (node-add-child! cur child)
+    (tree-set-current! tree child)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Undo: apply the current node's inverse and step up to its parent.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">tree-undo!</span> eb tree)
+  (<span class="org-keyword">let</span> ((cur (tree-current tree)))
+    (<span class="org-keyword">when</span> (node-parent cur)
+      (apply-edit! eb (invert-edit (node-edit cur)))
+      (tree-set-current! tree (node-parent cur)))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Redo: step down to the most recently created child and re-apply.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">tree-redo!</span> eb tree)
+  (<span class="org-keyword">let</span> ((cur (tree-current tree)))
+    (<span class="org-keyword">unless</span> (null? (node-children cur))
+      (<span class="org-keyword">let</span> ((child (car (node-children cur))))   <span class="org-comment-delimiter">; </span><span class="org-comment">newest child
+</span>        (apply-edit! eb (node-edit child))
+        (tree-set-current! tree child)))))
+</pre>
+</div>
+
+<p>
+The tree never throws anything away. That is its whole virtue — and, arguably, its whole cost,
+since the history can grow without bound. Emacs, interestingly, takes a third path entirely:
+it has <i>no separate redo</i>. In emacs, undo is itself an undoable command, so "undoing an undo"
+redoes — which, followed far enough, also lets you reach abandoned states, at the price of a
+notoriously confusing mental model.
+</p>
+
+<p>
+<b>The Command Log — A Bigger Idea</b>
+</p>
+
+<p>
+Step back and notice what we have really built. An undo stack is a <i>log of edits</i>. But if we
+are already recording every edit as a reversible, replayable object, that log is worth far
+more than undo alone:
+</p>
+
+<ul class="org-ul">
+<li><b>Crash recovery:</b> replay the log against the last saved file to reconstruct unsaved work.</li>
+<li><b>Macros:</b> a keyboard macro is just a slice of the command log, replayed on demand.</li>
+<li><b>Collaboration:</b> stream edit records to another editor and apply them there — the seed of
+real-time collaborative editing (this is essentially what operational transforms do).</li>
+<li><b>Audit:</b> the log <i>is</i> the complete history of how a document came to be.</li>
+</ul>
+
+<p>
+This is the deep payoff of the command pattern. By making every edit a first-class, invertible
+value, undo stops being a special feature and becomes one reading of a general structure. It
+is the same lesson the incremental-search stack taught us in Part 8: <i>record the history of an
+interaction, and capabilities fall out for free.</i>
+</p>
+
+<p>
+<b>What We Have Now</b>
+</p>
+
+<p>
+The editor forgives:
+</p>
+
+<ol class="org-ol">
+<li>Every edit is a reversible command object with a clean inverse.</li>
+<li>Linear two-stack undo/redo, with coalescing so words undo as units.</li>
+<li>An undo tree that never discards a past state.</li>
+<li>A command log that generalises to macros, recovery, and collaboration.</li>
+</ol>
+
+<p>
+The editor can now hold, display, colour, search, and undo text. It is a real editor. What
+remains is the promise that started the whole series in <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a>: giving the <i>user</i> the power to
+reshape it.
+</p>
+
+<p>
+In the <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">next part</a> we build the extensibility layer — modes, hooks, and the scripting surface
+that delivers on the <code>100%</code> power promise.
+</p>
+
+<p>
+Watchout for the next part of the assay, till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
+</p>
+<div class="series-nav-wrap">
+<style>
+.series-nav-wrap{margin:36px 0 28px;font-family:"ui-sans-serif",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.series-nav-wrap *{box-sizing:border-box}
+.series-nav-card{border:1px solid #e2ddd0;border-radius:12px;overflow:hidden;background:#faf8f2}
+.series-nav-top{padding:16px 20px 14px;border-bottom:1px solid #ebe6d9}
+.sn-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#36c9c7;margin-bottom:4px}
+.sn-name{font-family:"Charter","Iowan Old Style","Palatino Linotype",Palatino,serif;font-size:18px;font-weight:600;color:#1f1f1b;margin:0;line-height:1.3}
+.sn-desc{font-size:12.5px;line-height:1.55;color:#6f6a5e;margin:3px 0 0}
+.sn-pn{display:flex;border-bottom:1px solid #ebe6d9}
+.sn-card{flex:1;padding:11px 16px;text-decoration:none;display:flex;flex-direction:column;gap:1px;min-width:0;transition:background .12s}
+a.sn-card:hover{background:rgba(54,201,199,.06)}
+.sn-card-l{border-right:1px solid #ebe6d9;text-align:left}
+.sn-card-r{text-align:right}
+.sn-card-lbl{font-size:10px;font-weight:600;letter-spacing:.03em;color:#a8a294}
+.sn-card-tt{font-size:12px;font-weight:500;color:#36c9c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-card.off .sn-card-tt{color:#bfb9ac}
+a.sn-card.off:hover{background:transparent;cursor:default}
+.sn-pos{display:flex;align-items:center;font-size:11px;font-weight:600;color:#6f6a5e;padding:0 14px;white-space:nowrap}
+.sn-list{list-style:none;margin:0;padding:4px 0}
+.sn-row{display:flex;align-items:center;gap:10px;padding:5px 20px;font-size:13px;line-height:1.4;transition:background .1s}
+.sn-row:hover{background:#f4f1e8}
+.sn-dot{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#e8e3d4;color:#8a8578;font-size:10px;font-weight:700}
+.sn-row.here .sn-dot{background:#36c9c7;color:#fff}
+.sn-tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-tt a{color:#33312b;text-decoration:none;font-weight:500}
+.sn-tt a:hover{color:#36c9c7}
+.sn-row.here .sn-tt{color:#1f1f1b;font-weight:700}
+.sn-tt.off{color:#bfb9ac}
+.sn-tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.04em;flex:0 0 auto}
+.sn-tag.here{background:#36c9c7;color:#fff}
+.sn-tag.draft{background:#e8e3d4;color:#a8a294}
+.sn-date{font-size:10.5px;color:#c4beb1;font-variant-numeric:tabular-nums;flex:0 0 auto;margin-left:auto;padding-left:6px}
+.sn-foot{padding:7px 20px;font-size:10px;color:#c4beb1;text-align:center;border-top:1px solid #ebe6d9;background:#f6f3eb}
+@media(max-width:540px){
+ .series-nav-wrap{margin:24px 0}
+ .series-nav-top{padding:12px 14px 10px}
+ .sn-name{font-size:16px}
+ .sn-card{padding:8px 10px}
+ .sn-card-tt{font-size:11px}
+ .sn-row{padding:4px 14px;gap:8px}
+ .sn-date{display:none}
+}
+</style>
+<div class="series-nav-card">
+<div class="series-nav-top">
+<span class="sn-eyebrow">Article Series</span>
+<h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+</div>
+<div class="sn-pn">
+<a class="sn-card sn-card-l" href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">
+<span class="sn-card-lbl">&larr; Previous</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Syntax Highlighting) - Part 9</span>
+</a>
+<span class="sn-pos">10 / 12</span>
+<a class="sn-card sn-card-r" href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">
+<span class="sn-card-lbl">Next &rarr;</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</span>
+</a>
+</div>
+<ol class="sn-list">
+<li class="sn-row">
+<span class="sn-dot">1</span>
+<span class="sn-tt"><a href="/blog/2018/08/06/learn-to-write-an-editor/">Writing a Programmers Editor - Part 1</a></span>
+<span class="sn-date">2018-08-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">2</span>
+<span class="sn-tt"><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</a></span>
+<span class="sn-date">2018-08-11</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">3</span>
+<span class="sn-tt"><a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3</a></span>
+<span class="sn-date">2018-08-18</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">4</span>
+<span class="sn-tt"><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Writing a Programmers Editor (Lines &amp; Display) - Part 4</a></span>
+<span class="sn-date">2018-08-25</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">5</span>
+<span class="sn-tt"><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5</a></span>
+<span class="sn-date">2018-09-01</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">6</span>
+<span class="sn-tt"><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</a></span>
+<span class="sn-date">2018-09-08</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">7</span>
+<span class="sn-tt"><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</a></span>
+<span class="sn-date">2018-09-15</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">8</span>
+<span class="sn-tt"><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Writing a Programmers Editor (Search &amp; Replace) - Part 8</a></span>
+<span class="sn-date">2018-09-22</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">9</span>
+<span class="sn-tt"><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Writing a Programmers Editor (Syntax Highlighting) - Part 9</a></span>
+<span class="sn-date">2018-09-29</span>
+</li>
+<li class="sn-row here">
+<span class="sn-dot">10</span>
+<span class="sn-tt">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</span>
+<span class="sn-tag here">Here</span>
+<span class="sn-date">2018-10-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">11</span>
+<span class="sn-tt"><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</a></span>
+<span class="sn-date">2018-10-13</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">12</span>
+<span class="sn-tt"><a href="/blog/2018/10/20/writing-a-programmers-editor-part-12/">Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</a></span>
+<span class="sn-date">2018-10-20</span>
+</li>
+</ol>
+<div class="sn-foot">12 of 12 articles published</div>
+</div>
+</div>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-10-06</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/10/06/writing-a-programmers-editor-part-10";
+        this.page.identifier = "/blog/2018/10/06/writing-a-programmers-editor-part-10";
+      };
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  <script src="/media/js/claps.js"></script>
+<script src="/media/js/code-block-controls.js"></script>
+<script src="/media/js/dev-reload.js"></script>
+</body>
+</html>
