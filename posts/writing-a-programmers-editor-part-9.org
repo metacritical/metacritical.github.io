@@ -27,11 +27,11 @@ one tokenizer can drive many colour schemes, and one theme can style many langua
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png :cmdline -E -S :exports none
    raw text          tokens               faces              screen
-  +----------+     +-----------+       +-----------+      +-----------+
-  |(define x |     |(define x  |       | kw  id    |      | coloured  |
-  | ; hi     |---->| ; comment |------>| comment   |----->| output    |
-  | "str")   |     | "str"     |       | string    |      |           |
-  +----------+     +-----------+       +-----------+      +-----------+
+  +----------+     +-----------+       +----+-------------+      +-----------+
+  |(define x |     |(define x  |       |cBF0| kw  id    |      | coloured  |
+  | ; hi     |---->| ; comment |------>|cBF0| comment   |----->| output    |
+  | "str")   |     | "str"     |       |cBF0| string    |      |           |
+  +----------+     +-----------+       +----+-------------+      +-----------+
      tokenize        fontify (theme)      render (Part 7)
 #+END_SRC
 

@@ -102,17 +102,21 @@ Minor-mode keymaps stack in a priority list, searched before the major mode's ma
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/10/13/writing-a-programmers-editor-part-11/mode-layers.png :cmdline -E -S :exports none
                        key lookup order
-                              |
-                              v
-   +-------------------------------------------------+
-   | minor: auto-indent   (highest priority)         |
-   +-------------------------------------------------+
-   | minor: line-numbers                             |
-   +-------------------------------------------------+
-   | major: scheme-mode                              |
-   +-------------------------------------------------+
-   | global-map           (lowest priority)          |
-   +-------------------------------------------------+
+                               |
+                               v
+    +----+------------------------------------------------+
+    |    | minor: auto-indent   (highest priority)        |
+    |    |                                                |
+    +----+------------------------------------------------+
+    |    | minor: line-numbers                            |
+    |    |                                                |
+    +----+------------------------------------------------+
+    |cBF0| major: scheme-mode                             |
+    |cBF0|                                                |
+    +----+------------------------------------------------+
+    |    | global-map           (lowest priority)         |
+    |    |                                                |
+    +----+------------------------------------------------+
 #+END_SRC
 
 #+RESULTS:

@@ -50,11 +50,11 @@ matrices work under the hood.
 #+BEGIN_SRC ditaa :file assets/blog/2018/09/15/writing-a-programmers-editor-part-7/redisplay-diff.png :cmdline -E -S :exports none
   Current frame        Pending frame          Emitted ops
   (on screen)          (what we want)         (minimal)
-  +-------------+      +-------------+
-  | (define f   |      | (define f   |        (unchanged)
-  |   (+ a b))  |      |   (+ a c))  | ----->  goto 2,9 ; write "c"
-  | done.       |      | done.       |        (unchanged)
-  +-------------+      +-------------+
+  +-------------+      +----+-------------+
+  | (define f   |      |cBF0| (define f   |        (unchanged)
+  |   (+ a b))  |      |cBF0|   (+ a c))  | ----->  goto 2,9 ; write "c"
+  | done.       |      |cBF0| done.       |        (unchanged)
+  +-------------+      +----+-------------+
         \                    /
          \                  /
           v                v

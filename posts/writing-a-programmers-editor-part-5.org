@@ -27,14 +27,14 @@ quirk of that ancient device still leaks through. When you understand /why/ the 
 behaves the way it does, its rules stop feeling arbitrary.
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/09/01/writing-a-programmers-editor-part-5/terminal-pipeline.png :cmdline -E -S :exports none
-  +----------+      bytes      +-------------+     syscalls    +-----------+
-  | Keyboard |---------------->| Terminal    |---------------->| Our Editor|
-  |          |                 | (line disc.)|                 | (Scheme)  |
-  +----------+                 +-------------+                 +-----------+
-                                     ^                              |
-                                     |         escape codes         |
-                                     +------------------------------+
-                                          "move cursor, clear, color"
+  +----------+      bytes      +----+-------------+     syscalls    +-----------+
+  | Keyboard |---------------->|cBF0| Terminal    |---------------->| Our Editor|
+  |          |                 |cBF0| (line disc.)|                 | (Scheme)  |
+  +----------+                 +----+-------------+                 +-----------+
+                                      ^                              |
+                                      |         escape codes         |
+                                      +------------------------------+
+                                           "move cursor, clear, color"
 #+END_SRC
 
 #+RESULTS:

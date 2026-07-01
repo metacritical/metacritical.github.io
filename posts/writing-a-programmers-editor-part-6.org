@@ -99,16 +99,17 @@ command (a leaf) or /another keymap/ (a branch). Pressing a prefix key walks you
 down the tree.
 
 #+BEGIN_SRC ditaa :file assets/blog/2018/09/08/writing-a-programmers-editor-part-6/keymap-tree.png :cmdline -E -S :exports none
-                 +-----------+
-                 |  keymap   |
-                 +-----------+
+                 +----+-----------+
+                 |cBF0|  keymap   |
+                 |cBF0|           |
+                 +----+-----------+
                   |    |    |
           C-f     |    |    |   C-x
          +--------+    |    +---------+
          v             | C-s          v
    forward-char        v          +-------+
-                    save-file      |keymap | (prefix)
-                                   +-------+
+                     save-file     |keymap | (prefix)
+                                    +-------+
                                     |     |
                               C-f   |     |  C-s
                              +------+     +------+

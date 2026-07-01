@@ -148,9 +148,10 @@ it back? Vim's answer is the /undo tree/: history is not a line, it is a branchi
         type "B"   |    |
            +-------+    +-------+
            v                   v
-       +--------+          +--------+
-       | node 2 |  "B"     | node 3 |  "A" continued...
-       +--------+          +--------+
+       +----+--------+          +--------+
+       |cBF0| node 2 |  "B"     | node 3 |  "A" continued...
+       |cBF0|        |          +--------+
+       +----+--------+
 #+END_SRC
 
 #+RESULTS:
