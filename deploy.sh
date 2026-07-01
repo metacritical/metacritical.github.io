@@ -23,6 +23,10 @@ if ! git diff --cached --quiet; then
 fi
 git push origin source
 
+# Stash any remaining dirty files (e.g. color-converted assets) so the
+# branch switch below does not abort over uncommitted tracked-file changes.
+git stash push --include-untracked --message "deploy-stash" 2>/dev/null || true
+
 # 3) Remove untracked and ignored files (e.g. stale root-level files from prior deploys).
 git clean -fdx
 
@@ -60,5 +64,6 @@ else
   echo "No changes to deploy."
 fi
 
-# 9) Switch back to source branch.
+# 9) Switch back to source branch and restore any stashed dirty files.
 git checkout source
+git stash pop 2>/dev/null || true
