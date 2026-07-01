@@ -1,0 +1,243 @@
+#+TITLE:       Writing a Programmers Editor (Syntax Highlighting) - Part 9
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-09-29 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-9
+#+KEYWORDS:    scheme, editor, syntax-highlighting, tokenizer, themes, font-lock
+#+TAGS:        Scheme, Syntax Highlighting, Tokenizer, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Adding colour to code — tokenization, fontification, and how to build a syntax highlighting engine.
+
+In [[/blog/2018/09/22/writing-a-programmers-editor-part-8/][Part 8]] we made the buffer searchable. Now we make it /readable/. Syntax highlighting —
+colouring keywords, strings, comments, and numbers differently — is what turns a wall of
+monospace into something the eye parses at a glance. And there is a particular joy in what we
+are about to do: write a Scheme syntax highlighter, in Scheme, that colours its own source.
+
+*Two Stages: Tokenize, Then Fontify*
+
+Every highlighter, no matter how fancy, is two stages bolted together:
+
+1. /Tokenization/ (lexical analysis): split raw text into /tokens/ — this run of characters is
+   a keyword, that one is a string, this is a comment, that is a number.
+2. /Fontification/: map each token /type/ to a /face/ — a colour, and maybe bold or italic.
+
+The tokenizer knows the language. The fontifier knows the theme. Keeping them separate means
+one tokenizer can drive many colour schemes, and one theme can style many languages.
+
+#+BEGIN_SRC ditaa :file assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png :cmdline -E -S :exports none
+   raw text          tokens               faces              screen
+  +----------+     +-----------+       +-----------+      +-----------+
+  |(define x |     |(define x  |       | kw  id    |      | coloured  |
+  | ; hi     |---->| ; comment |------>| comment   |----->| output    |
+  | "str")   |     | "str"     |       | string    |      |           |
+  +----------+     +-----------+       +-----------+      +-----------+
+     tokenize        fontify (theme)      render (Part 7)
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png]]
+
+#+CAPTION: The highlighting pipeline — the tokenizer knows the language, the fontifier knows the theme.
+[[file:/assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png]]
+
+*A Tokenizer For Scheme*
+
+Scheme is a wonderful first language to tokenize because its lexical structure is tiny:
+parentheses, strings, comments (=;= to end of line), quotes, and /atoms/ (everything else —
+symbols, numbers, keywords). We walk the text once, emitting a token for each lexeme. A token
+records its type, and its start and end offsets in the buffer.
+
+#+BEGIN_SRC scheme
+;;; A token: #(type start end)
+(define (token type start end) (vector type start end))
+(define (tok-type t)  (vector-ref t 0))
+(define (tok-start t) (vector-ref t 1))
+(define (tok-end t)   (vector-ref t 2))
+
+(define (whitespace? c) (or (char=? c #\space) (char=? c #\tab) (char=? c #\newline)))
+(define (delimiter? c)  (or (whitespace? c) (char=? c #\() (char=? c #\))
+                            (char=? c #\") (char=? c #\;)))
+#+END_SRC
+
+The lexer itself is a =let loop= over the text that dispatches on the current character:
+
+#+BEGIN_SRC scheme
+;; Tokenize a Scheme source string into a list of tokens.
+(define (tokenize-scheme text)
+  (let ((n (string-length text)))
+    (let loop ((i 0) (acc '()))
+      (if (>= i n)
+          (reverse acc)
+          (let ((c (string-ref text i)))
+            (cond
+             ;; Whitespace — skip, emit nothing.
+             ((whitespace? c) (loop (+ i 1) acc))
+             ;; Parentheses — single-character punctuation tokens.
+             ((or (char=? c #\() (char=? c #\)))
+              (loop (+ i 1) (cons (token 'paren i (+ i 1)) acc)))
+             ;; Comment — from ; to end of line.
+             ((char=? c #\;)
+              (let ((end (scan-to text i #\newline)))
+                (loop end (cons (token 'comment i end) acc))))
+             ;; String — from " to the closing " (respecting escapes).
+             ((char=? c #\")
+              (let ((end (scan-string text (+ i 1))))
+                (loop end (cons (token 'string i end) acc))))
+             ;; Atom — a run up to the next delimiter.
+             (else
+              (let ((end (scan-atom text i)))
+                (loop end (cons (token (classify-atom text i end) i end) acc))))))))))
+#+END_SRC
+
+The little scanners are unremarkable but necessary — each advances the index to the end of
+its lexeme:
+
+#+BEGIN_SRC scheme
+;; Advance until `stop` char (or EOF); return the index past it.
+(define (scan-to text i stop)
+  (let ((n (string-length text)))
+    (let loop ((j i))
+      (cond ((>= j n) j)
+            ((char=? (string-ref text j) stop) (+ j 1))
+            (else (loop (+ j 1)))))))
+
+;; Scan a string body, honouring backslash escapes; return index past closing ".
+(define (scan-string text i)
+  (let ((n (string-length text)))
+    (let loop ((j i))
+      (cond ((>= j n) j)
+            ((char=? (string-ref text j) #\\) (loop (+ j 2)))   ; skip escape
+            ((char=? (string-ref text j) #\") (+ j 1))
+            (else (loop (+ j 1)))))))
+
+;; Scan an atom up to the next delimiter.
+(define (scan-atom text i)
+  (let ((n (string-length text)))
+    (let loop ((j i))
+      (if (or (>= j n) (delimiter? (string-ref text j))) j (loop (+ j 1))))))
+#+END_SRC
+
+*Classifying Atoms*
+
+An atom might be a number, a language keyword, or an ordinary identifier. The tokenizer asks
+one small classifier to decide, using a table of known keywords:
+
+#+BEGIN_SRC scheme
+(define scheme-keywords
+  '("define" "lambda" "let" "let*" "letrec" "if" "cond" "case" "when"
+    "unless" "begin" "set!" "quote" "quasiquote" "and" "or" "do" "else"))
+
+;; Decide whether the atom text[start,end) is a keyword, number, or identifier.
+(define (classify-atom text start end)
+  (let ((s (substring text start end)))
+    (cond
+     ((member s scheme-keywords) 'keyword)
+     ((string->number s)         'number)
+     (else                       'identifier))))
+#+END_SRC
+
+That is the entire Scheme lexer. Because the language is so regular, it fits in a page — and
+it is easy to extend a classifier for a chunkier language later.
+
+*Fontification: Tokens To Colours*
+
+Now the theme. A /face table/ maps token types to terminal colour codes (the 256-colour
+palette from Part 5). Swapping themes is swapping this table — nothing else changes.
+
+#+BEGIN_SRC scheme
+;;; A theme maps token types to 256-colour foreground codes.
+(define solarized-dark
+  '((keyword    . 33)     ; blue
+    (string     . 37)     ; cyan
+    (comment    . 245)    ; grey
+    (number     . 61)     ; violet
+    (identifier . 254)    ; near-white
+    (paren      . 244)))  ; dim grey
+
+(define (face-for theme type)
+  (let ((cell (assq type theme)))
+    (if cell (cdr cell) 254)))            ; default: plain text
+#+END_SRC
+
+To render a highlighted line we walk its tokens, emit a colour escape, write the token's
+text, and reset. The heavy lifting — /where/ the text goes on screen — is still the redisplay
+engine from Part 7; highlighting only decides /what colour/ each span is.
+
+#+BEGIN_SRC scheme
+;; Produce a coloured string for the given text using a token list + theme.
+(define (fontify text tokens theme)
+  (let ((out (open-output-string)))
+    (for-each
+     (lambda (tk)
+       (write-string (string-append "\x1b[38;5;"
+                                    (number->string (face-for theme (tok-type tk)))
+                                    "m") out)
+       (write-string (substring text (tok-start tk) (tok-end tk)) out)
+       (write-string "\x1b[0m" out))
+     tokens)
+    (get-output-string out)))
+#+END_SRC
+
+*The Performance Problem: Do Not Re-Tokenize The World*
+
+Here is the trap. If we re-tokenize the /entire/ buffer on every keystroke, a large file will
+crawl. Tokenizing a 10,000-line file to recolour one edited line is madness — and it is
+exactly the mistake that makes hand-rolled highlighters feel slow.
+
+The fix is /incremental/ fontification: only re-tokenize the region that changed. For most
+languages, a single edit affects only the current line, so we re-tokenize that line and move
+on. This dovetails perfectly with the dirty-line tracking from Part 7 — the same rows we
+redraw are the only rows we re-highlight.
+
+#+BEGIN_SRC scheme
+;; Re-tokenize just the line containing `offset` after an edit.
+(define (rehighlight-line! eb offset)
+  (let* ((line   (eb-offset->line eb offset))
+         (start  (eb-line-start eb line))
+         (end    (eb-line-end eb line))
+         (text   (buffer-substring eb start end)))
+    (eb-set-line-tokens! eb line (tokenize-scheme text))
+    (mark-line-dirty! eb line)))                ; Part 7 will redraw it
+#+END_SRC
+
+There is one wrinkle: some tokens /span/ lines — a multi-line string, or a block comment.
+Editing inside one can change the highlighting of lines /below/ it. Emacs solves this by
+tracking the lexer's /state/ at the end of each line (are we "inside a string"?) and
+re-tokenizing downward only until the state stabilises. For a Scheme editor, whose strings
+and comments rarely straddle lines, single-line re-tokenizing is a fine first approximation,
+with a "re-tokenize to end of buffer" escape hatch for the rare multi-line case.
+
+*How The Big Editors Do It*
+
+Two designs are worth naming, because ours sits between them:
+
+- *Emacs =font-lock=* drives highlighting from /regular expressions/ plus code hooks, with
+  priority levels so that, say, a keyword inside a comment stays comment-coloured. It is
+  pragmatic and per-mode.
+- *TextMate / VS Code grammars* use /scoped, nested/ rules — a stack of grammar contexts that
+  can push and pop, giving precise nested highlighting (a regex inside a string inside a
+  template literal). More powerful, considerably heavier.
+
+Our tokenizer-plus-theme design is the honest middle: a real lexer (not just regexes), a
+swappable theme, and incremental updates. It is enough to make Scheme code sing, and the
+architecture generalises.
+
+*What We Have Now*
+
+The editor now shows /coloured/ code:
+
+1. A single-pass Scheme tokenizer that classifies keywords, strings, comments, numbers.
+2. A theme layer that maps token types to colours, swappable at will.
+3. Incremental re-highlighting keyed to the same dirty lines the renderer already tracks.
+4. A clear path to richer languages and multi-line token state.
+
+The editor is now genuinely pleasant to use. But it still cannot forgive a mistake — there is
+no undo. That is the safety net every editor needs, and it is more subtle than it looks.
+
+In the [[/blog/2018/10/06/writing-a-programmers-editor-part-10/][next part]] we build undo and redo — from a simple linear stack all the way to vim's
+branching undo tree.
+
+Watchout for the next part of the assay, till then.
+
+/Shorel'aran/

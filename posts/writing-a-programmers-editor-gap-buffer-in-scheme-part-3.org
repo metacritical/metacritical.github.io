@@ -2,7 +2,7 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-08-18 Sat]
-#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-3
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-gap-buffer-in-scheme-part-3
 #+KEYWORDS:    scheme, editor, gap-buffer, data-structures, lisp
 #+TAGS:        scheme, gap buffer, data structures, writing an editor
 #+LANGUAGE:    en
@@ -244,7 +244,7 @@ We now have a working text buffer. It can hold text, accept insertions and delet
 
 But a buffer full of characters is not yet an editor. We cannot display it. We cannot split it into lines. We cannot scroll or wrap text. Those are the problems we will tackle next.
 
-In the [[/blog/2018/08/25/writing-a-programmers-editor-part-4/][next part]] we will build a line management layer on top of the gap buffer — because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
+In the [[/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/][next part]] we will build a line management layer on top of the gap buffer — because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
 
 Watchout for the next part of the assay, till then.
 

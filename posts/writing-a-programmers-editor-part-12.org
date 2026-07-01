@@ -1,0 +1,130 @@
+#+TITLE:       Writing a Programmers Editor (Reflections & Lessons) - Part 12
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-10-20 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-12
+#+KEYWORDS:    scheme, editor, reflections, lessons, power-continuum
+#+TAGS:        Scheme, Editor, Reflections, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Looking back at the series — what we learned, what worked, and answering the questions from Part 1.
+
+In [[/blog/2018/10/13/writing-a-programmers-editor-part-11/][Part 11]] we built the extensibility layer, and with it the editor was complete — a
+working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap.
+Eleven parts ago, in [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]], this was just a provocation and a Feynman quote. Now there is
+actual code behind the argument. This final part is a reflection, and a return — with the
+benefit of having built the thing — to the questions we started with.
+
+*The Road We Travelled*
+
+It is worth seeing the whole arc in one glance, because each part was a load-bearing wall for
+the ones above it:
+
+- [[/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/][Part 2]] & [[/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/][Part 3]] — the /gap buffer/: the data structure that makes typing =O(1)=.
+- [[/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/][Part 4]] — /lines and display/: turning a flat array into rows and columns.
+- [[/blog/2018/09/01/writing-a-programmers-editor-part-5/][Part 5]] — /terminal I/O/: raw mode, escape sequences, the FFI down to C.
+- [[/blog/2018/09/08/writing-a-programmers-editor-part-6/][Part 6]] — /keymaps/: the tree that gives an editor its personality.
+- [[/blog/2018/09/15/writing-a-programmers-editor-part-7/][Part 7]] — /redisplay/: drawing only what changed.
+- [[/blog/2018/09/22/writing-a-programmers-editor-part-8/][Part 8]] — /search/: incremental, with a state stack.
+- [[/blog/2018/09/29/writing-a-programmers-editor-part-9/][Part 9]] — /syntax highlighting/: tokenize, then fontify.
+- [[/blog/2018/10/06/writing-a-programmers-editor-part-10/][Part 10]] — /undo/: every edit a reversible command.
+- [[/blog/2018/10/13/writing-a-programmers-editor-part-11/][Part 11]] — /modes and hooks/: extensibility as a shape, not a feature.
+
+Roughly a few hundred lines of Scheme, layer on layer, and out the other end comes something
+that genuinely edits text.
+
+*What Worked*
+
+*The gap buffer was the right call.* It was simple enough to write in an afternoon, its
+performance characteristics were exactly as advertised, and — crucially — it never fought us.
+Every later layer, from line tracking to undo, sat comfortably on top of "an array with a
+split point." The instinct from Part 2, that /simple primitives that compose well/ beat clever
+ones, held all the way through.
+
+*Scheme was expressive enough.* First-class functions turned keymaps into data (Part 6) and
+hooks into lists (Part 11). Closures gave us "advice" — wrapping a command — for free. Tagged
+vectors were a perfectly adequate stand-in for records. At no point did the language run out of
+room. The editor never once /needed/ to drop into C for expressiveness.
+
+*The recurring pattern paid off.* The same idea appeared three times: /record the history of
+an interaction and capabilities fall out for free/. The incremental-search state stack (Part 8)
+gave us instant backspace. The command log (Part 10) gave us undo, and gestured at macros and
+collaboration. It is a lesson that generalises far beyond editors.
+
+*What Was Hard*
+
+*Terminal I/O was the ugliest boundary.* Everything else was clean Scheme; the terminal
+dragged us through termios, escape sequences, and the FFI in Part 5. This is not Scheme's
+fault — it is the operating system's — but it is where the "=100%= in one language" dream met
+reality. You /cannot/ talk to a terminal without, somewhere, calling C. Even our
+all-Scheme editor has a small, unavoidable C shadow at its lowest layer. Honesty compels
+admitting the "=100%=" is =100%= /above/ the syscall boundary, not below it.
+
+*Performance in a garbage-collected language takes care.* The hot paths — typing, redisplay,
+re-tokenizing — all had to be written to avoid allocation and needless copying. Our Part 4
+renderer that converted the /whole buffer/ to a string every frame was a deliberate
+simplification we had to walk back in Part 7. A GC'd language does not make you slow, but it
+does punish carelessness more visibly than C, where the costs are at least in plain sight.
+
+*The Power Continuum, Revisited*
+
+Now the real question from Part 1: /where does the sweet spot lie in the [[http://www.paulgraham.com/avg.html][Power Continuum]]?/ We
+asked whether an editor written in =100%= Scheme, extended in the same Scheme, would actually
+/help/ — or whether the delicate balance between a C runtime and a scripting language exists
+/for a reason/, with a penalty when disturbed.
+
+Having built it, my answer is: /both are true, and that is the whole insight./
+
+The =100%= approach genuinely delivered on power. There is no borrowed-power problem in our
+editor — the user can redefine =cmd-save-file= itself, something no elisp author can do to
+emacs' C core. When the extension language /is/ the implementation language, the ceiling
+disappears. That is real, and it is intoxicating.
+
+But the balance emacs struck exists for a reason too, and the reason is not weakness — it is
+/leverage/. Emacs keeps its performance-critical, syscall-adjacent core in C precisely so that
+the elisp layer can stay high-level and safe. The "power deficiency" we lamented in Part 1 is
+also a /safety rail/: elisp cannot corrupt the buffer's memory because it cannot reach it. Our
+editor's total power is inseparable from its total fragility (Part 11): the user who can
+redefine anything can break anything.
+
+*What Emacs Got Right*
+
+With hindsight, the split emacs chose looks less like a compromise and more like an /engineered
+boundary/. C for the gap buffer, the redisplay engine, and the syscalls — the parts where
+performance and safety are non-negotiable. Elisp for everything a user might want to change.
+The boundary is drawn exactly where power matters least and performance matters most. That is
+not a failure of nerve; it is good taste.
+
+Our editor draws the boundary in a different place — as low as it possibly can, at the raw
+syscall — and pays for it with the fragility of a system where user code and core code are
+peers. Neither is /wrong/. They are different points on the continuum, chosen for different
+values.
+
+*What I Would Do Differently*
+
+- *Track lexer state across lines from the start* (Part 9). Single-line re-tokenizing was a
+  fine first cut, but multi-line strings and block comments make it wrong in ways that are
+  annoying to retrofit.
+- *Design the command log first* (Part 10). Because everything — undo, macros, recovery — is a
+  reading of that log, building it early would have simplified several earlier parts rather
+  than bolting it on.
+- *Consider a rope for large files* (Part 2). The gap buffer was right for our goals, but the
+  single =O(N)= scroll-to-end and full-buffer operations would bite on very large documents.
+
+*The Feynman Principle, Answered*
+
+We began with Feynman: /What I cannot create, I do not understand./ The point of this series was
+never to dethrone emacs or vim — they are the work of decades and thousands of hands. The point
+was to /understand/ them by building, in miniature, the same machine. And it worked. I will
+never again wonder /how/ a cursor moves, /why/ a terminal flickers, /what/ a keymap really is,
+or /where/ an editor's power actually comes from. Those were abstractions before Part 1. They
+are mechanisms now.
+
+That is the deepest lesson, and it outlasts any editor: the fastest way to understand a system
+is to build the smallest honest version of it yourself. The gap buffer, the raw terminal, the
+keymap tree, the undo log — none of them are mysterious anymore, because we made them.
+
+If you have followed all twelve parts: thank you. Go build your own. It is the most fun a
+programmer can have, and you will never read your editor's source the same way again.
+
+/Shorel'aran./

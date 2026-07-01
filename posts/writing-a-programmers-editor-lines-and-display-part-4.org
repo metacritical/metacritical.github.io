@@ -2,14 +2,14 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-08-25 Sat]
-#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-4
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-lines-and-display-part-4
 #+KEYWORDS:    scheme, editor, lines, display, rendering
 #+TAGS:        Scheme, Lines, Display, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Building a line management and display layer on top of the gap buffer.
 
-In [[/blog/2018/08/18/writing-a-programmers-editor-part-3/][Part 3]] we built a gap buffer in Scheme. It can hold text, insert characters,
+In [[/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/][Part 3]] we built a gap buffer in Scheme. It can hold text, insert characters,
 delete them, move the cursor, and resize when the gap runs out. It is about 80 lines
 of code and it works.
 

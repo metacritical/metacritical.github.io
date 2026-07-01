@@ -28,6 +28,21 @@ REBUILD=0
 PROMOTE_ALL=0
 SELECTED=()
 
+# Slugify: lowercase, replace non-alphanumeric with hyphens, collapse doubles.
+slugify() {
+  local raw="$1"
+  echo "$raw" | tr '[:upper:]' '[:lower:]' \
+    | sed 's/[^a-z0-9]/-/g' \
+    | sed 's/--*/-/g' \
+    | sed 's/^-//;s/-$//'
+}
+
+# Read an org-mode option value from a file.
+read_org_option() {
+  local file="$1" option="$2"
+  grep -E "^#\\+$option:" "$file" 2>/dev/null | sed "s/^#\\+$option:[[:space:]]*//" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+}
+
 # Parse arguments.
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -147,12 +162,14 @@ SKIPPED=0
 for DRAFT in "${SELECTED[@]}"; do
   SOURCE="$DRAFTS_DIR/$DRAFT.org"
   TARGET="$POSTS_DIR/$DRAFT.org"
+  SOURCE_NAME="$DRAFT"
 
   # If not found, try partial match.
   if [ ! -f "$SOURCE" ]; then
     MATCH=$(ls "$DRAFTS_DIR"/*"$DRAFT"*.org 2>/dev/null | head -1 || true)
     if [ -n "$MATCH" ]; then
       SOURCE="$MATCH"
+      SOURCE_NAME="$(basename "$MATCH" .org)"
       TARGET="$POSTS_DIR/$(basename "$MATCH")"
       DRAFT="$(basename "$MATCH" .org)"
     else
@@ -169,7 +186,30 @@ for DRAFT in "${SELECTED[@]}"; do
   fi
 
   mv "$SOURCE" "$TARGET"
-  echo "  PROMOTED: drafts/$DRAFT.org -> posts/$DRAFT.org"
+
+  # Regenerate slug and URI from the current title so renamed/matured drafts get
+  # human-readable URLs instead of stale placeholders.
+  CURRENT_TITLE="$(read_org_option "$TARGET" 'TITLE')"
+  if [ -n "$CURRENT_TITLE" ]; then
+    NEW_SLUG="$(slugify "$CURRENT_TITLE")"
+    if [ -n "$NEW_SLUG" ] && [ "$NEW_SLUG" != "$DRAFT" ]; then
+      NEW_TARGET="$POSTS_DIR/$NEW_SLUG.org"
+      if [ ! -f "$NEW_TARGET" ]; then
+        mv "$TARGET" "$NEW_TARGET"
+        TARGET="$NEW_TARGET"
+        DRAFT="$NEW_SLUG"
+      fi
+    fi
+    CURRENT_URI="$(read_org_option "$TARGET" 'URI')"
+    if [ -n "$CURRENT_URI" ]; then
+      NEW_URI="/blog/%y/%m/%d/$DRAFT"
+      if [ "$CURRENT_URI" != "$NEW_URI" ]; then
+        sed -i '' "s|^#+URI:.*|#+URI:         $NEW_URI|" "$TARGET"
+      fi
+    fi
+  fi
+
+  echo "  PROMOTED: drafts/$SOURCE_NAME.org -> posts/$DRAFT.org"
   PROMOTED=$((PROMOTED + 1))
 
   # Update series JSON status if applicable.

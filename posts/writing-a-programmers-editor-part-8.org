@@ -1,0 +1,235 @@
+#+TITLE:       Writing a Programmers Editor (Search & Replace) - Part 8
+#+AUTHOR:      Pankaj Doharey
+#+EMAIL:       pankajdoharey@gmail.com
+#+DATE:        [2018-09-22 Sat]
+#+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-8
+#+KEYWORDS:    scheme, editor, search, replace, incremental, regex
+#+TAGS:        Scheme, Search, Replace, Writing an Editor
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: Implementing incremental search and replace — from naive string matching to efficient algorithms.
+
+In [[/blog/2018/09/15/writing-a-programmers-editor-part-7/][Part 7]] we made the screen fast. Now we add the feature a programmer reaches for more
+than any other after basic editing: search. But not just any search — /incremental/ search,
+the kind where matches light up as you type, before you have finished the query. Once you
+have used it you cannot go back.
+
+*Start Simple: Naive String Search*
+
+Before anything clever, we need the primitive: find the next occurrence of a pattern in the
+buffer, starting from some offset. The textbook naive algorithm slides the pattern across the
+text and compares character by character. It is =O(n·m)= in the worst case, but for the short
+patterns and modest files that dominate real editing, it is more than fast enough.
+
+Our buffer, remember, has a /gap/ in the middle (Part 3). The simplest correct approach is to
+search the logical text — the string with the gap removed. We already have
+=gap-buffer->string=, so:
+
+#+BEGIN_SRC scheme
+;; Find `pattern` in `text` at or after `start`. Returns offset or #f.
+(define (string-search text pattern start)
+  (let ((n (string-length text))
+        (m (string-length pattern)))
+    (if (= m 0)
+        start
+        (let loop ((i start))
+          (cond
+           ((> (+ i m) n) #f)                     ; ran off the end
+           ((substring=? text i pattern) i)       ; match at i
+           (else (loop (+ i 1))))))))
+
+;; Does `pattern` match `text` starting at offset `i`?
+(define (substring=? text i pattern)
+  (let ((m (string-length pattern)))
+    (let cmp ((j 0))
+      (cond
+       ((= j m) #t)
+       ((char=? (string-ref text (+ i j)) (string-ref pattern j)) (cmp (+ j 1)))
+       (else #f)))))
+#+END_SRC
+
+Wrapping this to search the buffer from point, and to wrap around to the top when it hits the
+bottom, gives us a working =search-forward=:
+
+#+BEGIN_SRC scheme
+;; Search forward from point; wrap to the start if not found below.
+(define (buffer-search-forward eb pattern)
+  (let* ((text  (gap-buffer->string (eb-gap eb)))
+         (point (eb-point eb))
+         (hit   (string-search text pattern point)))
+    (or hit (string-search text pattern 0))))   ; wrap-around
+#+END_SRC
+
+*Incremental Search — The Emacs =isearch= Trick*
+
+A one-shot "type the whole query, then jump" search is fine, but emacs' =C-s= does something
+better. Each character you add /narrows/ the search and moves point in real time. Delete a
+character and it /widens/ back. The insight that makes this feel magical — and keeps it fast
+— is that you never re-search from scratch.
+
+Incremental search maintains a small stack of /states/, one per keystroke of the query. Each
+state records the query so far and where the match landed. Adding a character pushes a new
+state that searches onward from the previous match; backspace simply /pops/ back to the prior
+state.
+
+#+BEGIN_SRC scheme
+;;; An isearch state: (query . match-offset)
+(define (isearch-state q off) (cons q off))
+
+;; Run interactive incremental search. `direction` is 'forward or 'backward.
+(define (isearch eb direction)
+  (let loop ((stack (list (isearch-state "" (eb-point eb)))))
+    (isearch-echo (caar stack))                 ; show "I-search: query"
+    (let ((k (read-key-event)))
+      (cond
+       ;; Enter / C-g: finish, leaving point at the current match.
+       ((isearch-done? k)
+        (eb-set-point! eb (cdar stack)))
+       ;; Backspace: pop to the previous state.
+       ((isearch-backspace? k)
+        (loop (if (pair? (cdr stack)) (cdr stack) stack)))
+       ;; C-s again: find the *next* match for the same query.
+       ((isearch-repeat? k)
+        (let* ((q   (caar stack))
+               (nxt (string-search (buffer-text eb) q (+ 1 (cdar stack)))))
+          (loop (cons (isearch-state q (or nxt (cdar stack))) stack))))
+       ;; A printable char: extend the query and re-search.
+       ((self-insertable? k)
+        (let* ((q   (string-append (caar stack) (string (key-base k))))
+               (hit (string-search (buffer-text eb) q (cdar stack))))
+          (eb-set-point! eb (or hit (cdar stack)))
+          (loop (cons (isearch-state q (or hit (cdar stack))) stack))))
+       (else (loop stack))))))
+#+END_SRC
+
+The stack-of-states design is the whole reason backspace is instant: undoing a keystroke is a
+=cdr=, not a re-computation. This is a recurring theme in editor design — /store the history
+of an interaction and you get undo of that interaction for free/. We will see it again in
+Part 10 with the command log.
+
+*When Naive Is Not Enough: KMP and Boyer-Moore*
+
+Naive search is =O(n·m)=. For interactive editing that never matters — you are searching a
+file that fits on screen, for a word a handful of characters long. But it is worth knowing
+the two classic algorithms that beat it, because they teach opposite lessons.
+
+- *Knuth-Morris-Pratt (KMP)* precomputes, from the pattern, a table telling it how far it can
+  safely skip when a mismatch occurs — so it never re-examines a text character. This gives a
+  guaranteed =O(n + m)=. Its lesson: /preprocess the pattern to avoid backtracking/.
+
+- *Boyer-Moore* scans the pattern /right to left/ and, on a mismatch, jumps ahead by whole
+  pattern-lengths using a "bad character" table. In practice it is /sublinear/ — it often
+  skips most of the text without looking at it. Its lesson: /the characters you do not have to
+  read are the ones that make you fast/. It is what =grep= uses.
+
+Here is the heart of KMP's failure-table idea, the part worth internalising:
+
+#+BEGIN_SRC scheme
+;; Build the KMP prefix-function: for each position, the length of the
+;; longest proper prefix that is also a suffix. This is the skip table.
+(define (kmp-table pattern)
+  (let* ((m (string-length pattern))
+         (t (make-vector m 0)))
+    (let loop ((i 1) (k 0))
+      (when (< i m)
+        (let settle ((k k))
+          (cond
+           ((and (> k 0)
+                 (not (char=? (string-ref pattern i) (string-ref pattern k))))
+            (settle (vector-ref t (- k 1))))
+           ((char=? (string-ref pattern i) (string-ref pattern k))
+            (vector-set! t i (+ k 1))
+            (loop (+ i 1) (+ k 1)))
+           (else
+            (vector-set! t i 0)
+            (loop (+ i 1) 0))))))
+    t))
+#+END_SRC
+
+For our editor we will keep naive search as the default — clarity beats a speedup nobody can
+perceive — but the door is open to swap in KMP or Boyer-Moore behind the same
+=string-search= interface the day we want to search a ten-megabyte log file.
+
+*Regular Expression Search*
+
+Literal search finds fixed strings. The real power tool is /regex/ search — matching
+/patterns/. A full regex engine is a series unto itself, but the core is elegant: compile the
+pattern into a small state machine, then run the machine against the text.
+
+The classic construction (Thompson's) turns a regex into a /nondeterministic finite
+automaton/ (NFA) and simulates it. A tiny slice — matching one literal-or-wildcard token
+against a position — shows the shape:
+
+#+BEGIN_SRC scheme
+;; Match a compiled regex (list of tokens) against text starting at `i`.
+;; A token is (literal . char) or (any) or (star . token).
+(define (regex-match tokens text i)
+  (cond
+   ((null? tokens) i)                             ; matched everything
+   ((eq? (caar tokens) 'star)
+    ;; Greedy: consume as many as possible, then backtrack.
+    (let try ((j i))
+      (if (token-matches? (cdar tokens) text j)
+          (or (regex-match (cdr tokens) text j) (try (+ j 1)))
+          (regex-match (cdr tokens) text j))))
+   ((token-matches? (car tokens) text i)
+    (regex-match (cdr tokens) text (+ i 1)))
+   (else #f)))
+
+(define (token-matches? tok text i)
+  (and (< i (string-length text))
+       (case (car tok)
+         ((any)     #t)
+         ((literal) (char=? (cdr tok) (string-ref text i)))
+         (else #f))))
+#+END_SRC
+
+This is a backtracking matcher — simple, and prone to pathological blowup on adversarial
+patterns, which is why production engines compile to a /deterministic/ automaton instead. But
+it is enough to search for =foo.*bar= in a source file, and it makes the point: regex search
+is not mysterious, it is a small interpreter for a small language.
+
+*Query Replace*
+
+Search's natural partner is replace. The interactive form — emacs' =query-replace=,
+=M-%= — walks match to match and asks =y/n= at each one:
+
+#+BEGIN_SRC scheme
+;; Interactively replace `from` with `to`, prompting at each match.
+(define (query-replace eb from to)
+  (let loop ((start (eb-point eb)))
+    (let ((hit (string-search (buffer-text eb) from start)))
+      (when hit
+        (eb-set-point! eb hit)
+        (redisplay-now eb)                        ; show the match
+        (echo "Replace? (y/n/q) ")
+        (case (key-base (read-key-event))
+          ((#\y) (buffer-replace! eb hit (string-length from) to)
+                 (loop (+ hit (string-length to))))
+          ((#\n) (loop (+ hit (string-length from))))
+          ((#\q) 'done)
+          (else  (loop start)))))))
+#+END_SRC
+
+Notice how it leans on everything we have built: =string-search= to find matches, the
+buffer's edit primitives from Part 3 to splice text, and the redisplay from Part 7 to show
+each candidate before the user decides.
+
+*What We Have Now*
+
+The editor can find and change text:
+
+1. A naive literal search primitive that is fast enough for real editing.
+2. Incremental search with a state stack — instant narrowing and free backspace.
+3. An understanding of KMP and Boyer-Moore for when files get large.
+4. A minimal regex matcher, and interactive query-replace on top of it.
+
+The text is now searchable, but it is still monochrome — a wall of identical glyphs. The next
+feature transforms how code /reads/: colour.
+
+In the [[/blog/2018/09/29/writing-a-programmers-editor-part-9/][next part]] we build a syntax highlighter — and there is a special satisfaction in
+writing a Scheme highlighter, in Scheme, that colours its own source.
+
+Watchout for the next part of the assay, till then.
+
+/Shorel'aran/

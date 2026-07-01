@@ -19,14 +19,14 @@
     {
       "part": 3,
       "title": "Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3",
-      "url": "/blog/2018/08/18/writing-a-programmers-editor-part-3/",
+      "url": "/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/",
       "date": "2018-08-18",
       "status": "published"
     },
     {
       "part": 4,
       "title": "Writing a Programmers Editor (Lines & Display) - Part 4",
-      "url": "/blog/2018/08/25/writing-a-programmers-editor-part-4/",
+      "url": "/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/",
       "date": "2018-08-25",
       "status": "published"
     },
@@ -35,56 +35,56 @@
       "title": "Writing a Programmers Editor (Terminal I/O & Raw Mode) - Part 5",
       "url": "/blog/2018/09/01/writing-a-programmers-editor-part-5/",
       "date": "2018-09-01",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 6,
       "title": "Writing a Programmers Editor (Keymaps & Input Handling) - Part 6",
       "url": "/blog/2018/09/08/writing-a-programmers-editor-part-6/",
       "date": "2018-09-08",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 7,
       "title": "Writing a Programmers Editor (Rendering & Redisplay) - Part 7",
       "url": "/blog/2018/09/15/writing-a-programmers-editor-part-7/",
       "date": "2018-09-15",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 8,
       "title": "Writing a Programmers Editor (Search & Replace) - Part 8",
       "url": "/blog/2018/09/22/writing-a-programmers-editor-part-8/",
       "date": "2018-09-22",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 9,
       "title": "Writing a Programmers Editor (Syntax Highlighting) - Part 9",
       "url": "/blog/2018/09/29/writing-a-programmers-editor-part-9/",
       "date": "2018-09-29",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 10,
       "title": "Writing a Programmers Editor (Undo/Redo & Command Log) - Part 10",
       "url": "/blog/2018/10/06/writing-a-programmers-editor-part-10/",
       "date": "2018-10-06",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 11,
       "title": "Writing a Programmers Editor (Modes & Extensibility) - Part 11",
       "url": "/blog/2018/10/13/writing-a-programmers-editor-part-11/",
       "date": "2018-10-13",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 12,
       "title": "Writing a Programmers Editor (Reflections & Lessons) - Part 12",
       "url": "/blog/2018/10/20/writing-a-programmers-editor-part-12/",
       "date": "2018-10-20",
-      "status": "draft"
+      "status": "published"
     }
   ]
 }
