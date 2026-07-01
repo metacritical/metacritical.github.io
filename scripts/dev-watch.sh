@@ -38,7 +38,7 @@ trap cleanup_lock EXIT
 hash_state() {
   {
 find "$BLOG_DIR" \
-  \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" -o -path "$BLOG_DIR/assets/blog/public" \) -prune -o \
+  \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" -o -path "$BLOG_DIR/assets/blog" \) -prune -o \
   -type f \( \
     -name "*.org" -o \
     -name "*.el" -o \
@@ -48,7 +48,6 @@ find "$BLOG_DIR" \
     -name "publish.sh" -o \
     -name "README.md" -o \
     -path "$BLOG_DIR/media/*" -o \
-    -path "$BLOG_DIR/assets/*" -o \
     -path "$BLOG_DIR/tools/diagrams/*" \
   \) -print0 | sort -z | xargs -0 stat -f "%m %N" 2>/dev/null
 
@@ -73,7 +72,7 @@ while true; do
     echo "[watch] Change detected. Rebuilding..."
     BUILD_TIMEOUT="${BUILD_TIMEOUT:-300}"
     if DEV_MODE=1 /opt/homebrew/bin/timeout "$BUILD_TIMEOUT" "$BLOG_DIR/publish.sh"; then
-      LAST_HASH="$NEXT_HASH"
+      LAST_HASH="$(hash_state)"
       echo "[watch] Rebuild complete."
     else
       echo "[watch] Rebuild failed or timed out after ${BUILD_TIMEOUT}s. Will retry on next change."

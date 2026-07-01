@@ -162,8 +162,21 @@ generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Mov
 generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
 
 # Convert ditaa-rendered gap buffer diagrams from default green to #BBFF00.
-find "$BLOG_DIR/assets" -path "*/gapbuffer*.png" -not -name "gapbuffer1.png" \
-  -exec magick {} -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' {} \; 2>/dev/null || true
+# Only rewrite a file if the conversion actually changes pixels, so mtimes
+# stay stable and Doorman does not see generated assets as source changes.
+convert_gapbuffer_color() {
+  local file="$1"
+  local tmp
+  tmp="$(mktemp "${file}.XXXXXX")"
+  magick "$file" -fuzz 10% -fill '#BBFF00' -opaque '#99DD99' "$tmp" 2>/dev/null || { rm -f "$tmp"; return; }
+  if cmp -s "$file" "$tmp"; then
+    rm -f "$tmp"
+  else
+    mv "$tmp" "$file"
+  fi
+}
+find "$BLOG_DIR/assets" -path "*/gapbuffer*.png" -not -name "gapbuffer1.png" -print0 | \
+  while IFS= read -r -d '' file; do convert_gapbuffer_color "$file"; done
 
 # Publish with AOG using native selfdotsend theme.
 echo "Publishing blog with AOG..."
