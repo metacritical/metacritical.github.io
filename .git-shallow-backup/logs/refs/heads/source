@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 1af9d941747baae97523aea8b323d57fb961c618 metacritical <pankajdoharey@gmail.com> 1782789744 +0530	branch: Created from origin/source
-1af9d941747baae97523aea8b323d57fb961c618 e40877d43439e6480a28e3b2f390180546100731 metacritical <pankajdoharey@gmail.com> 1782789816 +0530	commit: ♻️ Refactor: Replace rsync With Git-Native Deploy In deploy.sh (Build)
-e40877d43439e6480a28e3b2f390180546100731 fa85b4203f0bee2f32b4ffcd5493ef373b3aac76 metacritical <pankajdoharey@gmail.com> 1782789853 +0530	commit: 🔄 Sync: Regenerate Public Output (Build)
-fa85b4203f0bee2f32b4ffcd5493ef373b3aac76 d7f3b070a48f92f8737294eccdb53c05fb784efa metacritical <pankajdoharey@gmail.com> 1782789910 +0530	commit: 🐛 Fix: Clean Untracked Files Before Branch Switch In deploy.sh (Build)
-d7f3b070a48f92f8737294eccdb53c05fb784efa 96d531d33a73d28e790b60f85a1daa9fc4309541 metacritical <pankajdoharey@gmail.com> 1782789932 +0530	commit: 🔄 Sync: Regenerate Public Output (Build)
-96d531d33a73d28e790b60f85a1daa9fc4309541 37850b9981cdfec808072cc7db1028613a034dd3 metacritical <pankajdoharey@gmail.com> 1782792621 +0530	commit: 📝 Docs: Update Build And Deploy Section To Reflect Git-Native deploy.sh (Docs)
