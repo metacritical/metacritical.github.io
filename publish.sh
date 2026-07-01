@@ -325,6 +325,15 @@ python3 "$BLOG_DIR/scripts/generate_editor_page.py" "$BLOG_DIR"
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"
 
+# Dev-only: inject live-reload script and write build ID for auto-refresh.
+if [ "${DEV_MODE:-0}" = "1" ]; then
+  cp "$BLOG_DIR/media/js/dev-reload.js" "$BLOG_DIR/public/media/js/dev-reload.js"
+  find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
+    xargs -0 sed -i '' 's|</body>|<script src="/media/js/dev-reload.js"></script>\n</body>|g' 2>/dev/null || true
+  date +%s > "$BLOG_DIR/public/dev-build-id.txt"
+  echo "[dev] Live reload enabled."
+fi
+
 # Optional cleanup step to keep commit diffs clean after each build.
 if [ "${CLEANUP_AFTER_BUILD:-1}" = "1" ]; then
   cleanup_post_build_artifacts

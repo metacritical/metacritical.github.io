@@ -9,7 +9,7 @@
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Implementing a gap buffer from scratch in Scheme — the core data structure for our editor.
 
-#+ATTR_HTML: :width 692px :height 404px :data-fit cover :data-position center :data-filter invert :data-align center
+#+ATTR_HTML: :width 684px :height 396px :data-fit cover :data-position center :data-filter blur :data-align center
 [[/media/images/placeholder.png]]
 
 In the [[/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/][previous part]] we explored why the gap buffer is the right data structure for a

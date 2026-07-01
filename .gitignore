@@ -2,3 +2,5 @@
 kd_mdo/*
 .DS_Store
 .*
+public/dev-build-id.txt
+public/media/js/dev-reload.js

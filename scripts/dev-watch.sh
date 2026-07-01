@@ -61,7 +61,7 @@ hash_state() {
 }
 
 echo "[watch] Initial publish..."
-"$BLOG_DIR/publish.sh"
+DEV_MODE=1 "$BLOG_DIR/publish.sh"
 
 LAST_HASH="$(hash_state)"
 echo "[watch] Watching for changes every ${POLL_SECONDS}s..."
@@ -72,7 +72,7 @@ while true; do
   if [ "$NEXT_HASH" != "$LAST_HASH" ]; then
     echo "[watch] Change detected. Rebuilding..."
     BUILD_TIMEOUT="${BUILD_TIMEOUT:-300}"
-    if /opt/homebrew/bin/timeout "$BUILD_TIMEOUT" "$BLOG_DIR/publish.sh"; then
+    if DEV_MODE=1 /opt/homebrew/bin/timeout "$BUILD_TIMEOUT" "$BLOG_DIR/publish.sh"; then
       LAST_HASH="$NEXT_HASH"
       echo "[watch] Rebuild complete."
     else
