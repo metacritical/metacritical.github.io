@@ -23,8 +23,11 @@ if ! git diff --cached --quiet; then
 fi
 git push origin source
 
-# 3) Remove untracked files (e.g. stale root-level files from prior deploys)
-git clean -fd
+# 3) Remove untracked and ignored files (e.g. stale root-level files from prior deploys).
+git clean -fdx
+
+# 3b) Explicitly remove the local shallow backup so it never leaks into master.
+rm -rf "$BLOG_DIR/.git-shallow-backup"
 
 # 4) Switch to master
 git checkout master
