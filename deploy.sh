@@ -29,12 +29,16 @@ git clean -fdx
 # 3b) Explicitly remove the local shallow backup so it never leaks into master.
 rm -rf "$BLOG_DIR/.git-shallow-backup"
 
-# 4) Switch to master
+# 4) Switch to master and remove any leftover source-branch files.
 git checkout master
 git pull --ff-only origin master 2>/dev/null || true
 
 # 4) Clear working tree using git (preserves .git).
 git rm -rf . 2>/dev/null || true
+
+# 4b) Remove the source branch's public/ directory if it was left as untracked.
+# Otherwise git checkout source -- public/ would refuse to overwrite it.
+rm -rf "$BLOG_DIR/public"
 
 # 5) Extract built files from source branch's public/ directory.
 git checkout source -- public/
