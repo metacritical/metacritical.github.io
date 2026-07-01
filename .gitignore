@@ -5,4 +5,9 @@ kd_mdo/*
 public/dev-build-id.txt
 public/media/js/dev-reload.js
 assets/blog/public/
+assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png
+assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png
+assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png
+assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png
+assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/.gapbuffer-*.ditaa.hash
 
