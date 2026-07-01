@@ -18,6 +18,18 @@
     "excerpt": "This is your first blog post with Alchemist. Edit this file to get started."
   },
   {
+    "title": "Writing a Programmers Editor (Lines &amp; Display) - Part 4",
+    "url": "/blog/2018/08/25/writing-a-programmers-editor-part-4/",
+    "date": "2018-08-25",
+    "excerpt": "In Part 3 we built a gap buffer in Scheme. It can hold text, insert characters, delete them, move the cursor, and resize when the gap runs out. It is about 80 lines of code and it works."
+  },
+  {
+    "title": "Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3",
+    "url": "/blog/2018/08/18/writing-a-programmers-editor-part-3/",
+    "date": "2018-08-18",
+    "excerpt": ""
+  },
+  {
     "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
     "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
     "date": "2018-08-11",

@@ -1,6 +1,6 @@
 {
   "name": "Writing a Programmer's Editor",
-  "description": "A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.",
+  "description": "A series of assays on building a programmable text editor from scratch in Scheme \u2014 exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.",
   "articles": [
     {
       "part": 1,
@@ -21,14 +21,14 @@
       "title": "Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3",
       "url": "/blog/2018/08/18/writing-a-programmers-editor-part-3/",
       "date": "2018-08-18",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 4,
       "title": "Writing a Programmers Editor (Lines & Display) - Part 4",
       "url": "/blog/2018/08/25/writing-a-programmers-editor-part-4/",
       "date": "2018-08-25",
-      "status": "draft"
+      "status": "published"
     },
     {
       "part": 5,

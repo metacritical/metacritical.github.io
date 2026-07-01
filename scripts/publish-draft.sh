@@ -43,7 +43,10 @@ while [ $# -gt 0 ]; do
 done
 
 # Collect all draft slugs (sorted).
-mapfile -t ALL_DRAFTS < <(
+ALL_DRAFTS=()
+while IFS= read -r line; do
+  [ -n "$line" ] && ALL_DRAFTS+=("$line")
+done < <(
   ls "$DRAFTS_DIR"/*.org 2>/dev/null \
     | xargs -n1 basename 2>/dev/null \
     | sed 's/\.org$//' \
@@ -124,7 +127,11 @@ if [ ${#SELECTED[@]} -eq 0 ]; then
 fi
 
 # Deduplicate selection.
-mapfile -t SELECTED < <(printf '%s\n' "${SELECTED[@]}" | awk '!seen[$0]++')
+SELECTED_DEDUPED=()
+while IFS= read -r line; do
+  [ -n "$line" ] && SELECTED_DEDUPED+=("$line")
+done < <(printf '%s\n' "${SELECTED[@]}" | awk '!seen[$0]++')
+SELECTED=("${SELECTED_DEDUPED[@]}")
 
 if [ ${#SELECTED[@]} -eq 0 ]; then
   echo "Nothing selected."
@@ -168,7 +175,7 @@ for DRAFT in "${SELECTED[@]}"; do
   # Update series JSON status if applicable.
   SERIES_FILE="$BLOG_DIR/series/writing-a-programmers-editor.json"
   if [ -f "$SERIES_FILE" ]; then
-    URI=$(grep '^#+URI:' "$TARGET" | sed 's/#+URI:\s*//' || true)
+    URI=$(grep '^#+URI:' "$TARGET" | sed 's/#+URI:\s*//' | sed 's/^\s*//;s/\s*$//' || true)
     DATE_LINE=$(grep '^#+DATE:' "$TARGET" || true)
     if [ -n "$URI" ] && [ -n "$DATE_LINE" ]; then
       YEAR=$(echo "$DATE_LINE" | sed 's/.*\[\([0-9]*\)-.*/\1/')
