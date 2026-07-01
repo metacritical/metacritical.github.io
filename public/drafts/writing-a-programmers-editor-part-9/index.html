@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-  <title>Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10 - Self dot send (Computing Blog) (Draft)</title>
+  <title>Writing a Programmers Editor (Syntax Highlighting) - Part 9 - Self dot send (Computing Blog) (Draft)</title>
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Building undo and redo — from linear history to undo trees, and the command log pattern." />
-  <meta name="keywords" content="scheme, editor, undo, redo, command-log, history" />
+  <meta name="description" content="Adding colour to code — tokenization, fontification, and how to build a syntax highlighting engine." />
+  <meta name="keywords" content="scheme, editor, syntax-highlighting, tokenizer, themes, font-lock" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
   <link rel="stylesheet" href="/media/css/style.css" type="text/css">
@@ -21,7 +21,7 @@
 </head>
 
   <body class="container">
-<div style="background:#f59e0b;color:#1f1f1b;padding:6px 16px;font-size:12px;font-weight:600;text-align:center;letter-spacing:.04em;position:sticky;top:0;z-index:100;border-bottom:1px solid #d97706;display:flex;align-items:center;justify-content:center;gap:14px"><span>DRAFT — Not yet published</span><a href="/editor/?slug=writing-a-programmers-editor-part-10&kind=draft" style="background:#1f1f1b;color:#fff;padding:3px 12px;border-radius:4px;font-size:11px;text-decoration:none;letter-spacing:0">Edit</a></div>
+<div style="background:#f59e0b;color:#1f1f1b;padding:6px 16px;font-size:12px;font-weight:600;text-align:center;letter-spacing:.04em;position:sticky;top:0;z-index:100;border-bottom:1px solid #d97706;display:flex;align-items:center;justify-content:center;gap:14px"><span>DRAFT — Not yet published</span><a href="/editor/?slug=writing-a-programmers-editor-part-9&kind=draft" style="background:#1f1f1b;color:#fff;padding:3px 12px;border-radius:4px;font-size:11px;text-decoration:none;letter-spacing:0">Edit</a></div>
 <nav class="main-nav medium-nav">
   <div class="nav-left site-brand">
     <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
@@ -66,7 +66,7 @@
 
 <section id="wrapper" class="post-page">
   <div class="post">
-  <h1 class="title">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</h1>
+  <h1 class="title">Writing a Programmers Editor (Syntax Highlighting) - Part 9</h1>
   <aside class="story-rail" aria-label="Story actions">
     <button class="story-clap-btn" type="button" aria-label="Clap for this story">
       <img src="/media/images/clap.png" alt="" aria-hidden="true">
@@ -92,14 +92,15 @@
 .article-tag:hover{background:#e4dfd0;color:#1f1f1b}
 .series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
 </style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/undo/">Undo</a></li><li><a class="article-tag" href="/tags/redo/">Redo</a></li><li><a class="article-tag" href="/tags/command-log/">Command Log</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/syntax-highlighting/">Syntax Highlighting</a></li><li><a class="article-tag" href="/tags/tokenizer/">Tokenizer</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
 <b>Draft — not yet published.</b>
 </p>
 
 <p>
-In <a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> we will have syntax highlighting. The editor is starting to look and feel real.
-But one thing is missing: the ability to <i>take back</i> a mistake. Every editor needs undo.
+In <a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> we will have search working. Now it is time to make the code <i>readable</i>.
+Syntax highlighting — colouring keywords, strings, comments, and numbers differently — is
+what turns a wall of monospace text into something the brain can parse at a glance.
 </p>
 
 <p>
@@ -107,18 +108,17 @@ This part covers:
 </p>
 
 <ul class="org-ul">
-<li><b>Linear undo:</b> a simple stack of operations, push on edit, pop on undo.</li>
-<li><b>The command pattern:</b> representing each edit as a reversible object (do/undo pair).</li>
-<li><b>Grouping:</b> why typing a word is one undo, not one per character.</li>
-<li><b>Undo trees:</b> vim's approach — branching history where you can undo to any past state
-and then go in a different direction.</li>
-<li>Emacs' undo: the "no redo, just undo the undo" philosophy.</li>
-<li>Implementing a command log with undo/redo in Scheme.</li>
+<li><b>Lexical tokenization:</b> splitting text into tokens (keyword, identifier, string, etc.).</li>
+<li><b>Fontification:</b> mapping token types to faces (colour, bold, italic).</li>
+<li>Emacs' <code>font-lock</code> system: how it uses regular expressions and priority levels.</li>
+<li>VS Code's TextMate grammar approach: scoped, nested highlighting.</li>
+<li>Incremental highlighting: only re-fontifying changed lines.</li>
+<li>Implementing a simple tokenizer and highlighter for Scheme source code — in Scheme.</li>
 </ul>
 
 <p>
-Undo is the safety net. Get it wrong and users lose trust in the editor. Get it right and
-they will experiment freely, knowing they can always go back.
+There is something deeply satisfying about writing a Scheme syntax highlighter <i>in</i>
+Scheme. It is the editor highlighting its own source code.
 </p>
 
 <p>
@@ -181,12 +181,12 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="sn-pn">
 <a class="sn-card sn-card-l off">
 <span class="sn-card-lbl">&larr; Previous</span>
-<span class="sn-card-tt">Writing a Programmers Editor (Syntax Highlighting) - Part 9</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Search &amp; Replace) - Part 8</span>
 </a>
-<span class="sn-pos">10 / 12</span>
+<span class="sn-pos">9 / 12</span>
 <a class="sn-card sn-card-r off">
 <span class="sn-card-lbl">Next &rarr;</span>
-<span class="sn-card-tt">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</span>
 </a>
 </div>
 <ol class="sn-list">
@@ -238,16 +238,16 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <span class="sn-tag draft">Draft</span>
 <span class="sn-date">2018-09-22</span>
 </li>
-<li class="sn-row">
+<li class="sn-row here">
 <span class="sn-dot">9</span>
-<span class="sn-tt off">Writing a Programmers Editor (Syntax Highlighting) - Part 9</span>
-<span class="sn-tag draft">Draft</span>
+<span class="sn-tt">Writing a Programmers Editor (Syntax Highlighting) - Part 9</span>
+<span class="sn-tag here">Here</span>
 <span class="sn-date">2018-09-29</span>
 </li>
-<li class="sn-row here">
+<li class="sn-row">
 <span class="sn-dot">10</span>
-<span class="sn-tt">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</span>
-<span class="sn-tag here">Here</span>
+<span class="sn-tt off">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</span>
+<span class="sn-tag draft">Draft</span>
 <span class="sn-date">2018-10-06</span>
 </li>
 <li class="sn-row">
@@ -273,7 +273,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div>
   <section id="wrapper" class="post-meta-wrap">
     <div class="post-meta">
-      <span title="post date" class="post-info post-info--date">2018-10-06</span>
+      <span title="post date" class="post-info post-info--date">2018-09-29</span>
       <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
     </div>
   </section>
@@ -284,8 +284,8 @@ a.sn-card.off:hover{background:transparent;cursor:default}
     </div>
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = "https://selfdotsend.com/blog/2018/10/06/writing-a-programmers-editor-part-10";
-        this.page.identifier = "/blog/2018/10/06/writing-a-programmers-editor-part-10";
+        this.page.url = "https://selfdotsend.com/blog/2018/09/29/writing-a-programmers-editor-part-9";
+        this.page.identifier = "/blog/2018/09/29/writing-a-programmers-editor-part-9";
       };
       (function() {
         var d = document, s = d.createElement("script");
@@ -364,8 +364,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // --- Build compact metadata row ---
   var meta = document.createElement('div');
   meta.className = 'de-meta-row';
-  meta.setAttribute('data-slug', 'writing-a-programmers-editor-part-10');
-  meta.setAttribute('data-url', '/drafts/writing-a-programmers-editor-part-10/');
+  meta.setAttribute('data-slug', 'writing-a-programmers-editor-part-9');
+  meta.setAttribute('data-url', '/drafts/writing-a-programmers-editor-part-9/');
   meta.innerHTML =
     '<img class="de-meta-avatar" src="/media/images/avatar.jpg" alt="' + authorName + '">' +
     '<div class="de-meta-info">' +
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
     bodyEl: bodyDiv,
     statusEl: null,
     initialMode: 'draft',
-    initialTargetPath: 'drafts/writing-a-programmers-editor-part-10.org',
+    initialTargetPath: 'drafts/writing-a-programmers-editor-part-9.org',
   });
 
   // --- Tag management with picker popup ---
@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('/editor/api/series').then(function(r){return r.json()}).then(function(data) {
       if (!data.ok) return;
       var all = data.series || [];
-      var articleUrl = meta.getAttribute('data-url') || '/drafts/writing-a-programmers-editor-part-10/';
+      var articleUrl = meta.getAttribute('data-url') || '/drafts/writing-a-programmers-editor-part-9/';
       currentSeriesSlug = '';
       currentSeriesPos = 0;
       // Find which series this article belongs to.
@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           // Also check if the slug is in the url
           for (var k = 0; k < arts.length; k++) {
-            if (arts[k].url && arts[k].url.indexOf('writing-a-programmers-editor-part-10') !== -1) {
+            if (arts[k].url && arts[k].url.indexOf('writing-a-programmers-editor-part-9') !== -1) {
               currentSeriesSlug = s.slug;
               currentSeriesPos = k + 1;
               seriesBtn.textContent = s.name;
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fetch('/editor/api/series').then(function(r){return r.json()}).then(function(data) {
       var all = data.series || [];
-      var articleUrl = meta.getAttribute('data-url') || '/drafts/writing-a-programmers-editor-part-10/';
+      var articleUrl = meta.getAttribute('data-url') || '/drafts/writing-a-programmers-editor-part-9/';
       var html = '<div style="font-size:11px;font-weight:600;color:#6f6a5e;margin-bottom:6px;padding:0 4px">Assign to Series</div>';
       if (all.length === 0) {
         html += '<div style="font-size:11px;color:#c4beb1;padding:4px">No series found. Create one on the CLI.</div>';
@@ -745,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check if already in this series
             var found = false;
             for (var k = 0; k < arts.length; k++) {
-              if (arts[k].url && arts[k].url.indexOf('writing-a-programmers-editor-part-10') !== -1) found = true;
+              if (arts[k].url && arts[k].url.indexOf('writing-a-programmers-editor-part-9') !== -1) found = true;
             }
             if (!found) {
               fetch('/editor/api/series/' + slug + '/add', {
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function() {
           fetch('/editor/api/series/' + currentSeriesSlug + '/remove', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({url: articleUrl, slug: 'writing-a-programmers-editor-part-10'})
+            body: JSON.stringify({url: articleUrl, slug: 'writing-a-programmers-editor-part-9'})
           }).then(function() {
             seriesBtn.textContent = '+ series';
             seriesBtn.classList.remove('assigned');
