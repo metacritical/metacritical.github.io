@@ -126,6 +126,16 @@ DITAA
 generate_labeled_diagram() {
   local name="$1" top="$2" bot="$3"
   local out="$ASSET_DIR/gapbuffer-$name.png"
+  local src_hash
+
+  # Only rerender if the source template changed or the output is missing.
+  src_hash="$(write_ditaa_source "$name" && shasum "/tmp/gapbuffer-${name}.ditaa" | awk '{print $1}')"
+  if [ -f "$out" ] && [ -f "/tmp/gapbuffer-${name}.ditaa" ] && [ -f "/tmp/${name}-native-hash.txt" ]; then
+    if [ "$src_hash" = "$(cat "/tmp/${name}-native-hash.txt" 2>/dev/null)" ]; then
+      return
+    fi
+  fi
+  echo "$src_hash" > "/tmp/${name}-native-hash.txt"
 
   write_ditaa_source "$name"
 

@@ -37,20 +37,20 @@ trap cleanup_lock EXIT
 
 hash_state() {
   {
-    find "$BLOG_DIR" \
-      \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" \) -prune -o \
-      -type f \( \
-        -name "*.org" -o \
-        -name "*.el" -o \
-        -name "*.mustache" -o \
-        -name "*.css" -o \
-        -name "*.js" -o \
-        -name "publish.sh" -o \
-        -name "README.md" -o \
-        -path "$BLOG_DIR/media/*" -o \
-        -path "$BLOG_DIR/assets/*" -o \
-        -path "$BLOG_DIR/tools/diagrams/*" \
-      \) -print0 | sort -z | xargs -0 stat -f "%m %N" 2>/dev/null
+find "$BLOG_DIR" \
+  \( -path "$BLOG_DIR/public" -o -path "$BLOG_DIR/public-aog" -o -path "$BLOG_DIR/public-test" -o -path "$BLOG_DIR/.git" -o -path "$BLOG_DIR/assets/blog/public" \) -prune -o \
+  -type f \( \
+    -name "*.org" -o \
+    -name "*.el" -o \
+    -name "*.mustache" -o \
+    -name "*.css" -o \
+    -name "*.js" -o \
+    -name "publish.sh" -o \
+    -name "README.md" -o \
+    -path "$BLOG_DIR/media/*" -o \
+    -path "$BLOG_DIR/assets/*" -o \
+    -path "$BLOG_DIR/tools/diagrams/*" \
+  \) -print0 | sort -z | xargs -0 stat -f "%m %N" 2>/dev/null
 
     # Also watch active theme source in AOG repo.
     if [ -d "/Users/pankajdoharey/Development/Projects/AOG/themes/selfdotsend" ]; then

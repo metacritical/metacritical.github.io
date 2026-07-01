@@ -4,3 +4,5 @@ kd_mdo/*
 .*
 public/dev-build-id.txt
 public/media/js/dev-reload.js
+assets/blog/public/
+
