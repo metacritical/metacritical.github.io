@@ -9,6 +9,7 @@ set -euo pipefail
 
 BLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DITAA_JAR="${DITAA_JAR:-$BLOG_DIR/tools/diagrams/ditaa-0.11.0-standalone.jar}"
+DITAA_BIN="${DITAA_BIN:-$BLOG_DIR/tools/diagrams/ditaa}"
 PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar}"
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
@@ -138,7 +139,7 @@ generate_labeled_diagram() {
   echo "$src_hash" > "$hash_file"
 
   # Render at native 1x to match gapbuffer.png's crisp pixel-perfect style.
-  java -jar "$DITAA_JAR" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-native.png" -E -S 2>/dev/null
+  "$DITAA_BIN" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-native.png" -E -S 2>/dev/null
 
   core_w=$(identify "/tmp/${name}-native.png" | awk '{print $3}' | cut -dx -f1)
   text_w=$(magick -font "$FONT_HELV" -pointsize 10 label:"$bot" -format "%w" info:)

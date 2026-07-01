@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec java -Djava.awt.headless=true -jar /Users/pankajdoharey/Development/metacritical.github.io/tools/diagrams/ditaa-0.11.0-standalone.jar "$@"

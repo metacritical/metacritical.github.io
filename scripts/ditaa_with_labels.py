@@ -13,7 +13,8 @@ tmp_svg = OUT_PNG + ".svg"
 
 # Step 1: generate SVG with ditaa
 subprocess.run(
-    ["java", "-jar", DITAA_JAR, DITAA_SRC, tmp_svg, "--svg", "-r", "-E", "-s", str(SCALE)],
+    ["java", "-Djava.awt.headless=true", "-jar", DITAA_JAR, DITAA_SRC, tmp_svg, "--svg", "-r", "-E", "-s", str(SCALE)],
+
     capture_output=True
 )
 

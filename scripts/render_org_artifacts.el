@@ -19,6 +19,7 @@
         (let ((status (apply #'call-process-region
                              (point-min) (point-max)
                              "java" nil nil nil
+                             "-Djava.awt.headless=true"
                              "-jar" jar
                              (append extra-args (list "-pipe")))))
           (when (eq status 0)
@@ -29,7 +30,8 @@
           (progn
             (with-temp-file tmp (insert body))
             (apply #'call-process "java" nil nil nil
-                   (append (list "-jar" jar)
+                   (append (list "-Djava.awt.headless=true"
+                                 "-jar" jar)
                            extra-args
                            (list tmp outfile))))
         (ignore-errors (delete-file tmp))))))
