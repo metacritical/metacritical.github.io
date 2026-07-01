@@ -288,7 +288,7 @@ if [ -f "$DOOM_CSS" ] && [ -f "$TARGET_THEME_CSS" ]; then
       -e "s|/media/css/code-theme-monokai-pro\\.css(\\?v=[0-9]+)?\"|/media/css/code-theme-monokai-pro.css?v=${CODE_VER}\"|g"
 
   while IFS= read -r -d '' html_file; do
-    if ! rg -q '/media/css/code-theme-monokai-pro.css' "$html_file"; then
+    if [ -f "$html_file" ] && ! rg -q '/media/css/code-theme-monokai-pro.css' "$html_file"; then
       tmp_file="$(mktemp)"
       awk -v code_ver="$CODE_VER" '
         {
