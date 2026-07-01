@@ -9,7 +9,7 @@
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Implementing a gap buffer from scratch in Scheme — the core data structure for our editor.
 
-#+ATTR_HTML: :width 708px :height 392px :data-fit none :data-position center :data-align center
+#+ATTR_HTML: :width 708px :height 392px :data-fit none :data-position center :data-filter invert :data-align center
 [[/media/images/placeholder.png]]
 
 In the [[/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/][previous part]] we explored why the gap buffer is the right data structure for a text editor. We looked at how emacs uses it, how insertion and deletion are ~O(1)~, and how cursor movement is ~O(N)~ but amortizes to nearly nothing. Now it is time to get our hands dirty.
