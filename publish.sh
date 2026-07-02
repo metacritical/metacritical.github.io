@@ -14,6 +14,7 @@ PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
+BUILD_LOCK_DIR="${TMPDIR:-/tmp}/selfdotsend-build.lock"
 
 cleanup_post_build_artifacts() {
   # Keep the repo root tidy for commits by archiving known legacy folders.
@@ -53,6 +54,40 @@ remove_production_editor_surface() {
   find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
     xargs -0 perl -0pi -e 's/\n[ \t]*<a href="\/editor\/">Editor<\/a>//g' 2>/dev/null || true
 }
+
+acquire_build_lock() {
+  # Coordinate with the dev watcher (and any other publish.sh invocation) so
+  # only one build mutates public/ at a time. Concurrent builds were deleting
+  # and recreating public/ in parallel, producing corrupted deploys.
+  local holder_pid
+  while true; do
+    if mkdir "$BUILD_LOCK_DIR" 2>/dev/null; then
+      echo "$$" > "$BUILD_LOCK_DIR/pid"
+      return 0
+    fi
+
+    if [ -f "$BUILD_LOCK_DIR/pid" ]; then
+      holder_pid="$(cat "$BUILD_LOCK_DIR/pid" 2>/dev/null || true)"
+      if [ -n "$holder_pid" ] && kill -0 "$holder_pid" 2>/dev/null; then
+        echo "[publish] Waiting for build lock (pid: $holder_pid)..."
+        sleep 1
+        continue
+      fi
+    fi
+
+    echo "[publish] Removing stale build lock..."
+    rm -rf "$BUILD_LOCK_DIR"
+  done
+}
+
+release_build_lock() {
+  if [ -f "$BUILD_LOCK_DIR/pid" ] && [ "$(cat "$BUILD_LOCK_DIR/pid" 2>/dev/null)" = "$$" ]; then
+    rm -rf "$BUILD_LOCK_DIR"
+  fi
+}
+
+acquire_build_lock
+trap release_build_lock EXIT
 
 # Ensure exported section anchors are readable and stable (CUSTOM_ID slugs).
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/normalize_org_custom_ids.el" "$BLOG_DIR"
