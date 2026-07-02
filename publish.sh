@@ -45,6 +45,15 @@ cleanup_post_build_artifacts() {
     -type f \( -name "*~" -o -name ".DS_Store" \) -print0)
 }
 
+remove_production_editor_surface() {
+  # The editor depends on the local dev API, so production publishes should
+  # keep drafts visible but remove the editor entry point from static output.
+  rm -rf "$BLOG_DIR/public/editor"
+
+  find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
+    xargs -0 perl -0pi -e 's/\n[ \t]*<a href="\/editor\/">Editor<\/a>//g' 2>/dev/null || true
+}
+
 # Ensure exported section anchors are readable and stable (CUSTOM_ID slugs).
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/normalize_org_custom_ids.el" "$BLOG_DIR"
 
@@ -266,6 +275,11 @@ if [ -f "$BLOG_DIR/public/index.html" ]; then
   sed -i '' -e 's|<h1 class="title">Home</h1>||g' "$BLOG_DIR/public/index.html"
 fi
 
+# About page uses the dedicated author portrait recovered from history.
+if [ -f "$BLOG_DIR/public/about/index.html" ]; then
+  sed -i '' -e 's|/media/images/avatar.jpg|/media/images/pankaj.png|g' "$BLOG_DIR/public/about/index.html"
+fi
+
 # Build-time syntax highlighting fallback for exported src blocks.
 # This guarantees visible highlighting even when editor-side htmlize
 # output is unavailable for some languages/modes.
@@ -353,8 +367,12 @@ python3 "$BLOG_DIR/scripts/inject_series_nav.py" "$BLOG_DIR"
 # Inject clickable tag links into article and draft pages.
 python3 "$BLOG_DIR/scripts/inject_tags.py" "$BLOG_DIR"
 
-# Generate the LiveDrafts editor page (/editor/).
-python3 "$BLOG_DIR/scripts/generate_editor_page.py" "$BLOG_DIR"
+# Generate the LiveDrafts editor page only for local Doorman/dev builds.
+if [ "${DEV_MODE:-0}" = "1" ]; then
+  python3 "$BLOG_DIR/scripts/generate_editor_page.py" "$BLOG_DIR"
+else
+  remove_production_editor_surface
+fi
 
 # Build static local search index from generated post pages.
 "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/generate_search_index.el" "$BLOG_DIR"

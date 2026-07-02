@@ -1,54 +1,48 @@
 #+TITLE: About
 #+AUTHOR: Pankaj Doharey
-#+EMAIL: pankajdoharey@gmail.com
-#+DATE: [2018-07-14 Sat]
-#+URI: /about
-#+KEYWORDS: Clojure, Ruby, C++ , 3D , C , Scheme , Assembly, Metacritical Tech Blog.
-#+LANGUAGE: en
-#+OPTIONS: H:3 num:nil toc:nil \n:nil @:t ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: Pankaj Doharey (Metacritical's Tech Blog)
-
-
-* Raison D'être
-:PROPERTIES:
-:CUSTOM_ID: raison-d-tre
-:END:
-  This blog is a collection of my rumblings and rants on technology
-  and other things that i find delightful and frustrating. I aim to document 
-  all those interesting and not so interesting things from the perspective of a 
-  tech enthusiast. I eventually hope you would find some of the stuff documented
-  here useful.
-
-* About Pankaj Doharey (Metacritical)
-:PROPERTIES:
-:CUSTOM_ID: about-pankaj-doharey-metacritical
-:END:
-  Crazy risk taker, Specialist Ruby, clojure/clojure(script) developer,
-  Travelling through cyber space-time, equipped with functional Phazer 🔫⚡
+#+DATE: 2025-04-12
+#+OPTIONS: toc:t
 
 * About Self dot send
 :PROPERTIES:
 :CUSTOM_ID: about-self-dot-send
 :END:
-  Self dot send is a computing blog focused on programming languages, software
-  design, data structures, systems programming, and applied AI topics such as
-  large language models and speech recognition.
 
-  It publishes hands-on tutorials, including editor internals like gap buffers,
-  and practical notes on Unix tooling, ARM assembly, and day-to-day engineering
-  workflows.
+Self dot send is a computing blog focused on programming languages, software
+design, data structures, systems programming, and applied AI topics such as
+large language models and speech recognition. [[https://selfdotsend.com][selfdotsend.com]]
 
-  The goal is clear, technically rigorous writing for developers solving real
-  software problems.
+It publishes hands-on tutorials, including editor internals like gap buffers,
+and practical notes on Unix tooling, ARM assembly, and day-to-day engineering
+work.
+
+Most posts come from problems I ran into while building software, then wrote up
+as notes others can reuse.
+
+* About the Author
+:PROPERTIES:
+:CUSTOM_ID: about-the-author
+:END:
+
+Pankaj Doharey is a software architect working on AI systems, voice agents,
+telephony infrastructure, and distributed software.
+
+His interests include Emacs and Org-mode customization, functional
+programming, systems languages, LLM systems, speech-to-text tooling, and
+applied market analysis. [[https://github.com/metacritical][GitHub: metacritical]]
+
+He cares about practical architecture: reliable systems, good performance, and
+shipping useful ML features.
 
 * About this Blog
 :PROPERTIES:
 :CUSTOM_ID: about-this-blog
 :END:
-  This blog is powered by AOG (Act of Genius), an Emacs Org-mode static
-  publishing system customized with the selfdotsend theme.  Posts are written
-  in Org files and published through an editor-first workflow, so technical
-  content can be iterated quickly without leaving Emacs.
 
-  It is deployed on GitHub Pages and reflects a strong preference for
-  open-source tooling, version-controlled content, and reproducible publishing.
+This blog is powered by AOG (Act of Genius), a fork of
+[[https://github.com/kelvinh/org-page][org-page]], an Emacs Org-mode static
+publishing system, customized with the metacritical/selfdotsend theme.
+[[https://github.com/metacritical/AOG][AOG on GitHub]]
+
+Posts are written in Org files and published from an editor-first workflow, so
+I can iterate quickly without leaving Emacs.

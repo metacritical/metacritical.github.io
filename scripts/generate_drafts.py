@@ -14,15 +14,14 @@ drafts_dir = repo_dir / "drafts"
 public_dir = repo_dir / "public"
 template_path = public_dir / "archiveorg" / "index.html"
 output_path = public_dir / "drafts" / "index.html"
-
-if not drafts_dir.is_dir():
-    sys.exit(0)
+dev_mode = os.environ.get("DEV_MODE") == "1"
 
 MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 posts = []
-for org_file in sorted(drafts_dir.glob("*.org")):
+draft_org_files = sorted(drafts_dir.glob("*.org")) if drafts_dir.is_dir() else []
+for org_file in draft_org_files:
     content = org_file.read_text(encoding="utf-8", errors="replace")
 
     m_title = re.search(r'^#\+TITLE:\s+(.*)', content, re.MULTILINE)
@@ -64,7 +63,10 @@ for year, month, day, title, preview_url, desc, tags, slug in posts:
     date_str = f"{MONTHS[month]} {day:02d}, {year}"
     tag_str = " ".join(f"<span class=\"medium-post-tag\">{html.escape(t)}</span>" for t in tags[:3])
     badge = '<span class="medium-post-draft-badge">Draft</span>'
-    edit_link = f'<a class="medium-post-edit" href="/editor/?slug={slug}&kind=draft" title="Edit draft">Edit</a>'
+    edit_link = (
+        f'<a class="medium-post-edit" href="/editor/?slug={slug}&kind=draft" title="Edit draft">Edit</a>'
+        if dev_mode else ""
+    )
 
     cards.append(f"""  <article class="medium-post-card">
     <a class="medium-post-main" href="{preview_url}">
@@ -85,7 +87,8 @@ for year, month, day, title, preview_url, desc, tags, slug in posts:
 body_html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">'
 body_html += '<div><h1 style="margin-bottom:4px">Drafts</h1>'
 body_html += '<p style="color:#6f6a5e;font-size:14px">Work in progress — not yet published.</p></div>'
-body_html += '<a href="/editor/" style="background:#36c9c7;color:#fff;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none">New Draft</a>'
+if dev_mode:
+    body_html += '<a href="/editor/" style="background:#36c9c7;color:#fff;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none">New Draft</a>'
 body_html += '</div>\n'
 body_html += """<style>
 .medium-post-draft-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a8578;background:#e8e3d4;padding:2px 8px;border-radius:4px;margin-bottom:8px}
@@ -96,7 +99,10 @@ body_html += """<style>
 </style>
 """
 body_html += '<section class="medium-home">\n'
-body_html += "\n".join(cards)
+if cards:
+    body_html += "\n".join(cards)
+else:
+    body_html += '<p style="color:#6f6a5e;font-size:15px">No upcoming draft previews are available yet.</p>'
 body_html += '\n</section>'
 
 if not template_path.exists():
@@ -127,7 +133,7 @@ if 'medium-home' not in result:
     )
 
 # Fix the page title.
-result = result.replace("<title>Archive", "<title>Drafts")
+result = re.sub(r'<title>.*?</title>', '<title>Drafts - Self dot send</title>', result, count=1)
 result = result.replace('class="home"', 'class="post-page"')
 
 output_path.parent.mkdir(parents=True, exist_ok=True)

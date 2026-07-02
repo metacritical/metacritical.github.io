@@ -19,6 +19,7 @@ repo_dir = Path(sys.argv[1])
 drafts_dir = repo_dir / "drafts"
 public_dir = repo_dir / "public"
 drafts_public = public_dir / "drafts"
+dev_mode = os.environ.get("DEV_MODE") == "1"
 
 if not drafts_dir.is_dir() or not any(drafts_dir.glob("*.org")):
     sys.exit(0)
@@ -69,10 +70,13 @@ DRAFT_BANNER = (
     'position:sticky;top:0;z-index:100;border-bottom:1px solid #d97706;'
     'display:flex;align-items:center;justify-content:center;gap:14px">'
     '<span>DRAFT — Not yet published</span>'
-    '<a href="/editor/?slug={slug}&kind=draft" '
-    'style="background:#1f1f1b;color:#fff;padding:3px 12px;border-radius:4px;'
-    'font-size:11px;text-decoration:none;letter-spacing:0">Edit</a>'
-    '</div>'
+    + (
+        '<a href="/editor/?slug={slug}&kind=draft" '
+        'style="background:#1f1f1b;color:#fff;padding:3px 12px;border-radius:4px;'
+        'font-size:11px;text-decoration:none;letter-spacing:0">Edit</a>'
+        if dev_mode else ''
+    )
+    + '</div>'
 )
 
 count = 0
@@ -142,19 +146,20 @@ for org_file in sorted(drafts_dir.glob("*.org")):
         count=1
     )
 
-    # Inject editor CSS and Prism CSS before </head>.
-    editor_css = (
-        '<link rel="stylesheet" href="/media/css/draft-editor.css" type="text/css">\n'
-        '  <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">'
-    )
-    page_html = page_html.replace('</head>', f'  {editor_css}\n</head>', 1)
+    if dev_mode:
+        # Inject editor CSS and Prism CSS before </head>.
+        editor_css = (
+            '<link rel="stylesheet" href="/media/css/draft-editor.css" type="text/css">\n'
+            '  <link rel="stylesheet" href="/media/js/prism/prism-okaidia.css" type="text/css">'
+        )
+        page_html = page_html.replace('</head>', f'  {editor_css}\n</head>', 1)
 
-    # Inject saved image settings so the bootstrap script can restore them.
-    settings_json = json.dumps(image_settings)
-    page_html = page_html.replace('</head>', f'  <script>window.__imageSettings = {settings_json};</script>\n</head>', 1)
+        # Inject saved image settings so the bootstrap script can restore them.
+        settings_json = json.dumps(image_settings)
+        page_html = page_html.replace('</head>', f'  <script>window.__imageSettings = {settings_json};</script>\n</head>', 1)
 
-    # Inject editor JS and bootstrap script before </body>.
-    editor_js = f"""
+        # Inject editor JS and bootstrap script before </body>.
+        editor_js = f"""
 <script src="/media/js/prism/prism-core.min.js"></script>
 <script src="/media/js/prism/prism-autoloader.min.js"></script>
 <script>
@@ -717,10 +722,11 @@ document.addEventListener('DOMContentLoaded', function() {{
 }});
 </script>"""
 
-    page_html = page_html.replace('</body>', f'{editor_js}\n</body>', 1)
+        page_html = page_html.replace('</body>', f'{editor_js}\n</body>', 1)
 
     (dst_dir / "index.html").write_text(page_html, encoding="utf-8")
-    print(f"  [drafts] Preview ready (editable): /drafts/{slug}/")
+    mode_label = "editable" if dev_mode else "static"
+    print(f"  [drafts] Preview ready ({mode_label}): /drafts/{slug}/")
     count += 1
 
 shutil.rmtree(draft_tmp, ignore_errors=True)
