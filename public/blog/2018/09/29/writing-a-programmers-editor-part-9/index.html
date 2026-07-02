@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (Syntax Highlighting) - Part 9 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Adding colour to code — tokenization, fontification, and how to build a syntax highlighting engine." />
+  <meta name="keywords" content="scheme, editor, syntax-highlighting, tokenizer, themes, font-lock" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782969891" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782969891" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (Syntax Highlighting) - Part 9</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
+  </div>
+</div>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/syntax-highlighting/">Syntax Highlighting</a></li><li><a class="article-tag" href="/tags/tokenizer/">Tokenizer</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
+In <a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> we made the buffer searchable. Now we make it <i>readable</i>. Syntax highlighting —
+colouring keywords, strings, comments, and numbers differently — is what turns a wall of
+monospace into something the eye parses at a glance. And there is a particular joy in what we
+are about to do: write a Scheme syntax highlighter, in Scheme, that colours its own source.
+</p>
+
+<p>
+<b>Two Stages: Tokenize, Then Fontify</b>
+</p>
+
+<p>
+Every highlighter, no matter how fancy, is two stages bolted together:
+</p>
+
+<ol class="org-ol">
+<li><i>Tokenization</i> (lexical analysis): split raw text into <i>tokens</i> — this run of characters is
+a keyword, that one is a string, this is a comment, that is a number.</li>
+<li><i>Fontification</i>: map each token <i>type</i> to a <i>face</i> — a colour, and maybe bold or italic.</li>
+</ol>
+
+<p>
+The tokenizer knows the language. The fontifier knows the theme. Keeping them separate means
+one tokenizer can drive many colour schemes, and one theme can style many languages.
+</p>
+
+
+<div id="orgc6142e9" class="figure">
+<p><img src="/assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png" alt="highlight-pipeline.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>The highlighting pipeline — the tokenizer knows the language, the fontifier knows the theme.</p>
+</div>
+
+<p>
+<b>A Tokenizer For Scheme</b>
+</p>
+
+<p>
+Scheme is a wonderful first language to tokenize because its lexical structure is tiny:
+parentheses, strings, comments (<code>;</code> to end of line), quotes, and <i>atoms</i> (everything else —
+symbols, numbers, keywords). We walk the text once, emitting a token for each lexeme. A token
+records its type, and its start and end offsets in the buffer.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A token: #(type start end)
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">token</span> type start end) (vector type start end))
+(<span class="org-keyword">define</span> (<span class="org-function-name">tok-type</span> t)  (vector-ref t 0))
+(<span class="org-keyword">define</span> (<span class="org-function-name">tok-start</span> t) (vector-ref t 1))
+(<span class="org-keyword">define</span> (<span class="org-function-name">tok-end</span> t)   (vector-ref t 2))
+
+(<span class="org-keyword">define</span> (<span class="org-function-name">whitespace?</span> c) (<span class="org-keyword">or</span> (char=? c #\space) (char=? c #\tab) (char=? c #\newline)))
+(<span class="org-keyword">define</span> (<span class="org-function-name">delimiter?</span> c)  (<span class="org-keyword">or</span> (whitespace? c) (char=? c #\() (char=? c #\))
+                            (char=? c #\") (char=? c #\;)))
+</pre>
+</div>
+
+<p>
+The lexer itself is a <code>let loop</code> over the text that dispatches on the current character:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Tokenize a Scheme source string into a list of tokens.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">tokenize-scheme</span> text)
+  (<span class="org-keyword">let</span> ((n (string-length text)))
+    (<span class="org-keyword">let</span> <span class="org-function-name">loop</span> ((i 0) (acc '()))
+      (<span class="org-keyword">if</span> (&gt;= i n)
+          (reverse acc)
+          (<span class="org-keyword">let</span> ((c (string-ref text i)))
+            (<span class="org-keyword">cond</span>
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">Whitespace &#8212; skip, emit nothing.
+</span>             ((whitespace? c) (loop (+ i 1) acc))
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">Parentheses &#8212; single-character punctuation tokens.
+</span>             ((<span class="org-keyword">or</span> (char=? c #\() (char=? c #\)))
+              (loop (+ i 1) (cons (token 'paren i (+ i 1)) acc)))
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">Comment &#8212; from ; to end of line.
+</span>             ((char=? c #\;)
+              (<span class="org-keyword">let</span> ((end (scan-to text i #\newline)))
+                (loop end (cons (token 'comment i end) acc))))
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">String &#8212; from " to the closing " (respecting escapes).
+</span>             ((char=? c #\")
+              (<span class="org-keyword">let</span> ((end (scan-string text (+ i 1))))
+                (loop end (cons (token 'string i end) acc))))
+             <span class="org-comment-delimiter">;; </span><span class="org-comment">Atom &#8212; a run up to the next delimiter.
+</span>             (<span class="org-keyword">else</span>
+              (<span class="org-keyword">let</span> ((end (scan-atom text i)))
+                (loop end (cons (token (classify-atom text i end) i end) acc))))))))))
+</pre>
+</div>
+
+<p>
+The little scanners are unremarkable but necessary — each advances the index to the end of
+its lexeme:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Advance until `stop` char (or EOF); return the index past it.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">scan-to</span> text i stop)
+  (<span class="org-keyword">let</span> ((n (string-length text)))
+    (<span class="org-keyword">let</span> <span class="org-function-name">loop</span> ((j i))
+      (<span class="org-keyword">cond</span> ((&gt;= j n) j)
+            ((char=? (string-ref text j) stop) (+ j 1))
+            (<span class="org-keyword">else</span> (loop (+ j 1)))))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Scan a string body, honouring backslash escapes; return index past closing ".
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">scan-string</span> text i)
+  (<span class="org-keyword">let</span> ((n (string-length text)))
+    (<span class="org-keyword">let</span> <span class="org-function-name">loop</span> ((j i))
+      (<span class="org-keyword">cond</span> ((&gt;= j n) j)
+            ((char=? (string-ref text j) #\\) (loop (+ j 2)))   <span class="org-comment-delimiter">; </span><span class="org-comment">skip escape
+</span>            ((char=? (string-ref text j) #\") (+ j 1))
+            (<span class="org-keyword">else</span> (loop (+ j 1)))))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Scan an atom up to the next delimiter.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">scan-atom</span> text i)
+  (<span class="org-keyword">let</span> ((n (string-length text)))
+    (<span class="org-keyword">let</span> <span class="org-function-name">loop</span> ((j i))
+      (<span class="org-keyword">if</span> (<span class="org-keyword">or</span> (&gt;= j n) (delimiter? (string-ref text j))) j (loop (+ j 1))))))
+</pre>
+</div>
+
+<p>
+<b>Classifying Atoms</b>
+</p>
+
+<p>
+An atom might be a number, a language keyword, or an ordinary identifier. The tokenizer asks
+one small classifier to decide, using a table of known keywords:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span class="org-keyword">define</span> <span class="org-function-name">scheme-keywords</span>
+  '(<span class="org-string">"define"</span> <span class="org-string">"lambda"</span> <span class="org-string">"let"</span> <span class="org-string">"let*"</span> <span class="org-string">"letrec"</span> <span class="org-string">"if"</span> <span class="org-string">"cond"</span> <span class="org-string">"case"</span> <span class="org-string">"when"</span>
+    <span class="org-string">"unless"</span> <span class="org-string">"begin"</span> <span class="org-string">"set!"</span> <span class="org-string">"quote"</span> <span class="org-string">"quasiquote"</span> <span class="org-string">"and"</span> <span class="org-string">"or"</span> <span class="org-string">"do"</span> <span class="org-string">"else"</span>))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Decide whether the atom text[start,end) is a keyword, number, or identifier.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">classify-atom</span> text start end)
+  (<span class="org-keyword">let</span> ((s (substring text start end)))
+    (<span class="org-keyword">cond</span>
+     ((member s scheme-keywords) 'keyword)
+     ((string-&gt;number s)         'number)
+     (<span class="org-keyword">else</span>                       'identifier))))
+</pre>
+</div>
+
+<p>
+That is the entire Scheme lexer. Because the language is so regular, it fits in a page — and
+it is easy to extend a classifier for a chunkier language later.
+</p>
+
+<p>
+<b>Fontification: Tokens To Colours</b>
+</p>
+
+<p>
+Now the theme. A <i>face table</i> maps token types to terminal colour codes (the 256-colour
+palette from Part 5). Swapping themes is swapping this table — nothing else changes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A theme maps token types to 256-colour foreground codes.
+</span>(<span class="org-keyword">define</span> <span class="org-function-name">solarized-dark</span>
+  '((keyword    . 33)     <span class="org-comment-delimiter">; </span><span class="org-comment">blue
+</span>    (string     . 37)     <span class="org-comment-delimiter">; </span><span class="org-comment">cyan
+</span>    (comment    . 245)    <span class="org-comment-delimiter">; </span><span class="org-comment">grey
+</span>    (number     . 61)     <span class="org-comment-delimiter">; </span><span class="org-comment">violet
+</span>    (identifier . 254)    <span class="org-comment-delimiter">; </span><span class="org-comment">near-white
+</span>    (paren      . 244)))  <span class="org-comment-delimiter">; </span><span class="org-comment">dim grey
+</span>
+(<span class="org-keyword">define</span> (<span class="org-function-name">face-for</span> theme type)
+  (<span class="org-keyword">let</span> ((cell (assq type theme)))
+    (<span class="org-keyword">if</span> cell (cdr cell) 254)))            <span class="org-comment-delimiter">; </span><span class="org-comment">default: plain text</span>
+</pre>
+</div>
+
+<p>
+To render a highlighted line we walk its tokens, emit a colour escape, write the token's
+text, and reset. The heavy lifting — <i>where</i> the text goes on screen — is still the redisplay
+engine from Part 7; highlighting only decides <i>what colour</i> each span is.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Produce a coloured string for the given text using a token list + theme.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">fontify</span> text tokens theme)
+  (<span class="org-keyword">let</span> ((out (open-output-string)))
+    (<span class="org-keyword">for-each</span>
+     (<span class="org-keyword">lambda</span> (tk)
+       (write-string (string-append <span class="org-string">"\x1b[38;5;"</span>
+                                    (number-&gt;string (face-for theme (tok-type tk)))
+                                    <span class="org-string">"m"</span>) out)
+       (write-string (substring text (tok-start tk) (tok-end tk)) out)
+       (write-string <span class="org-string">"\x1b[0m"</span> out))
+     tokens)
+    (get-output-string out)))
+</pre>
+</div>
+
+<p>
+<b>The Performance Problem: Do Not Re-Tokenize The World</b>
+</p>
+
+<p>
+Here is the trap. If we re-tokenize the <i>entire</i> buffer on every keystroke, a large file will
+crawl. Tokenizing a 10,000-line file to recolour one edited line is madness — and it is
+exactly the mistake that makes hand-rolled highlighters feel slow.
+</p>
+
+<p>
+The fix is <i>incremental</i> fontification: only re-tokenize the region that changed. For most
+languages, a single edit affects only the current line, so we re-tokenize that line and move
+on. This dovetails perfectly with the dirty-line tracking from Part 7 — the same rows we
+redraw are the only rows we re-highlight.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Re-tokenize just the line containing `offset` after an edit.
+</span>(<span class="org-keyword">define</span> (<span class="org-function-name">rehighlight-line!</span> eb offset)
+  (<span class="org-keyword">let*</span> ((line   (eb-offset-&gt;line eb offset))
+         (start  (eb-line-start eb line))
+         (end    (eb-line-end eb line))
+         (text   (buffer-substring eb start end)))
+    (eb-set-line-tokens! eb line (tokenize-scheme text))
+    (mark-line-dirty! eb line)))                <span class="org-comment-delimiter">; </span><span class="org-comment">Part 7 will redraw it</span>
+</pre>
+</div>
+
+<p>
+There is one wrinkle: some tokens <i>span</i> lines — a multi-line string, or a block comment.
+Editing inside one can change the highlighting of lines <i>below</i> it. Emacs solves this by
+tracking the lexer's <i>state</i> at the end of each line (are we "inside a string"?) and
+re-tokenizing downward only until the state stabilises. For a Scheme editor, whose strings
+and comments rarely straddle lines, single-line re-tokenizing is a fine first approximation,
+with a "re-tokenize to end of buffer" escape hatch for the rare multi-line case.
+</p>
+
+<p>
+<b>How The Big Editors Do It</b>
+</p>
+
+<p>
+Two designs are worth naming, because ours sits between them:
+</p>
+
+<ul class="org-ul">
+<li><b>Emacs <code>font-lock</code></b> drives highlighting from <i>regular expressions</i> plus code hooks, with
+priority levels so that, say, a keyword inside a comment stays comment-coloured. It is
+pragmatic and per-mode.</li>
+<li><b>TextMate / VS Code grammars</b> use <i>scoped, nested</i> rules — a stack of grammar contexts that
+can push and pop, giving precise nested highlighting (a regex inside a string inside a
+template literal). More powerful, considerably heavier.</li>
+</ul>
+
+<p>
+Our tokenizer-plus-theme design is the honest middle: a real lexer (not just regexes), a
+swappable theme, and incremental updates. It is enough to make Scheme code sing, and the
+architecture generalises.
+</p>
+
+<p>
+<b>What We Have Now</b>
+</p>
+
+<p>
+The editor now shows <i>coloured</i> code:
+</p>
+
+<ol class="org-ol">
+<li>A single-pass Scheme tokenizer that classifies keywords, strings, comments, numbers.</li>
+<li>A theme layer that maps token types to colours, swappable at will.</li>
+<li>Incremental re-highlighting keyed to the same dirty lines the renderer already tracks.</li>
+<li>A clear path to richer languages and multi-line token state.</li>
+</ol>
+
+<p>
+The editor is now genuinely pleasant to use. But it still cannot forgive a mistake — there is
+no undo. That is the safety net every editor needs, and it is more subtle than it looks.
+</p>
+
+<p>
+In the <a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">next part</a> we build undo and redo — from a simple linear stack all the way to vim's
+branching undo tree.
+</p>
+
+<p>
+Watchout for the next part of the assay, till then.
+</p>
+
+<p>
+<i>Shorel'aran</i>
+</p>
+<div class="series-nav-wrap">
+<style>
+.series-nav-wrap{margin:36px 0 28px;font-family:"ui-sans-serif",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.series-nav-wrap *{box-sizing:border-box}
+.series-nav-card{border:1px solid #e2ddd0;border-radius:12px;overflow:hidden;background:#faf8f2}
+.series-nav-top{padding:16px 20px 14px;border-bottom:1px solid #ebe6d9}
+.sn-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#36c9c7;margin-bottom:4px}
+.sn-name{font-family:"Charter","Iowan Old Style","Palatino Linotype",Palatino,serif;font-size:18px;font-weight:600;color:#1f1f1b;margin:0;line-height:1.3}
+.sn-desc{font-size:12.5px;line-height:1.55;color:#6f6a5e;margin:3px 0 0}
+.sn-pn{display:flex;border-bottom:1px solid #ebe6d9}
+.sn-card{flex:1;padding:11px 16px;text-decoration:none;display:flex;flex-direction:column;gap:1px;min-width:0;transition:background .12s}
+a.sn-card:hover{background:rgba(54,201,199,.06)}
+.sn-card-l{border-right:1px solid #ebe6d9;text-align:left}
+.sn-card-r{text-align:right}
+.sn-card-lbl{font-size:10px;font-weight:600;letter-spacing:.03em;color:#a8a294}
+.sn-card-tt{font-size:12px;font-weight:500;color:#36c9c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-card.off .sn-card-tt{color:#bfb9ac}
+a.sn-card.off:hover{background:transparent;cursor:default}
+.sn-pos{display:flex;align-items:center;font-size:11px;font-weight:600;color:#6f6a5e;padding:0 14px;white-space:nowrap}
+.sn-list{list-style:none;margin:0;padding:4px 0}
+.sn-row{display:flex;align-items:center;gap:10px;padding:5px 20px;font-size:13px;line-height:1.4;transition:background .1s}
+.sn-row:hover{background:#f4f1e8}
+.sn-dot{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#e8e3d4;color:#8a8578;font-size:10px;font-weight:700}
+.sn-row.here .sn-dot{background:#36c9c7;color:#fff}
+.sn-tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-tt a{color:#33312b;text-decoration:none;font-weight:500}
+.sn-tt a:hover{color:#36c9c7}
+.sn-row.here .sn-tt{color:#1f1f1b;font-weight:700}
+.sn-tt.off{color:#bfb9ac}
+.sn-tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.04em;flex:0 0 auto}
+.sn-tag.here{background:#36c9c7;color:#fff}
+.sn-tag.draft{background:#e8e3d4;color:#a8a294}
+.sn-date{font-size:10.5px;color:#c4beb1;font-variant-numeric:tabular-nums;flex:0 0 auto;margin-left:auto;padding-left:6px}
+.sn-foot{padding:7px 20px;font-size:10px;color:#c4beb1;text-align:center;border-top:1px solid #ebe6d9;background:#f6f3eb}
+@media(max-width:540px){
+ .series-nav-wrap{margin:24px 0}
+ .series-nav-top{padding:12px 14px 10px}
+ .sn-name{font-size:16px}
+ .sn-card{padding:8px 10px}
+ .sn-card-tt{font-size:11px}
+ .sn-row{padding:4px 14px;gap:8px}
+ .sn-date{display:none}
+}
+</style>
+<div class="series-nav-card">
+<div class="series-nav-top">
+<span class="sn-eyebrow">Article Series</span>
+<h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+</div>
+<div class="sn-pn">
+<a class="sn-card sn-card-l" href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">
+<span class="sn-card-lbl">&larr; Previous</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Search &amp; Replace) - Part 8</span>
+</a>
+<span class="sn-pos">9 / 12</span>
+<a class="sn-card sn-card-r" href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">
+<span class="sn-card-lbl">Next &rarr;</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</span>
+</a>
+</div>
+<ol class="sn-list">
+<li class="sn-row">
+<span class="sn-dot">1</span>
+<span class="sn-tt"><a href="/blog/2018/08/06/learn-to-write-an-editor/">Writing a Programmers Editor - Part 1</a></span>
+<span class="sn-date">2018-08-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">2</span>
+<span class="sn-tt"><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</a></span>
+<span class="sn-date">2018-08-11</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">3</span>
+<span class="sn-tt"><a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3</a></span>
+<span class="sn-date">2018-08-18</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">4</span>
+<span class="sn-tt"><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Writing a Programmers Editor (Lines &amp; Display) - Part 4</a></span>
+<span class="sn-date">2018-08-25</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">5</span>
+<span class="sn-tt"><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5</a></span>
+<span class="sn-date">2018-09-01</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">6</span>
+<span class="sn-tt"><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</a></span>
+<span class="sn-date">2018-09-08</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">7</span>
+<span class="sn-tt"><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</a></span>
+<span class="sn-date">2018-09-15</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">8</span>
+<span class="sn-tt"><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Writing a Programmers Editor (Search &amp; Replace) - Part 8</a></span>
+<span class="sn-date">2018-09-22</span>
+</li>
+<li class="sn-row here">
+<span class="sn-dot">9</span>
+<span class="sn-tt">Writing a Programmers Editor (Syntax Highlighting) - Part 9</span>
+<span class="sn-tag here">Here</span>
+<span class="sn-date">2018-09-29</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">10</span>
+<span class="sn-tt"><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</a></span>
+<span class="sn-date">2018-10-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">11</span>
+<span class="sn-tt"><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</a></span>
+<span class="sn-date">2018-10-13</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">12</span>
+<span class="sn-tt"><a href="/blog/2018/10/20/writing-a-programmers-editor-part-12/">Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</a></span>
+<span class="sn-date">2018-10-20</span>
+</li>
+</ol>
+<div class="sn-foot">12 of 12 articles published</div>
+</div>
+</div>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-09-29</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/09/29/writing-a-programmers-editor-part-9";
+        this.page.identifier = "/blog/2018/09/29/writing-a-programmers-editor-part-9";
+      };
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  <script src="/media/js/claps.js"></script>
+<script src="/media/js/code-block-controls.js"></script>
+</body>
+</html>
