@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782973145" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782973145" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782973185" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782973185" type="text/css">
 </head>
 
   <body class="container">
@@ -32,6 +32,7 @@
     <a href="/tags/">Tag</a>
     <a href="/about/">About</a>
     <a href="/drafts/">Drafts</a>
+    <a href="/editor/">Editor</a>
     <a href="/nano-chat/">Nano Chat</a>
     <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
@@ -195,7 +196,7 @@ The clever trick that keeps the assembly small: pre-render every colour escape a
 ANSI happily accepts leading zeros — so every entry is exactly <b>11 bytes</b>:
 </p>
 
-<pre class="example" id="orga03e827">
+<pre class="example" id="orge608e42">
 ESC [ 3 8 ; 5 ; N N N m      =&gt;  "\033[38;5;196m"   (11 bytes)
 </pre>
 
@@ -459,5 +460,6 @@ making <code>cat</code> wear a rainbow. That is the best kind of useless.
 
   <script src="/media/js/claps.js"></script>
 <script src="/media/js/code-block-controls.js"></script>
+<script src="/media/js/dev-reload.js"></script>
 </body>
 </html>
