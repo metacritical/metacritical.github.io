@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12 - Self dot send (Computing Blog)</title>
+  <meta charset="utf-8" />
+  <meta name="author" content="Pankaj Doharey" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Looking back at the series — what we learned, what worked, and answering the questions from Part 1." />
+  <meta name="keywords" content="scheme, editor, reflections, lessons, power-continuum" />
+  <link rel="icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/media/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1782969891" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1782969891" type="text/css">
+</head>
+
+  <body class="container">
+<nav class="main-nav medium-nav">
+  <div class="nav-left site-brand">
+    <a class="brand-logo-link" href="/"><img class="brand-logo" src="/media/images/logo.png" alt="Self dot send"></a>
+    <div class="brand-copy">
+      <a class="brand-title" href="/">Selfd<span class="brand-o">o</span>tsend</a>
+      <div class="brand-tagline">Message passing is just a procedure call.</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/">Blog</a>
+    <a href="/archive/">Archive</a>
+    <a href="/tags/">Tag</a>
+    <a href="/about/">About</a>
+    <a href="/drafts/">Drafts</a>
+    <a href="/nano-chat/">Nano Chat</a>
+    <button id="site-search-open" class="search-btn" type="button" aria-haspopup="dialog" aria-controls="site-search-overlay">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <span>Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button id="theme-switch" class="theme-switch" type="button">Theme: Medium</button>
+    <a class="cta" href="https://github.com/metacritical">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" focusable="false"><title>GitHub</title><path d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" fill="currentColor" fill-rule="evenodd"></path></svg>
+    </a>
+  </div>
+</nav>
+<div id="site-search-overlay" class="site-search-overlay" hidden>
+  <div class="site-search-panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search-top">
+      <h2 id="site-search-title">Search posts</h2>
+      <button id="site-search-close" class="site-search-close" type="button" aria-label="Close search">Close</button>
+    </div>
+    <input id="site-search-input" class="site-search-input" type="search" placeholder="Type to search posts..." autocomplete="off" />
+    <p class="site-search-hint">Use <kbd>/</kbd> to open, <kbd>↑</kbd><kbd>↓</kbd> to navigate, <kbd>Enter</kbd> to open.</p>
+    <ul id="site-search-results" class="site-search-results"></ul>
+  </div>
+</div>
+
+<section id="wrapper" class="post-page">
+  <div class="post">
+  <h1 class="title">Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</h1>
+  <aside class="story-rail" aria-label="Story actions">
+    <button class="story-clap-btn" type="button" aria-label="Clap for this story">
+      <img src="/media/images/clap.png" alt="" aria-hidden="true">
+    </button>
+    <span class="story-clap-count">0</span>
+    <div class="story-share-label">Share</div>
+    <a class="story-share-link story-share-x" href="#" target="_blank" rel="noopener" aria-label="Share on X">𝕏</a>
+    <a class="story-share-link story-share-fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook">f</a>
+    <a class="story-share-link story-share-ln" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn">in</a>
+  </aside>
+  <div class="post-author-row">
+    <img class="post-author-avatar" src="/media/images/avatar.jpg" alt="Pankaj Doharey">
+    <div class="post-author-meta">
+      <span class="post-author-name">Pankaj Doharey</span>
+      <span class="post-author-date"></span>
+    <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
+  </div>
+</div>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/editor/">Editor</a></li><li><a class="article-tag" href="/tags/reflections/">Reflections</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
+In <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> we built the extensibility layer, and with it the editor was complete — a
+working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap.
+Eleven parts ago, in <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a>, this was just a provocation and a Feynman quote. Now there is
+actual code behind the argument. This final part is a reflection, and a return — with the
+benefit of having built the thing — to the questions we started with.
+</p>
+
+<p>
+<b>The Road We Travelled</b>
+</p>
+
+<p>
+It is worth seeing the whole arc in one glance, because each part was a load-bearing wall for
+the ones above it:
+</p>
+
+<ul class="org-ul">
+<li><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Part 2</a> &amp; <a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Part 3</a> — the <i>gap buffer</i>: the data structure that makes typing <code>O(1)</code>.</li>
+<li><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Part 4</a> — <i>lines and display</i>: turning a flat array into rows and columns.</li>
+<li><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Part 5</a> — <i>terminal I/O</i>: raw mode, escape sequences, the FFI down to C.</li>
+<li><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Part 6</a> — <i>keymaps</i>: the tree that gives an editor its personality.</li>
+<li><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Part 7</a> — <i>redisplay</i>: drawing only what changed.</li>
+<li><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> — <i>search</i>: incremental, with a state stack.</li>
+<li><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> — <i>syntax highlighting</i>: tokenize, then fontify.</li>
+<li><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Part 10</a> — <i>undo</i>: every edit a reversible command.</li>
+<li><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> — <i>modes and hooks</i>: extensibility as a shape, not a feature.</li>
+</ul>
+
+<p>
+Roughly a few hundred lines of Scheme, layer on layer, and out the other end comes something
+that genuinely edits text.
+</p>
+
+<p>
+<b>What Worked</b>
+</p>
+
+<p>
+<b>The gap buffer was the right call.</b> It was simple enough to write in an afternoon, its
+performance characteristics were exactly as advertised, and — crucially — it never fought us.
+Every later layer, from line tracking to undo, sat comfortably on top of "an array with a
+split point." The instinct from Part 2, that <i>simple primitives that compose well</i> beat clever
+ones, held all the way through.
+</p>
+
+<p>
+<b>Scheme was expressive enough.</b> First-class functions turned keymaps into data (Part 6) and
+hooks into lists (Part 11). Closures gave us "advice" — wrapping a command — for free. Tagged
+vectors were a perfectly adequate stand-in for records. At no point did the language run out of
+room. The editor never once <i>needed</i> to drop into C for expressiveness.
+</p>
+
+<p>
+<b>The recurring pattern paid off.</b> The same idea appeared three times: <i>record the history of
+an interaction and capabilities fall out for free</i>. The incremental-search state stack (Part 8)
+gave us instant backspace. The command log (Part 10) gave us undo, and gestured at macros and
+collaboration. It is a lesson that generalises far beyond editors.
+</p>
+
+<p>
+<b>What Was Hard</b>
+</p>
+
+<p>
+<b>Terminal I/O was the ugliest boundary.</b> Everything else was clean Scheme; the terminal
+dragged us through termios, escape sequences, and the FFI in Part 5. This is not Scheme's
+fault — it is the operating system's — but it is where the "<code>100%</code> in one language" dream met
+reality. You <i>cannot</i> talk to a terminal without, somewhere, calling C. Even our
+all-Scheme editor has a small, unavoidable C shadow at its lowest layer. Honesty compels
+admitting the "<code>100%</code>" is <code>100%</code> <i>above</i> the syscall boundary, not below it.
+</p>
+
+<p>
+<b>Performance in a garbage-collected language takes care.</b> The hot paths — typing, redisplay,
+re-tokenizing — all had to be written to avoid allocation and needless copying. Our Part 4
+renderer that converted the <i>whole buffer</i> to a string every frame was a deliberate
+simplification we had to walk back in Part 7. A GC'd language does not make you slow, but it
+does punish carelessness more visibly than C, where the costs are at least in plain sight.
+</p>
+
+<p>
+<b>The Power Continuum, Revisited</b>
+</p>
+
+<p>
+Now the real question from Part 1: <i>where does the sweet spot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</i> We
+asked whether an editor written in <code>100%</code> Scheme, extended in the same Scheme, would actually
+<i>help</i> — or whether the delicate balance between a C runtime and a scripting language exists
+<i>for a reason</i>, with a penalty when disturbed.
+</p>
+
+<p>
+Having built it, my answer is: <i>both are true, and that is the whole insight.</i>
+</p>
+
+<p>
+The <code>100%</code> approach genuinely delivered on power. There is no borrowed-power problem in our
+editor — the user can redefine <code>cmd-save-file</code> itself, something no elisp author can do to
+emacs' C core. When the extension language <i>is</i> the implementation language, the ceiling
+disappears. That is real, and it is intoxicating.
+</p>
+
+<p>
+But the balance emacs struck exists for a reason too, and the reason is not weakness — it is
+<i>leverage</i>. Emacs keeps its performance-critical, syscall-adjacent core in C precisely so that
+the elisp layer can stay high-level and safe. The "power deficiency" we lamented in Part 1 is
+also a <i>safety rail</i>: elisp cannot corrupt the buffer's memory because it cannot reach it. Our
+editor's total power is inseparable from its total fragility (Part 11): the user who can
+redefine anything can break anything.
+</p>
+
+<p>
+<b>What Emacs Got Right</b>
+</p>
+
+<p>
+With hindsight, the split emacs chose looks less like a compromise and more like an <i>engineered
+boundary</i>. C for the gap buffer, the redisplay engine, and the syscalls — the parts where
+performance and safety are non-negotiable. Elisp for everything a user might want to change.
+The boundary is drawn exactly where power matters least and performance matters most. That is
+not a failure of nerve; it is good taste.
+</p>
+
+<p>
+Our editor draws the boundary in a different place — as low as it possibly can, at the raw
+syscall — and pays for it with the fragility of a system where user code and core code are
+peers. Neither is <i>wrong</i>. They are different points on the continuum, chosen for different
+values.
+</p>
+
+<p>
+<b>What I Would Do Differently</b>
+</p>
+
+<ul class="org-ul">
+<li><b>Track lexer state across lines from the start</b> (Part 9). Single-line re-tokenizing was a
+fine first cut, but multi-line strings and block comments make it wrong in ways that are
+annoying to retrofit.</li>
+<li><b>Design the command log first</b> (Part 10). Because everything — undo, macros, recovery — is a
+reading of that log, building it early would have simplified several earlier parts rather
+than bolting it on.</li>
+<li><b>Consider a rope for large files</b> (Part 2). The gap buffer was right for our goals, but the
+single <code>O(N)</code> scroll-to-end and full-buffer operations would bite on very large documents.</li>
+</ul>
+
+<p>
+<b>The Feynman Principle, Answered</b>
+</p>
+
+<p>
+We began with Feynman: <i>What I cannot create, I do not understand.</i> The point of this series was
+never to dethrone emacs or vim — they are the work of decades and thousands of hands. The point
+was to <i>understand</i> them by building, in miniature, the same machine. And it worked. I will
+never again wonder <i>how</i> a cursor moves, <i>why</i> a terminal flickers, <i>what</i> a keymap really is,
+or <i>where</i> an editor's power actually comes from. Those were abstractions before Part 1. They
+are mechanisms now.
+</p>
+
+<p>
+That is the deepest lesson, and it outlasts any editor: the fastest way to understand a system
+is to build the smallest honest version of it yourself. The gap buffer, the raw terminal, the
+keymap tree, the undo log — none of them are mysterious anymore, because we made them.
+</p>
+
+<p>
+If you have followed all twelve parts: thank you. Go build your own. It is the most fun a
+programmer can have, and you will never read your editor's source the same way again.
+</p>
+
+<p>
+<i>Shorel'aran.</i>
+</p>
+<div class="series-nav-wrap">
+<style>
+.series-nav-wrap{margin:36px 0 28px;font-family:"ui-sans-serif",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.series-nav-wrap *{box-sizing:border-box}
+.series-nav-card{border:1px solid #e2ddd0;border-radius:12px;overflow:hidden;background:#faf8f2}
+.series-nav-top{padding:16px 20px 14px;border-bottom:1px solid #ebe6d9}
+.sn-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#36c9c7;margin-bottom:4px}
+.sn-name{font-family:"Charter","Iowan Old Style","Palatino Linotype",Palatino,serif;font-size:18px;font-weight:600;color:#1f1f1b;margin:0;line-height:1.3}
+.sn-desc{font-size:12.5px;line-height:1.55;color:#6f6a5e;margin:3px 0 0}
+.sn-pn{display:flex;border-bottom:1px solid #ebe6d9}
+.sn-card{flex:1;padding:11px 16px;text-decoration:none;display:flex;flex-direction:column;gap:1px;min-width:0;transition:background .12s}
+a.sn-card:hover{background:rgba(54,201,199,.06)}
+.sn-card-l{border-right:1px solid #ebe6d9;text-align:left}
+.sn-card-r{text-align:right}
+.sn-card-lbl{font-size:10px;font-weight:600;letter-spacing:.03em;color:#a8a294}
+.sn-card-tt{font-size:12px;font-weight:500;color:#36c9c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-card.off .sn-card-tt{color:#bfb9ac}
+a.sn-card.off:hover{background:transparent;cursor:default}
+.sn-pos{display:flex;align-items:center;font-size:11px;font-weight:600;color:#6f6a5e;padding:0 14px;white-space:nowrap}
+.sn-list{list-style:none;margin:0;padding:4px 0}
+.sn-row{display:flex;align-items:center;gap:10px;padding:5px 20px;font-size:13px;line-height:1.4;transition:background .1s}
+.sn-row:hover{background:#f4f1e8}
+.sn-dot{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#e8e3d4;color:#8a8578;font-size:10px;font-weight:700}
+.sn-row.here .sn-dot{background:#36c9c7;color:#fff}
+.sn-tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sn-tt a{color:#33312b;text-decoration:none;font-weight:500}
+.sn-tt a:hover{color:#36c9c7}
+.sn-row.here .sn-tt{color:#1f1f1b;font-weight:700}
+.sn-tt.off{color:#bfb9ac}
+.sn-tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.04em;flex:0 0 auto}
+.sn-tag.here{background:#36c9c7;color:#fff}
+.sn-tag.draft{background:#e8e3d4;color:#a8a294}
+.sn-date{font-size:10.5px;color:#c4beb1;font-variant-numeric:tabular-nums;flex:0 0 auto;margin-left:auto;padding-left:6px}
+.sn-foot{padding:7px 20px;font-size:10px;color:#c4beb1;text-align:center;border-top:1px solid #ebe6d9;background:#f6f3eb}
+@media(max-width:540px){
+ .series-nav-wrap{margin:24px 0}
+ .series-nav-top{padding:12px 14px 10px}
+ .sn-name{font-size:16px}
+ .sn-card{padding:8px 10px}
+ .sn-card-tt{font-size:11px}
+ .sn-row{padding:4px 14px;gap:8px}
+ .sn-date{display:none}
+}
+</style>
+<div class="series-nav-card">
+<div class="series-nav-top">
+<span class="sn-eyebrow">Article Series</span>
+<h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+</div>
+<div class="sn-pn">
+<a class="sn-card sn-card-l" href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">
+<span class="sn-card-lbl">&larr; Previous</span>
+<span class="sn-card-tt">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</span>
+</a>
+<span class="sn-pos">12 / 12</span>
+<span class="sn-card sn-card-r off">
+<span class="sn-card-lbl">&rarr;</span>
+<span class="sn-card-tt">End of series</span>
+</span>
+</div>
+<ol class="sn-list">
+<li class="sn-row">
+<span class="sn-dot">1</span>
+<span class="sn-tt"><a href="/blog/2018/08/06/learn-to-write-an-editor/">Writing a Programmers Editor - Part 1</a></span>
+<span class="sn-date">2018-08-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">2</span>
+<span class="sn-tt"><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Writing a Programmers Editor (DS/Gapbuffer) - Part 2</a></span>
+<span class="sn-date">2018-08-11</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">3</span>
+<span class="sn-tt"><a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3</a></span>
+<span class="sn-date">2018-08-18</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">4</span>
+<span class="sn-tt"><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Writing a Programmers Editor (Lines &amp; Display) - Part 4</a></span>
+<span class="sn-date">2018-08-25</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">5</span>
+<span class="sn-tt"><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5</a></span>
+<span class="sn-date">2018-09-01</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">6</span>
+<span class="sn-tt"><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</a></span>
+<span class="sn-date">2018-09-08</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">7</span>
+<span class="sn-tt"><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</a></span>
+<span class="sn-date">2018-09-15</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">8</span>
+<span class="sn-tt"><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Writing a Programmers Editor (Search &amp; Replace) - Part 8</a></span>
+<span class="sn-date">2018-09-22</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">9</span>
+<span class="sn-tt"><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Writing a Programmers Editor (Syntax Highlighting) - Part 9</a></span>
+<span class="sn-date">2018-09-29</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">10</span>
+<span class="sn-tt"><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</a></span>
+<span class="sn-date">2018-10-06</span>
+</li>
+<li class="sn-row">
+<span class="sn-dot">11</span>
+<span class="sn-tt"><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11</a></span>
+<span class="sn-date">2018-10-13</span>
+</li>
+<li class="sn-row here">
+<span class="sn-dot">12</span>
+<span class="sn-tt">Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</span>
+<span class="sn-tag here">Here</span>
+<span class="sn-date">2018-10-20</span>
+</li>
+</ol>
+<div class="sn-foot">12 of 12 articles published</div>
+</div>
+</div>
+
+  </div>
+</section>
+
+<div>
+  <section id="wrapper" class="post-meta-wrap">
+    <div class="post-meta">
+      <span title="post date" class="post-info post-info--date">2018-10-20</span>
+      <span title="author" class="post-info post-info--author">Pankaj Doharey</span>
+    </div>
+  </section>
+  <section id="comments" class="comments">
+    <h1>Responses</h1>
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = "https://selfdotsend.com/blog/2018/10/20/writing-a-programmers-editor-part-12";
+        this.page.identifier = "/blog/2018/10/20/writing-a-programmers-editor-part-12";
+      };
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.async = true;
+        s.src = "https://SelfDotSend.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </section>
+  <script src="/media/js/prettify.js"></script>
+  <script src="/media/js/main.js"></script>
+  <script src="/media/js/theme-switcher.js"></script>
+  <script src="/media/js/search.js"></script>
+  <script src="/media/js/nano-chat.js"></script>
+  <section id="wrapper">
+    <br />
+    <br />
+    <div align="center">
+      <footer id="footer">
+        <p class="small">
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pankajdoharey &lt;at&gt; gmail &lt;dot&gt; com">Pankaj Doharey</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/metacritical/AOG" target="_blank">AOG</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+        <br />
+      </footer>
+    </div>
+  </section>
+</div>
+
+  <script src="/media/js/claps.js"></script>
+<script src="/media/js/code-block-controls.js"></script>
+</body>
+</html>

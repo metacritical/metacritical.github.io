@@ -1,1 +1,110 @@
-null
+[
+  {
+    "title": "Nano Chat",
+    "url": "/blog/2026/02/09/nano-chat/",
+    "date": "2026-02-09",
+    "excerpt": "Local in-browser mini LLM chat for this site. Model runs in your browser (no server endpoint)."
+  },
+  {
+    "title": "Sample Post with Syntax Highlighting",
+    "url": "/blog/2025/04/12/sample-post-with-syntax-highlighting/",
+    "date": "2025-04-12",
+    "excerpt": "This is a sample post that demonstrates the syntax highlighting capabilities of the Metacritical theme for Alchemist."
+  },
+  {
+    "title": "Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12",
+    "url": "/blog/2018/10/20/writing-a-programmers-editor-part-12/",
+    "date": "2018-10-20",
+    "excerpt": "In Part 11 we built the extensibility layer, and with it the editor was complete — a working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap. Eleven parts ago, in Part 1 , this wa..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11",
+    "url": "/blog/2018/10/13/writing-a-programmers-editor-part-11/",
+    "date": "2018-10-13",
+    "excerpt": "In Part 10 we built undo/redo. The editor can now hold text, display it, colour it, search it, and forgive mistakes. And now we arrive at the question that started this whole series in Part 1 : how much power should t..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10",
+    "url": "/blog/2018/10/06/writing-a-programmers-editor-part-10/",
+    "date": "2018-10-06",
+    "excerpt": "In Part 9 we gave the editor colour. The editor now looks and feels real. But one thing is still missing, and it is the thing that lets people trust an editor: the ability to take back a mistake. Undo is the safety ne..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Syntax Highlighting) - Part 9",
+    "url": "/blog/2018/09/29/writing-a-programmers-editor-part-9/",
+    "date": "2018-09-29",
+    "excerpt": "In Part 8 we made the buffer searchable. Now we make it readable . Syntax highlighting — colouring keywords, strings, comments, and numbers differently — is what turns a wall of monospace into something the eye parses..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Search &amp; Replace) - Part 8",
+    "url": "/blog/2018/09/22/writing-a-programmers-editor-part-8/",
+    "date": "2018-09-22",
+    "excerpt": "In Part 7 we made the screen fast. Now we add the feature a programmer reaches for more than any other after basic editing: search. But not just any search — incremental search, the kind where matches light up as you ..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7",
+    "url": "/blog/2018/09/15/writing-a-programmers-editor-part-7/",
+    "date": "2018-09-15",
+    "excerpt": "In Part 6 we wired keystrokes to commands. Now every command changes the buffer, and after every change the screen must reflect the new state. The obvious approach — clear the screen and redraw everything — is also th..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6",
+    "url": "/blog/2018/09/08/writing-a-programmers-editor-part-6/",
+    "date": "2018-09-08",
+    "excerpt": "In Part 5 we taught the editor to read raw keystrokes from the terminal. But a keystroke is just a byte, or a short sequence of bytes. \\e[A means \"up arrow\" only because we decide it does. The mapping from bytes to ac..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Terminal I/O &amp; Raw Mode) - Part 5",
+    "url": "/blog/2018/09/01/writing-a-programmers-editor-part-5/",
+    "date": "2018-09-01",
+    "excerpt": "In Part 4 we built a line management layer and a viewport renderer. But that renderer only returns strings — it never actually paints anything on a screen. To turn those strings into an interactive display, we have to..."
+  },
+  {
+    "title": "Writing a Programmers Editor (Lines &amp; Display) - Part 4",
+    "url": "/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/",
+    "date": "2018-08-25",
+    "excerpt": "In Part 3 we built a gap buffer in Scheme. It can hold text, insert characters, delete them, move the cursor, and resize when the gap runs out. It is about 80 lines of code and it works."
+  },
+  {
+    "title": "Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3",
+    "url": "/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/",
+    "date": "2018-08-18",
+    "excerpt": ""
+  },
+  {
+    "title": "Writing a Programmers Editor (DS/Gapbuffer) - Part 2",
+    "url": "/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/",
+    "date": "2018-08-11",
+    "excerpt": "In my quest to write a programmable editor the first problem that i came across was which datastructure to hold the text in? What do other text editors use? For instance emacs in which this blog is written uses a gap ..."
+  },
+  {
+    "title": "Writing a Programmers Editor - Part 1",
+    "url": "/blog/2018/08/06/learn-to-write-an-editor/",
+    "date": "2018-08-06",
+    "excerpt": "Since the time i learnt emacs i have toyed with the idea of writing my own programming text editor. Though emacs is a powerful tool it can be obtuse to people with no lisp/scheme knowledge, one cannot be very effectiv..."
+  },
+  {
+    "title": "Git status on Unix terminal",
+    "url": "/blog/2018/07/19/git-status-on-unix-terminal/",
+    "date": "2018-07-19",
+    "excerpt": "It is often required to get git stats on terminal PS1, most solutions are based aound bash can be slow sometimes or if you are like me who programmed something in ruby also turned out to be slow. We can make things fa..."
+  },
+  {
+    "title": "Lolcat in Arm Assembly",
+    "url": "/blog/2018/07/14/lolcat-in-arm-assembly/",
+    "date": "2018-07-14",
+    "excerpt": "lolcat is one of those gloriously useless little Unix programs that everybody loves anyway. It reads text and prints it back in rainbow colours — the same bytes you piped in, now dressed for a party. The original is a..."
+  },
+  {
+    "title": "Lolcat in 64 arm assembly.",
+    "url": "/blog/2018/07/14/lolcat-in-64-arm-assembly/",
+    "date": "2018-07-14",
+    "excerpt": "Some Stuff in Lolcat"
+  },
+  {
+    "title": "Archive",
+    "url": "/blog/",
+    "date": "1970-01-01",
+    "excerpt": ""
+  }
+]
