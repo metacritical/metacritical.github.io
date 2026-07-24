@@ -290,6 +290,11 @@ fi
 # Keep custom domain mapping in generated output.
 printf 'selfdotsend.com\n' > "$BLOG_DIR/public/CNAME"
 
+# Keep Google site verification file in generated output (served at domain root).
+if [ -f "$BLOG_DIR/google89d55da10b1c8bdf.html" ]; then
+  cp "$BLOG_DIR/google89d55da10b1c8bdf.html" "$BLOG_DIR/public/"
+fi
+
 # Normalize Org-exported file:// URLs to site-root absolute URLs.
 find "$BLOG_DIR/public" -type f -name "*.html" -print0 | \
   xargs -0 sed -i '' \
