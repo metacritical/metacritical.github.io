@@ -54,9 +54,9 @@ complex systems understandable.
 :CUSTOM_ID: current-work
 :END:
 
-** VoxLogic.ai — CTO
+** [[https://voxlogic.ai][VoxLogic.ai]] — CTO
 :PROPERTIES:
-:CUSTOM_ID: voxlogic-ai-cto
+:CUSTOM_ID: https-voxlogic-ai-voxlogic-ai-cto
 :END:
 
 Since February 2025, Pankaj has been leading the engineering of a multi-tenant
