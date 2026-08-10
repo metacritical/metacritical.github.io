@@ -71,6 +71,8 @@ The work includes low-latency orchestration, provider-agnostic voice-session
 management, LLM context engineering, query rewriting, prepaid billing, and
 tenant isolation.
 
+[[https://techbullion.com/beyond-the-busy-tone-how-voxlogic-engineered-the-pause-out-of-voice-ai/][TechBullion profile: Beyond the Busy Tone — How VoxLogic Engineered the Pause Out of Voice AI]]
+
 ** ZenDiffusion — CTO and Principal Architect
 :PROPERTIES:
 :CUSTOM_ID: zendiffusion-cto-and-principal-architect
