@@ -1,48 +1,217 @@
-#+TITLE: About
+#+TITLE: About Pankaj Doharey
 #+AUTHOR: Pankaj Doharey
 #+DATE: 2025-04-12
-#+OPTIONS: toc:t
+#+DESCRIPTION: Pankaj Doharey is an AI systems architect, CTO, and fullstack technology leader with 17 years of production software experience.
+#+OPTIONS: toc:nil
+
+* About Pankaj
+:PROPERTIES:
+:CUSTOM_ID: about-pankaj
+:END:
+
+Pankaj Doharey is an AI systems architect, CTO, and fullstack technology
+leader with 17 years of experience building production software.
+
+His career spans voice AI, generative media, fintech, healthcare logistics,
+developer tooling, data platforms, and high-concurrency web applications. He
+combines hands-on engineering with architecture, technical leadership, and the
+day-to-day work of turning ambiguous product requirements into maintainable
+systems.
+
+Today, he focuses on production AI rather than prototype-only demos:
+real-time voice agents, retrieval-augmented workflows, diffusion-backed
+creative tooling, and infrastructure that keeps model-backed products
+observable, fast, and reliable.
+
+[[https://github.com/metacritical][GitHub]] · [[https://www.linkedin.com/in/pankaj-doharey][LinkedIn]] · [[mailto:pankajdoharey@gmail.com][Email]]
+
+* From web applications to AI and telecom
+:PROPERTIES:
+:CUSTOM_ID: from-web-applications-to-ai-and-telecom
+:END:
+
+The career began with web applications: PHP, Drupal, Zen Cart, and client-
+facing products. It grew through Ruby on Rails systems, analytics platforms,
+ETL pipelines, logistics software, and developer tools.
+
+Over time, the work moved into systems where software has to coordinate more
+than a browser request. That includes real-time tracking, financial
+origination, healthcare logistics, GPU-backed image generation, and telecom
+infrastructure.
+
+Telecom and voice systems still use a great deal of web technology: APIs,
+databases, queues, distributed services, cloud infrastructure, and web
+frontends. The difference is that the system must also handle live audio,
+signalling, provider integrations, strict latency budgets, and failures while
+people are actively using it.
+
+That path led naturally to AI systems. The central engineering questions stay
+the same: where state lives, how services fail, how data moves, and how to keep
+complex systems understandable.
+
+* Current work
+:PROPERTIES:
+:CUSTOM_ID: current-work
+:END:
+
+** VoxLogic.ai — CTO
+:PROPERTIES:
+:CUSTOM_ID: voxlogic-ai-cto
+:END:
+
+Since February 2025, Pankaj has been leading the engineering of a multi-tenant
+voice-AI platform for real-time customer interactions.
+
+The platform spans Java 21 voice services, AWS Bedrock Nova Sonic and Google
+Gemini Live, Asterisk PBX, AudioSocket TCP, WebSocket, Ruby on Rails, Stimulus,
+Hotwire, PostgreSQL, Redis, billing, scheduling, and retrieval-augmented
+support workflows.
+
+The work includes low-latency orchestration, provider-agnostic voice-session
+management, LLM context engineering, query rewriting, prepaid billing, and
+tenant isolation.
+
+** ZenDiffusion — CTO and Principal Architect
+:PROPERTIES:
+:CUSTOM_ID: zendiffusion-cto-and-principal-architect
+:END:
+
+From 2023 to 2025, Pankaj architected generative-image infrastructure serving
+more than 15,000 daily active users. He designed distributed services for
+GPU-intensive workloads, integrated Stable Diffusion and Replicate inference
+paths, maintained 99.99% uptime across customer-facing generation flows, and
+mentored a team of five developers.
+
+* Earlier engineering work
+:PROPERTIES:
+:CUSTOM_ID: earlier-engineering-work
+:END:
+
+- **OneMain Financial:** Led fullstack engineering for a consumer loan-
+  origination platform spanning Rails, Java, verification workflows, and
+  mainframe-era DealerTrack integrations.
+- **BigBinary:** Led product and engineering delivery for gene-therapy
+  logistics, reusable form infrastructure, and invoicing systems.
+- **CamBioScience / Obrizum:** Built Clojure and ClojureScript pipelines for
+  adaptive learning and enterprise course-content delivery.
+- **Quantiply:** Designed Python and Apache Zeppelin analytics pipelines on
+  OpenShift for enterprise risk monitoring.
+- **Black Duck / OpenHub:** Architected ETL processing for more than 500 GB of
+  repository data daily across more than 670,000 open-source projects, and
+  contributed language-parser support in C and Ragel.
+- **Fishsource and Fuel Networks:** Built Ruby on Rails, PHP, Drupal, and
+  e-commerce applications for production web platforms.
+
+* What I build
+:PROPERTIES:
+:CUSTOM_ID: what-i-build
+:END:
+
+- **Voice AI:** Real-time speech-to-speech systems, telephony integration,
+  session orchestration, and automated customer support.
+- **LLM systems:** Agents, retrieval-augmented generation, context
+  engineering, query rewriting, evaluation, and human-in-the-loop workflows.
+- **Generative AI:** Stable Diffusion, model-serving architecture, GPU
+  workload coordination, and creative production systems.
+- **Fullstack platforms:** TypeScript, JavaScript, Ruby, Java, Python, Rails,
+  React, GraphQL, PostgreSQL, Redis, AWS, Docker, and Kubernetes.
+- **Developer tools:** Emacs and Org-mode tooling, programming languages,
+  functional software, and AI-assisted development interfaces.
+
+* Selected projects
+:PROPERTIES:
+:CUSTOM_ID: selected-projects
+:END:
+
+- **VoxLogic.ai:** Voice-AI platform for real-time customer-agent workflows,
+  low-latency orchestration, LLM context engineering, and RAG-backed support.
+- **ZenDiffusion:** Production generative-image infrastructure combining
+  Stable Diffusion, Replicate, GPU routing, and web applications.
+- **Skinny Deep Language Model (Teensy):** A self-trained 12.35-million-
+  parameter, 30-layer language model built from scratch.
+- **Anton AutoComp:** An Emacs plugin for precision pair programming and LLM
+  context engineering.
+- **JSONRecord:** A Ruby document-database abstraction with more than 10,000
+  downloads.
+- **AOG:** The customized Org-mode publishing system used to build this site.
+
+The site also documents earlier explorations in editor architecture, including
+[[/blog/2018/08/06/learn-to-write-an-editor/][Writing a Programmer's Editor]] and
+[[/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/][a gap buffer implemented in Scheme]].
+
+* How I work
+:PROPERTIES:
+:CUSTOM_ID: how-i-work
+:END:
+
+** Stay close to the implementation
+:PROPERTIES:
+:CUSTOM_ID: stay-close-to-the-implementation
+:END:
+
+Architecture is strongest when it is informed by real code, production
+failures, operational data, and the experience of the people using the system.
+
+** Design for the real constraints
+:PROPERTIES:
+:CUSTOM_ID: design-for-the-real-constraints
+:END:
+
+Latency, cost, reliability, model quality, provider failures, data movement,
+and human review are part of the product — not details to postpone.
+
+** Make complex systems legible
+:PROPERTIES:
+:CUSTOM_ID: make-complex-systems-legible
+:END:
+
+Good abstractions, clear boundaries, observability, and documentation allow a
+team to move quickly without losing control of the system.
+
+** Teach while building
+:PROPERTIES:
+:CUSTOM_ID: teach-while-building
+:END:
+
+Pankaj uses architecture reviews, paired programming, mentoring, and writing
+to make hard-won engineering knowledge reusable.
 
 * About Self dot send
 :PROPERTIES:
 :CUSTOM_ID: about-self-dot-send
 :END:
 
-Self dot send is a computing blog focused on programming languages, software
-design, data structures, systems programming, and applied AI topics such as
-large language models and speech recognition. [[https://selfdotsend.com][selfdotsend.com]]
+Self dot send is Pankaj's engineering notebook. It covers the ideas and
+implementation details behind programming languages, web and distributed
+systems, telecom and voice infrastructure, developer tools, and applied AI.
 
-It publishes hands-on tutorials, including editor internals like gap buffers,
-and practical notes on Unix tooling, ARM assembly, and day-to-day engineering
-work.
+Most posts begin with a problem encountered while building software. The goal
+is to explain the model, show the implementation, and record the trade-offs
+that are easy to lose once the code works.
 
-Most posts come from problems I ran into while building software, then wrote up
-as notes others can reuse.
+Posts are written in Org files and published through an editor-first workflow
+using [[https://github.com/metacritical/AOG][AOG]], a customized Emacs Org-mode static publishing system.
 
-* About the Author
+* Short bio
 :PROPERTIES:
-:CUSTOM_ID: about-the-author
+:CUSTOM_ID: short-bio
 :END:
 
-Pankaj Doharey is a software architect working on AI systems, voice agents,
-telephony infrastructure, and distributed software.
+Pankaj Doharey is an AI systems architect, CTO, and fullstack technology
+leader with 17 years of experience across voice AI, generative media, fintech,
+healthcare logistics, developer tooling, and high-concurrency web platforms.
+He currently leads VoxLogic.ai, where he builds low-latency voice-agent
+systems, LLM context and retrieval workflows, and multi-tenant production
+infrastructure.
 
-His interests include Emacs and Org-mode customization, functional
-programming, systems languages, LLM systems, speech-to-text tooling, and
-applied market analysis. [[https://github.com/metacritical][GitHub: metacritical]]
-
-He cares about practical architecture: reliable systems, good performance, and
-shipping useful ML features.
-
-* About this Blog
+* Build something useful
 :PROPERTIES:
-:CUSTOM_ID: about-this-blog
+:CUSTOM_ID: build-something-useful
 :END:
 
-This blog is powered by AOG (Act of Genius), a fork of
-[[https://github.com/kelvinh/org-page][org-page]], an Emacs Org-mode static
-publishing system, customized with the metacritical/selfdotsend theme.
-[[https://github.com/metacritical/AOG][AOG on GitHub]]
+If you are building a difficult AI, voice, telecom, or distributed-systems
+product, [[mailto:pankajdoharey@gmail.com][get in touch]].
 
-Posts are written in Org files and published from an editor-first workflow, so
-I can iterate quickly without leaving Emacs.
+The most interesting problems are the ones where the demo is easy but the
+production system is hard: reliability, integration, evaluation, latency,
+cost, and the human workflows around intelligent software.

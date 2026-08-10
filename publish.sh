@@ -202,9 +202,14 @@ generate_labeled_diagram() {
   echo "Generated gapbuffer-$name.png ($(identify "$out" | awk '{print $3}'))"
 }
 
-generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
-generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
-generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
+if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
+  # The labeled diagrams are also generated assets, so create their destination
+  # directory before writing the cache hashes.
+  mkdir -p "$ASSET_DIR"
+  generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
+  generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
+  generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
+fi
 
 # Convert ditaa-generated diagrams from default green to #BBFF00,
 # matching the gapbuffer diagram fill color. Only rewrites files where
