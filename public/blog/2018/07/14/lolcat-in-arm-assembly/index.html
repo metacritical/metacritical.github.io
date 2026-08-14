@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -89,10 +89,10 @@
   <ul class="article-tags"><li><a class="article-tag" href="/tags/lolcat/">lolcat</a></li><li><a class="article-tag" href="/tags/arm-assembly/">arm assembly</a></li><li><a class="article-tag" href="/tags/assembler/">assembler</a></li></ul>
   <p>
 <code>lolcat</code> is one of those gloriously useless little Unix programs that everybody
-loves anyway. It reads text and prints it back in rainbow colours — the same bytes
+loves anyway. It reads text and prints it back in rainbow colours - the same bytes
 you piped in, now dressed for a party. The original is a Ruby gem; there are C and
 x86 assembly ports floating around. This is a port of the idea to <i>64-bit ARM</i>
-assembly — AArch64 — the instruction set inside every modern phone, every Apple
+assembly - AArch64 - the instruction set inside every modern phone, every Apple
 Silicon Mac, and every Raspberry Pi from the 3 onward.
 </p>
 
@@ -191,17 +191,17 @@ surface this program touches.
 
 <p>
 The clever trick that keeps the assembly small: pre-render every colour escape as a
-<i>fixed-width</i> string. Each escape is written with a padded three-digit colour code —
-ANSI happily accepts leading zeros — so every entry is exactly <b>11 bytes</b>:
+<i>fixed-width</i> string. Each escape is written with a padded three-digit colour code -
+ANSI happily accepts leading zeros - so every entry is exactly <b>11 bytes</b>:
 </p>
 
-<pre class="example" id="org924d6c4">
+<pre class="example" id="org82b1f9f">
 ESC [ 3 8 ; 5 ; N N N m      =&gt;  "\033[38;5;196m"   (11 bytes)
 </pre>
 
 <p>
 With a fixed stride, emitting colour <i>i</i> is just "write 11 bytes starting at
-<code>COLORS + i*11</code>". No integer-to-string conversion at runtime — the hard part is done
+<code>COLORS + i*11</code>". No integer-to-string conversion at runtime - the hard part is done
 once, at assembly time, in the <code>.data</code> section.
 </p>
 
@@ -241,11 +241,11 @@ syscalls (which only clobber <code>x0</code>) never stomp on it:
 </p>
 
 <ul class="org-ul">
-<li><code>x19</code> — bytes read in the current block</li>
-<li><code>x20</code> — pointer to the buffer</li>
-<li><code>x21</code> — index into the current block</li>
-<li><code>x23</code> — the rolling colour counter</li>
-<li><code>x24</code> — the line counter (drives the diagonal shift)</li>
+<li><code>x19</code> - bytes read in the current block</li>
+<li><code>x20</code> - pointer to the buffer</li>
+<li><code>x21</code> - index into the current block</li>
+<li><code>x23</code> - the rolling colour counter</li>
+<li><code>x24</code> - the line counter (drives the diagonal shift)</li>
 </ul>
 
 <div class="org-src-container">
@@ -316,7 +316,7 @@ syscalls (which only clobber <code>x0</code>) never stomp on it:
     <span class="org-keyword">mov</span>     x8, #93             <span class="org-comment-delimiter">// </span><span class="org-comment">exit
 </span>    <span class="org-keyword">svc</span>     #0
 
-<span class="org-comment-delimiter">// </span><span class="org-comment">write(1, x1, x2) &#8212; leaf helper, clobbers only x0/x8
+<span class="org-comment-delimiter">// </span><span class="org-comment">write(1, x1, x2) - leaf helper, clobbers only x0/x8
 </span><span class="org-function-name">write_out</span>:
     <span class="org-keyword">mov</span>     x0, #1              <span class="org-comment-delimiter">// </span><span class="org-comment">fd = stdout
 </span>    <span class="org-keyword">mov</span>     x8, #64             <span class="org-comment-delimiter">// </span><span class="org-comment">write
@@ -342,7 +342,11 @@ we do it the classic way with <code>udiv</code> and <code>msub</code>:
 
 <p>
 <code>msub Wd, Wn, Wm, Wa</code> computes <code>Wa - (Wn * Wm)</code>, which is exactly <code>counter - q*NCOLORS</code>
-— the remainder. That remainder indexes the rainbow, and multiplying by <code>CWIDTH</code>
+</p>
+<ul class="org-ul">
+<li>the remainder. That remainder indexes the rainbow, and multiplying by <code>CWIDTH</code></li>
+</ul>
+<p>
 turns the index into a byte offset into <code>COLORS</code>.
 </p>
 
@@ -354,7 +358,7 @@ row.
 </p>
 
 <p>
-Notice there is no buffering of output — we issue a <code>write</code> per escape and per
+Notice there is no buffering of output - we issue a <code>write</code> per escape and per
 character. That is wasteful (thousands of tiny syscalls), but it keeps the program
 honest and readable. Batching the escape and the byte into one buffer before writing is
 the obvious optimisation, and a good exercise to try next.
@@ -378,7 +382,7 @@ cat /etc/os-release | ./lolcat
 </div>
 
 <p>
-No linker flags, no libraries — <code>_start</code> is the entry point and the kernel is the only
+No linker flags, no libraries - <code>_start</code> is the entry point and the kernel is the only
 dependency.
 </p>
 
@@ -389,7 +393,7 @@ dependency.
 <p>
 This is written for the <i>Linux</i> syscall ABI. macOS on Apple Silicon is also AArch64,
 but it uses a different convention: syscalls go through <code>svc #0x80</code>, the syscall number
-lives in <code>x16</code>, and the numbers carry a <code>0x2000000</code> class bit — so <code>write</code> is
+lives in <code>x16</code>, and the numbers carry a <code>0x2000000</code> class bit - so <code>write</code> is
 <code>0x2000004</code>, not <code>64</code>. The register-and-lookup-table logic above is identical; only the
 three syscall stubs change. Port those and the same rainbow runs on a Mac.
 </p>
@@ -402,7 +406,7 @@ three syscall stubs change. Port those and the same rainbow runs on a Mac.
 Because <code>lolcat</code> is small enough to hold in your head and silly enough to make
 assembly fun. In about seventy instructions you touch raw syscalls, ANSI escapes,
 integer division without a divide-and-mod instruction, position-independent data
-access with <code>adrp</code> / <code>:lo12:</code>, and the AArch64 register conventions — all in service of
+access with <code>adrp</code> / <code>:lo12:</code>, and the AArch64 register conventions - all in service of
 making <code>cat</code> wear a rainbow. That is the best kind of useless.
 </p>
 

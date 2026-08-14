@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Implementing incremental search and replace — from naive string matching to efficient algorithms." />
+  <meta name="description" content="Implementing incremental search and replace - from naive string matching to efficient algorithms." />
   <meta name="keywords" content="scheme, editor, search, replace, incremental, regex" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -90,7 +90,7 @@
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/search/">Search</a></li><li><a class="article-tag" href="/tags/replace/">Replace</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
 In <a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Part 7</a> we made the screen fast. Now we add the feature a programmer reaches for more
-than any other after basic editing: search. But not just any search — <i>incremental</i> search,
+than any other after basic editing: search. But not just any search - <i>incremental</i> search,
 the kind where matches light up as you type, before you have finished the query. Once you
 have used it you cannot go back.
 </p>
@@ -108,7 +108,7 @@ patterns and modest files that dominate real editing, it is more than fast enoug
 
 <p>
 Our buffer, remember, has a <i>gap</i> in the middle (Part 3). The simplest correct approach is to
-search the logical text — the string with the gap removed. We already have
+search the logical text - the string with the gap removed. We already have
 <code>gap-buffer-&gt;string</code>, so:
 </p>
 
@@ -152,15 +152,17 @@ bottom, gives us a working <code>search-forward</code>:
 </div>
 
 <p>
-<b>Incremental Search — The Emacs <code>isearch</code> Trick</b>
+<b>Incremental Search - The Emacs <code>isearch</code> Trick</b>
 </p>
 
 <p>
 A one-shot "type the whole query, then jump" search is fine, but emacs' <code>C-s</code> does something
 better. Each character you add <i>narrows</i> the search and moves point in real time. Delete a
-character and it <i>widens</i> back. The insight that makes this feel magical — and keeps it fast
-— is that you never re-search from scratch.
+character and it <i>widens</i> back. The insight that makes this feel magical - and keeps it fast
 </p>
+<ul class="org-ul">
+<li>is that you never re-search from scratch.</li>
+</ul>
 
 <p>
 Incremental search maintains a small stack of <i>states</i>, one per keystroke of the query. Each
@@ -202,7 +204,7 @@ state.
 
 <p>
 The stack-of-states design is the whole reason backspace is instant: undoing a keystroke is a
-<code>cdr</code>, not a re-computation. This is a recurring theme in editor design — <i>store the history
+<code>cdr</code>, not a re-computation. This is a recurring theme in editor design - <i>store the history
 of an interaction and you get undo of that interaction for free</i>. We will see it again in
 Part 10 with the command log.
 </p>
@@ -212,18 +214,18 @@ Part 10 with the command log.
 </p>
 
 <p>
-Naive search is <code>O(n·m)</code>. For interactive editing that never matters — you are searching a
+Naive search is <code>O(n·m)</code>. For interactive editing that never matters - you are searching a
 file that fits on screen, for a word a handful of characters long. But it is worth knowing
 the two classic algorithms that beat it, because they teach opposite lessons.
 </p>
 
 <ul class="org-ul">
 <li><b>Knuth-Morris-Pratt (KMP)</b> precomputes, from the pattern, a table telling it how far it can
-safely skip when a mismatch occurs — so it never re-examines a text character. This gives a
+safely skip when a mismatch occurs - so it never re-examines a text character. This gives a
 guaranteed <code>O(n + m)</code>. Its lesson: <i>preprocess the pattern to avoid backtracking</i>.</li>
 
 <li><b>Boyer-Moore</b> scans the pattern <i>right to left</i> and, on a mismatch, jumps ahead by whole
-pattern-lengths using a "bad character" table. In practice it is <i>sublinear</i> — it often
+pattern-lengths using a "bad character" table. In practice it is <i>sublinear</i> - it often
 skips most of the text without looking at it. Its lesson: <i>the characters you do not have to
 read are the ones that make you fast</i>. It is what <code>grep</code> uses.</li>
 </ul>
@@ -256,8 +258,8 @@ Here is the heart of KMP's failure-table idea, the part worth internalising:
 </div>
 
 <p>
-For our editor we will keep naive search as the default — clarity beats a speedup nobody can
-perceive — but the door is open to swap in KMP or Boyer-Moore behind the same
+For our editor we will keep naive search as the default - clarity beats a speedup nobody can
+perceive - but the door is open to swap in KMP or Boyer-Moore behind the same
 <code>string-search</code> interface the day we want to search a ten-megabyte log file.
 </p>
 
@@ -266,15 +268,15 @@ perceive — but the door is open to swap in KMP or Boyer-Moore behind the same
 </p>
 
 <p>
-Literal search finds fixed strings. The real power tool is <i>regex</i> search — matching
+Literal search finds fixed strings. The real power tool is <i>regex</i> search - matching
 <i>patterns</i>. A full regex engine is a series unto itself, but the core is elegant: compile the
 pattern into a small state machine, then run the machine against the text.
 </p>
 
 <p>
 The classic construction (Thompson's) turns a regex into a <i>nondeterministic finite
-automaton</i> (NFA) and simulates it. A tiny slice — matching one literal-or-wildcard token
-against a position — shows the shape:
+automaton</i> (NFA) and simulates it. A tiny slice - matching one literal-or-wildcard token
+against a position - shows the shape:
 </p>
 
 <div class="org-src-container">
@@ -303,7 +305,7 @@ against a position — shows the shape:
 </div>
 
 <p>
-This is a backtracking matcher — simple, and prone to pathological blowup on adversarial
+This is a backtracking matcher - simple, and prone to pathological blowup on adversarial
 patterns, which is why production engines compile to a <i>deterministic</i> automaton instead. But
 it is enough to search for <code>foo.*bar</code> in a source file, and it makes the point: regex search
 is not mysterious, it is a small interpreter for a small language.
@@ -314,8 +316,8 @@ is not mysterious, it is a small interpreter for a small language.
 </p>
 
 <p>
-Search's natural partner is replace. The interactive form — emacs' <code>query-replace</code>,
-<code>M-%</code> — walks match to match and asks <code>y/n</code> at each one:
+Search's natural partner is replace. The interactive form - emacs' <code>query-replace</code>,
+<code>M-%</code> - walks match to match and asks <code>y/n</code> at each one:
 </p>
 
 <div class="org-src-container">
@@ -352,18 +354,18 @@ The editor can find and change text:
 
 <ol class="org-ol">
 <li>A naive literal search primitive that is fast enough for real editing.</li>
-<li>Incremental search with a state stack — instant narrowing and free backspace.</li>
+<li>Incremental search with a state stack - instant narrowing and free backspace.</li>
 <li>An understanding of KMP and Boyer-Moore for when files get large.</li>
 <li>A minimal regex matcher, and interactive query-replace on top of it.</li>
 </ol>
 
 <p>
-The text is now searchable, but it is still monochrome — a wall of identical glyphs. The next
+The text is now searchable, but it is still monochrome - a wall of identical glyphs. The next
 feature transforms how code <i>reads</i>: colour.
 </p>
 
 <p>
-In the <a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">next part</a> we build a syntax highlighter — and there is a special satisfaction in
+In the <a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">next part</a> we build a syntax highlighter - and there is a special satisfaction in
 writing a Scheme highlighter, in Scheme, that colours its own source.
 </p>
 
@@ -422,7 +424,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">

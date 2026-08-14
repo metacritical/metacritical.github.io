@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Looking back at the series — what we learned, what worked, and answering the questions from Part 1." />
+  <meta name="description" content="Looking back at the series - what we learned, what worked, and answering the questions from Part 1." />
   <meta name="keywords" content="scheme, editor, reflections, lessons, power-continuum" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -89,11 +89,11 @@
 </style>
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/editor/">Editor</a></li><li><a class="article-tag" href="/tags/reflections/">Reflections</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
-In <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> we built the extensibility layer, and with it the editor was complete — a
+In <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> we built the extensibility layer, and with it the editor was complete - a
 working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap.
 Eleven parts ago, in <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a>, this was just a provocation and a Feynman quote. Now there is
-actual code behind the argument. This final part is a reflection, and a return — with the
-benefit of having built the thing — to the questions we started with.
+actual code behind the argument. This final part is a reflection, and a return - with the
+benefit of having built the thing - to the questions we started with.
 </p>
 
 <p>
@@ -106,15 +106,15 @@ the ones above it:
 </p>
 
 <ul class="org-ul">
-<li><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Part 2</a> &amp; <a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Part 3</a> — the <i>gap buffer</i>: the data structure that makes typing <code>O(1)</code>.</li>
-<li><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Part 4</a> — <i>lines and display</i>: turning a flat array into rows and columns.</li>
-<li><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Part 5</a> — <i>terminal I/O</i>: raw mode, escape sequences, the FFI down to C.</li>
-<li><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Part 6</a> — <i>keymaps</i>: the tree that gives an editor its personality.</li>
-<li><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Part 7</a> — <i>redisplay</i>: drawing only what changed.</li>
-<li><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> — <i>search</i>: incremental, with a state stack.</li>
-<li><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> — <i>syntax highlighting</i>: tokenize, then fontify.</li>
-<li><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Part 10</a> — <i>undo</i>: every edit a reversible command.</li>
-<li><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> — <i>modes and hooks</i>: extensibility as a shape, not a feature.</li>
+<li><a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">Part 2</a> &amp; <a href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">Part 3</a> - the <i>gap buffer</i>: the data structure that makes typing <code>O(1)</code>.</li>
+<li><a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Part 4</a> - <i>lines and display</i>: turning a flat array into rows and columns.</li>
+<li><a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">Part 5</a> - <i>terminal I/O</i>: raw mode, escape sequences, the FFI down to C.</li>
+<li><a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Part 6</a> - <i>keymaps</i>: the tree that gives an editor its personality.</li>
+<li><a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Part 7</a> - <i>redisplay</i>: drawing only what changed.</li>
+<li><a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> - <i>search</i>: incremental, with a state stack.</li>
+<li><a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> - <i>syntax highlighting</i>: tokenize, then fontify.</li>
+<li><a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Part 10</a> - <i>undo</i>: every edit a reversible command.</li>
+<li><a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">Part 11</a> - <i>modes and hooks</i>: extensibility as a shape, not a feature.</li>
 </ul>
 
 <p>
@@ -128,7 +128,7 @@ that genuinely edits text.
 
 <p>
 <b>The gap buffer was the right call.</b> It was simple enough to write in an afternoon, its
-performance characteristics were exactly as advertised, and — crucially — it never fought us.
+performance characteristics were exactly as advertised, and - crucially - it never fought us.
 Every later layer, from line tracking to undo, sat comfortably on top of "an array with a
 split point." The instinct from Part 2, that <i>simple primitives that compose well</i> beat clever
 ones, held all the way through.
@@ -136,7 +136,7 @@ ones, held all the way through.
 
 <p>
 <b>Scheme was expressive enough.</b> First-class functions turned keymaps into data (Part 6) and
-hooks into lists (Part 11). Closures gave us "advice" — wrapping a command — for free. Tagged
+hooks into lists (Part 11). Closures gave us "advice" - wrapping a command - for free. Tagged
 vectors were a perfectly adequate stand-in for records. At no point did the language run out of
 room. The editor never once <i>needed</i> to drop into C for expressiveness.
 </p>
@@ -155,15 +155,15 @@ collaboration. It is a lesson that generalises far beyond editors.
 <p>
 <b>Terminal I/O was the ugliest boundary.</b> Everything else was clean Scheme; the terminal
 dragged us through termios, escape sequences, and the FFI in Part 5. This is not Scheme's
-fault — it is the operating system's — but it is where the "<code>100%</code> in one language" dream met
+fault - it is the operating system's - but it is where the "<code>100%</code> in one language" dream met
 reality. You <i>cannot</i> talk to a terminal without, somewhere, calling C. Even our
 all-Scheme editor has a small, unavoidable C shadow at its lowest layer. Honesty compels
 admitting the "<code>100%</code>" is <code>100%</code> <i>above</i> the syscall boundary, not below it.
 </p>
 
 <p>
-<b>Performance in a garbage-collected language takes care.</b> The hot paths — typing, redisplay,
-re-tokenizing — all had to be written to avoid allocation and needless copying. Our Part 4
+<b>Performance in a garbage-collected language takes care.</b> The hot paths - typing, redisplay,
+re-tokenizing - all had to be written to avoid allocation and needless copying. Our Part 4
 renderer that converted the <i>whole buffer</i> to a string every frame was a deliberate
 simplification we had to walk back in Part 7. A GC'd language does not make you slow, but it
 does punish carelessness more visibly than C, where the costs are at least in plain sight.
@@ -176,7 +176,7 @@ does punish carelessness more visibly than C, where the costs are at least in pl
 <p>
 Now the real question from Part 1: <i>where does the sweet spot lie in the <a href="http://www.paulgraham.com/avg.html">Power Continuum</a>?</i> We
 asked whether an editor written in <code>100%</code> Scheme, extended in the same Scheme, would actually
-<i>help</i> — or whether the delicate balance between a C runtime and a scripting language exists
+<i>help</i> - or whether the delicate balance between a C runtime and a scripting language exists
 <i>for a reason</i>, with a penalty when disturbed.
 </p>
 
@@ -186,13 +186,13 @@ Having built it, my answer is: <i>both are true, and that is the whole insight.<
 
 <p>
 The <code>100%</code> approach genuinely delivered on power. There is no borrowed-power problem in our
-editor — the user can redefine <code>cmd-save-file</code> itself, something no elisp author can do to
+editor - the user can redefine <code>cmd-save-file</code> itself, something no elisp author can do to
 emacs' C core. When the extension language <i>is</i> the implementation language, the ceiling
 disappears. That is real, and it is intoxicating.
 </p>
 
 <p>
-But the balance emacs struck exists for a reason too, and the reason is not weakness — it is
+But the balance emacs struck exists for a reason too, and the reason is not weakness - it is
 <i>leverage</i>. Emacs keeps its performance-critical, syscall-adjacent core in C precisely so that
 the elisp layer can stay high-level and safe. The "power deficiency" we lamented in Part 1 is
 also a <i>safety rail</i>: elisp cannot corrupt the buffer's memory because it cannot reach it. Our
@@ -206,15 +206,15 @@ redefine anything can break anything.
 
 <p>
 With hindsight, the split emacs chose looks less like a compromise and more like an <i>engineered
-boundary</i>. C for the gap buffer, the redisplay engine, and the syscalls — the parts where
+boundary</i>. C for the gap buffer, the redisplay engine, and the syscalls - the parts where
 performance and safety are non-negotiable. Elisp for everything a user might want to change.
 The boundary is drawn exactly where power matters least and performance matters most. That is
 not a failure of nerve; it is good taste.
 </p>
 
 <p>
-Our editor draws the boundary in a different place — as low as it possibly can, at the raw
-syscall — and pays for it with the fragility of a system where user code and core code are
+Our editor draws the boundary in a different place - as low as it possibly can, at the raw
+syscall - and pays for it with the fragility of a system where user code and core code are
 peers. Neither is <i>wrong</i>. They are different points on the continuum, chosen for different
 values.
 </p>
@@ -227,7 +227,7 @@ values.
 <li><b>Track lexer state across lines from the start</b> (Part 9). Single-line re-tokenizing was a
 fine first cut, but multi-line strings and block comments make it wrong in ways that are
 annoying to retrofit.</li>
-<li><b>Design the command log first</b> (Part 10). Because everything — undo, macros, recovery — is a
+<li><b>Design the command log first</b> (Part 10). Because everything - undo, macros, recovery - is a
 reading of that log, building it early would have simplified several earlier parts rather
 than bolting it on.</li>
 <li><b>Consider a rope for large files</b> (Part 2). The gap buffer was right for our goals, but the
@@ -240,7 +240,7 @@ single <code>O(N)</code> scroll-to-end and full-buffer operations would bite on 
 
 <p>
 We began with Feynman: <i>What I cannot create, I do not understand.</i> The point of this series was
-never to dethrone emacs or vim — they are the work of decades and thousands of hands. The point
+never to dethrone emacs or vim - they are the work of decades and thousands of hands. The point
 was to <i>understand</i> them by building, in miniature, the same machine. And it worked. I will
 never again wonder <i>how</i> a cursor moves, <i>why</i> a terminal flickers, <i>what</i> a keymap really is,
 or <i>where</i> an editor's power actually comes from. Those were abstractions before Part 1. They
@@ -250,7 +250,7 @@ are mechanisms now.
 <p>
 That is the deepest lesson, and it outlasts any editor: the fastest way to understand a system
 is to build the smallest honest version of it yourself. The gap buffer, the raw terminal, the
-keymap tree, the undo log — none of them are mysterious anymore, because we made them.
+keymap tree, the undo log - none of them are mysterious anymore, because we made them.
 </p>
 
 <p>
@@ -309,7 +309,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">

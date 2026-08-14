@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Implementing a gap buffer from scratch in Scheme — the core data structure for our editor." />
+  <meta name="description" content="Implementing a gap buffer from scratch in Scheme - the core data structure for our editor." />
   <meta name="keywords" content="scheme, editor, gap-buffer, data-structures, lisp" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -81,7 +81,7 @@
   </div>
 </div>
   
-<div id="org5f8676e" class="figure">
+<div id="org05b58dc" class="figure">
 <p><img src="/media/images/placeholder.png" alt="placeholder.png" width="708px" height="392px" data-fit="none" data-position="center" data-filter="invert" data-align="center" />
 </p>
 </div>
@@ -106,7 +106,7 @@ We are going to implement a gap buffer in Scheme.
 </p>
 
 <p>
-Remember the thesis from <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is an editor written entirely in a single language, where the user has <code>100%</code> power. Scheme is a Lisp. It is a general-purpose programming language powerful enough to build an editor in, yet simple enough to serve as an extension language. It has first-class functions, proper tail calls, macros, and garbage collection — all the ingredients we need.
+Remember the thesis from <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> - the goal is an editor written entirely in a single language, where the user has <code>100%</code> power. Scheme is a Lisp. It is a general-purpose programming language powerful enough to build an editor in, yet simple enough to serve as an extension language. It has first-class functions, proper tail calls, macros, and garbage collection - all the ingredients we need.
 </p>
 
 <p>
@@ -127,9 +127,9 @@ In Scheme, we represent this as a three-element vector:
 
 <div class="org-src-container">
 <pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A gap buffer is a vector:  #(charvec gap-start gap-end)
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">charvec   &#8212; a mutable vector of characters
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">gap-start &#8212; index where the gap begins (== cursor position)
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">gap-end   &#8212; index where the gap ends (exclusive)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">charvec   - a mutable vector of characters
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">gap-start - index where the gap begins (== cursor position)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">gap-end   - index where the gap ends (exclusive)
 </span>
 (<span class="org-keyword">define</span> (<span class="org-function-name">make-gap-buffer</span> capacity)
   (vector (make-vector capacity #\nul)  <span class="org-comment-delimiter">; </span><span class="org-comment">charvec
@@ -156,7 +156,7 @@ The accessors are trivial:
 </div>
 
 <p>
-When the buffer is fresh, the gap occupies the entire array. <code>gap-start</code> is 0 and <code>gap-end</code> is <code>capacity</code>. There is no text yet — just empty space waiting to be filled.
+When the buffer is fresh, the gap occupies the entire array. <code>gap-start</code> is 0 and <code>gap-end</code> is <code>capacity</code>. There is no text yet - just empty space waiting to be filled.
 </p>
 
 <p>
@@ -214,7 +214,7 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
 <pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">Insert a single character at the cursor.
 </span>(<span class="org-keyword">define</span> (<span class="org-function-name">gb-insert-char!</span> gb ch)
   (<span class="org-keyword">when</span> (= (gb-gap-size gb) 0)
-    (gb-resize! gb))  <span class="org-comment-delimiter">; </span><span class="org-comment">gap full &#8212; grow the buffer
+    (gb-resize! gb))  <span class="org-comment-delimiter">; </span><span class="org-comment">gap full - grow the buffer
 </span>  (<span class="org-keyword">let</span> ((buf (gb-buf gb))
         (gs   (gb-start gb)))
     (vector-set! buf gs ch)
@@ -233,11 +233,11 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
 </div>
 
 <p>
-Notice what is <i>not</i> here. No loops. No array shifts. No memory allocation (except on resize). Insertion is a single <code>vector-set!</code>. Deletion is just bumping a pointer. This is why gap buffers are fast — the complexity is pushed into cursor movement, which happens infrequently relative to typing.
+Notice what is <i>not</i> here. No loops. No array shifts. No memory allocation (except on resize). Insertion is a single <code>vector-set!</code>. Deletion is just bumping a pointer. This is why gap buffers are fast - the complexity is pushed into cursor movement, which happens infrequently relative to typing.
 </p>
 
 <p>
-<b>Resize — When the Gap Runs Out</b>
+<b>Resize - When the Gap Runs Out</b>
 </p>
 
 <p>
@@ -356,7 +356,7 @@ And here is a slightly larger test that exercises resize:
 <pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Start with a tiny gap (4 slots).
 </span>(<span class="org-keyword">define</span> <span class="org-function-name">gb</span> (string-&gt;gap-buffer <span class="org-string">"ABCDE"</span> 4))
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Insert 10 characters at position 0 &#8212; this will force two resizes.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Insert 10 characters at position 0 - this will force two resizes.
 </span>(gb-move-to! gb 0)
 (<span class="org-keyword">for-each</span> (<span class="org-keyword">lambda</span> (ch) (gb-insert-char! gb ch))
           (string-&gt;list <span class="org-string">"0123456789"</span>))
@@ -376,11 +376,11 @@ And here is a slightly larger test that exercises resize:
 </p>
 
 <p>
-The beauty of this implementation is that the <i>hot path</i> — typing — is essentially free. Each character typed is one <code>vector-set!</code> and one integer increment. No allocation, no copying, no garbage collection pressure.
+The beauty of this implementation is that the <i>hot path</i> - typing - is essentially free. Each character typed is one <code>vector-set!</code> and one integer increment. No allocation, no copying, no garbage collection pressure.
 </p>
 
 <p>
-Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor movements are small hops. The <code>O(N)</code> worst case (jumping from beginning to end of a large file) is a single tight loop over raw memory — on modern hardware, moving 100,000 characters takes microseconds.
+Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor movements are small hops. The <code>O(N)</code> worst case (jumping from beginning to end of a large file) is a single tight loop over raw memory - on modern hardware, moving 100,000 characters takes microseconds.
 </p>
 
 <p>
@@ -396,7 +396,7 @@ But a buffer full of characters is not yet an editor. We cannot display it. We c
 </p>
 
 <p>
-In the <a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">next part</a> we will build a line management layer on top of the gap buffer — because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
+In the <a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">next part</a> we will build a line management layer on top of the gap buffer - because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
 </p>
 
 <p>
@@ -454,7 +454,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">

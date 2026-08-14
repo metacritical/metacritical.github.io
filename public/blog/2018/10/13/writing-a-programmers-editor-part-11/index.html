@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="The extensibility layer — major modes, minor modes, hooks, and giving the user 100% power." />
+  <meta name="description" content="The extensibility layer - major modes, minor modes, hooks, and giving the user 100% power." />
   <meta name="keywords" content="scheme, editor, modes, extensibility, plugins, scripting" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -92,7 +92,7 @@
 In <a href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">Part 10</a> we built undo/redo. The editor can now hold text, display it, colour it, search
 it, and forgive mistakes. And now we arrive at the question that started this whole series in
 <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a>: <i>how much power should the user have?</i> This is the part where we make good on the
-answer — <code>100%</code>.
+answer - <code>100%</code>.
 </p>
 
 <p>
@@ -101,7 +101,7 @@ answer — <code>100%</code>.
 
 <p>
 Here is the thing most editors get backwards. They build a fixed program and then bolt a
-"plugin API" onto the side — a narrow, second-class channel through which extensions may
+"plugin API" onto the side - a narrow, second-class channel through which extensions may
 beg for capabilities the core deigns to expose. This is the <i>borrowed power</i> we criticised in
 Part 1: elisp can only do what the C runtime permits, vimscript only what vim's core allows.
 </p>
@@ -146,7 +146,7 @@ time, and it decides three things: the keymap, the tokenizer, and the indentatio
 
 <p>
 The editor picks a major mode when it opens a file, usually by extension. This is just a table
-lookup — and, being data, the user can extend it:
+lookup - and, being data, the user can extend it:
 </p>
 
 <div class="org-src-container">
@@ -173,13 +173,13 @@ lookup — and, being data, the user can extend it:
 
 <p>
 Where exactly one major mode is active, <i>any number</i> of <i>minor modes</i> can be layered on top.
-Line numbers, auto-indent, a spell-checker, a live-error overlay — each is an independent,
+Line numbers, auto-indent, a spell-checker, a live-error overlay - each is an independent,
 toggleable feature. The design challenge is composition: several minor modes may all want to
 bind keys or react to edits, without stepping on each other or on the major mode.
 </p>
 
 <p>
-We already have the tool for the keymap half of this problem — the keymap tree from Part 6.
+We already have the tool for the keymap half of this problem - the keymap tree from Part 6.
 Minor-mode keymaps stack in a priority list, searched before the major mode's map:
 </p>
 
@@ -203,10 +203,10 @@ Minor-mode keymaps stack in a priority list, searched before the major mode's ma
 </div>
 
 
-<div id="org5b3ebc3" class="figure">
+<div id="org61d9ec9" class="figure">
 <p><img src="/assets/blog/2018/10/13/writing-a-programmers-editor-part-11/mode-layers.png" alt="mode-layers.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>Keymap resolution order — active minor modes are consulted first, then the major mode, then the global map.</p>
+<p><span class="figure-number">Figure 1: </span>Keymap resolution order - active minor modes are consulted first, then the major mode, then the global map.</p>
 </div>
 
 <p>
@@ -248,7 +248,7 @@ without touching the core:
 </span>  (write-buffer-to-file eb)
   (run-hooks eb 'after-save-hook))               <span class="org-comment-delimiter">; </span><span class="org-comment">e.g. run a linter
 </span>
-<span class="org-comment-delimiter">;; </span><span class="org-comment">A user's configuration &#8212; pure Scheme, no special API.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">A user's configuration - pure Scheme, no special API.
 </span>(add-hook! 'before-save-hook
            (<span class="org-keyword">lambda</span> (eb) (strip-trailing-whitespace! eb)))
 
@@ -264,17 +264,17 @@ together a mode and a minor mode the core author never anticipated pairing.
 </p>
 
 <p>
-<b>The Scripting Surface — Delivering On <code>100%</code></b>
+<b>The Scripting Surface - Delivering On <code>100%</code></b>
 </p>
 
 <p>
 This is the promise from Part 1, made concrete. Because the editor is Scheme and the config is
-Scheme, the user's <code>init.scm</code> is not a limited settings file — it is a program with the full
+Scheme, the user's <code>init.scm</code> is not a limited settings file - it is a program with the full
 run of the editor's internals. There is no capability the core has that the user lacks.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">~/.editor/init.scm &#8212; a real program, not a config format.
+<pre class="src src-scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">~/.editor/init.scm - a real program, not a config format.
 </span>
 <span class="org-comment-delimiter">;; </span><span class="org-comment">Define a brand-new command in terms of existing primitives.
 </span>(<span class="org-keyword">define</span> (<span class="org-function-name">cmd-duplicate-line</span> eb)
@@ -282,11 +282,11 @@ run of the editor's internals. There is no capability the core has that the user
          (end   (eb-line-end eb (eb-current-line eb))))
     (buffer-insert-at! eb end (string-append <span class="org-string">"\n"</span> line))))
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Bind it &#8212; using the exact keymap machinery the core uses.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Bind it - using the exact keymap machinery the core uses.
 </span>(define-key! global-map (list (key '(ctrl) #\c) (key '(ctrl) #\d))
   cmd-duplicate-line)
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Redefine an existing command by wrapping it &#8212; advice, for free.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Redefine an existing command by wrapping it - advice, for free.
 </span>(<span class="org-keyword">let</span> ((original cmd-save-file))
   (set! cmd-save-file
         (<span class="org-keyword">lambda</span> (eb) (message eb <span class="org-string">"Saving..."</span>) (original eb))))
@@ -307,7 +307,7 @@ where the core is C and the extension language merely visits.
 <p>
 Honesty demands the flip side. Total power is total responsibility. A user who can redefine
 <code>cmd-save-file</code> can also <i>break</i> it. An extension that hangs in a hook hangs the editor. Emacs
-lives with exactly this — a bad <code>after-save-hook</code> can wedge your session — and it is the price
+lives with exactly this - a bad <code>after-save-hook</code> can wedge your session - and it is the price
 of the model. The C-runtime editors trade some of the user's power for the safety of a
 sandbox. Our editor, like emacs at its most extreme, hands the user the keys to everything and
 trusts them. Whether that is the right trade is the very question we set out to explore, and it
@@ -326,13 +326,13 @@ The editor is extensible to its core:
 <li>Major modes select per-language keymap, tokenizer, and indentation.</li>
 <li>Minor modes layer optional, composable features with priority-ordered keymaps.</li>
 <li>Hooks expose named moments in time for user code to run.</li>
-<li>The scripting surface is the editor's own internals — the <code>100%</code> power promise, delivered.</li>
+<li>The scripting surface is the editor's own internals - the <code>100%</code> power promise, delivered.</li>
 </ol>
 
 <p>
 The editor is complete. It is a working text editor written entirely in Scheme, extended in
 Scheme, with no runtime power gap. All that is left is to look back and ask whether it was
-worth it — and whether the answers we found match the questions we started with.
+worth it - and whether the answers we found match the questions we started with.
 </p>
 
 <p>
@@ -395,7 +395,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/10/06/writing-a-programmers-editor-part-10/">

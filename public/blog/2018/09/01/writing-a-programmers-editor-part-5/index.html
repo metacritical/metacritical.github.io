@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="How to take control of the terminal — raw mode, escape sequences, and turning a teletype into an interactive display." />
+  <meta name="description" content="How to take control of the terminal - raw mode, escape sequences, and turning a teletype into an interactive display." />
   <meta name="keywords" content="scheme, editor, terminal, raw-mode, termios, ffi" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -90,7 +90,7 @@
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/terminal/">Terminal</a></li><li><a class="article-tag" href="/tags/raw-mode/">Raw Mode</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
 In <a href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">Part 4</a> we built a line management layer and a viewport renderer. But that renderer
-only <i>returns strings</i> — it never actually paints anything on a screen. To turn those
+only <i>returns strings</i> - it never actually paints anything on a screen. To turn those
 strings into an interactive display, we have to talk to the terminal itself. And the
 terminal, it turns out, is a far stranger beast than it first appears.
 </p>
@@ -100,21 +100,21 @@ terminal, it turns out, is a far stranger beast than it first appears.
 </p>
 
 <p>
-The word <i>terminal</i> is a fossil. It descends directly from the teletype — a physical
+The word <i>terminal</i> is a fossil. It descends directly from the teletype - a physical
 machine, a keyboard bolted to a printer, that sent characters over a wire and printed the
 response on a roll of paper. There was no screen. There was no cursor to move around. You
 typed a line, pressed return, and the machine transmitted it.
 </p>
 
 <p>
-Modern terminal emulators — <code>xterm</code>, <code>iTerm</code>, <code>Alacritty</code>, the terminal inside your editor —
+Modern terminal emulators - <code>xterm</code>, <code>iTerm</code>, <code>Alacritty</code>, the terminal inside your editor -
 are elaborate pretenders. They emulate a device that has not existed in decades. And every
 quirk of that ancient device still leaks through. When you understand <i>why</i> the terminal
 behaves the way it does, its rules stop feeling arbitrary.
 </p>
 
 
-<div id="org04191e1" class="figure">
+<div id="orga788181" class="figure">
 <p><img src="/assets/blog/2018/09/01/writing-a-programmers-editor-part-5/terminal-pipeline.png" alt="terminal-pipeline.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>The terminal sits between the keyboard and our program, and speaks back in escape codes.</p>
@@ -126,7 +126,7 @@ behaves the way it does, its rules stop feeling arbitrary.
 
 <p>
 By default, a terminal runs in what is called <i>cooked mode</i> (or <i>canonical mode</i>). In this
-mode the kernel's terminal driver — the <i>line discipline</i> — sits between the keyboard and
+mode the kernel's terminal driver - the <i>line discipline</i> - sits between the keyboard and
 your program and does a great deal of helpful work on your behalf:
 </p>
 
@@ -141,7 +141,7 @@ return.</li>
 <p>
 For a shell command this is exactly what you want. For an editor it is a disaster. We want
 <i>every keystroke the instant it happens</i>. When the user presses the up arrow, we want to
-react immediately — not wait for a return that never comes. We want <code>Ctrl-C</code> to be a
+react immediately - not wait for a return that never comes. We want <code>Ctrl-C</code> to be a
 command we bind, not a signal that kills us. We want to draw the screen ourselves, so
 automatic echo is noise.
 </p>
@@ -156,7 +156,7 @@ To get all of this, we switch the terminal into <i>raw mode</i>.
 
 <p>
 Terminal behaviour is controlled by a C structure called <code>termios</code>. It holds four flag
-fields — input flags, output flags, control flags, and local flags — plus an array of
+fields - input flags, output flags, control flags, and local flags - plus an array of
 <i>control characters</i>. Switching to raw mode means clearing a specific set of bits, then
 installing the modified struct with <code>tcsetattr</code>.
 </p>
@@ -185,14 +185,14 @@ library. We need a bridge.
 
 <p>
 This is the moment the thesis from <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> gets its first real test. We promised an editor
-with <code>100%</code> power in Scheme — but the terminal is a hardware abstraction owned by the
+with <code>100%</code> power in Scheme - but the terminal is a hardware abstraction owned by the
 operating system, and the only door into it is C. Every language that talks to a terminal,
 including emacs, crosses this boundary. The <i>Foreign Function Interface</i> (FFI) is how a
 high-level language reaches down and calls C.
 </p>
 
 <p>
-In Chicken Scheme, the FFI is delightfully direct — you can embed C right in your Scheme
+In Chicken Scheme, the FFI is delightfully direct - you can embed C right in your Scheme
 source:
 </p>
 
@@ -219,7 +219,7 @@ source:
 </div>
 
 <p>
-Now the interesting part — flipping the bits that put us into raw mode:
+Now the interesting part - flipping the bits that put us into raw mode:
 </p>
 
 <div class="org-src-container">
@@ -239,7 +239,7 @@ Now the interesting part — flipping the bits that put us into raw mode:
 
 <p>
 With those three procedures we can wrap our whole editing session. Save the original state,
-go raw, do our work, and — crucially — <i>always</i> restore the terminal when we are done. A
+go raw, do our work, and - crucially - <i>always</i> restore the terminal when we are done. A
 terminal left in raw mode is a broken terminal: no echo, no line editing, nothing works.
 This is the single most common way to render a shell unusable while writing an editor.
 </p>
@@ -251,13 +251,13 @@ This is the single most common way to render a shell unusable while writing an e
     (dynamic-wind
       (<span class="org-keyword">lambda</span> () (enable-raw-mode saved))   <span class="org-comment-delimiter">; </span><span class="org-comment">before
 </span>      thunk                                 <span class="org-comment-delimiter">; </span><span class="org-comment">during
-</span>      (<span class="org-keyword">lambda</span> () (set-termios saved)))))    <span class="org-comment-delimiter">; </span><span class="org-comment">after &#8212; even on error</span>
+</span>      (<span class="org-keyword">lambda</span> () (set-termios saved)))))    <span class="org-comment-delimiter">; </span><span class="org-comment">after - even on error</span>
 </pre>
 </div>
 
 <p>
 The <code>dynamic-wind</code> here is doing heavy lifting. If the body throws an exception, if the user
-hits an error, if a <code>quit</code> command unwinds the stack — the <i>after</i> thunk still runs and the
+hits an error, if a <code>quit</code> command unwinds the stack - the <i>after</i> thunk still runs and the
 terminal is handed back the way we found it. This is the Scheme equivalent of C's
 "restore-on-exit" discipline, but far harder to forget.
 </p>
@@ -279,7 +279,7 @@ In raw mode, reading input is trivial: one byte at a time, no buffering, no wait
 </div>
 
 <p>
-But there is a subtlety. Special keys — the arrow keys, Home, End, Page Up — do not send a
+But there is a subtlety. Special keys - the arrow keys, Home, End, Page Up - do not send a
 single byte. They send an <i>escape sequence</i>: the escape character (<code>\e</code>, byte 27) followed
 by <code>[</code> and one or more bytes. Pressing the up arrow sends the three bytes <code>\e [ A</code>. So a
 robust <code>read-key</code> must peek after an escape to decode these:
@@ -309,7 +309,7 @@ robust <code>read-key</code> must peek after an escape to decode these:
 </div>
 
 <p>
-This is the same trick every terminal editor uses. There is no magic "arrow key" event —
+This is the same trick every terminal editor uses. There is no magic "arrow key" event -
 there is only a stream of bytes, and an agreed-upon convention for interpreting them. We
 will build a proper key-parser on top of this in <a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Part 6</a>.
 </p>
@@ -321,7 +321,7 @@ will build a proper key-parser on top of this in <a href="/blog/2018/09/08/writi
 <p>
 Reading is only half the conversation. To draw the screen we send <i>our own</i> escape
 sequences back to the terminal. These are commands, encoded as text, that the terminal
-interprets rather than prints. They all begin with the <i>Control Sequence Introducer</i> — the
+interprets rather than prints. They all begin with the <i>Control Sequence Introducer</i> - the
 two bytes <code>\e[</code>.
 </p>
 
@@ -334,7 +334,7 @@ two bytes <code>\e[</code>.
 </span>(<span class="org-keyword">define</span> (<span class="org-function-name">hide-cursor</span>)      (term-write <span class="org-string">"\x1b[?25l"</span>))
 (<span class="org-keyword">define</span> (<span class="org-function-name">show-cursor</span>)      (term-write <span class="org-string">"\x1b[?25h"</span>))
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Move the cursor to (row, col) &#8212; terminals are 1-indexed here.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Move the cursor to (row, col) - terminals are 1-indexed here.
 </span>(<span class="org-keyword">define</span> (<span class="org-function-name">cursor-to</span> row col)
   (term-write (string-append <span class="org-string">"\x1b["</span> (number-&gt;string row)
                              <span class="org-string">";"</span> (number-&gt;string col) <span class="org-string">"H"</span>)))
@@ -388,16 +388,16 @@ The editor can now <i>see</i> and <i>speak</i>. We have:
 </p>
 
 <ol class="org-ol">
-<li>Raw mode — every keystroke arrives instantly, unbuffered, un-echoed.</li>
-<li>Guaranteed restoration — <code>with-raw-terminal</code> hands the terminal back cleanly.</li>
-<li>Key reading — bytes and escape sequences decoded into usable events.</li>
-<li>Screen control — clear, position, colour, and window-size queries.</li>
+<li>Raw mode - every keystroke arrives instantly, unbuffered, un-echoed.</li>
+<li>Guaranteed restoration - <code>with-raw-terminal</code> hands the terminal back cleanly.</li>
+<li>Key reading - bytes and escape sequences decoded into usable events.</li>
+<li>Screen control - clear, position, colour, and window-size queries.</li>
 </ol>
 
 <p>
 This is the canvas. Every future part paints on it. But right now we are reading <i>raw</i> keys
 and reacting to them ad-hoc. That does not scale. An editor needs a systematic way to map a
-key — or a <i>sequence</i> of keys like <code>C-x C-f</code> — to a command.
+key - or a <i>sequence</i> of keys like <code>C-x C-f</code> - to a command.
 </p>
 
 <p>
@@ -461,7 +461,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/">
