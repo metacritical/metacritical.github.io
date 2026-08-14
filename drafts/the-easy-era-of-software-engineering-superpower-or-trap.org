@@ -1,4 +1,4 @@
-#+TITLE:       The "Easy" Era of Software Engineering: Superpower or Trap?
+#+TITLE:       When Coding Gets Cheap, Engineering Gets Expensive
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:
 #+DATE:        [2026-08-14 Fri]
