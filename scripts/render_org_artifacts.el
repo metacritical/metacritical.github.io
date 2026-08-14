@@ -36,6 +36,31 @@
                            (list tmp outfile))))
         (ignore-errors (delete-file tmp))))))
 
+(defun sds/render-artifact (lang body params abs-out org-file ditaa-jar plantuml-jar)
+  (let ((source-newer (or (not (file-exists-p abs-out))
+                          (file-newer-than-file-p org-file abs-out))))
+    (cond
+     ((and (string= lang "ditaa")
+           ditaa-jar (file-exists-p ditaa-jar))
+      (if source-newer
+          (let ((status (sds/run-java-renderer
+                         ditaa-jar body abs-out
+                         (ignore-errors (split-string-and-unquote (or (cdr (assoc :cmdline params)) "")))
+                         nil)))
+            (unless (eq status 0)
+              (message "[WARN] ditaa render failed (%s) for %s" status abs-out)))
+        (message "[INFO] Skipping unchanged ditaa artifact: %s" abs-out)))
+     ((and (string= lang "plantuml")
+           plantuml-jar (file-exists-p plantuml-jar))
+      (if source-newer
+          (let ((status (sds/run-java-renderer plantuml-jar body abs-out '("-tpng") t)))
+            (unless (eq status 0)
+              (message "[WARN] plantuml render failed (%s) for %s" status abs-out)))
+        (message "[INFO] Skipping unchanged plantuml artifact: %s" abs-out)))
+     ((or (string= lang "dot") (string= lang "graphviz-dot"))
+      (when source-newer
+        (org-babel-execute-src-block))))))
+
 (let ((blog-root (or (nth 0 command-line-args-left) default-directory))
       (org-file (nth 1 command-line-args-left))
       (ditaa-jar (nth 2 command-line-args-left))
@@ -58,38 +83,25 @@
       (org-with-wide-buffer
        (goto-char (point-min))
         (while (re-search-forward org-babel-src-block-regexp nil t)
-         (let ((block-beg (match-beginning 0))
-               (block-end (match-end 0)))
-           (goto-char block-beg)
-           (let* ((info (org-babel-get-src-block-info 'light))
-                  (lang (downcase (or (car info) "")))
-                  (params (nth 2 info))
-                  (body (nth 1 info))
-                  (outfile (cdr (assoc :file params))))
-             (when outfile
-               (let ((abs-out (expand-file-name outfile blog-root)))
-                 (push abs-out expected-files)
-                 (when (member lang '("ditaa" "plantuml" "dot" "graphviz-dot"))
-                   (org-babel-execute-src-block)
-                   (unless (file-exists-p abs-out)
-                     (cond
-                      ((and (string= lang "ditaa")
-                            ditaa-jar (file-exists-p ditaa-jar))
-                       (let ((status (sds/run-java-renderer
-                                      ditaa-jar body abs-out
-                                      (ignore-errors (split-string-and-unquote (or (cdr (assoc :cmdline params)) "")))
-                                      nil)))
-                         (unless (eq status 0)
-                           (message "[WARN] ditaa fallback failed (%s) for %s" status abs-out))))
-                      ((and (string= lang "plantuml")
-                            plantuml-jar (file-exists-p plantuml-jar))
-                       (let ((status (sds/run-java-renderer plantuml-jar body abs-out '("-tpng") t)))
-                         (unless (eq status 0)
-                           (message "[WARN] plantuml fallback failed (%s) for %s" status abs-out))))))))))
-           (goto-char block-end))))
+          (let* ((block-beg (match-beginning 0))
+                 (block-end (match-end 0)))
+            (goto-char block-beg)
+            (let* ((info (org-babel-get-src-block-info 'light))
+                   (lang (downcase (or (car info) "")))
+                   (params (nth 2 info))
+                   (body (nth 1 info))
+                   (outfile (cdr (assoc :file params))))
+              (when outfile
+                (let ((abs-out (expand-file-name outfile blog-root)))
+                  (push abs-out expected-files)
+                  (when (member lang '("ditaa" "plantuml" "dot" "graphviz-dot"))
+                    ;; Use the explicit headless renderer and skip unchanged
+                    ;; artifacts so macOS never receives repeated Java launches.
+                    (sds/render-artifact lang body params abs-out org-file ditaa-jar plantuml-jar))))
+            (goto-char block-end))))
 
       (dolist (f expected-files)
         (unless (file-exists-p f)
           (message "[WARN] Artifact not generated from %s: %s" org-file f))))
     (save-buffer)
-    (kill-buffer (current-buffer))))
+    (kill-buffer (current-buffer)))))
