@@ -10,10 +10,10 @@
 #+DESCRIPTION: Rewriting x86 Lolcat in Arm assembly.
 
 =lolcat= is one of those gloriously useless little Unix programs that everybody
-loves anyway. It reads text and prints it back in rainbow colours — the same bytes
+loves anyway. It reads text and prints it back in rainbow colours - the same bytes
 you piped in, now dressed for a party. The original is a Ruby gem; there are C and
 x86 assembly ports floating around. This is a port of the idea to /64-bit ARM/
-assembly — AArch64 — the instruction set inside every modern phone, every Apple
+assembly - AArch64 - the instruction set inside every modern phone, every Apple
 Silicon Mac, and every Raspberry Pi from the 3 onward.
 
 The whole thing is one =_start=, a handful of syscalls, and a lookup table. No libc,
@@ -56,15 +56,15 @@ surface this program touches.
 *The Rainbow Table*
 
 The clever trick that keeps the assembly small: pre-render every colour escape as a
-/fixed-width/ string. Each escape is written with a padded three-digit colour code —
-ANSI happily accepts leading zeros — so every entry is exactly *11 bytes*:
+/fixed-width/ string. Each escape is written with a padded three-digit colour code -
+ANSI happily accepts leading zeros - so every entry is exactly *11 bytes*:
 
 #+BEGIN_EXAMPLE
 ESC [ 3 8 ; 5 ; N N N m      =>  "\033[38;5;196m"   (11 bytes)
 #+END_EXAMPLE
 
 With a fixed stride, emitting colour /i/ is just "write 11 bytes starting at
-=COLORS + i*11=". No integer-to-string conversion at runtime — the hard part is done
+=COLORS + i*11=". No integer-to-string conversion at runtime - the hard part is done
 once, at assembly time, in the =.data= section.
 
 We use thirty codes that loop once around the colour cube:
@@ -95,11 +95,11 @@ RESET:  .ascii "\033[0m"
 Now the logic. We keep our state in the callee-saved registers =x19–x24= so that
 syscalls (which only clobber =x0=) never stomp on it:
 
-- =x19= — bytes read in the current block
-- =x20= — pointer to the buffer
-- =x21= — index into the current block
-- =x23= — the rolling colour counter
-- =x24= — the line counter (drives the diagonal shift)
+- =x19= - bytes read in the current block
+- =x20= - pointer to the buffer
+- =x21= - index into the current block
+- =x23= - the rolling colour counter
+- =x24= - the line counter (drives the diagonal shift)
 
 #+BEGIN_SRC asm
 .section .text
@@ -169,7 +169,7 @@ finish:
     mov     x8, #93             // exit
     svc     #0
 
-// write(1, x1, x2) — leaf helper, clobbers only x0/x8
+// write(1, x1, x2) - leaf helper, clobbers only x0/x8
 write_out:
     mov     x0, #1              // fd = stdout
     mov     x8, #64             // write
@@ -188,7 +188,7 @@ we do it the classic way with =udiv= and =msub=:
 #+END_SRC
 
 =msub Wd, Wn, Wm, Wa= computes =Wa - (Wn * Wm)=, which is exactly =counter - q*NCOLORS=
-— the remainder. That remainder indexes the rainbow, and multiplying by =CWIDTH=
+- the remainder. That remainder indexes the rainbow, and multiplying by =CWIDTH=
 turns the index into a byte offset into =COLORS=.
 
 The diagonal effect is almost free. On every newline we bump =x24= and copy it into the
@@ -196,7 +196,7 @@ colour counter =x23=. Each new line therefore /starts/ one hue further along tha
 last, so the rainbow flows down and to the right instead of restarting flat on every
 row.
 
-Notice there is no buffering of output — we issue a =write= per escape and per
+Notice there is no buffering of output - we issue a =write= per escape and per
 character. That is wasteful (thousands of tiny syscalls), but it keeps the program
 honest and readable. Batching the escape and the byte into one buffer before writing is
 the obvious optimisation, and a good exercise to try next.
@@ -213,14 +213,14 @@ echo "hello from bare-metal ARM" | ./lolcat
 cat /etc/os-release | ./lolcat
 #+END_SRC
 
-No linker flags, no libraries — =_start= is the entry point and the kernel is the only
+No linker flags, no libraries - =_start= is the entry point and the kernel is the only
 dependency.
 
 *A Note On Apple Silicon And macOS*
 
 This is written for the /Linux/ syscall ABI. macOS on Apple Silicon is also AArch64,
 but it uses a different convention: syscalls go through =svc #0x80=, the syscall number
-lives in =x16=, and the numbers carry a =0x2000000= class bit — so =write= is
+lives in =x16=, and the numbers carry a =0x2000000= class bit - so =write= is
 =0x2000004=, not =64=. The register-and-lookup-table logic above is identical; only the
 three syscall stubs change. Port those and the same rainbow runs on a Mac.
 
@@ -229,5 +229,5 @@ three syscall stubs change. Port those and the same rainbow runs on a Mac.
 Because =lolcat= is small enough to hold in your head and silly enough to make
 assembly fun. In about seventy instructions you touch raw syscalls, ANSI escapes,
 integer division without a divide-and-mod instruction, position-independent data
-access with =adrp= / =:lo12:=, and the AArch64 register conventions — all in service of
+access with =adrp= / =:lo12:=, and the AArch64 register conventions - all in service of
 making =cat= wear a rainbow. That is the best kind of useless.

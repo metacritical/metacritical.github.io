@@ -7,7 +7,7 @@
 #+TAGS:        Scheme, Keymaps, Input Handling, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: Designing a keymap system — translating raw keystrokes into editor commands, and the foundation for modal editing.
+#+DESCRIPTION: Designing a keymap system - translating raw keystrokes into editor commands, and the foundation for modal editing.
 
 In [[/blog/2018/09/01/writing-a-programmers-editor-part-5/][Part 5]] we taught the editor to read raw keystrokes from the terminal. But a keystroke
 is just a byte, or a short sequence of bytes. =\e[A= means "up arrow" only because we
@@ -17,26 +17,26 @@ most consequential design decisions in any editor.
 Here is a claim I will defend for the rest of this article: *the keymap is where an editor's
 personality lives.* Emacs and vim both read the same bytes from the same terminal driver we
 built in Part 5. What makes them feel like different universes is not the buffer, not the
-renderer — it is how they interpret those bytes.
+renderer - it is how they interpret those bytes.
 
 *From Bytes To Key Events*
 
 The raw =read-key= from Part 5 gave us either a character or a symbol like ='up=. But real
-editors bind /modified/ keys — =Ctrl-x=, =Meta-f=, =Ctrl-Meta-s=. We need to fold those
+editors bind /modified/ keys - =Ctrl-x=, =Meta-f=, =Ctrl-Meta-s=. We need to fold those
 modifiers into a single, comparable representation.
 
-In a terminal, control keys are not special escape sequences — they are genuinely different
+In a terminal, control keys are not special escape sequences - they are genuinely different
 bytes. =Ctrl-A= is byte 1, =Ctrl-B= is byte 2, all the way to =Ctrl-Z= at byte 26. In
 general, =Ctrl= with a letter clears the top three bits of its ASCII code. The /Meta/ (Alt)
 modifier is even simpler: the terminal prefixes the key with an escape byte. =Meta-f= is
 =\e f=.
 
-We normalise all of this into a small tagged value — a /key event/:
+We normalise all of this into a small tagged value - a /key event/:
 
 #+BEGIN_SRC scheme
 ;;; A key event is a pair: (modifiers . base)
-;;;   modifiers — a list drawn from '(ctrl meta)
-;;;   base      — a character, or a symbol like 'up / 'return / 'tab
+;;;   modifiers - a list drawn from '(ctrl meta)
+;;;   base      - a character, or a symbol like 'up / 'return / 'tab
 
 (define (key mods base) (cons mods base))
 (define (key-mods k)    (car k))
@@ -57,7 +57,7 @@ Now =Ctrl-A= and the letter =a= are distinct, comparable values: =((ctrl) . #\a)
 
 We extend Part 5's reader so that an escape byte can mean one of three things: a Meta
 modifier on the next key, the start of an arrow-key sequence, or a bare Escape. Order of
-checks matters — after =\e= we peek at the next byte to disambiguate.
+checks matters - after =\e= we peek at the next byte to disambiguate.
 
 #+BEGIN_SRC scheme
 ;; Read one fully-decoded key event from the terminal.
@@ -120,7 +120,7 @@ down the tree.
 #+RESULTS:
 [[file:assets/blog/2018/09/08/writing-a-programmers-editor-part-6/keymap-tree.png]]
 
-#+CAPTION: A keymap tree — most keys map to commands, but a prefix key like =C-x= maps to a nested keymap.
+#+CAPTION: A keymap tree - most keys map to commands, but a prefix key like =C-x= maps to a nested keymap.
 [[file:/assets/blog/2018/09/08/writing-a-programmers-editor-part-6/keymap-tree.png]]
 
 We represent a keymap as an association list keyed by key events. It is a table; some of its
@@ -164,7 +164,7 @@ Defining a multi-key binding is then just walking (or building) the tree:
 The dispatcher is the heart of the input loop. It reads a key, looks it up, and reacts:
 
 - If the binding is a command, run it.
-- If the binding is a keymap, we are mid-prefix — read the next key and descend.
+- If the binding is a keymap, we are mid-prefix - read the next key and descend.
 - If there is no binding, either self-insert (a plain printable character) or beep.
 
 #+BEGIN_SRC scheme
@@ -175,7 +175,7 @@ The dispatcher is the heart of the input loop. It reads a key, looks it up, and 
            (binding (keymap-ref km k)))
       (cond
        ((procedure? binding) (binding editor))      ; run the command
-       ((keymap? binding)    (loop binding))        ; prefix — read more
+       ((keymap? binding)    (loop binding))        ; prefix - read more
        ;; Unbound plain character in the top-level map: insert it.
        ((and (eq? km root-map) (self-insertable? k))
         (self-insert-command editor (key-base k)))
@@ -185,7 +185,7 @@ The dispatcher is the heart of the input loop. It reads a key, looks it up, and 
   (and (null? (key-mods k)) (char? (key-base k))))
 #+END_SRC
 
-Now building the default bindings is declarative and readable — this is where the editor's
+Now building the default bindings is declarative and readable - this is where the editor's
 character is written down:
 
 #+BEGIN_SRC scheme
@@ -208,7 +208,7 @@ character is written down:
 
 *Two Philosophies: Modal And Modeless*
 
-We now have the machinery for /modeless/ editing — the emacs way, where every key does the
+We now have the machinery for /modeless/ editing - the emacs way, where every key does the
 same thing all the time and modifiers select commands. But there is another school entirely:
 /modal/ editing, the vim way.
 
@@ -242,7 +242,7 @@ is just /swapping which keymap is active/:
 #+END_SRC
 
 This is the payoff of building the right abstraction. We did not design a "modal system" and
-a "modeless system" separately. We built /one/ thing — a tree of keymaps and a dispatcher —
+a "modeless system" separately. We built /one/ thing - a tree of keymaps and a dispatcher -
 and both philosophies fall out of how we wire it up. The user who wants emacs bindings and
 the user who wants vim bindings are both first-class citizens, because the keymap is data,
 not hard-coded logic.
@@ -257,7 +257,7 @@ Input handling is complete:
 4. Both modeless (emacs-style) and modal (vim-style) editing emerge from the same structure.
 
 The editor can now read text, hold it, display it, and respond to commands. But every time
-the user presses a key, we still redraw the entire screen — and on a real terminal, over a
+the user presses a key, we still redraw the entire screen - and on a real terminal, over a
 real connection, that flickers and lags.
 
 In the [[/blog/2018/09/15/writing-a-programmers-editor-part-7/][next part]] we tackle redisplay: how to repaint only the pixels that actually changed,

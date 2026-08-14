@@ -69,7 +69,7 @@ DRAFT_BANNER = (
     'font-size:12px;font-weight:600;text-align:center;letter-spacing:.04em;'
     'position:sticky;top:0;z-index:100;border-bottom:1px solid #d97706;'
     'display:flex;align-items:center;justify-content:center;gap:14px">'
-    '<span>DRAFT — Not yet published</span>'
+    '<span>DRAFT - Not yet published</span>'
     + (
         '<a href="/editor/?slug={slug}&kind=draft" '
         'style="background:#1f1f1b;color:#fff;padding:3px 12px;border-radius:4px;'

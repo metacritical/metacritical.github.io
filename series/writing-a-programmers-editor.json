@@ -1,6 +1,6 @@
 {
   "name": "Writing a Programmer's Editor",
-  "description": "A series of assays on building a programmable text editor from scratch in Scheme \u2014 exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.",
+  "description": "A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.",
   "articles": [
     {
       "part": 1,

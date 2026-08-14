@@ -27,6 +27,10 @@ to the org file as garbage text.
 **When something breaks, git checkout the corrupted file from HEAD before
 rebuilding.** Auto-save can corrupt org files. Always restore from git first.
 
+**Article punctuation rule.** Never use the em-dash character in article source,
+drafts, generated article pages, series navigation text, or article metadata.
+Use a plain hyphen or rewrite the sentence instead.
+
 ---
 
 ## Dev Server Rules

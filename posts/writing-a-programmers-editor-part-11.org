@@ -7,17 +7,17 @@
 #+TAGS:        Scheme, Modes, Extensibility, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: The extensibility layer — major modes, minor modes, hooks, and giving the user 100% power.
+#+DESCRIPTION: The extensibility layer - major modes, minor modes, hooks, and giving the user 100% power.
 
 In [[/blog/2018/10/06/writing-a-programmers-editor-part-10/][Part 10]] we built undo/redo. The editor can now hold text, display it, colour it, search
 it, and forgive mistakes. And now we arrive at the question that started this whole series in
 [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]]: /how much power should the user have?/ This is the part where we make good on the
-answer — =100%=.
+answer - =100%=.
 
 *Extensibility Is Not A Feature, It Is A Shape*
 
 Here is the thing most editors get backwards. They build a fixed program and then bolt a
-"plugin API" onto the side — a narrow, second-class channel through which extensions may
+"plugin API" onto the side - a narrow, second-class channel through which extensions may
 beg for capabilities the core deigns to expose. This is the /borrowed power/ we criticised in
 Part 1: elisp can only do what the C runtime permits, vimscript only what vim's core allows.
 
@@ -53,7 +53,7 @@ time, and it decides three things: the keymap, the tokenizer, and the indentatio
 #+END_SRC
 
 The editor picks a major mode when it opens a file, usually by extension. This is just a table
-lookup — and, being data, the user can extend it:
+lookup - and, being data, the user can extend it:
 
 #+BEGIN_SRC scheme
 (define auto-mode-alist
@@ -75,11 +75,11 @@ lookup — and, being data, the user can extend it:
 *Minor Modes: Composable, Optional, Many*
 
 Where exactly one major mode is active, /any number/ of /minor modes/ can be layered on top.
-Line numbers, auto-indent, a spell-checker, a live-error overlay — each is an independent,
+Line numbers, auto-indent, a spell-checker, a live-error overlay - each is an independent,
 toggleable feature. The design challenge is composition: several minor modes may all want to
 bind keys or react to edits, without stepping on each other or on the major mode.
 
-We already have the tool for the keymap half of this problem — the keymap tree from Part 6.
+We already have the tool for the keymap half of this problem - the keymap tree from Part 6.
 Minor-mode keymaps stack in a priority list, searched before the major mode's map:
 
 #+BEGIN_SRC scheme
@@ -122,7 +122,7 @@ Minor-mode keymaps stack in a priority list, searched before the major mode's ma
 #+RESULTS:
 [[file:assets/blog/2018/10/13/writing-a-programmers-editor-part-11/mode-layers.png]]
 
-#+CAPTION: Keymap resolution order — active minor modes are consulted first, then the major mode, then the global map.
+#+CAPTION: Keymap resolution order - active minor modes are consulted first, then the major mode, then the global map.
 [[file:/assets/blog/2018/10/13/writing-a-programmers-editor-part-11/mode-layers.png]]
 
 *Hooks: Extension Points In Time*
@@ -157,7 +157,7 @@ without touching the core:
   (write-buffer-to-file eb)
   (run-hooks eb 'after-save-hook))               ; e.g. run a linter
 
-;; A user's configuration — pure Scheme, no special API.
+;; A user's configuration - pure Scheme, no special API.
 (add-hook! 'before-save-hook
            (lambda (eb) (strip-trailing-whitespace! eb)))
 
@@ -169,14 +169,14 @@ That second example is the whole system in miniature: "whenever a file enters Sc
 turn on auto-indent." The user wrote a behaviour rule, in the editor's own language, wiring
 together a mode and a minor mode the core author never anticipated pairing.
 
-*The Scripting Surface — Delivering On =100%=*
+*The Scripting Surface - Delivering On =100%=*
 
 This is the promise from Part 1, made concrete. Because the editor is Scheme and the config is
-Scheme, the user's =init.scm= is not a limited settings file — it is a program with the full
+Scheme, the user's =init.scm= is not a limited settings file - it is a program with the full
 run of the editor's internals. There is no capability the core has that the user lacks.
 
 #+BEGIN_SRC scheme
-;; ~/.editor/init.scm — a real program, not a config format.
+;; ~/.editor/init.scm - a real program, not a config format.
 
 ;; Define a brand-new command in terms of existing primitives.
 (define (cmd-duplicate-line eb)
@@ -184,11 +184,11 @@ run of the editor's internals. There is no capability the core has that the user
          (end   (eb-line-end eb (eb-current-line eb))))
     (buffer-insert-at! eb end (string-append "\n" line))))
 
-;; Bind it — using the exact keymap machinery the core uses.
+;; Bind it - using the exact keymap machinery the core uses.
 (define-key! global-map (list (key '(ctrl) #\c) (key '(ctrl) #\d))
   cmd-duplicate-line)
 
-;; Redefine an existing command by wrapping it — advice, for free.
+;; Redefine an existing command by wrapping it - advice, for free.
 (let ((original cmd-save-file))
   (set! cmd-save-file
         (lambda (eb) (message eb "Saving...") (original eb))))
@@ -203,7 +203,7 @@ where the core is C and the extension language merely visits.
 
 Honesty demands the flip side. Total power is total responsibility. A user who can redefine
 =cmd-save-file= can also /break/ it. An extension that hangs in a hook hangs the editor. Emacs
-lives with exactly this — a bad =after-save-hook= can wedge your session — and it is the price
+lives with exactly this - a bad =after-save-hook= can wedge your session - and it is the price
 of the model. The C-runtime editors trade some of the user's power for the safety of a
 sandbox. Our editor, like emacs at its most extreme, hands the user the keys to everything and
 trusts them. Whether that is the right trade is the very question we set out to explore, and it
@@ -216,11 +216,11 @@ The editor is extensible to its core:
 1. Major modes select per-language keymap, tokenizer, and indentation.
 2. Minor modes layer optional, composable features with priority-ordered keymaps.
 3. Hooks expose named moments in time for user code to run.
-4. The scripting surface is the editor's own internals — the =100%= power promise, delivered.
+4. The scripting surface is the editor's own internals - the =100%= power promise, delivered.
 
 The editor is complete. It is a working text editor written entirely in Scheme, extended in
 Scheme, with no runtime power gap. All that is left is to look back and ask whether it was
-worth it — and whether the answers we found match the questions we started with.
+worth it - and whether the answers we found match the questions we started with.
 
 In the [[/blog/2018/10/20/writing-a-programmers-editor-part-12/][final part]] we reflect on the whole journey and return, at last, to the questions from
 Part 1.

@@ -7,7 +7,7 @@
 #+TAGS:        scheme, gap buffer, data structures, writing an editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: Implementing a gap buffer from scratch in Scheme — the core data structure for our editor.
+#+DESCRIPTION: Implementing a gap buffer from scratch in Scheme - the core data structure for our editor.
 
 #+ATTR_HTML: :width 708px :height 392px :data-fit none :data-position center :data-filter invert :data-align center
 [[/media/images/placeholder.png]]
@@ -18,7 +18,7 @@ We are going to implement a gap buffer in Scheme.
 
 *Why Scheme?*
 
-Remember the thesis from [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] — the goal is an editor written entirely in a single language, where the user has ~100%~ power. Scheme is a Lisp. It is a general-purpose programming language powerful enough to build an editor in, yet simple enough to serve as an extension language. It has first-class functions, proper tail calls, macros, and garbage collection — all the ingredients we need.
+Remember the thesis from [[/blog/2018/08/06/learn-to-write-an-editor/][Part 1]] - the goal is an editor written entirely in a single language, where the user has ~100%~ power. Scheme is a Lisp. It is a general-purpose programming language powerful enough to build an editor in, yet simple enough to serve as an extension language. It has first-class functions, proper tail calls, macros, and garbage collection - all the ingredients we need.
 
 I will use [[https://srfi.schemers.org/][R7RS-small]] Scheme for these examples. The code should run on [[https://www.call-cc.org/][Chicken]], [[https://www.gnu.org/software/guile/][Guile]], [[https://racket-lang.org/][Racket]] (in ~#lang r7rs~ mode), or any conforming implementation.
 
@@ -30,9 +30,9 @@ In Scheme, we represent this as a three-element vector:
 
 #+BEGIN_SRC scheme
 ;;; A gap buffer is a vector:  #(charvec gap-start gap-end)
-;;;   charvec   — a mutable vector of characters
-;;;   gap-start — index where the gap begins (== cursor position)
-;;;   gap-end   — index where the gap ends (exclusive)
+;;;   charvec   - a mutable vector of characters
+;;;   gap-start - index where the gap begins (== cursor position)
+;;;   gap-end   - index where the gap ends (exclusive)
 
 (define (make-gap-buffer capacity)
   (vector (make-vector capacity #\nul)  ; charvec
@@ -54,7 +54,7 @@ The accessors are trivial:
 (define (gb-text-size gb) (- (gb-capacity gb) (gb-gap-size gb)))
 #+END_SRC
 
-When the buffer is fresh, the gap occupies the entire array. ~gap-start~ is 0 and ~gap-end~ is ~capacity~. There is no text yet — just empty space waiting to be filled.
+When the buffer is fresh, the gap occupies the entire array. ~gap-start~ is 0 and ~gap-end~ is ~capacity~. There is no text yet - just empty space waiting to be filled.
 
 *Moving the Cursor*
 
@@ -98,7 +98,7 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
 ;;; Insert a single character at the cursor.
 (define (gb-insert-char! gb ch)
   (when (= (gb-gap-size gb) 0)
-    (gb-resize! gb))  ; gap full — grow the buffer
+    (gb-resize! gb))  ; gap full - grow the buffer
   (let ((buf (gb-buf gb))
         (gs   (gb-start gb)))
     (vector-set! buf gs ch)
@@ -115,9 +115,9 @@ Once the gap is in the right place, insertion and deletion are gloriously simple
     (gb-end! gb (+ (gb-end gb) 1))))
 #+END_SRC
 
-Notice what is /not/ here. No loops. No array shifts. No memory allocation (except on resize). Insertion is a single ~vector-set!~. Deletion is just bumping a pointer. This is why gap buffers are fast — the complexity is pushed into cursor movement, which happens infrequently relative to typing.
+Notice what is /not/ here. No loops. No array shifts. No memory allocation (except on resize). Insertion is a single ~vector-set!~. Deletion is just bumping a pointer. This is why gap buffers are fast - the complexity is pushed into cursor movement, which happens infrequently relative to typing.
 
-*Resize — When the Gap Runs Out*
+*Resize - When the Gap Runs Out*
 
 When the gap fills up completely, we need a bigger array. The strategy is simple: allocate a new array twice the size, copy the text over, and open a fresh gap in the middle:
 
@@ -218,7 +218,7 @@ And here is a slightly larger test that exercises resize:
 ;; Start with a tiny gap (4 slots).
 (define gb (string->gap-buffer "ABCDE" 4))
 
-;; Insert 10 characters at position 0 — this will force two resizes.
+;; Insert 10 characters at position 0 - this will force two resizes.
 (gb-move-to! gb 0)
 (for-each (lambda (ch) (gb-insert-char! gb ch))
           (string->list "0123456789"))
@@ -234,9 +234,9 @@ And here is a slightly larger test that exercises resize:
 
 *What About Performance?*
 
-The beauty of this implementation is that the /hot path/ — typing — is essentially free. Each character typed is one ~vector-set!~ and one integer increment. No allocation, no copying, no garbage collection pressure.
+The beauty of this implementation is that the /hot path/ - typing - is essentially free. Each character typed is one ~vector-set!~ and one integer increment. No allocation, no copying, no garbage collection pressure.
 
-Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor movements are small hops. The ~O(N)~ worst case (jumping from beginning to end of a large file) is a single tight loop over raw memory — on modern hardware, moving 100,000 characters takes microseconds.
+Cursor movement is where the cost lives. But as we discussed in Part 2, most cursor movements are small hops. The ~O(N)~ worst case (jumping from beginning to end of a large file) is a single tight loop over raw memory - on modern hardware, moving 100,000 characters takes microseconds.
 
 *What We Have Built So Far*
 
@@ -244,7 +244,7 @@ We now have a working text buffer. It can hold text, accept insertions and delet
 
 But a buffer full of characters is not yet an editor. We cannot display it. We cannot split it into lines. We cannot scroll or wrap text. Those are the problems we will tackle next.
 
-In the [[/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/][next part]] we will build a line management layer on top of the gap buffer — because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
+In the [[/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/][next part]] we will build a line management layer on top of the gap buffer - because editors do not think in terms of flat character arrays, they think in terms of lines, columns, and viewports.
 
 Watchout for the next part of the assay, till then.
 

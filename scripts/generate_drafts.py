@@ -86,7 +86,7 @@ for year, month, day, title, preview_url, desc, tags, slug in posts:
 
 body_html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">'
 body_html += '<div><h1 style="margin-bottom:4px">Drafts</h1>'
-body_html += '<p style="color:#6f6a5e;font-size:14px">Work in progress — not yet published.</p></div>'
+body_html += '<p style="color:#6f6a5e;font-size:14px">Work in progress - not yet published.</p></div>'
 if dev_mode:
     body_html += '<a href="/editor/" style="background:#36c9c7;color:#fff;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none">New Draft</a>'
 body_html += '</div>\n'
