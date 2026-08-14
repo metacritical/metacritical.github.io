@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Building undo and redo — from linear history to undo trees, and the command log pattern." />
+  <meta name="description" content="Building undo and redo - from linear history to undo trees, and the command log pattern." />
   <meta name="keywords" content="scheme, editor, undo, redo, command-log, history" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -107,7 +107,7 @@ every undo system.
 </p>
 
 <p>
-For a text editor, the two primitive edits are insertion and deletion — and they are perfect
+For a text editor, the two primitive edits are insertion and deletion - and they are perfect
 inverses. The undo of "insert <code>X</code> at position 5" is "delete the text at position 5". The undo
 of "delete <code>Y</code> at position 5" is "insert <code>Y</code> back at position 5". So an edit record needs
 only: the kind, the position, and the text involved.
@@ -115,16 +115,16 @@ only: the kind, the position, and the text involved.
 
 <div class="org-src-container">
 <pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">An edit record: #(kind pos text)
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">kind &#8212; 'insert or 'delete
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">pos  &#8212; buffer offset where it happened
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">text &#8212; the string inserted or deleted
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">kind - 'insert or 'delete
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">pos  - buffer offset where it happened
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">text - the string inserted or deleted
 </span>
 (<span class="org-keyword">define</span> (<span class="org-function-name">edit</span> kind pos text) (vector kind pos text))
 (<span class="org-keyword">define</span> (<span class="org-function-name">edit-kind</span> e) (vector-ref e 0))
 (<span class="org-keyword">define</span> (<span class="org-function-name">edit-pos</span>  e) (vector-ref e 1))
 (<span class="org-keyword">define</span> (<span class="org-function-name">edit-text</span> e) (vector-ref e 2))
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">The inverse of an edit &#8212; insert becomes delete and vice versa.
+<span class="org-comment-delimiter">;; </span><span class="org-comment">The inverse of an edit - insert becomes delete and vice versa.
 </span>(<span class="org-keyword">define</span> (<span class="org-function-name">invert-edit</span> e)
   (edit (<span class="org-keyword">if</span> (eq? (edit-kind e) 'insert) 'delete 'insert)
         (edit-pos e)
@@ -150,7 +150,7 @@ With inversion in hand, undo is almost trivial: to undo an edit, apply its inver
 The simplest complete undo system is two stacks. When the user makes an edit, push it on the
 <i>undo</i> stack. To undo, pop the undo stack, apply the inverse, and push the original onto the
 <i>redo</i> stack. To redo, pop the redo stack, re-apply, and push back onto undo. Any <i>new</i> edit
-clears the redo stack — you cannot redo down a path you have abandoned.
+clears the redo stack - you cannot redo down a path you have abandoned.
 </p>
 
 <div class="org-src-container">
@@ -197,7 +197,7 @@ flaw: it undoes <i>one character at a time</i>.
 
 <p>
 If typing "hello" pushes five separate insert records, then undo removes "o", then "l", then
-"l"... users hate this. They expect undo to work in <i>meaningful units</i> — a word, a line, a
+"l"... users hate this. They expect undo to work in <i>meaningful units</i> - a word, a line, a
 command. The solution is to <i>coalesce</i> consecutive similar edits into a group.
 </p>
 
@@ -229,7 +229,7 @@ pushing:
 
 <p>
 Now typing a word is a single undo, but moving the cursor and typing again starts a fresh
-group — exactly the behaviour muscle memory expects. The same coalescing logic, mirrored,
+group - exactly the behaviour muscle memory expects. The same coalescing logic, mirrored,
 handles runs of backspaces.
 </p>
 
@@ -239,16 +239,16 @@ handles runs of backspaces.
 
 <p>
 Linear undo has a subtle data-loss problem. Suppose you type A, undo it, then type B. In a
-two-stack model, typing B <i>clears the redo stack</i> — A is gone forever. But what if you wanted
+two-stack model, typing B <i>clears the redo stack</i> - A is gone forever. But what if you wanted
 it back? Vim's answer is the <i>undo tree</i>: history is not a line, it is a branching tree, and
 <i>no state is ever destroyed</i>.
 </p>
 
 
-<div id="orgf14b591" class="figure">
+<div id="org071e20c" class="figure">
 <p><img src="/assets/blog/2018/10/06/writing-a-programmers-editor-part-10/undo-tree.png" alt="undo-tree.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>An undo tree — undoing then editing creates a new branch instead of discarding the old one. Every past state remains reachable.</p>
+<p><span class="figure-number">Figure 1: </span>An undo tree - undoing then editing creates a new branch instead of discarding the old one. Every past state remains reachable.</p>
 </div>
 
 <p>
@@ -290,15 +290,15 @@ parent; "redo" walks to the <i>most recent</i> child; and a tree-navigation comm
 </div>
 
 <p>
-The tree never throws anything away. That is its whole virtue — and, arguably, its whole cost,
+The tree never throws anything away. That is its whole virtue - and, arguably, its whole cost,
 since the history can grow without bound. Emacs, interestingly, takes a third path entirely:
 it has <i>no separate redo</i>. In emacs, undo is itself an undoable command, so "undoing an undo"
-redoes — which, followed far enough, also lets you reach abandoned states, at the price of a
+redoes - which, followed far enough, also lets you reach abandoned states, at the price of a
 notoriously confusing mental model.
 </p>
 
 <p>
-<b>The Command Log — A Bigger Idea</b>
+<b>The Command Log - A Bigger Idea</b>
 </p>
 
 <p>
@@ -310,7 +310,7 @@ more than undo alone:
 <ul class="org-ul">
 <li><b>Crash recovery:</b> replay the log against the last saved file to reconstruct unsaved work.</li>
 <li><b>Macros:</b> a keyboard macro is just a slice of the command log, replayed on demand.</li>
-<li><b>Collaboration:</b> stream edit records to another editor and apply them there — the seed of
+<li><b>Collaboration:</b> stream edit records to another editor and apply them there - the seed of
 real-time collaborative editing (this is essentially what operational transforms do).</li>
 <li><b>Audit:</b> the log <i>is</i> the complete history of how a document came to be.</li>
 </ul>
@@ -344,7 +344,7 @@ reshape it.
 </p>
 
 <p>
-In the <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">next part</a> we build the extensibility layer — modes, hooks, and the scripting surface
+In the <a href="/blog/2018/10/13/writing-a-programmers-editor-part-11/">next part</a> we build the extensibility layer - modes, hooks, and the scripting surface
 that delivers on the <code>100%</code> power promise.
 </p>
 
@@ -403,7 +403,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">

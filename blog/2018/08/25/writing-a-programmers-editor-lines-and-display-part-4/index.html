@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -110,7 +110,7 @@ Our buffer is a flat array. We need to turn it into something that understands l
 
 <p>
 The simplest way to find "line N" is to scan the buffer from the beginning, counting
-newlines until we reach the desired line. This is <code>O(N)</code> per lookup — fine for a 50-line
+newlines until we reach the desired line. This is <code>O(N)</code> per lookup - fine for a 50-line
 file, agonising for a 50,000-line one.
 </p>
 
@@ -140,17 +140,17 @@ smarter.
 </p>
 
 <p>
-<b>Line Cache — A Layer of Indirection</b>
+<b>Line Cache - A Layer of Indirection</b>
 </p>
 
 <p>
-The trick is to maintain a <i>line offset table</i> — a vector that stores the character offset
+The trick is to maintain a <i>line offset table</i> - a vector that stores the character offset
 of the start of each line. Line 1 starts at offset 0. Line 2 starts right after the first
 newline. And so on.
 </p>
 
 <p>
-With this table, finding the start of line N is a single vector lookup — <code>O(1)</code>. Counting
+With this table, finding the start of line N is a single vector lookup - <code>O(1)</code>. Counting
 lines is just checking the table length. The cost is keeping the table up to date when the
 user edits text.
 </p>
@@ -198,7 +198,7 @@ After a batch of edits, we rebuild the line table by scanning the buffer once. T
        <span class="org-comment-delimiter">;; </span><span class="org-comment">End of buffer.
 </span>       ((&gt;= i cap)
         (eb-lines! eb (list-&gt;vector (reverse acc))))
-       <span class="org-comment-delimiter">;; </span><span class="org-comment">Found a newline &#8212; next line starts at i+1.
+       <span class="org-comment-delimiter">;; </span><span class="org-comment">Found a newline - next line starts at i+1.
 </span>       ((char=? (vector-ref buf i) #\newline)
         (loop (+ i 1) (+ i 1)))
        (<span class="org-keyword">else</span>
@@ -209,7 +209,7 @@ After a batch of edits, we rebuild the line table by scanning the buffer once. T
 </div>
 
 <p>
-Wait — that collects <i>line-start offsets</i>, but we forgot to seed it with 0. Let me fix:
+Wait - that collects <i>line-start offsets</i>, but we forgot to seed it with 0. Let me fix:
 </p>
 
 <div class="org-src-container">
@@ -290,12 +290,12 @@ The column is simply the offset minus the line start:
 </div>
 
 <p>
-<b>Rendering — The Viewport</b>
+<b>Rendering - The Viewport</b>
 </p>
 
 <p>
 Now for the fun part: actually <i>displaying</i> text on a terminal. A terminal is a grid of
-characters — typically 80 columns by 24 rows. Our viewport is a window into the buffer.
+characters - typically 80 columns by 24 rows. Our viewport is a window into the buffer.
 </p>
 
 <p>
@@ -345,7 +345,7 @@ until it fills the viewport:
 </div>
 
 <p>
-This is not the most efficient renderer — it converts the entire buffer to a string on
+This is not the most efficient renderer - it converts the entire buffer to a string on
 every render. In a real editor, we would render only the visible lines directly from the
 gap buffer, skipping the gap. But for now, this is clear and correct.
 </p>
@@ -393,7 +393,7 @@ Let us test the whole stack:
 
 <p>
 The renderer above truncates long lines at <code>cols</code> characters. A real editor would <i>wrap</i>
-them — breaking a long line into multiple visual rows. There are two common strategies:
+them - breaking a long line into multiple visual rows. There are two common strategies:
 </p>
 
 <ul class="org-ul">
@@ -418,8 +418,8 @@ We now have a two-layer architecture:
 </p>
 
 <ol class="org-ol">
-<li><b>Gap buffer</b> — holds raw text, handles fast insertion/deletion/movement.</li>
-<li><b>Line layer</b> — tracks line boundaries, answers "what line is this offset on?",
+<li><b>Gap buffer</b> - holds raw text, handles fast insertion/deletion/movement.</li>
+<li><b>Line layer</b> - tracks line boundaries, answers "what line is this offset on?",
 renders a viewport to the terminal.</li>
 </ol>
 
@@ -427,9 +427,9 @@ renders a viewport to the terminal.</li>
 This is the skeleton of an editor. The missing pieces are:
 </p>
 <ul class="org-ul">
-<li>Terminal I/O — reading keystrokes, writing to the screen (Part 5).</li>
-<li>Keymaps — translating keystrokes into editor commands (Part 6).</li>
-<li>Redisplay — only repainting the parts of the screen that changed (Part 7).</li>
+<li>Terminal I/O - reading keystrokes, writing to the screen (Part 5).</li>
+<li>Keymaps - translating keystrokes into editor commands (Part 6).</li>
+<li>Redisplay - only repainting the parts of the screen that changed (Part 7).</li>
 </ul>
 
 <p>
@@ -438,7 +438,7 @@ structure that holds text efficiently and understands the concept of lines.
 </p>
 
 <p>
-In the <a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">next part</a> we will dive into the terminal — raw mode, escape sequences, and how to
+In the <a href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">next part</a> we will dive into the terminal - raw mode, escape sequences, and how to
 turn a teletype emulator into an interactive display.
 </p>
 
@@ -497,7 +497,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/">

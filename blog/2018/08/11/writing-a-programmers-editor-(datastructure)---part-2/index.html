@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -97,14 +97,14 @@ like.
 </p>
 
 
-<div id="org542cbca" class="figure">
+<div id="org4c43d41" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>Gap Buffer — the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
+<p><span class="figure-number">Figure 1: </span>Gap Buffer - the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
 </div>
 
 <p>
-Notice the <i>green boxes</i> in the diagram above. Those represent the gap — empty space
+Notice the <i>green boxes</i> in the diagram above. Those represent the gap - empty space
 in the array reserved for future insertions. The text <code>"HELLO WORLD"</code> sits in a
 single contiguous array, but the gap splits it into two segments: the text <i>before</i>
 the cursor and the text <i>after</i> the cursor.
@@ -122,29 +122,29 @@ the left side. This is the fundamental mechanic of a gap buffer.
 
 <p>
 Because insertion and deletion at the cursor position becomes essentially free. When
-you type a character, it fills the empty gap space — no shifting of text required.
+you type a character, it fills the empty gap space - no shifting of text required.
 When you press backspace, the gap simply grows by one. The cursor is always <i>inside</i>
 the gap, and edits happen at gap boundaries.
 </p>
 
 
-<div id="orgf51b36e" class="figure">
+<div id="orgf5cc31c" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
 </p>
-<p><span class="figure-number">Figure 2: </span>Insertion — typing fills the gap from the left, shrinking it one cell at a time.</p>
+<p><span class="figure-number">Figure 2: </span>Insertion - typing fills the gap from the left, shrinking it one cell at a time.</p>
 </div>
 
 <p>
 Notice how each typed character occupies one green box, reducing the gap size by one.
 The gap shrinks from the <i>left edge</i>, meaning the new characters appear before the
-cursor. This is why insertion is <code>O(1)</code> — it is just a memory write at the gap boundary.
+cursor. This is why insertion is <code>O(1)</code> - it is just a memory write at the gap boundary.
 No existing text needs to be shifted.
 </p>
 
 <ul class="org-ul">
-<li><b>Insertion:</b> <code>O(1)</code> — write into gap, shrink gap by one.</li>
-<li><b>Deletion:</b> <code>O(1)</code> — expand gap by one, no data movement.</li>
-<li><b>Cursor movement:</b> <code>O(n)</code> worst case — gap must travel, shifting characters across.</li>
+<li><b>Insertion:</b> <code>O(1)</code> - write into gap, shrink gap by one.</li>
+<li><b>Deletion:</b> <code>O(1)</code> - expand gap by one, no data movement.</li>
+<li><b>Cursor movement:</b> <code>O(n)</code> worst case - gap must travel, shifting characters across.</li>
 </ul>
 
 <p>
@@ -152,23 +152,23 @@ No existing text needs to be shifted.
 </p>
 
 <p>
-In practice, no. Most cursor movements are short hops — a few characters left or
+In practice, no. Most cursor movements are short hops - a few characters left or
 right, up or down a line. The gap only shifts by a few positions. The worst case
 (<code>Ctrl+End</code> jumping to the end of a large file) does incur a cost, but it is a
-single <code>memmove</code> — a blazingly fast operation on modern hardware.
+single <code>memmove</code> - a blazingly fast operation on modern hardware.
 </p>
 
 
-<div id="orga6e4600" class="figure">
+<div id="org8bb964d" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
 </p>
-<p><span class="figure-number">Figure 3: </span>Long cursor movement — the gap shifts right, dragging characters from right side to left side.</p>
+<p><span class="figure-number">Figure 3: </span>Long cursor movement - the gap shifts right, dragging characters from right side to left side.</p>
 </div>
 
 <p>
 When moving the cursor right, characters on the left side of the gap are "peeled off"
 the right segment and appended to the left segment. A move of <i>N</i> positions requires
-shifting <i>N</i> characters across the gap boundary — hence <code>O(N)</code>. For small N this is
+shifting <i>N</i> characters across the gap boundary - hence <code>O(N)</code>. For small N this is
 negligible; the <code>memmove</code> call completes in nanoseconds.
 </p>
 
@@ -178,21 +178,21 @@ The real question is: <b>what happens when the gap runs out of space?</b>
 
 <p>
 When you keep typing and the gap fills up completely, the buffer must be resized.
-This involves allocating a larger array and copying the contents over — an <code>O(n)</code>
+This involves allocating a larger array and copying the contents over - an <code>O(n)</code>
 operation. Emacs handles this by doubling the buffer size, giving you ample gap
 space before the next resize. The amortized cost per insertion remains <code>O(1)</code>.
 </p>
 
 
-<div id="org39b291a" class="figure">
+<div id="org1e1f648" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
 </p>
-<p><span class="figure-number">Figure 4: </span>Buffer resize — when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
+<p><span class="figure-number">Figure 4: </span>Buffer resize - when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>
 </div>
 
 <p>
 This is the only <code>O(N)</code> operation in the gap buffer's repertoire. But because the
-buffer size doubles each time — 8 → 16 → 32 → 64 — the resizes become progressively
+buffer size doubles each time - 8 → 16 → 32 → 64 - the resizes become progressively
 rarer. Type a single character and you get a fresh gap of 8 empty slots. Type 1000
 characters and you get a gap of 1024. The cost <i>amortizes</i> to zero over the lifetime
 of the buffer.
@@ -212,7 +212,7 @@ own trade-offs:
 and deletion are <code>O(log n)</code>. Excellent for very large documents. Used by
 <a href="https://github.com/atom/xray">Xi-editor</a> and <a href="https://github.com/zed-industries/zed">Zed</a>.</li>
 
-<li><b>Piece Table:</b> A table of <i>pieces</i> — references into an original buffer and an
+<li><b>Piece Table:</b> A table of <i>pieces</i> - references into an original buffer and an
 append-only change buffer. Never modifies the original. Used by <a href="https://code.visualstudio.com/blogs/2018/03/23/text-buffer-reimplementation">VS Code</a> and
 Microsoft Word.</li>
 
@@ -225,7 +225,7 @@ cross-line operations. Used by many naive editors and early versions of <code>no
 
 <p>
 So why does emacs stick with the gap buffer? Because for the vast majority of
-editing scenarios — typing, deleting, small cursor movements — the gap buffer is
+editing scenarios - typing, deleting, small cursor movements - the gap buffer is
 hard to beat. It has excellent cache locality (everything is in one contiguous
 array), minimal allocation overhead, and is trivially simple to implement.
 </p>
@@ -235,7 +235,7 @@ array), minimal allocation overhead, and is trivially simple to implement.
 </p>
 
 <p>
-Remember from the <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> — the goal is to write an editor in a lisp or scheme
+Remember from the <a href="/blog/2018/08/06/learn-to-write-an-editor/">Part 1</a> - the goal is to write an editor in a lisp or scheme
 that gives <code>100%</code> power to the user. A gap buffer is simple enough to implement in
 scheme in an afternoon, and its performance characteristics are well understood.
 A rope or piece table would add complexity that may not pay off until the editor
@@ -245,8 +245,8 @@ handles very large files.
 <p>
 There is also a philosophical angle. The gap buffer embodies a principle that
 resonates with lisp: <i>simple primitives that compose well</i>. A gap buffer is just
-an array with a split point. You can build higher-level abstractions — undo
-history, multi-cursor, collaborative editing — on top of it without fighting the
+an array with a split point. You can build higher-level abstractions - undo
+history, multi-cursor, collaborative editing - on top of it without fighting the
 data structure.
 </p>
 
@@ -258,7 +258,7 @@ data structure.
 That is the question we will explore in the next part. We will implement a gap
 buffer in scheme, wire it up to a basic display routine, and measure its
 performance on real-world editing workloads. The question is not just <i>can we build
-an editor on a gap buffer?</i> — emacs already proved that. The question is <i>can we
+an editor on a gap buffer?</i> - emacs already proved that. The question is <i>can we
 build one that is entirely in scheme, with no C runtime, and still feel fast?</i>
 </p>
 
@@ -317,7 +317,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/08/06/learn-to-write-an-editor/">

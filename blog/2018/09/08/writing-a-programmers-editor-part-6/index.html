@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Designing a keymap system — translating raw keystrokes into editor commands, and the foundation for modal editing." />
+  <meta name="description" content="Designing a keymap system - translating raw keystrokes into editor commands, and the foundation for modal editing." />
   <meta name="keywords" content="scheme, editor, keymaps, input, keybindings, modes" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -99,7 +99,7 @@ most consequential design decisions in any editor.
 Here is a claim I will defend for the rest of this article: <b>the keymap is where an editor's
 personality lives.</b> Emacs and vim both read the same bytes from the same terminal driver we
 built in Part 5. What makes them feel like different universes is not the buffer, not the
-renderer — it is how they interpret those bytes.
+renderer - it is how they interpret those bytes.
 </p>
 
 <p>
@@ -108,12 +108,12 @@ renderer — it is how they interpret those bytes.
 
 <p>
 The raw <code>read-key</code> from Part 5 gave us either a character or a symbol like <code>'up</code>. But real
-editors bind <i>modified</i> keys — <code>Ctrl-x</code>, <code>Meta-f</code>, <code>Ctrl-Meta-s</code>. We need to fold those
+editors bind <i>modified</i> keys - <code>Ctrl-x</code>, <code>Meta-f</code>, <code>Ctrl-Meta-s</code>. We need to fold those
 modifiers into a single, comparable representation.
 </p>
 
 <p>
-In a terminal, control keys are not special escape sequences — they are genuinely different
+In a terminal, control keys are not special escape sequences - they are genuinely different
 bytes. <code>Ctrl-A</code> is byte 1, <code>Ctrl-B</code> is byte 2, all the way to <code>Ctrl-Z</code> at byte 26. In
 general, <code>Ctrl</code> with a letter clears the top three bits of its ASCII code. The <i>Meta</i> (Alt)
 modifier is even simpler: the terminal prefixes the key with an escape byte. <code>Meta-f</code> is
@@ -121,13 +121,13 @@ modifier is even simpler: the terminal prefixes the key with an escape byte. <co
 </p>
 
 <p>
-We normalise all of this into a small tagged value — a <i>key event</i>:
+We normalise all of this into a small tagged value - a <i>key event</i>:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-scheme"><span class="org-comment-delimiter">;;; </span><span class="org-comment">A key event is a pair: (modifiers . base)
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">modifiers &#8212; a list drawn from '(ctrl meta)
-</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">base      &#8212; a character, or a symbol like 'up / 'return / 'tab
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">modifiers - a list drawn from '(ctrl meta)
+</span><span class="org-comment-delimiter">;;;   </span><span class="org-comment">base      - a character, or a symbol like 'up / 'return / 'tab
 </span>
 (<span class="org-keyword">define</span> (<span class="org-function-name">key</span> mods base) (cons mods base))
 (<span class="org-keyword">define</span> (<span class="org-function-name">key-mods</span> k)    (car k))
@@ -154,7 +154,7 @@ Now <code>Ctrl-A</code> and the letter <code>a</code> are distinct, comparable v
 <p>
 We extend Part 5's reader so that an escape byte can mean one of three things: a Meta
 modifier on the next key, the start of an arrow-key sequence, or a bare Escape. Order of
-checks matters — after <code>\e</code> we peek at the next byte to disambiguate.
+checks matters - after <code>\e</code> we peek at the next byte to disambiguate.
 </p>
 
 <div class="org-src-container">
@@ -204,10 +204,10 @@ down the tree.
 </p>
 
 
-<div id="orgd3ac536" class="figure">
+<div id="orga32855d" class="figure">
 <p><img src="/assets/blog/2018/09/08/writing-a-programmers-editor-part-6/keymap-tree.png" alt="keymap-tree.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>A keymap tree — most keys map to commands, but a prefix key like <code>C-x</code> maps to a nested keymap.</p>
+<p><span class="figure-number">Figure 1: </span>A keymap tree - most keys map to commands, but a prefix key like <code>C-x</code> maps to a nested keymap.</p>
 </div>
 
 <p>
@@ -262,7 +262,7 @@ The dispatcher is the heart of the input loop. It reads a key, looks it up, and 
 
 <ul class="org-ul">
 <li>If the binding is a command, run it.</li>
-<li>If the binding is a keymap, we are mid-prefix — read the next key and descend.</li>
+<li>If the binding is a keymap, we are mid-prefix - read the next key and descend.</li>
 <li>If there is no binding, either self-insert (a plain printable character) or beep.</li>
 </ul>
 
@@ -274,7 +274,7 @@ The dispatcher is the heart of the input loop. It reads a key, looks it up, and 
            (binding (keymap-ref km k)))
       (<span class="org-keyword">cond</span>
        ((procedure? binding) (binding editor))      <span class="org-comment-delimiter">; </span><span class="org-comment">run the command
-</span>       ((keymap? binding)    (loop binding))        <span class="org-comment-delimiter">; </span><span class="org-comment">prefix &#8212; read more
+</span>       ((keymap? binding)    (loop binding))        <span class="org-comment-delimiter">; </span><span class="org-comment">prefix - read more
 </span>       <span class="org-comment-delimiter">;; </span><span class="org-comment">Unbound plain character in the top-level map: insert it.
 </span>       ((<span class="org-keyword">and</span> (eq? km root-map) (self-insertable? k))
         (self-insert-command editor (key-base k)))
@@ -286,7 +286,7 @@ The dispatcher is the heart of the input loop. It reads a key, looks it up, and 
 </div>
 
 <p>
-Now building the default bindings is declarative and readable — this is where the editor's
+Now building the default bindings is declarative and readable - this is where the editor's
 character is written down:
 </p>
 
@@ -314,7 +314,7 @@ character is written down:
 </p>
 
 <p>
-We now have the machinery for <i>modeless</i> editing — the emacs way, where every key does the
+We now have the machinery for <i>modeless</i> editing - the emacs way, where every key does the
 same thing all the time and modifiers select commands. But there is another school entirely:
 <i>modal</i> editing, the vim way.
 </p>
@@ -355,7 +355,7 @@ is just <i>swapping which keymap is active</i>:
 
 <p>
 This is the payoff of building the right abstraction. We did not design a "modal system" and
-a "modeless system" separately. We built <i>one</i> thing — a tree of keymaps and a dispatcher —
+a "modeless system" separately. We built <i>one</i> thing - a tree of keymaps and a dispatcher -
 and both philosophies fall out of how we wire it up. The user who wants emacs bindings and
 the user who wants vim bindings are both first-class citizens, because the keymap is data,
 not hard-coded logic.
@@ -378,7 +378,7 @@ Input handling is complete:
 
 <p>
 The editor can now read text, hold it, display it, and respond to commands. But every time
-the user presses a key, we still redraw the entire screen — and on a real terminal, over a
+the user presses a key, we still redraw the entire screen - and on a real terminal, over a
 real connection, that flickers and lags.
 </p>
 
@@ -442,7 +442,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/09/01/writing-a-programmers-editor-part-5/">

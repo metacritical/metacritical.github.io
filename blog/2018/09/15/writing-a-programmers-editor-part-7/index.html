@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="author" content="Pankaj Doharey" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Efficient screen redisplay — dirty line tracking, differential rendering, and avoiding the full repaint." />
+  <meta name="description" content="Efficient screen redisplay - dirty line tracking, differential rendering, and avoiding the full repaint." />
   <meta name="keywords" content="scheme, editor, rendering, redisplay, dirty-lines, double-buffering" />
   <link rel="icon" href="/media/images/logo.png" type="image/png" />
   <link rel="shortcut icon" href="/media/images/logo.png" type="image/png" />
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786379413" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786379413" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786717492" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786717493" type="text/css">
 </head>
 
   <body class="container">
@@ -90,8 +90,8 @@
   <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/rendering/">Rendering</a></li><li><a class="article-tag" href="/tags/redisplay/">Redisplay</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
   <p>
 In <a href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">Part 6</a> we wired keystrokes to commands. Now every command changes the buffer, and after
-every change the screen must reflect the new state. The obvious approach — clear the screen
-and redraw everything — is also the wrong one. It flickers, it wastes I/O, and on anything
+every change the screen must reflect the new state. The obvious approach - clear the screen
+and redraw everything - is also the wrong one. It flickers, it wastes I/O, and on anything
 slower than a local terminal it feels sluggish.
 </p>
 
@@ -111,7 +111,7 @@ terminal. The naive loop does this:
 </p>
 
 <ol class="org-ol">
-<li>Send <code>\e[2J</code> — erase the whole screen.</li>
+<li>Send <code>\e[2J</code> - erase the whole screen.</li>
 <li>Redraw all 24 rows from the buffer.</li>
 <li>Reposition the cursor.</li>
 </ol>
@@ -137,8 +137,8 @@ The cleanest way to compute a minimal update is to keep <i>two</i> representatio
 </p>
 
 <ul class="org-ul">
-<li>The <i>current</i> frame — what is physically on the terminal right now.</li>
-<li>The <i>pending</i> frame — what we <i>want</i> the screen to look like.</li>
+<li>The <i>current</i> frame - what is physically on the terminal right now.</li>
+<li>The <i>pending</i> frame - what we <i>want</i> the screen to look like.</li>
 </ul>
 
 <p>
@@ -149,10 +149,10 @@ matrices work under the hood.
 </p>
 
 
-<div id="org817f879" class="figure">
+<div id="org071e036" class="figure">
 <p><img src="/assets/blog/2018/09/15/writing-a-programmers-editor-part-7/redisplay-diff.png" alt="redisplay-diff.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>Differential redisplay — only the cells that differ between the current and pending frames are sent to the terminal.</p>
+<p><span class="figure-number">Figure 1: </span>Differential redisplay - only the cells that differ between the current and pending frames are sent to the terminal.</p>
 </div>
 
 <p>
@@ -180,7 +180,7 @@ A frame is just a vector of row strings:
 
 <p>
 We reuse the viewport logic from Part 4, but instead of returning strings to nobody, we
-write them into the pending frame — padding each row to full width so the diff compares like
+write them into the pending frame - padding each row to full width so the diff compares like
 for like:
 </p>
 
@@ -211,7 +211,7 @@ for like:
 
 <p>
 Now the core: compare the two frames row by row and emit terminal operations only where they
-differ. The simplest useful granularity is the <i>line</i> — if any cell in a row changed, redraw
+differ. The simplest useful granularity is the <i>line</i> - if any cell in a row changed, redraw
 that whole row. This is <i>dirty line tracking</i>, and it captures the vast majority of the win
 for a fraction of the complexity of per-cell diffing.
 </p>
@@ -236,7 +236,7 @@ for a fraction of the complexity of per-cell diffing.
 </div>
 
 <p>
-The <code>string</code>?= comparison <i>is</i> the dirty check. Rows that match are skipped entirely — no
+The <code>string</code>?= comparison <i>is</i> the dirty check. Rows that match are skipped entirely - no
 cursor move, no bytes sent. For a single-character edit, exactly one row differs, so the
 entire screen update collapses to: hide cursor, jump to the changed row, clear it, write it,
 show cursor. A handful of bytes instead of two thousand.
@@ -282,7 +282,7 @@ instant and one that visibly repaints.
 <p>
 There is a subtle trap here. We hide the cursor during redisplay so the user never sees it
 skitter across the screen mid-update. But after the diff is applied we must place it at the
-<i>logical</i> editing position — the (row, col) of the buffer's point within the viewport, not
+<i>logical</i> editing position - the (row, col) of the buffer's point within the viewport, not
 wherever the last write happened to leave it.
 </p>
 
@@ -299,7 +299,7 @@ wherever the last write happened to leave it.
 
 <p>
 Forgetting this step produces the classic bug where the visible cursor lags one keystroke
-behind the text — a dead giveaway of a hand-rolled redisplay.
+behind the text - a dead giveaway of a hand-rolled redisplay.
 </p>
 
 <p>
@@ -309,7 +309,7 @@ behind the text — a dead giveaway of a hand-rolled redisplay.
 <p>
 One more optimisation worth naming. When the user scrolls down by one line, 23 of the 24
 visible rows are <i>the same content, shifted up by one row</i>. Naively our diff would mark every
-row dirty. But terminals have a hardware scroll region — <code>\e[r</code> to set it, then a newline at
+row dirty. But terminals have a hardware scroll region - <code>\e[r</code> to set it, then a newline at
 the bottom scrolls the whole region in one operation. Emacs uses this heavily; it turns a
 full-screen scroll into a single terminal command plus one freshly drawn row. We will not
 implement it here, but it is worth knowing the trick exists: the terminal can move pixels for
@@ -359,7 +359,7 @@ The screen is now efficient:
 
 <p>
 The editor holds text, responds to commands, and repaints instantly. It is, honestly,
-usable. What it lacks now are the <i>features</i> that make an editor a tool rather than a toy —
+usable. What it lacks now are the <i>features</i> that make an editor a tool rather than a toy -
 and the first one every programmer reaches for is search.
 </p>
 
@@ -423,7 +423,7 @@ a.sn-card.off:hover{background:transparent;cursor:default}
 <div class="series-nav-top">
 <span class="sn-eyebrow">Article Series</span>
 <h3 class="sn-name">Writing a Programmer&#x27;s Editor</h3>
-<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme — exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
+<p class="sn-desc">A series of assays on building a programmable text editor from scratch in Scheme - exploring the balance of power between the C runtime and the scripting language, data structures, terminal I/O, and extensibility.</p>
 </div>
 <div class="sn-pn">
 <a class="sn-card sn-card-l" href="/blog/2018/09/08/writing-a-programmers-editor-part-6/">
