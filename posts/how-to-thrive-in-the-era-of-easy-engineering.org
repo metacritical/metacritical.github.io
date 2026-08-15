@@ -2,6 +2,7 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:
 #+DATE:        [2026-08-14 Fri]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/how-to-thrive-in-the-era-of-easy-engineering
 #+KEYWORDS:    software engineering, artificial intelligence, developer productivity, career growth
 #+TAGS:        software engineering, ai, developer productivity, career growth
@@ -11,6 +12,10 @@
 
 #+ATTR_HTML: :alt Conceptual illustration of code fragments becoming a carefully engineered software architecture
 [[/assets/blog/2026/08/14/how-to-thrive-in-the-era-of-easy-engineering/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 There is a strange sensation spreading through the software engineering community. Talk to developers, tech leads, or engineering managers and you will hear a similar sentiment, /on a day-to-day level, the job has become remarkably easy./
 
