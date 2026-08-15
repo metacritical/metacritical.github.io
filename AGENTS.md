@@ -31,6 +31,13 @@ rebuilding.** Auto-save can corrupt org files. Always restore from git first.
 drafts, generated article pages, series navigation text, or article metadata.
 Use a plain hyphen or rewrite the sentence instead.
 
+**Article image rule.** Before publishing a blog article, check whether the
+article and its homepage card have an image or thumbnail. If they do not, and
+an appropriate image can be generated, ask the user whether they want a
+particular thumbnail concept or the site's default thumbnail before creating
+the asset. Preserve the original publication date when adding a later image;
+record the image addition with an edited-on date in the article.
+
 ---
 
 ## Dev Server Rules

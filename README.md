@@ -5,18 +5,33 @@ Publishing is done by **AOG** (Emacs-based Org publishing) using theme source fr
 
 - `/Users/pankajdoharey/Development/Projects/AOG/themes/selfdotsend`
 
-## 1) Prerequisites
+## 1) Clean Machine Setup
+
+On a new macOS machine, run the bootstrap script from the repository root:
+
+```bash
+./scripts/setup.sh
+```
+
+The script installs Homebrew dependencies, clones the upstream AOG repository
+next to this checkout, installs AOG's required Emacs packages, links the AOG
+CLI into `~/.local/bin`, verifies the bundled Ditaa server, and performs the
+first site build. Use `./scripts/setup.sh --skip-build` when only the tools
+should be installed.
+
+## 2) Prerequisites
 
 Required:
 - `emacs` (batch mode must work)
 - `node` (used for build-time code-highlight fallback)
 - `python` (for local static server)
-- `aog` CLI wrapper in PATH (`/Users/pankajdoharey/.oh_my_bash/bin/aog`)
+- the upstream AOG CLI in PATH; `scripts/setup.sh` installs it from
+  `git@github.com:metacritical/AOG.git`
 
 Optional (for diagrams):
-- `java` (needed by `ditaa` / `plantuml` jars)
+- `java` (needed by the bundled Ditaa server)
 
-## 2) Repository Layout
+## 3) Repository Layout
 
 - `posts/*.org`: blog posts
 - `index.org`: homepage card list
@@ -27,7 +42,7 @@ Optional (for diagrams):
 - `publish.sh`: canonical site build command
 - `public/`: generated output
 
-## 3) Build (single run)
+## 4) Build (single run)
 
 From repo root:
 
@@ -53,7 +68,7 @@ Disable cleanup for a run:
 CLEANUP_AFTER_BUILD=0 ./publish.sh
 ```
 
-## 4) Local Preview
+## 5) Local Preview
 
 ```bash
 cd /Users/pankajdoharey/Development/selfdotsend-new/public
@@ -62,7 +77,7 @@ python -m http.server 8080
 
 Open: `http://localhost:8080`
 
-## 5) Dev Mode (auto rebuild + server)
+## 6) Dev Mode (auto rebuild + server)
 
 This repo now includes `Procfile` for `doorman`:
 
@@ -84,7 +99,7 @@ Notes:
 - `dev-watch` is single-instance guarded, so accidental duplicate `doorman`
   runs won't create multiple rebuild loops.
 
-## 6) Diagram Behavior
+## 7) Diagram Behavior
 
 Diagrams are ON by default.
 
@@ -92,10 +107,10 @@ Diagrams are ON by default.
 - Disable explicitly: `RENDER_DIAGRAMS=0 ./publish.sh`
 
 Jars expected at:
-- `tools/diagrams/ditaa-0.11.0-standalone.jar`
-- `tools/diagrams/plantuml-mit-1.2026.1.jar`
+- `tools/diagrams/ditaa-server.jar`
+- `tools/diagrams/ditaa-source/`
 
-## 7) AOG CLI Commands
+## 8) AOG CLI Commands
 
 `aog` wrapper supports:
 
@@ -111,7 +126,7 @@ aog publish /Users/pankajdoharey/Development/selfdotsend-new /Users/pankajdohare
 aog preview /Users/pankajdoharey/Development/selfdotsend-new /Users/pankajdoharey/Development/selfdotsend-new/public 8080
 ```
 
-## 8) Emacs Configuration Notes
+## 9) Emacs Configuration Notes
 
 The `aog` wrapper already sets these for batch publish:
 - `aog/theme` -> `selfdotsend`
