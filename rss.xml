@@ -4,10 +4,17 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Sat, 15 Aug 2026 14:33:48 IST</pubDate>
-    <lastBuildDate>Sat, 15 Aug 2026 14:33:48 IST</lastBuildDate>
+    <pubDate>Sat, 15 Aug 2026 23:10:07 IST</pubDate>
+    <lastBuildDate>Sat, 15 Aug 2026 23:10:07 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
+    <item>
+      <title>How To Thrive in the Era of &#39;Easy&#39; Engineering</title>
+      <link>https://selfdotsend.com/blog/2026/08/14/how-to-thrive-in-the-era-of-easy-engineering</link>
+      <description><![CDATA[AI-assisted development is making software construction easier. The durable advantage now comes from judgment, systems thinking, and deliberate practice.]]></description>
+      <pubDate>2026-08-15</pubDate>
+      <guid>https://selfdotsend.com/blog/2026/08/14/how-to-thrive-in-the-era-of-easy-engineering</guid>
+    </item>
     <item>
       <title>Lolcat in Arm Assembly</title>
       <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly</link>
@@ -70,13 +77,6 @@
       <description><![CDATA[Designing a keymap system - translating raw keystrokes into editor commands, and the foundation for modal editing.]]></description>
       <pubDate>2026-08-14</pubDate>
       <guid>https://selfdotsend.com/blog/2018/09/08/writing-a-programmers-editor-part-6</guid>
-    </item>
-    <item>
-      <title>Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7</title>
-      <link>https://selfdotsend.com/blog/2018/09/15/writing-a-programmers-editor-part-7</link>
-      <description><![CDATA[Efficient screen redisplay - dirty line tracking, differential rendering, and avoiding the full repaint.]]></description>
-      <pubDate>2026-08-14</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/09/15/writing-a-programmers-editor-part-7</guid>
     </item>
   </channel>
 </rss>
