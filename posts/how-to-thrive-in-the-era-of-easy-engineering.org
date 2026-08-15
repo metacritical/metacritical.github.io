@@ -9,6 +9,9 @@
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: AI-assisted development is making software construction easier. The durable advantage now comes from judgment, systems thinking, and deliberate practice.
 
+#+ATTR_HTML: :alt Conceptual illustration of code fragments becoming a carefully engineered software architecture
+[[/assets/blog/2026/08/14/how-to-thrive-in-the-era-of-easy-engineering/hero.png]]
+
 There is a strange sensation spreading through the software engineering community. Talk to developers, tech leads, or engineering managers and you will hear a similar sentiment, /on a day-to-day level, the job has become remarkably easy./
 
 That ease is a double-edged sword. Some engineers are using it to compound their leverage and build at unprecedented speed. Others are drifting into a coasting trap that could leave their careers-and the systems they own-fragile.
