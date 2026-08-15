@@ -2,7 +2,7 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:
 #+DATE:        [2026-08-14 Fri]
-#+URI:         /blog/%y/%m/%d/the-easy-era-of-software-engineering-superpower-or-trap
+#+URI:         /blog/%y/%m/%d/how-to-thrive-in-the-era-of-easy-engineering
 #+KEYWORDS:    software engineering, artificial intelligence, developer productivity, career growth
 #+TAGS:        software engineering, ai, developer productivity, career growth
 #+LANGUAGE:    en
