@@ -9,7 +9,7 @@
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: AI-assisted development is making software construction easier. The durable advantage now comes from judgment, systems thinking, and deliberate practice.
 
-There is a strange sensation spreading through the software engineering community. Talk to developers, tech leads, or engineering managers and you will hear a similar sentiment: /on a day-to-day level, the job has become remarkably easy./
+There is a strange sensation spreading through the software engineering community. Talk to developers, tech leads, or engineering managers and you will hear a similar sentiment, /on a day-to-day level, the job has become remarkably easy./
 
 That ease is a double-edged sword. Some engineers are using it to compound their leverage and build at unprecedented speed. Others are drifting into a coasting trap that could leave their careers-and the systems they own-fragile.
 
@@ -19,14 +19,14 @@ Here is what that shift means, why it is happening, and how durable engineers ar
 
 *Beyond the Boilerplate: The Shift in Active Construction*
 
-Not long ago, a significant portion of a software engineer's day was consumed by repetitive work: building basic CRUD (Create, Read, Update, Delete) APIs, setting up standard database schemas, writing routine routing, and hunting down minor syntax bugs. Those tasks still matter, but they no longer need to consume the same amount of active attention.
+Not long ago, a significant portion of a software engineer's day was consumed by repetitive work, including building basic CRUD (Create, Read, Update, Delete) APIs, setting up standard database schemas, writing routine routing, and hunting down minor syntax bugs. Those tasks still matter, but they no longer need to consume the same amount of active attention.
 
-With modern AI assistance, an engineer can describe a feature and receive a useful draft in seconds. The work has moved up the stack: from typing every line to deciding what should exist, specifying its boundaries, testing its behavior, and integrating it safely.
+With modern AI assistance, an engineer can describe a feature and receive a useful draft in seconds. The work has moved up the stack, from typing every line to deciding what should exist, specifying its boundaries, testing its behavior, and integrating it safely.
 
-The timeline compression can be dramatic:
+The timeline compression can be dramatic. A complex data-syncing integration offers a useful comparison.
 
-- *Then:* A complex data-syncing integration might demand a dedicated squad of four developers over a full quarter.
-- *Now:* A single engineer with a precise specification, strong tooling, and disciplined review may design, test, and ship a comparable integration in under a month.
+- *Then,* a complex data-syncing integration might demand a dedicated squad of four developers over a full quarter.
+- *Now,* a single engineer with a precise specification, strong tooling, and disciplined review may design, test, and ship a comparable integration in under a month.
 
 The second scenario is not automatic. It depends on good requirements, reliable tests, sound judgment, and a system that can absorb the change. AI reduces technical friction; it does not remove responsibility for the result.
 
@@ -44,7 +44,7 @@ The important phrase is /underlying principles/. Asking for a patch is fast. Ask
 
 If everything is easier, why is there so much anxiety in the industry?
 
-The anxiety follows a simple rule: /when the job gets too easy, it becomes easy to stop practicing./
+The anxiety follows a simple rule, /when the job gets too easy, it becomes easy to stop practicing./
 
 When a button can generate a functional feature, it is tempting to stop engaging. An engineer can spend the day copy-pasting code, watching an agent work, and using the recovered time to coast. That feels productive in the short term, but it does not necessarily build skill.
 
@@ -56,11 +56,11 @@ The antidote is deliberate friction. Read the generated diff. Predict failure mo
 
 As companies catch up to these capabilities, expectations for engineering teams are shifting. Organizations are asking whether more people are the answer when a smaller group with better tools can maintain a system and continue shipping.
 
-Consider the direction of travel: a mid-sized product team might streamline from thirty engineers to a tight, high-leverage group of four while preserving shipping velocity and reliability. That outcome is not a universal benchmark or a reason to celebrate indiscriminate cuts. It is a signal that headcount is becoming a less reliable proxy for engineering capacity.
+Consider the direction of travel, a mid-sized product team might streamline from thirty engineers to a tight, high-leverage group of four while preserving shipping velocity and reliability. That outcome is not a universal benchmark or a reason to celebrate indiscriminate cuts. It is a signal that headcount is becoming a less reliable proxy for engineering capacity.
 
 Organizations increasingly prioritize /high-leverage engineers/-people who can reason across an entire system rather than only produce individual lines of code. The progression for an ambitious engineer is changing too. A strong junior engineer can compound their value quickly by learning the product, the operational environment, and the business constraints around the code.
 
-The expectation is becoming clearer: grow the scope and reliability of your impact, not merely the volume of code you produce.
+The expectation is becoming clearer, grow the scope and reliability of your impact, not merely the volume of code you produce.
 
 *The Elite Engineer: Becoming a Systems Orchestrator*
 
@@ -82,13 +82,13 @@ That change reflects the work itself. The scarce skill is not recalling a trick 
 
 *A Practical Operating Loop*
 
-The new leverage is easiest to sustain as a simple loop:
+The new leverage is easiest to sustain as a simple loop. It follows five steps.
 
-1. *Understand:* map the system, constraints, users, and failure modes before asking for implementation.
-2. *Specify:* write the behavior, interfaces, invariants, and acceptance tests in concrete terms.
-3. *Generate:* use AI to explore implementations and alternatives quickly.
-4. *Verify:* review the diff, run tests, inspect observability, and probe adversarial cases.
-5. *Learn:* keep the explanation, the rejected alternatives, and the postmortem so the next task starts at a higher level.
+1. *Understand,* map the system, constraints, users, and failure modes before asking for implementation.
+2. *Specify,* write the behavior, interfaces, invariants, and acceptance tests in concrete terms.
+3. *Generate,* use AI to explore implementations and alternatives quickly.
+4. *Verify,* review the diff, run tests, inspect observability, and probe adversarial cases.
+5. *Learn,* keep the explanation, the rejected alternatives, and the postmortem so the next task starts at a higher level.
 
 This loop turns AI from an answer machine into a force multiplier for engineering judgment.
 
