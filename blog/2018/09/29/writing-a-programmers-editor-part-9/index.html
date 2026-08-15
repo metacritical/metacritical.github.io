@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786818868" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786818868" type="text/css">
 </head>
 
   <body class="container">
@@ -80,15 +80,15 @@
     <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
   </div>
 </div>
-  <style>
-.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tags li{list-style:none;margin:0;padding:0}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
-.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
-.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
-</style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/syntax-highlighting/">Syntax Highlighting</a></li><li><a class="article-tag" href="/tags/tokenizer/">Tokenizer</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
-  <p>
+  
+<div id="org72b0f76" class="figure">
+<p><img src="/assets/blog/2018/09/29/writing-a-programmers-editor-part-9/hero.png" alt="Editorial illustration of code passing through tokenization and syntax highlighting layers" />
+</p>
+</div>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
 In <a href="/blog/2018/09/22/writing-a-programmers-editor-part-8/">Part 8</a> we made the buffer searchable. Now we make it <i>readable</i>. Syntax highlighting -
 colouring keywords, strings, comments, and numbers differently - is what turns a wall of
 monospace into something the eye parses at a glance. And there is a particular joy in what we
@@ -115,13 +115,20 @@ one tokenizer can drive many colour schemes, and one theme can style many langua
 </p>
 
 
-<div id="org2e7791d" class="figure">
+<div id="org1666e30" class="figure">
 <p><img src="/assets/blog/2018/09/29/writing-a-programmers-editor-part-9/highlight-pipeline.png" alt="highlight-pipeline.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>The highlighting pipeline - the tokenizer knows the language, the fontifier knows the theme.</p>
 </div>
-
-<p>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/syntax-highlighting/">Syntax Highlighting</a></li><li><a class="article-tag" href="/tags/tokenizer/">Tokenizer</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
 <b>A Tokenizer For Scheme</b>
 </p>
 

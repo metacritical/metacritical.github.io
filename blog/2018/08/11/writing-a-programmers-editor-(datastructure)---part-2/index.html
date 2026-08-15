@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786818868" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786818868" type="text/css">
 </head>
 
   <body class="container">
@@ -80,6 +80,28 @@
     <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
   </div>
 </div>
+  
+<div id="orgcb0b2b0" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/hero.png" alt="Editorial illustration of a gap buffer data structure with a movable insertion gap" />
+</p>
+</div>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
+In my quest to write a programmable editor the first problem that i came across was
+which datastructure to hold the text in? What do other text editors use? For instance
+emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
+with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
+like.
+</p>
+
+
+<div id="org7154225" class="figure">
+<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Gap Buffer - the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
+</div>
   <style>
 .article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
 .article-tags li{list-style:none;margin:0;padding:0}
@@ -89,21 +111,6 @@
 </style>
   <ul class="article-tags"><li><a class="article-tag" href="/tags/editor/">editor</a></li><li><a class="article-tag" href="/tags/gap-buffer/">gap buffer</a></li><li><a class="article-tag" href="/tags/data-structures/">data structures</a></li><li><a class="article-tag" href="/tags/scheme/">scheme</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">writing an editor</a></li></ul>
   <p>
-In my quest to write a programmable editor the first problem that i came across was
-which datastructure to hold the text in? What do other text editors use? For instance
-emacs in which this blog is written uses a gap buffer. Gap buffer is a linear array
-with two extra empty spaces in the array. Let me demonstrate how a gap buffer looks
-like.
-</p>
-
-
-<div id="org41954cd" class="figure">
-<p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer.png" alt="gapbuffer.png" />
-</p>
-<p><span class="figure-number">Figure 1: </span>Gap Buffer - the green boxes represent the gap (empty space), notice how it moves with the cursor.</p>
-</div>
-
-<p>
 Notice the <i>green boxes</i> in the diagram above. Those represent the gap - empty space
 in the array reserved for future insertions. The text <code>"HELLO WORLD"</code> sits in a
 single contiguous array, but the gap splits it into two segments: the text <i>before</i>
@@ -128,7 +135,7 @@ the gap, and edits happen at gap boundaries.
 </p>
 
 
-<div id="org425e55d" class="figure">
+<div id="org4d1aef9" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-insertion.png" alt="gapbuffer-insertion.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Insertion - typing fills the gap from the left, shrinking it one cell at a time.</p>
@@ -159,7 +166,7 @@ single <code>memmove</code> - a blazingly fast operation on modern hardware.
 </p>
 
 
-<div id="org31ab27e" class="figure">
+<div id="org8c0ef57" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-move.png" alt="gapbuffer-move.png" />
 </p>
 <p><span class="figure-number">Figure 3: </span>Long cursor movement - the gap shifts right, dragging characters from right side to left side.</p>
@@ -184,7 +191,7 @@ space before the next resize. The amortized cost per insertion remains <code>O(1
 </p>
 
 
-<div id="org5ee0bdb" class="figure">
+<div id="org3b9c6a2" class="figure">
 <p><img src="/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/gapbuffer-resize.png" alt="gapbuffer-resize.png" />
 </p>
 <p><span class="figure-number">Figure 4: </span>Buffer resize - when the gap runs out, the array doubles and a fresh gap opens in the middle.</p>

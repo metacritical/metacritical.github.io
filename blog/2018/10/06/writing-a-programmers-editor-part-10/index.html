@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786818868" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786818868" type="text/css">
 </head>
 
   <body class="container">
@@ -80,15 +80,15 @@
     <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
   </div>
 </div>
-  <style>
-.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tags li{list-style:none;margin:0;padding:0}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
-.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
-.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
-</style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/undo/">Undo</a></li><li><a class="article-tag" href="/tags/redo/">Redo</a></li><li><a class="article-tag" href="/tags/command-log/">Command Log</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
-  <p>
+  
+<div id="org47b8fe9" class="figure">
+<p><img src="/assets/blog/2018/10/06/writing-a-programmers-editor-part-10/hero.png" alt="Editorial illustration of reversible editor commands moving along an undo and redo timeline" />
+</p>
+</div>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
 In <a href="/blog/2018/09/29/writing-a-programmers-editor-part-9/">Part 9</a> we gave the editor colour. The editor now looks and feels real. But one thing is
 still missing, and it is the thing that lets people <i>trust</i> an editor: the ability to take
 back a mistake. Undo is the safety net. Get it wrong and users edit timidly, afraid of losing
@@ -137,8 +137,15 @@ only: the kind, the position, and the text involved.
     ((delete) (buffer-delete-at! eb (edit-pos e) (string-length (edit-text e))))))
 </pre>
 </div>
-
-<p>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/undo/">Undo</a></li><li><a class="article-tag" href="/tags/redo/">Redo</a></li><li><a class="article-tag" href="/tags/command-log/">Command Log</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
 With inversion in hand, undo is almost trivial: to undo an edit, apply its inverse.
 </p>
 
@@ -245,7 +252,7 @@ it back? Vim's answer is the <i>undo tree</i>: history is not a line, it is a br
 </p>
 
 
-<div id="orgb2099fa" class="figure">
+<div id="org7d4131e" class="figure">
 <p><img src="/assets/blog/2018/10/06/writing-a-programmers-editor-part-10/undo-tree.png" alt="undo-tree.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>An undo tree - undoing then editing creates a new branch instead of discarding the old one. Every past state remains reachable.</p>
