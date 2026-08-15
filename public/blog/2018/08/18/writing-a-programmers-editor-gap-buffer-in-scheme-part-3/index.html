@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817065" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817065" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
 </head>
 
   <body class="container">
@@ -81,19 +81,14 @@
   </div>
 </div>
   
-<div id="orgdfa7717" class="figure">
-<p><img src="/media/images/placeholder.png" alt="placeholder.png" width="708px" height="392px" data-fit="none" data-position="center" data-filter="invert" data-align="center" />
+<div id="org031ef4c" class="figure">
+<p><img src="/assets/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3/hero.png" alt="Editorial illustration of a gap buffer with text blocks separated by a movable empty gap" />
 </p>
 </div>
-  <style>
-.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tags li{list-style:none;margin:0;padding:0}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
-.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
-.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
-</style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">scheme</a></li><li><a class="article-tag" href="/tags/gap-buffer/">gap buffer</a></li><li><a class="article-tag" href="/tags/data-structures/">data structures</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">writing an editor</a></li></ul>
-  <p>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
 In the <a href="/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/">previous part</a> we explored why the gap buffer is the right data structure for a text editor. We looked at how emacs uses it, how insertion and deletion are <code>O(1)</code>, and how cursor movement is <code>O(N)</code> but amortizes to nearly nothing. Now it is time to get our hands dirty.
 </p>
 
@@ -137,8 +132,15 @@ In Scheme, we represent this as a three-element vector:
 </span>          capacity))                    <span class="org-comment-delimiter">; </span><span class="org-comment">gap-end (gap fills the whole buffer)</span>
 </pre>
 </div>
-
-<p>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">scheme</a></li><li><a class="article-tag" href="/tags/gap-buffer/">gap buffer</a></li><li><a class="article-tag" href="/tags/data-structures/">data structures</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">writing an editor</a></li></ul>
+  <p>
 The accessors are trivial:
 </p>
 

@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817065" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817065" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
 </head>
 
   <body class="container">
@@ -80,15 +80,15 @@
     <span class="series-badge"><a href="/series/writing-a-programmers-editor/" style="color:inherit;text-decoration:none">Writing a Programmer&#x27;s Editor</a></span>
   </div>
 </div>
-  <style>
-.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tags li{list-style:none;margin:0;padding:0}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
-.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
-.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
-</style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/search/">Search</a></li><li><a class="article-tag" href="/tags/replace/">Replace</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
-  <p>
+  
+<div id="orge88d947" class="figure">
+<p><img src="/assets/blog/2018/09/22/writing-a-programmers-editor-part-8/hero.png" alt="Editorial illustration of a magnifying glass tracing a search path through structured text" />
+</p>
+</div>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
 In <a href="/blog/2018/09/15/writing-a-programmers-editor-part-7/">Part 7</a> we made the screen fast. Now we add the feature a programmer reaches for more
 than any other after basic editing: search. But not just any search - <i>incremental</i> search,
 the kind where matches light up as you type, before you have finished the query. Once you
@@ -135,8 +135,15 @@ search the logical text - the string with the gap removed. We already have
        (<span class="org-keyword">else</span> #f)))))
 </pre>
 </div>
-
-<p>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/scheme/">Scheme</a></li><li><a class="article-tag" href="/tags/search/">Search</a></li><li><a class="article-tag" href="/tags/replace/">Replace</a></li><li><a class="article-tag" href="/tags/writing-an-editor/">Writing an Editor</a></li></ul>
+  <p>
 Wrapping this to search the buffer from point, and to wrap around to the top when it hits the
 bottom, gives us a working <code>search-forward</code>:
 </p>

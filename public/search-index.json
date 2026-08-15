@@ -21,7 +21,7 @@
     "title": "Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12",
     "url": "/blog/2018/10/20/writing-a-programmers-editor-part-12/",
     "date": "2018-10-20",
-    "excerpt": "In Part 11 we built the extensibility layer, and with it the editor was complete - a working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap. Eleven parts ago, in Part 1 , this wa..."
+    "excerpt": ""
   },
   {
     "title": "Writing a Programmers Editor (Modes &amp; Extensibility) - Part 11",
@@ -45,7 +45,7 @@
     "title": "Writing a Programmers Editor (Search &amp; Replace) - Part 8",
     "url": "/blog/2018/09/22/writing-a-programmers-editor-part-8/",
     "date": "2018-09-22",
-    "excerpt": "In Part 7 we made the screen fast. Now we add the feature a programmer reaches for more than any other after basic editing: search. But not just any search - incremental search, the kind where matches light up as you ..."
+    "excerpt": ""
   },
   {
     "title": "Writing a Programmers Editor (Rendering &amp; Redisplay) - Part 7",
@@ -69,7 +69,7 @@
     "title": "Writing a Programmers Editor (Lines &amp; Display) - Part 4",
     "url": "/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4/",
     "date": "2018-08-25",
-    "excerpt": "In Part 3 we built a gap buffer in Scheme. It can hold text, insert characters, delete them, move the cursor, and resize when the gap runs out. It is about 80 lines of code and it works."
+    "excerpt": ""
   },
   {
     "title": "Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3",
@@ -99,7 +99,7 @@
     "title": "Lolcat in Arm Assembly",
     "url": "/blog/2018/07/14/lolcat-in-arm-assembly/",
     "date": "2018-07-14",
-    "excerpt": "lolcat is one of those gloriously useless little Unix programs that everybody loves anyway. It reads text and prints it back in rainbow colours - the same bytes you piped in, now dressed for a party. The original is a..."
+    "excerpt": ""
   },
   {
     "title": "Lolcat in 64 arm assembly.",
