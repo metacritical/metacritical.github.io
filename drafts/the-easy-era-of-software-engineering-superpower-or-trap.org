@@ -1,4 +1,4 @@
-#+TITLE:       When Coding Gets Cheap, Engineering Gets Expensive
+#+TITLE:       How To Thrive in the Era of 'Easy' Engineering
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:
 #+DATE:        [2026-08-14 Fri]
