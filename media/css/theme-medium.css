@@ -289,6 +289,18 @@ html[data-theme="medium"] .post-edited-on {
   font: 500 14px/1.3 "ui-sans-serif", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+html[data-theme="medium"] .post-edited-on--meta {
+  display: inline;
+  margin: 0;
+  color: #7a756b;
+  font: inherit;
+}
+
+html[data-theme="medium"] .post-edited-on--meta::before {
+  content: " · ";
+  color: #6a655a;
+}
+
 html[data-theme="medium"] #wrapper.post-page .post > h1.title {
   margin-bottom: 0;
 }

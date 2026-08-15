@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        2018-08-11 Sat
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-(datastructure)---part-2
 #+KEYWORDS:    scheme, editor-data-structures, gap-buffer
 #+TAGS:        editor, gap buffer, data structures, scheme, writing an editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Exploration to find the right data structure for the editor.
+
+#+ATTR_HTML: :alt Editorial illustration of a gap buffer data structure with a movable insertion gap
+[[/assets/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In my quest to write a programmable editor the first problem that i came across was
 which datastructure to hold the text in? What do other text editors use? For instance

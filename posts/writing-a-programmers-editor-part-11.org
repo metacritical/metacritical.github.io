@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-10-13 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-11
 #+KEYWORDS:    scheme, editor, modes, extensibility, plugins, scripting
 #+TAGS:        Scheme, Modes, Extensibility, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: The extensibility layer - major modes, minor modes, hooks, and giving the user 100% power.
+
+#+ATTR_HTML: :alt Editorial illustration of editor modes and extensibility hooks branching from a central core
+[[/assets/blog/2018/10/13/writing-a-programmers-editor-part-11/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/10/06/writing-a-programmers-editor-part-10/][Part 10]] we built undo/redo. The editor can now hold text, display it, colour it, search
 it, and forgive mistakes. And now we arrive at the question that started this whole series in

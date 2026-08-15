@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-08-06 Mon]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/learn-to-write-an-editor
 #+KEYWORDS:    editor, emacs, vim, scheme
 #+TAGS:        editor, emacs, vim, scheme, writing an editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: A series of Assays on writing a programmers editor.
+
+#+ATTR_HTML: :alt Editorial illustration of a programmers editor assembled from modular layers
+[[/assets/blog/2018/08/06/learn-to-write-an-editor/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 Since the time i learnt emacs i have toyed with the idea of writing my own
 programming text editor. Though emacs is a powerful tool it can be obtuse to

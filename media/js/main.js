@@ -173,6 +173,7 @@
       var modEl = meta.querySelector(".post-info--mod-date");
       var tagsEl = meta.querySelector(".post-info--tags");
       var authorDateEl = document.querySelector(".post-author-date");
+      var editedEl = document.querySelector(".post-edited-on");
 
       if (dateEl && authorDateEl) {
         var authoredDate = (dateEl.textContent || "").trim();
@@ -180,6 +181,17 @@
           authorDateEl.textContent = authoredDate;
         } else {
           authorDateEl.remove();
+        }
+      }
+
+      if (editedEl && authorDateEl) {
+        var editedText = (editedEl.textContent || "").replace(/\s+/g, " ").trim();
+        if (editedText) {
+          var editedMetaEl = document.createElement("span");
+          editedMetaEl.className = "post-edited-on post-edited-on--meta";
+          editedMetaEl.textContent = editedText;
+          authorDateEl.insertAdjacentElement("afterend", editedMetaEl);
+          editedEl.remove();
         }
       }
 

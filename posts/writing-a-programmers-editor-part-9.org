@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-09-29 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-9
 #+KEYWORDS:    scheme, editor, syntax-highlighting, tokenizer, themes, font-lock
 #+TAGS:        Scheme, Syntax Highlighting, Tokenizer, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Adding colour to code - tokenization, fontification, and how to build a syntax highlighting engine.
+
+#+ATTR_HTML: :alt Editorial illustration of code passing through tokenization and syntax highlighting layers
+[[/assets/blog/2018/09/29/writing-a-programmers-editor-part-9/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/09/22/writing-a-programmers-editor-part-8/][Part 8]] we made the buffer searchable. Now we make it /readable/. Syntax highlighting -
 colouring keywords, strings, comments, and numbers differently - is what turns a wall of

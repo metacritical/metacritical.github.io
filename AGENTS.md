@@ -36,7 +36,8 @@ article and its homepage card have an image or thumbnail. If they do not, and
 an appropriate image can be generated, ask the user whether they want a
 particular thumbnail concept or the site's default thumbnail before creating
 the asset. Preserve the original publication date when adding a later image;
-record the image addition with an edited-on date in the article.
+record the image addition with an edited-on date in the article. Render the
+edited-on date beside the original publication date in the article metadata.
 
 ---
 

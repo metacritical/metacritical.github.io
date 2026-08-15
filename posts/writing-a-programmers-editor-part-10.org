@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-10-06 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-10
 #+KEYWORDS:    scheme, editor, undo, redo, command-log, history
 #+TAGS:        Scheme, Undo, Redo, Command Log, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Building undo and redo - from linear history to undo trees, and the command log pattern.
+
+#+ATTR_HTML: :alt Editorial illustration of reversible editor commands moving along an undo and redo timeline
+[[/assets/blog/2018/10/06/writing-a-programmers-editor-part-10/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/09/29/writing-a-programmers-editor-part-9/][Part 9]] we gave the editor colour. The editor now looks and feels real. But one thing is
 still missing, and it is the thing that lets people /trust/ an editor: the ability to take

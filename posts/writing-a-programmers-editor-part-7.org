@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-09-15 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-7
 #+KEYWORDS:    scheme, editor, rendering, redisplay, dirty-lines, double-buffering
 #+TAGS:        Scheme, Rendering, Redisplay, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Efficient screen redisplay - dirty line tracking, differential rendering, and avoiding the full repaint.
+
+#+ATTR_HTML: :alt Editorial illustration of a changed screen region flowing through a differential rendering pipeline
+[[/assets/blog/2018/09/15/writing-a-programmers-editor-part-7/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/09/08/writing-a-programmers-editor-part-6/][Part 6]] we wired keystrokes to commands. Now every command changes the buffer, and after
 every change the screen must reflect the new state. The obvious approach - clear the screen

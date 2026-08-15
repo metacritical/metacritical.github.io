@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-09-08 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-6
 #+KEYWORDS:    scheme, editor, keymaps, input, keybindings, modes
 #+TAGS:        Scheme, Keymaps, Input Handling, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Designing a keymap system - translating raw keystrokes into editor commands, and the foundation for modal editing.
+
+#+ATTR_HTML: :alt Editorial illustration of keyboard input branching through a keymap command tree
+[[/assets/blog/2018/09/08/writing-a-programmers-editor-part-6/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/09/01/writing-a-programmers-editor-part-5/][Part 5]] we taught the editor to read raw keystrokes from the terminal. But a keystroke
 is just a byte, or a short sequence of bytes. =\e[A= means "up arrow" only because we
