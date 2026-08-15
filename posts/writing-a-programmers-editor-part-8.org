@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-09-22 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-8
 #+KEYWORDS:    scheme, editor, search, replace, incremental, regex
 #+TAGS:        Scheme, Search, Replace, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Implementing incremental search and replace - from naive string matching to efficient algorithms.
+
+#+ATTR_HTML: :alt Editorial illustration of a magnifying glass tracing a search path through structured text
+[[/assets/blog/2018/09/22/writing-a-programmers-editor-part-8/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/09/15/writing-a-programmers-editor-part-7/][Part 7]] we made the screen fast. Now we add the feature a programmer reaches for more
 than any other after basic editing: search. But not just any search - /incremental/ search,

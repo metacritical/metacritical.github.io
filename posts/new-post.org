@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@Pankajs-MacBook-Air.local
 #+DATE:        2018-07-14 Sat
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/lolcat-in-arm-assembly
 #+KEYWORDS:    arm assembly, 64 arm , lolcat arm assembly
 #+TAGS:        lolcat, arm assembly, assembler
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Rewriting x86 Lolcat in Arm assembly.
+
+#+ATTR_HTML: :alt Editorial illustration of a cat-shaped terminal mascot beside ARM assembly instructions
+[[/assets/blog/2018/07/14/lolcat-in-arm-assembly/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 =lolcat= is one of those gloriously useless little Unix programs that everybody
 loves anyway. It reads text and prints it back in rainbow colours - the same bytes

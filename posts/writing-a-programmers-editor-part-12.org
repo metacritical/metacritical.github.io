@@ -2,12 +2,20 @@
 #+AUTHOR:      Pankaj Doharey
 #+EMAIL:       pankajdoharey@gmail.com
 #+DATE:        [2018-10-20 Sat]
+#+EDITED:      [2026-08-15 Sat]
 #+URI:         /blog/%y/%m/%d/writing-a-programmers-editor-part-12
 #+KEYWORDS:    scheme, editor, reflections, lessons, power-continuum
 #+TAGS:        Scheme, Editor, Reflections, Writing an Editor
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: Looking back at the series - what we learned, what worked, and answering the questions from Part 1.
+
+#+ATTR_HTML: :alt Editorial illustration of editor components converging into a reflective central system
+[[/assets/blog/2018/10/20/writing-a-programmers-editor-part-12/hero.png]]
+
+#+BEGIN_EXPORT html
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+#+END_EXPORT
 
 In [[/blog/2018/10/13/writing-a-programmers-editor-part-11/][Part 11]] we built the extensibility layer, and with it the editor was complete - a
 working text editor written entirely in Scheme, extended in Scheme, with no runtime power gap.
