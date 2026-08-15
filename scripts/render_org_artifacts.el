@@ -2,7 +2,6 @@
 (require 'ob)
 (require 'ob-core)
 (require 'ob-ditaa nil t)
-(require 'ob-plantuml nil t)
 (require 'ob-dot nil t)
 
 (setq org-confirm-babel-evaluate nil)
@@ -11,97 +10,94 @@
 (fset 'yes-or-no-p (lambda (&rest _) t))
 (fset 'y-or-n-p (lambda (&rest _) t))
 
-(defun sds/run-java-renderer (jar body outfile &optional extra-args pipe-mode)
-  (make-directory (file-name-directory outfile) t)
-  (if pipe-mode
-      (with-temp-buffer
-        (insert body)
-        (let ((status (apply #'call-process-region
-                             (point-min) (point-max)
-                             "java" nil nil nil
-                             "-Djava.awt.headless=true"
-                             "-jar" jar
-                             (append extra-args (list "-pipe")))))
-          (when (eq status 0)
-            (write-region (point-min) (point-max) outfile nil 'silent))
-          status))
-    (let ((tmp (make-temp-file "sds-diagram-" nil ".txt")))
+(defun sds/base64 (text)
+  (base64-encode-string text t))
+
+(defun sds/run-ditaa-server (jar jobs)
+  "Render JOBS through one headless Ditaa JVM.
+
+Each JOB is a cons cell containing an output path and diagram body.  The
+server exits naturally after EOF, so one publish invocation owns one server
+lifetime and no JVM is started per diagram."
+  (when jobs
+    (let ((request-buffer (generate-new-buffer " *sds-ditaa-requests*"))
+          (response-buffer (generate-new-buffer " *sds-ditaa-responses*")))
       (unwind-protect
           (progn
-            (with-temp-file tmp (insert body))
-            (apply #'call-process "java" nil nil nil
-                   (append (list "-Djava.awt.headless=true"
-                                 "-jar" jar)
-                           extra-args
-                           (list tmp outfile))))
-        (ignore-errors (delete-file tmp))))))
-
-(defun sds/render-artifact (lang body params abs-out org-file ditaa-jar plantuml-jar)
-  (let ((source-newer (or (not (file-exists-p abs-out))
-                          (file-newer-than-file-p org-file abs-out))))
-    (cond
-     ((and (string= lang "ditaa")
-           ditaa-jar (file-exists-p ditaa-jar))
-      (if source-newer
-          (let ((status (sds/run-java-renderer
-                         ditaa-jar body abs-out
-                         (ignore-errors (split-string-and-unquote (or (cdr (assoc :cmdline params)) "")))
-                         nil)))
-            (unless (eq status 0)
-              (message "[WARN] ditaa render failed (%s) for %s" status abs-out)))
-        (message "[INFO] Skipping unchanged ditaa artifact: %s" abs-out)))
-     ((and (string= lang "plantuml")
-           plantuml-jar (file-exists-p plantuml-jar))
-      (if source-newer
-          (let ((status (sds/run-java-renderer plantuml-jar body abs-out '("-tpng") t)))
-            (unless (eq status 0)
-              (message "[WARN] plantuml render failed (%s) for %s" status abs-out)))
-        (message "[INFO] Skipping unchanged plantuml artifact: %s" abs-out)))
-     ((or (string= lang "dot") (string= lang "graphviz-dot"))
-      (when source-newer
-        (org-babel-execute-src-block))))))
+            (with-current-buffer request-buffer
+              (dolist (job (reverse jobs))
+                (insert "RENDER\t"
+                        (sds/base64 (car job))
+                        "\t"
+                        (sds/base64 (cdr job))
+                        "\n")))
+            (let ((status (with-current-buffer request-buffer
+                            (call-process-region
+                             (point-min) (point-max)
+                             "java" nil response-buffer nil
+                             "-Djava.awt.headless=true"
+                             "-cp" jar
+                             "org.stathissideris.ascii2image.core.DitaaServer"
+                             "-E" "-S"))))
+              (unless (eq status 0)
+                (error "Ditaa server exited with status %s" status)))
+            (with-current-buffer response-buffer
+              (dolist (response (split-string (buffer-string) "\n" t))
+                (unless (string= response "OK")
+                  (error "Ditaa server request failed: %s" response)))))
+        (kill-buffer request-buffer)
+        (kill-buffer response-buffer)))))
 
 (let ((blog-root (or (nth 0 command-line-args-left) default-directory))
-      (org-file (nth 1 command-line-args-left))
-      (ditaa-jar (nth 2 command-line-args-left))
-      (plantuml-jar (nth 3 command-line-args-left)))
-  (unless (and org-file (file-exists-p org-file))
-    (error "Org file missing: %s" org-file))
+      (ditaa-jar (nth 1 command-line-args-left))
+      (org-files (cddr command-line-args-left))
+      (expected-files '())
+      (ditaa-jobs '()))
+  (unless (and ditaa-jar (file-exists-p ditaa-jar))
+    (error "Ditaa server JAR missing: %s" ditaa-jar))
+  (unless org-files
+    (error "No Org files supplied to diagram renderer"))
   (setq default-directory (file-name-as-directory blog-root))
-  (when (and ditaa-jar (file-exists-p ditaa-jar))
-    (setq org-ditaa-jar-path ditaa-jar))
-  (when (and plantuml-jar (file-exists-p plantuml-jar))
-    (setq org-plantuml-jar-path plantuml-jar))
+  (setq org-ditaa-jar-path ditaa-jar)
 
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((ditaa . t) (plantuml . t) (dot . t)))
+   '((ditaa . t) (dot . t)))
 
-  (with-current-buffer (find-file-noselect org-file)
-    (org-mode)
-    (let ((expected-files '()))
+  (dolist (org-file org-files)
+    (with-current-buffer (find-file-noselect org-file)
+      (org-mode)
       (org-with-wide-buffer
        (goto-char (point-min))
-        (while (re-search-forward org-babel-src-block-regexp nil t)
-          (let* ((block-beg (match-beginning 0))
-                 (block-end (match-end 0)))
-            (goto-char block-beg)
-            (let* ((info (org-babel-get-src-block-info 'light))
-                   (lang (downcase (or (car info) "")))
-                   (params (nth 2 info))
-                   (body (nth 1 info))
-                   (outfile (cdr (assoc :file params))))
-              (when outfile
-                (let ((abs-out (expand-file-name outfile blog-root)))
-                  (push abs-out expected-files)
-                  (when (member lang '("ditaa" "plantuml" "dot" "graphviz-dot"))
-                    ;; Use the explicit headless renderer and skip unchanged
-                    ;; artifacts so macOS never receives repeated Java launches.
-                    (sds/render-artifact lang body params abs-out org-file ditaa-jar plantuml-jar))))
-            (goto-char block-end))))
+       (while (re-search-forward org-babel-src-block-regexp nil t)
+         (let* ((block-beg (match-beginning 0))
+                (block-end (match-end 0)))
+           (goto-char block-beg)
+           (let* ((info (org-babel-get-src-block-info 'light))
+                  (lang (downcase (or (car info) "")))
+                  (params (nth 2 info))
+                  (body (nth 1 info))
+                  (outfile (cdr (assoc :file params))))
+             (when (and outfile
+                        (member lang '("ditaa" "dot" "graphviz-dot")))
+               (let ((abs-out (expand-file-name outfile blog-root)))
+                 (push abs-out expected-files)
+                 (cond
+                  ((string= lang "ditaa")
+                   (if (or (not (file-exists-p abs-out))
+                           (file-newer-than-file-p org-file abs-out))
+                       (push (cons abs-out body) ditaa-jobs)
+                     (message "[INFO] Skipping unchanged ditaa artifact: %s" abs-out)))
+                  ((or (string= lang "dot") (string= lang "graphviz-dot"))
+                   (when (or (not (file-exists-p abs-out))
+                             (file-newer-than-file-p org-file abs-out))
+                     (org-babel-execute-src-block))))))
+           (goto-char block-end))))
+      (save-buffer)
+      (kill-buffer (current-buffer))))
 
-      (dolist (f expected-files)
-        (unless (file-exists-p f)
-          (message "[WARN] Artifact not generated from %s: %s" org-file f))))
-    (save-buffer)
-    (kill-buffer (current-buffer)))))
+  (sds/run-ditaa-server ditaa-jar ditaa-jobs)
+
+  (dolist (file expected-files)
+    (unless (file-exists-p file)
+      (message "[WARN] Artifact not generated: %s" file)))))

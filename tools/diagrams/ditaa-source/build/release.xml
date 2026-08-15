@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="release-ditaa" default="release-all" basedir=".">
+    <description>
+        Create ditaa binary release files.
+    </description>
+    
+    <property name="project.name" value="ditaa"/>
+    <property name="version.string" value="0_10"/>
+    <property name="versioned.name" value="${project.name}${version.string}"/>
+
+    <property name="root.dir" value=".."/>
+    <property name="src.dir" value="${root.dir}/src"/>
+    <property name="compile.classes.dir" value="${basedir}/jar-temp"/>
+    <property name="releases.dir" value="${root.dir}/releases"/>
+    <property name="test.dir" value="${root.dir}/tests"/>
+    <property name="test.images.dir" value="${test.dir}/images"/>
+    <property name="reference.images.dir" value="${test.dir}/images-expected"/>
+    <property name="test.classes.dir" value="${basedir}/testclasses"/>
+
+    <property name="release.jar" value="${releases.dir}/${versioned.name}.jar"/>
+    <property name="release.zip" value="${releases.dir}/${versioned.name}.zip"/>
+    <property name="release-src.zip" value="${releases.dir}/${versioned.name}-src.zip"/>
+    
+    <path id="build.classpath">
+        <fileset dir="${root.dir}/lib">
+            <include name="**.jar" />
+        </fileset>
+    </path>
+
+    <path id="test.classpath">
+        <fileset dir="${root.dir}/tests/testlib">
+            <include name="**.jar" />
+        </fileset>
+        <pathelement location="${compile.classes.dir}" />
+        <pathelement location="${test.classes.dir}" />
+        <path refid="build.classpath" />
+    </path>
+
+    <target name="release-all" depends="release-zip,release-src" />
+    
+    <target name="debug">
+      <pathconvert property="debug.buildclasspath" refid="build.classpath"/>
+      <pathconvert property="debug.testclasspath" refid="test.classpath"/>
+      <echo>Build classpath is ${debug.buildclasspath}</echo>
+      <echo/>
+      <echo>Test classpath is ${debug.testclasspath}</echo>
+      <echo/>
+      <echo>Release zip is ${release.zip}</echo>
+      <echo>Release jar is ${release.jar}</echo>
+      <echo>Release source zip is ${release-src.zip}</echo>
+    </target>
+
+    <target name="clean" depends="clean-tests">
+        <delete file="${release.jar}" />
+        <delete file="${release.zip}" />
+        <delete file="${release-src.zip}" />
+        <delete dir="${compile.classes.dir}" />
+    </target>
+    
+    <target name="clean-tests">
+        <delete dir="${test.classes.dir}"/>
+        <delete dir="${test.images.dir}"/>
+    </target>
+    
+    <target name="compile" description="Compiles ascii2image code">
+        <mkdir dir ="${compile.classes.dir}"/>
+        <javac destdir="${compile.classes.dir}" source="1.6" classpathref="build.classpath" includeantruntime="true">
+            <src path="${src.dir}" />
+            <exclude name="org/stathissideris/ascii2image/test/**" />
+        </javac>
+    </target>
+
+    <target name="compile-tests" depends="compile" description="Compiles ascii2image tests">
+          <mkdir dir="${test.classes.dir}" />
+          <javac destdir="${test.classes.dir}" source="1.6" classpathref="test.classpath" includeantruntime="false">
+            <src path="${src.dir}" />
+            <include name="org/stathissideris/ascii2image/test/**" />
+          </javac>
+    </target>
+
+    <target name="generate-test-images" depends="compile-tests">
+        <mkdir dir="${reference.images.dir}"/>
+        <java classname="org.stathissideris.ascii2image.test.GenerateExpectedImages"
+	      fork="true" dir="${root.dir}" classpathref="test.classpath" /> 
+    </target>
+
+    <target name="test" description="Run unit tests" depends="compile-tests">
+        <echo>
+To generate test images ahead of time, ant generate-test-images. They
+are platform-dependent because of fonts etc. Be sure to inspect them
+for sanity.
+	</echo>
+        <mkdir dir="${test.images.dir}"/>
+        <junit fork="true" dir="${root.dir}" showoutput="true" printsummary="withOutAndErr">
+            <formatter type="plain"/>
+            <batchtest todir="${test.images.dir}">
+                <fileset dir="${src.dir}">
+                    <include name="org/stathissideris/ascii2image/test/*.java"/>
+                </fileset>
+            </batchtest>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+
+    <target name="release-jar" depends="compile" description="create the ditaa jar">
+        <mkdir dir ="${releases.dir}"/>
+        
+        <manifest file="${root.dir}/MANIFEST.MF">
+            <attribute name="Main-Class" value="org.stathissideris.ascii2image.core.CommandLineConverter"/>
+        </manifest>
+        
+        <mkdir dir="${root.dir}/bin" />
+        <copy todir="${compile.classes.dir}">
+            <fileset dir="${root.dir}/bin" />
+        </copy>
+
+        <unzip dest="${compile.classes.dir}">
+            <filelist dir="${root.dir}/lib">
+                
+                <!-- TODO: update names and uncomment for next version
+                <file name="batik-bridge.jar"/>
+                <file name="batik-css.jar"/>
+                <file name="batik-gvt.jar"/>
+                <file name="batik-parser.jar"/>
+                <file name="batik-script.jar"/>
+                <file name="batik-svg-dom.jar"/>
+                <file name="batik-svggen.jar"/>
+                <file name="batik-util.jar"/>
+                <file name="batik-xml.jar"/>
+                <file name="js.jar"/>
+                <file name="xerces_2_5_0.jar"/>
+                <file name="xml-apis.jar"/>
+                <file name="batik-ext.jar"/>
+                <file name="batik-dom.jar"/>
+                <file name="batik-awt-util.jar"/>
+                -->
+                
+                <file name="commons-cli-1.2.jar"/>
+                <file name="jericho-html-3.1.jar"/>
+            </filelist>
+        </unzip>
+        
+        <delete dir ="${compile.classes.dir}/license"/>
+        <delete dir ="${compile.classes.dir}/legal"/>
+        <delete dir ="${compile.classes.dir}/META-INF"/>
+        
+        <jar destfile="${release.jar}" manifest="${root.dir}/MANIFEST.MF">
+            <fileset dir="${compile.classes.dir}" />
+        </jar>
+
+        <delete file="${root.dir}/MANIFEST.MF"/>
+        <delete dir ="${compile.classes.dir}"/>
+    </target>
+    
+    <target name="release-zip"
+        depends="release-jar"
+        description="create zip with ditaa classes and shape resources">
+        
+        <delete file="${release.zip}" />
+        
+        <zip destfile="${release.zip}">
+            <file file="${release.jar}" />
+            <file file="${root.dir}/COPYING" />
+            <file file="${root.dir}/HISTORY" />
+        </zip>
+    </target>
+
+    <target name="release-src" description="create ditaa source zip">
+            
+        <delete file="${release-src.zip}" />
+        
+        <zip destfile="${release-src.zip}">
+            <fileset dir="${root.dir}" casesensitive="yes">
+                <!-- TODO: uncomment this for next version <include name="shapes/**/*"/> -->
+                <include name="build/**/*"/>
+                <include name="src/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="lib-build/**/*"/>
+                <include name="tests/**/*.txt"/>
+                <include name=".classpath"/>
+                <include name=".project"/>
+                <include name="COPYING"/>
+                <include name="HISTORY"/>
+            </fileset>
+        </zip>
+    </target>
+        
+</project>

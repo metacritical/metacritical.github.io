@@ -8,9 +8,7 @@
 set -euo pipefail
 
 BLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DITAA_JAR="${DITAA_JAR:-$BLOG_DIR/tools/diagrams/ditaa-0.11.0-standalone.jar}"
-DITAA_BIN="${DITAA_BIN:-$BLOG_DIR/tools/diagrams/ditaa}"
-PLANTUML_JAR="${PLANTUML_JAR:-$BLOG_DIR/tools/diagrams/plantuml-mit-1.2026.1.jar}"
+DITAA_SERVER_JAR="${DITAA_SERVER_JAR:-$BLOG_DIR/tools/diagrams/ditaa-server.jar}"
 EMACS_BIN="${EMACS_BIN:-emacs}"
 START_BRANCH="$(git -C "$BLOG_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 TMP_PUBLISHED_DIR=""
@@ -97,15 +95,20 @@ trap release_build_lock EXIT
 if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
   echo "Rendering Org diagrams for posts..."
   mkdir -p "$BLOG_DIR/media/images"
+  diagram_org_files=()
   while IFS= read -r org_file; do
     # Only process files that actually contain diagram source blocks.
-    if rg -qi '^[[:space:]]*#\+BEGIN_SRC[[:space:]]+(ditaa|plantuml|dot)\b|^[[:space:]]*#\+BEGIN_SRC[[:space:]]+(ditaa|plantuml|dot)[[:space:]]' "$org_file"; then
-      /opt/homebrew/bin/timeout 90s \
-        "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/render_org_artifacts.el" \
-        "$BLOG_DIR" "$org_file" "$DITAA_JAR" "$PLANTUML_JAR" || \
-        echo "[WARN] Diagram render timed out or failed for: $org_file"
+    if rg -qi '^[[:space:]]*#\+BEGIN_SRC[[:space:]]+(ditaa|dot)\b|^[[:space:]]*#\+BEGIN_SRC[[:space:]]+(ditaa|dot)[[:space:]]' "$org_file"; then
+      diagram_org_files+=("$org_file")
     fi
   done < <(find "$BLOG_DIR/posts" -name "*.org" -type f | sort)
+
+  if [ "${#diagram_org_files[@]}" -gt 0 ]; then
+    /opt/homebrew/bin/timeout 90s \
+      "$EMACS_BIN" --batch -l "$BLOG_DIR/scripts/render_org_artifacts.el" \
+      "$BLOG_DIR" "$DITAA_SERVER_JAR" "${diagram_org_files[@]}" || \
+      echo "[WARN] Diagram render timed out or failed"
+  fi
 fi
 
 # Generate labeled gapbuffer diagrams with L-shaped arrows and 1x scale.
@@ -168,22 +171,68 @@ DITAA
   esac
 }
 
+render_labeled_diagrams() {
+  local request_file response_file name src_hash output_path
+  local -a pending_names=() pending_hashes=()
+  request_file="$(mktemp /tmp/gapbuffer-ditaa-requests.XXXXXX)"
+  response_file="$(mktemp /tmp/gapbuffer-ditaa-responses.XXXXXX)"
+
+  for name in insertion move resize; do
+    write_ditaa_source "$name"
+    src_hash="$(shasum "/tmp/gapbuffer-${name}.ditaa" | awk '{print $1}')"
+    output_path="/tmp/${name}-native.png"
+    if [ -f "$ASSET_DIR/gapbuffer-$name.png" ] && \
+       [ -f "$ASSET_DIR/.gapbuffer-$name.ditaa.hash" ] && \
+       [ "$src_hash" = "$(cat "$ASSET_DIR/.gapbuffer-$name.ditaa.hash" 2>/dev/null)" ]; then
+      continue
+    fi
+
+    printf 'RENDER\t%s\t%s\n' \
+      "$(printf '%s' "$output_path" | base64 | tr -d '\n')" \
+      "$(base64 < "/tmp/gapbuffer-${name}.ditaa" | tr -d '\n')" \
+      >> "$request_file"
+    pending_names+=("$name")
+    pending_hashes+=("$src_hash")
+  done
+
+  if [ "${#pending_names[@]}" -gt 0 ]; then
+    if ! java -Djava.awt.headless=true -cp "$DITAA_SERVER_JAR" \
+      org.stathissideris.ascii2image.core.DitaaServer -E -S \
+      < "$request_file" > "$response_file"; then
+      echo "[ERROR] Ditaa server failed for labeled diagrams" >&2
+      return 1
+    fi
+
+    responses=()
+    while IFS= read -r response; do
+      responses+=("$response")
+    done < "$response_file"
+    if [ "${#responses[@]}" -ne "${#pending_names[@]}" ]; then
+      echo "[ERROR] Ditaa server returned an unexpected response count" >&2
+      return 1
+    fi
+    for ((i = 0; i < ${#pending_names[@]}; i++)); do
+      if [ "${responses[$i]}" != "OK" ]; then
+        echo "[ERROR] Ditaa server failed for ${pending_names[$i]}: ${responses[$i]}" >&2
+        return 1
+      fi
+      printf '%s\n' "${pending_hashes[$i]}" > "$ASSET_DIR/.gapbuffer-${pending_names[$i]}.ditaa.hash"
+    done
+  fi
+}
+
 generate_labeled_diagram() {
   local name="$1" top="$2" bot="$3"
   local out="$ASSET_DIR/gapbuffer-$name.png"
   local hash_file="$ASSET_DIR/.gapbuffer-$name.ditaa.hash"
   local src_hash
 
-  # Only rerender if the source template changed or the output is missing.
+  # Only compose if the source template changed or the output is missing.
   write_ditaa_source "$name"
   src_hash="$(shasum "/tmp/gapbuffer-${name}.ditaa" | awk '{print $1}')"
   if [ -f "$out" ] && [ -f "$hash_file" ] && [ "$src_hash" = "$(cat "$hash_file" 2>/dev/null)" ]; then
     return
   fi
-  echo "$src_hash" > "$hash_file"
-
-  # Render at native 1x to match gapbuffer.png's crisp pixel-perfect style.
-  "$DITAA_BIN" "/tmp/gapbuffer-${name}.ditaa" "/tmp/${name}-native.png" -E -S 2>/dev/null
 
   core_w=$(identify "/tmp/${name}-native.png" | awk '{print $3}' | cut -dx -f1)
   text_w=$(magick -font "$FONT_HELV" -pointsize 10 label:"$bot" -format "%w" info:)
@@ -206,6 +255,7 @@ if [ "${RENDER_DIAGRAMS:-1}" = "1" ]; then
   # The labeled diagrams are also generated assets, so create their destination
   # directory before writing the cache hashes.
   mkdir -p "$ASSET_DIR"
+  render_labeled_diagrams
   generate_labeled_diagram "insertion" "Insertion — typing fills the gap" "Gap shrinks by one for each character typed (O(1) per insertion)"
   generate_labeled_diagram "move"      "Cursor Movement — gap shifts right" "Moving cursor N positions requires shifting N chars (O(N))"
   generate_labeled_diagram "resize"    "Buffer Resize — gap exhausted" "Buffer doubles, new gap opens (amortized O(1) per insertion)"
