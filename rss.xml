@@ -4,8 +4,8 @@
     <title>Self dot send (Computing Blog)</title>
     <link>https://selfdotsend.com</link>
     <description>Message passing is just a procedure call.</description>
-    <pubDate>Sat, 15 Aug 2026 23:34:24 IST</pubDate>
-    <lastBuildDate>Sat, 15 Aug 2026 23:34:24 IST</lastBuildDate>
+    <pubDate>Sat, 15 Aug 2026 23:48:59 IST</pubDate>
+    <lastBuildDate>Sat, 15 Aug 2026 23:48:59 IST</lastBuildDate>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>Org-page static site generator (https://github.com/kelvinh/org-page)</generator>
     <item>
@@ -19,22 +19,36 @@
       <title>Lolcat in Arm Assembly</title>
       <link>https://selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly</link>
       <description><![CDATA[Rewriting x86 Lolcat in Arm assembly.]]></description>
-      <pubDate>2026-08-14</pubDate>
+      <pubDate>2026-08-15</pubDate>
       <guid>https://selfdotsend.com/blog/2018/07/14/lolcat-in-arm-assembly</guid>
     </item>
     <item>
       <title>Writing a Programmers Editor (Gap Buffer in Scheme) - Part 3</title>
       <link>https://selfdotsend.com/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3</link>
       <description><![CDATA[Implementing a gap buffer from scratch in Scheme - the core data structure for our editor.]]></description>
-      <pubDate>2026-08-14</pubDate>
+      <pubDate>2026-08-15</pubDate>
       <guid>https://selfdotsend.com/blog/2018/08/18/writing-a-programmers-editor-gap-buffer-in-scheme-part-3</guid>
     </item>
     <item>
       <title>Writing a Programmers Editor (Lines &amp; Display) - Part 4</title>
       <link>https://selfdotsend.com/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4</link>
       <description><![CDATA[Building a line management and display layer on top of the gap buffer.]]></description>
-      <pubDate>2026-08-14</pubDate>
+      <pubDate>2026-08-15</pubDate>
       <guid>https://selfdotsend.com/blog/2018/08/25/writing-a-programmers-editor-lines-and-display-part-4</guid>
+    </item>
+    <item>
+      <title>Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</title>
+      <link>https://selfdotsend.com/blog/2018/10/20/writing-a-programmers-editor-part-12</link>
+      <description><![CDATA[Looking back at the series - what we learned, what worked, and answering the questions from Part 1.]]></description>
+      <pubDate>2026-08-15</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/10/20/writing-a-programmers-editor-part-12</guid>
+    </item>
+    <item>
+      <title>Writing a Programmers Editor (Search &amp; Replace) - Part 8</title>
+      <link>https://selfdotsend.com/blog/2018/09/22/writing-a-programmers-editor-part-8</link>
+      <description><![CDATA[Implementing incremental search and replace - from naive string matching to efficient algorithms.]]></description>
+      <pubDate>2026-08-15</pubDate>
+      <guid>https://selfdotsend.com/blog/2018/09/22/writing-a-programmers-editor-part-8</guid>
     </item>
     <item>
       <title>Writing a Programmers Editor (Undo/Redo &amp; Command Log) - Part 10</title>
@@ -51,13 +65,6 @@
       <guid>https://selfdotsend.com/blog/2018/10/13/writing-a-programmers-editor-part-11</guid>
     </item>
     <item>
-      <title>Writing a Programmers Editor (Reflections &amp; Lessons) - Part 12</title>
-      <link>https://selfdotsend.com/blog/2018/10/20/writing-a-programmers-editor-part-12</link>
-      <description><![CDATA[Looking back at the series - what we learned, what worked, and answering the questions from Part 1.]]></description>
-      <pubDate>2026-08-14</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/10/20/writing-a-programmers-editor-part-12</guid>
-    </item>
-    <item>
       <title>Writing a Programmers Editor (DS/Gapbuffer) - Part 2</title>
       <link>https://selfdotsend.com/blog/2018/08/11/writing-a-programmers-editor-(datastructure)---part-2</link>
       <description><![CDATA[Exploration to find the right data structure for the editor.]]></description>
@@ -70,13 +77,6 @@
       <description><![CDATA[How to take control of the terminal - raw mode, escape sequences, and turning a teletype into an interactive display.]]></description>
       <pubDate>2026-08-14</pubDate>
       <guid>https://selfdotsend.com/blog/2018/09/01/writing-a-programmers-editor-part-5</guid>
-    </item>
-    <item>
-      <title>Writing a Programmers Editor (Keymaps &amp; Input Handling) - Part 6</title>
-      <link>https://selfdotsend.com/blog/2018/09/08/writing-a-programmers-editor-part-6</link>
-      <description><![CDATA[Designing a keymap system - translating raw keystrokes into editor commands, and the foundation for modal editing.]]></description>
-      <pubDate>2026-08-14</pubDate>
-      <guid>https://selfdotsend.com/blog/2018/09/08/writing-a-programmers-editor-part-6</guid>
     </item>
   </channel>
 </rss>

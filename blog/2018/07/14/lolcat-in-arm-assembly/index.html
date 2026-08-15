@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   <link rel="stylesheet" href="/media/css/syntax-highlight.css" type="text/css">
   <link rel="stylesheet" href="/media/css/highlight.css" type="text/css">
-  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817065" type="text/css">
-  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817065" type="text/css">
+  <link rel="stylesheet" href="/media/css/theme-medium.css?v=1786817940" type="text/css">
+  <link rel="stylesheet" href="/media/css/code-theme-monokai-pro.css?v=1786817940" type="text/css">
 </head>
 
   <body class="container">
@@ -79,15 +79,15 @@
       <span class="post-author-date"></span>
     </div>
   </div>
-  <style>
-.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
-.article-tags li{list-style:none;margin:0;padding:0}
-.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
-.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
-.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
-</style>
-  <ul class="article-tags"><li><a class="article-tag" href="/tags/lolcat/">lolcat</a></li><li><a class="article-tag" href="/tags/arm-assembly/">arm assembly</a></li><li><a class="article-tag" href="/tags/assembler/">assembler</a></li></ul>
-  <p>
+  
+<div id="org99ba9cf" class="figure">
+<p><img src="/assets/blog/2018/07/14/lolcat-in-arm-assembly/hero.png" alt="Editorial illustration of a cat-shaped terminal mascot beside ARM assembly instructions" />
+</p>
+</div>
+
+<p class="post-edited-on">Edited on: August 15, 2026</p>
+
+<p>
 <code>lolcat</code> is one of those gloriously useless little Unix programs that everybody
 loves anyway. It reads text and prints it back in rainbow colours - the same bytes
 you piped in, now dressed for a party. The original is a Ruby gem; there are C and
@@ -195,7 +195,7 @@ The clever trick that keeps the assembly small: pre-render every colour escape a
 ANSI happily accepts leading zeros - so every entry is exactly <b>11 bytes</b>:
 </p>
 
-<pre class="example" id="org824bd09">
+<pre class="example" id="org90efcaf">
 ESC [ 3 8 ; 5 ; N N N m      =&gt;  "\033[38;5;196m"   (11 bytes)
 </pre>
 
@@ -230,8 +230,15 @@ We use thirty codes that loop once around the colour cube:
 </span><span class="org-keyword">.equ</span>  BUFSZ, 4096
 </pre>
 </div>
-
-<p>
+  <style>
+.article-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.article-tags li{list-style:none;margin:0;padding:0}
+.article-tag{display:inline-block;font-size:12px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#6f6a5e;background:#f1ece0;padding:3px 11px;border-radius:12px;text-decoration:none;transition:background .12s,color .12s}
+.article-tag:hover{background:#e4dfd0;color:#1f1f1b}
+.series-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;color:#2baa9f;background:#e0f5f4;border:none;padding:2px 9px;border-radius:11px;white-space:nowrap}
+</style>
+  <ul class="article-tags"><li><a class="article-tag" href="/tags/lolcat/">lolcat</a></li><li><a class="article-tag" href="/tags/arm-assembly/">arm assembly</a></li><li><a class="article-tag" href="/tags/assembler/">assembler</a></li></ul>
+  <p>
 <b>The Program</b>
 </p>
 
