@@ -21,12 +21,17 @@ IMAGE_EXTS = ("*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp")
 
 
 def find_hero(year, month, day, slug):
-    """Return a served image URL for a post, falling back to the placeholder."""
+    """Return a thumbnail URL, preferring existing article art over a hero."""
     assetdir = blog_dir / "assets" / "blog" / year / month / day / slug
     if assetdir.is_dir():
         for ext in IMAGE_EXTS:
             for p in sorted(assetdir.glob(ext)):
+                if p.name.lower() == "hero.png":
+                    continue
                 return "/assets/blog/%s/%s/%s/%s/%s" % (year, month, day, slug, p.name)
+        hero = assetdir / "hero.png"
+        if hero.is_file():
+            return "/assets/blog/%s/%s/%s/%s/hero.png" % (year, month, day, slug)
     return "/media/images/placeholder.png"
 
 
